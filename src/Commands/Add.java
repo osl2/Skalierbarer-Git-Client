@@ -21,8 +21,10 @@ public class Add implements ICommand {
         //return LevelOne;
     }
 
+    // -------------------------------------------------------------------------------------------------------------
     // The following methods handle the outer representation of the command -
     // perhaps, should be moved to a dedicated class (e.g. AddRepresentation.java)
+    // -------------------------------------------------------------------------------------------------------------
 
     /**
      *
