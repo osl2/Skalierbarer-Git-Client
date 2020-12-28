@@ -1,15 +1,30 @@
 public class Add implements ICommand {
 
     /**
-     * OPTIONAL
-     * performs git add if current level is greater equal than minimum required level
+     * Performs git add if allowed, does nothing otherwise
+     * @param level The current level
      */
     public void execute(ILevel level){
-        if (level.getLevelNumber() >= this.getMinimumLevel()){
+        if (isAllowed(level)){
             //perform git add
         }
         else{
             //do nothing
+        }
+    }
+
+    /**
+     * OPTIONAL
+     * Needed for command execution, button availability (active/ inactive) etc. 
+     * @param level The current level
+     * @return Returns true, if current level is greater equal than minimum required level (command is allowed), false otherwise
+     */
+    public boolean isAllowed(ILevel level){
+        if (level.getLevelNumber() >= this.getMinimumLevel()){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
