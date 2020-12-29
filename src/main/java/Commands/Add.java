@@ -1,12 +1,14 @@
 package Commands;
 
+import Levels.ILevel;
+
 public class Add implements ICommand {
 
     /**
      * Performs git add if allowed, does nothing otherwise
      * @param level The current level
      */
-    public void execute(ILevel level){
+    public boolean execute(ILevel level){
         if (isAllowed(level)){
             //perform git add
         }

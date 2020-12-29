@@ -1,19 +1,25 @@
 package Commands;
 
+import Git.GitBranch;
+import Git.GitRemote;
+import Levels.ILevel;
+
 public class Pull implements ICommand {
     private GitRemote remote;
     private GitBranch remoteBranch;
     /**
      * Performs git pull if allowed, does nothing otherwise
      * @param level The current level
+     * @return
      */
-    public void execute(ILevel level){
+    public boolean execute(ILevel level){
         if (isAllowed(level)){
             //perform git pull
         }
         else{
             //do nothing
         }
+        return false;
     }
 
     /**
@@ -29,6 +35,7 @@ public class Pull implements ICommand {
         else{
             return false;
         }
+        throw new AssertionError("Not implemented yet");
     }
 
     /**
@@ -37,6 +44,7 @@ public class Pull implements ICommand {
      */
     public ILevel getMinimumLevel(){
         //return LevelThree;
+        return null;
     }
 
     // -------------------------------------------------------------------------------------------------------------
