@@ -1,21 +1,15 @@
 package Commands;
 
+import Levels.ILevel;
+
 public class Branch implements ICommand {
-    private Branch actualBranch;
+    private GitBranch actualBranch;
     private boolean isButton = true;
 
     /**
      * Performs git branch if allowed, does nothing otherwise
      * @param level The current level
      */
-    public void execute(ILevel level){
-        if (isAllowed(level)){
-            //perform git branch
-        }
-        else{
-            //do nothing
-        }
-    }
 
     /**
      * OPTIONAL
@@ -29,6 +23,15 @@ public class Branch implements ICommand {
         }
         else{
             return false;
+        }
+    }
+
+    public boolean execute(ILevel level) {
+        if (isAllowed(level)){
+            //perform git branch
+        }
+        else{
+            //do nothing
         }
     }
 
@@ -81,7 +84,7 @@ public class Branch implements ICommand {
      *
      * @return Returns the actual Branch or commit
      */
-    public Branch getActualBranch() {
+    public GitBranch getActualBranch() {
         return actualBranch;
     }
 
@@ -89,7 +92,7 @@ public class Branch implements ICommand {
      *
      * @param actualBranch New Branch the Head points to
      */
-    public void setActualBranch(Branch actualBranch) {
+    public void setActualBranch(GitBranch actualBranch) {
         this.actualBranch = actualBranch;
     }
 }

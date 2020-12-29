@@ -1,8 +1,8 @@
 package Commands;
 
 public class Pull implements ICommand {
-    private Remote remote;
-    private Branch remoteBranch;
+    private GitRemote remote;
+    private GitBranch remoteBranch;
     /**
      * Performs git pull if allowed, does nothing otherwise
      * @param level The current level
@@ -72,7 +72,7 @@ public class Pull implements ICommand {
      *
      * @param remote from which files are to be fetched
      */
-    public void setRemote(Remote remote){
+    public void setRemote(GitRemote remote){
         this.remote = remote;
     }
 
@@ -80,7 +80,7 @@ public class Pull implements ICommand {
      *
      * @return Returns active repo
      */
-    public Remote getRemote() {
+    public GitRemote getRemote() {
         return remote;
     }
 
@@ -88,7 +88,7 @@ public class Pull implements ICommand {
      *
      * @param remoteBranch from which files are to be fetched
      */
-    public void setRemoteBranch(Branch remoteBranch) {
+    public void setRemoteBranch(GitBranch remoteBranch) {
         this.remoteBranch = remoteBranch;
     }
 
@@ -96,7 +96,7 @@ public class Pull implements ICommand {
      *
      * @return Returns the active remoteBranch
      */
-    public Branch getRemoteBranch() {
+    public GitBranch getRemoteBranch() {
         return remoteBranch;
     }
 }
