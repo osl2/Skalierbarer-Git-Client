@@ -1,0 +1,13 @@
+package Commands;
+
+/**
+ * Represents the Command in a Command in the Main window
+ */
+public interface ICommandGUI {
+
+
+public String get commandLine (String userInput);
+     public String get name ();
+     public String get description ();
+
+        }
