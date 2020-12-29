@@ -18,6 +18,8 @@ public class Merge implements ICommand {
 
         // do stuff
 
+        // Open MergeDialogView
+
         return true;
     }
 

@@ -2,9 +2,11 @@ package DialogViews;
 
 public class FetchView implements IDialogView {
 
+    public void show() {
 
-    @Override
-    public void openDialog() {
+    }
+
+    public void update() {
 
     }
 }
