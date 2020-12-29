@@ -4,77 +4,27 @@ import Git.GitBranch;
 import Git.GitRemote;
 import Levels.ILevel;
 
-public class Pull implements ICommand {
+
+public class Pull implements ICommand,ICommandGUI {
     private GitRemote remote;
     private GitBranch remoteBranch;
     /**
      * Performs git pull if allowed, does nothing otherwise
-     * @param level The current level
+     *
      * @return
      */
-    public boolean execute(ILevel level){
-        if (isAllowed(level)){
-            //perform git pull
-        }
-        else{
-            //do nothing
-        }
+    public boolean execute(){
+
         return false;
     }
 
-    /**
-     * OPTIONAL
-     * Needed for command execution, button availability (active/ inactive) etc.
-     * @param level The current level
-     * @return Returns true, if current level is greater equal than minimum required level (command is allowed), false otherwise
-     */
-    public boolean isAllowed(ILevel level){
-        if (level.getLevelNumber() >= this.getMinimumLevel()){
-            return true;
-        }
-        else{
-            return false;
-        }
-        throw new AssertionError("Not implemented yet");
-    }
 
-    /**
-     * OPTIONAL
-     * @return The lowest level at which the command can be invoked
-     */
-    public ILevel getMinimumLevel(){
-        //return LevelThree;
-        return null;
-    }
 
     // -------------------------------------------------------------------------------------------------------------
     // The following methods handle the outer representation of the command -
     // perhaps, should be moved to a dedicated class (e.g. AddRepresentation.java)
     // -------------------------------------------------------------------------------------------------------------
 
-    /**
-     *
-     * @return Returns the short name of the command (e.g. to be displayed on buttons)
-     */
-    public String getCommandName(){
-        return "pull";
-    }
-
-    /**
-     *
-     * @return Returns a String representation of the corresponding git command to display on the command line
-     */
-    public String getGitCommand(){
-        return "git pull";
-    }
-
-    /**
-     *
-     * @return Returns a short description of the command, which can be displayed to the user if necessary
-     */
-    public String getCommandDescription(){
-        return "Lädt Änderungen aus einem Online-Repo und merged sie";
-    }
 
     /**
      *
@@ -106,5 +56,17 @@ public class Pull implements ICommand {
      */
     public GitBranch getRemoteBranch() {
         return remoteBranch;
+    }
+
+    public String getCommandLine(String userInput) {
+        return "git pull";
+    }
+
+    public String getName() {
+        return "pull";
+    }
+
+    public String getDescription() {
+        return "Lädt Änderungen aus einem Online-Repo und merged sie";
     }
 }
