@@ -1,3 +1,5 @@
+package Commands;
+
 public class Branch implements ICommand {
     private Branch actualBranch;
     private boolean isButton = true;

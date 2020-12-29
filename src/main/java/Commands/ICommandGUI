@@ -1,7 +1,9 @@
+package Commands;
+
 /**
  * Represents the Command in a Command in the Main window
  */
-Public Interfacce CommandGUI {
+public interface ICommandGUI {
 
 
 public String get commandLine (String userInput);

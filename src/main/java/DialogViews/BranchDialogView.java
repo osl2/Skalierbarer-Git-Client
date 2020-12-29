@@ -1,3 +1,5 @@
+package DialogViews;
+
 public class BranchDialogView implements IDialogView {
     private LinkedList<Branch> branches = new LinkedList<Branch>();
     private LinkedList<Commit> commits = new LinkedList<Commit>();

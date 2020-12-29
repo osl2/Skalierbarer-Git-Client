@@ -1,3 +1,5 @@
+package Commands;
+
 public class Pull implements ICommand {
     private Remote remote;
     private Branch remoteBranch;

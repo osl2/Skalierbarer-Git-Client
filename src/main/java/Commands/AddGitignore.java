@@ -1,3 +1,5 @@
+package Commands;
+
 public class AddGitignore {
     private File file;
 
