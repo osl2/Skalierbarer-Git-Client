@@ -1,0 +1,11 @@
+/**
+ * Represents the Command in a Command in the Main window
+ */
+Public Interfacce CommandGUI {
+
+
+public String get commandLine (String userInput);
+     public String get name ();
+     public String get description ();
+
+        }
