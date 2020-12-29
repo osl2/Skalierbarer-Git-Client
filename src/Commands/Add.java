@@ -15,10 +15,11 @@ public class Add implements ICommand {
 
     /**
      * OPTIONAL
-     * Needed for command execution, button availability (active/ inactive) etc. 
+     * Needed for command execution, button availability (active/ inactive) etc.
      * @param level The current level
      * @return Returns true, if current level is greater equal than minimum required level (command is allowed), false otherwise
      */
+    //Wo soll diese Prüfung vorgenommen werden? Vom Level? Befehl? 
     public boolean isAllowed(ILevel level){
         if (level.getLevelNumber() >= this.getMinimumLevel()){
             return true;
@@ -32,6 +33,8 @@ public class Add implements ICommand {
      * OPTIONAL
      * @return The lowest level at which the command can be invoked
      */
+    //nicht erweiterbar: was, wenn zwischendurch noch ein Level eingeschoben werden soll und add zB erst auf Level 2 unterstützt wird?
+    //man müsste jeden einzelnen Befehl ändern!
     public ILevel getMinimumLevel(){
         //return LevelOne;
     }
