@@ -1,18 +1,12 @@
-public class AddGitignore {
-    private File file;
+public class Gitignore {
 
-    /*
-    Übergibt File, die zu gitignore hinzugefügt werden soll, damit execute ohne Parameter aufgerufen werden kann
+    /**
+     * Add the text pattern (could be file path or part of it) of the blob to .gitignore. Blob must be a file, so
+     * consider using File, VCSFile or something similar instead
+     * @param blop An object that contains file data in JGit. Probably switch to File, VCSFile etc.
      */
-    public void addFile(File file){
-        this.file = file;
-    }
-
-    /*
-    gleiche Form wie bei ICommand
-     */
-    public void execute(){
-        if (!isVersioned(file)){
+    public void addToGitignore(Blop blop){
+        if (!file.isVersioned()){
             //add to gitignore
         }
         else{
@@ -20,10 +14,17 @@ public class AddGitignore {
         }
     }
 
-    /*
-    If file has already been versioned, it cannot be added to the gitignore file
+    /**
+     * Remove the text pattern that matches the file path from .gitignore
+     * @param blop An object that contains file data in JGit
      */
-    private boolean isVersioned(File file){
-
+    public void removeFromGitignore(Blop blop){
+        if (file.isIgnored()){
+            //remove
+        }
+        else{
+            //do nothing
+        }
     }
+
 }
