@@ -5,6 +5,11 @@ import java.util.List;
 public class Fetch implements ICommand{
 
     /**
+     * Executes the "git fetch" command. Can only be used after setRemotes was called once.
+     */
+    public void execute() {}
+
+    /**
      * Returns a list containing all remote names.
      * @return a list with with remote names.
      */
