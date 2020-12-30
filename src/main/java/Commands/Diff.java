@@ -4,8 +4,12 @@ public class Diff implements ICommand{
 
     /**
      * Executes the "git diff" command. Can only be used after setDiffID was called once.
+     * @return true, if the command has been executed successfully
      */
-    public void execute() {}
+    public boolean execute() {
+        //not implemeneted yet
+        return false;
+    }
 
     /**
      * Sets the commit ID and the file name to compare with the previous one.

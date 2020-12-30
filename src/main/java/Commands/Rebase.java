@@ -2,34 +2,42 @@ package Commands;
 
 import Levels.ILevel;
 
-public class Rebase implements ICommand{
+public class Rebase implements ICommand, ICommandGUI{
 
     /**
      * Method to execute the command
      *
-     * @param level Competence level that is currently set
      * @return true, if the command has been executed successfully
      */
-    public boolean execute(ILevel level) {
+    public boolean execute() {
         return false;
     }
 
     /**
-     * Method to check if a command can be executed in the level
+     * Method to get the Commandline input that would be necessarry to execute the command
      *
-     * @param level Level that needs to be checked
-     * @return True if the Command can be executed in that level
+     * @param userInput The input that the user needs to make additionally to the standard output of git commit
+     * @return Returns a String representation of the corresponding git command to display on the command line
      */
-    public boolean isAllowed(ILevel level) {
-        return false;
+    public String getCommandLine(String userInput) {
+        return null;
     }
 
     /**
-     * Method to get the minimum level necessary to execute the command
+     * Method to get the name of the command, that could be displaied in the GUI
      *
-     * @return Level that is at least necessarry to execute the command
+     * @return The name of the command
      */
-    public ILevel getMinimumLevel() {
+    public String getName() {
+        return null;
+    }
+
+    /**
+     * Method to get a description of the Command to describe for the user, what the command does
+     *
+     * @return description as a Sting
+     */
+    public String getDescription() {
         return null;
     }
 }

@@ -8,15 +8,8 @@ import Levels.ILevel;
 public class Pull implements ICommand,ICommandGUI {
     private GitRemote remote;
     private GitBranch remoteBranch;
-    /**
-     * Performs git pull if allowed, does nothing otherwise
-     *
-     * @return
-     */
-    public boolean execute(){
 
-        return false;
-    }
+
 
 
 
@@ -68,5 +61,15 @@ public class Pull implements ICommand,ICommandGUI {
 
     public String getDescription() {
         return "Lädt Änderungen aus einem Online-Repo und merged sie";
+    }
+
+    /**
+     * Method to execute the command
+     *
+     * @return true, if the command has been executed successfully
+     */
+    public boolean execute() {
+        //not implemented yet
+        return false;
     }
 }

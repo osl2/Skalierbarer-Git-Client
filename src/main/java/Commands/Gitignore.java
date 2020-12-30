@@ -1,31 +1,33 @@
 package Commands;
 
-import java.util.List;
-
-public class Log implements ICommand, ICommandGUI{
-
-
+public class Gitignore implements ICommand, ICommandGUI {
 
     /**
-     * Returns a list of commit IDs beginning with the latest commit of the given branch.
-     * @param branchName name of the respective branch.
-     * @return a list of commit IDs.
+     * Add the text pattern (could be file path or part of it) of the blob to .gitignore. Blob must be a file, so
+     * consider using File, VCSFile or something similar instead
+     * @param blop An object that contains file data in JGit. Probably switch to File, VCSFile etc.
      */
-    public List<String> getCommitIDs(String branchName) {return null;}
+    public void addToGitignore(Blop blop){
+        if (!file.isVersioned()){
+            //add to gitignore
+        }
+        else{
+            //do nothing
+        }
+    }
 
     /**
-     * Returns a list of commit massages beginning with the latest commit massage of the given branch.
-     * @param branchName name of the respective branch.
-     * @return a list of commit massages.
+     * Remove the text pattern that matches the file path from .gitignore
+     * @param blop An object that contains file data in JGit
      */
-    public List<String> getCommitMassages(String branchName) {return null;}
-
-    /**
-     * Returns a list of all files contained in the given commit.
-     * @param commitID the ID of the commit.
-     * @return a list of all files contained in the given commit
-     */
-    public List<String> getFileNames(String commitID) {return null;}
+    public void removeFromGitignore(Blop blop){
+        if (file.isIgnored()){
+            //remove
+        }
+        else{
+            //do nothing
+        }
+    }
 
     /**
      * Method to execute the command
@@ -33,7 +35,6 @@ public class Log implements ICommand, ICommandGUI{
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
-        //not implemented yet
         return false;
     }
 
