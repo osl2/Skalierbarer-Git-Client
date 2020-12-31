@@ -1,15 +1,18 @@
 package DialogViews;
 
+import Git.GitBranch;
+import Git.GitCommit;
+
 public class BranchDialogView implements IDialogView {
-    private LinkedList<Branch> branches = new LinkedList<Branch>();
-    private LinkedList<Commit> commits = new LinkedList<Commit>();
+    private LinkedList<GitBranch> branches = new LinkedList<GitBranch>();
+    private LinkedList<GitCommit> commits = new LinkedList<GitCommit>();
     private String nameOfNew;
 
     /**
      *
      * @return Returns the list of the existing branches
      */
-    public LinkedList<Branch> getBranches() {
+    public LinkedList<GitBranch> getBranches() {
         return branches;
     }
 
@@ -17,7 +20,7 @@ public class BranchDialogView implements IDialogView {
      *
      * @param branches Input is a new list of branches
      */
-    public void setBranches(LinkedList<Branch> branches) {
+    public void setBranches(LinkedList<GitBranch> branches) {
         this.branches = branches;
     }
 
@@ -25,7 +28,7 @@ public class BranchDialogView implements IDialogView {
      *
      * @return Returns list of current commits
      */
-    public LinkedList<Commit> getCommits() {
+    public LinkedList<GitCommit> getCommits() {
         return commits;
     }
 
@@ -33,7 +36,7 @@ public class BranchDialogView implements IDialogView {
      *
      * @param commits Input is new List of commits
      */
-    public void setCommits(LinkedList<Commit> commits) {
+    public void setCommits(LinkedList<GitCommit> commits) {
         this.commits = commits;
     }
 
@@ -51,5 +54,13 @@ public class BranchDialogView implements IDialogView {
      */
     public void setNameOfNew(String nameOfNew) {
         this.nameOfNew = nameOfNew;
+    }
+
+    public void show() {
+
+    }
+
+    public void update() {
+
     }
 }

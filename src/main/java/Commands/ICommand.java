@@ -1,12 +1,14 @@
 package Commands;
 
+import Levels.ILevel;
+
 public interface ICommand {
 
-    public void execute(ILevel level);
-    public boolean isAllowed(ILevel level);
-    public ILevel getMinimumLevel();
-    public String getCommandName();
-    public String getGitCommand();
-    public String getCommandDescription();
+    /**
+     * Method to execute the command
+     * @return true, if the command has been executed successfully
+     */
+    boolean execute();
+
 
 }

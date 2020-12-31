@@ -1,77 +1,50 @@
 package Commands;
 
-public class Branch implements ICommand {
-    private Branch actualBranch;
+import Git.GitBranch;
+import Git.GitCommit;
+
+public class Branch implements ICommand, ICommandGUI {
+    private GitBranch pointOfBranching;
+    private GitCommit commitPointOfBranching;
+    private String branchName;
     private boolean isButton = true;
 
+
+
     /**
-     * Performs git branch if allowed, does nothing otherwise
-     * @param level The current level
+     * Method to create the new branch
+     *
+     * @return true, if the command has been executed successfully
      */
-    public void execute(ILevel level){
-        if (isAllowed(level)){
-            //perform git branch
-        }
-        else{
-            //do nothing
-        }
+    public boolean execute() {
+        return false;
     }
 
     /**
-     * OPTIONAL
-     * Needed for command execution, button availability (active/ inactive) etc.
-     * @param level The current level
-     * @return Returns true, if current level is greater equal than minimum required level (command is allowed), false otherwise
+     * Creates with the input the command of the commandline
+     * @param userInput Input off the user
+     * @return Returns command for Commandline
      */
-    public boolean isAllowed(ILevel level){
-        if (level.getLevelNumber() >= this.getMinimumLevel()){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public String getCommandLine(String userInput) {
+        return "git branch " + userInput;
     }
-
-    /**
-     * OPTIONAL
-     * @return The lowest level at which the command can be invoked
-     */
-    public ILevel getMinimumLevel(){
-        //return LevelTwo;
-    }
-
-    // -------------------------------------------------------------------------------------------------------------
-    // The following methods handle the outer representation of the command -
-    // perhaps, should be moved to a dedicated class (e.g. AddRepresentation.java)
-    // -------------------------------------------------------------------------------------------------------------
-
     /**
      *
-     * @return Returns the short name of the command (e.g. to be displayed on buttons)
+     * @return Returns the name of the command
      */
-    public String getCommandName(){
+    public String getName() {
         return "branch";
     }
-
     /**
      *
-     * @return Returns a String representation of the corresponding git command to display on the command line
+     * @return Returns a Description of what the command is doing
      */
-    public String getGitCommand(){
-        return "git branch";
+    public String getDescription() {
+        return "Erstellt einen neuen Änderungszweig an entsprechender Stelle";
     }
-
     /**
      *
-     * @return Returns a short description of the command, which can be displayed to the user if necessary
-     */
-    public String getCommandDescription(){
-        return "Erstellt aktuellen branch mit entsprechenden Namen";
-    }
-
-    /**
-     *
-     * @return Returns true if the command is represanted as Button
+     * @return Returns true if the command is represented as Button
      */
     public boolean isButton() {
         return isButton;
@@ -79,17 +52,18 @@ public class Branch implements ICommand {
 
     /**
      *
-     * @return Returns the actual Branch or commit
+     * @return Returns the actual Commit on which is branched
      */
-    public Branch getActualBranch() {
-        return actualBranch;
+    public GitCommit getActualBranch() {
+        return commitPointOfBranching;
     }
 
     /**
-     *
-     * @param actualBranch New Branch the Head points to
+     * Sets the Point of branching to the specified commit
+     * @param commitPointOfBranching Commit at which a new branch is to be created
      */
-    public void setActualBranch(Branch actualBranch) {
-        this.actualBranch = actualBranch;
+    public void setBranchPoint(GitCommit commitPointOfBranching) {
+        this.commitPointOfBranching = commitPointOfBranching;
     }
+
 }
