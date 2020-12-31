@@ -1,18 +1,68 @@
 package Commands;
 
 
+import Git.GitBlob;
+
 public class Add implements ICommand, ICommandGUI {
 
     /**
-     * Performs git add if allowed, does nothing otherwise
-     *
+     * Performs git add
+     * @return true, if the command has been executed successfully
      */
-    public boolean execute(){
+    public boolean execute() {
         return false;
     }
 
-    //Wo soll diese Prüfung vorgenommen werden? Vom Level? Befehl? 
+    /**
+     * This method passes a list of String parameters to the command, if required. If no parameters are required,
+     * setParameters() does nothing.
+     * The git add command needs one or several blobs (changes in files) in order to be executed. When execute() is
+     * invoked, the given blobs are added to the staging area.
+     * @param blobs A list of String patterns for blobs (changes in files) that should be added to the staging area. Must
+     *              contain at least one valid pattern.
+     * @see #hasParameters()
+     */
+    //sollte in IF geschoben werden, aber mit welchem Datentyp? Ideal wäre eigentlich GitBlob
+    public void setParameters(List<String> blobs){}
 
+    /**
+     * This method specifies whether the git add needs parameters in order to be executed
+     * @return true, if the command needs parameters to be executed
+     * @see #setParameters(List)
+     */
+    //Prüfung hier oder erst bei Aufruf von execute() --> private?
+    public boolean hasParameters(){
+        return false;
+    }
+
+    /**
+     * This method passes a list of options to the command, if allowed. When the command does not support any options,
+     * setOptions() does nothing.
+     * The git add command does not support any options.
+     * @param options A list of String options that describe the way in which the command should be executed.
+     * @see #hasOptions()
+     */
+    //sollte in IF geschoben werden, welcher Datentyp?
+    public void setOptions(List<String> options){}
+
+    /**
+     * This method specifies whether the git command supports options.
+     * @return true, if the command can be further specified by passing one or more options.
+     * @see #setOptions(List)
+     */
+    //Prüfung hier oder erst bei Aufruf von execute() --> private?
+    public boolean hasOptions() {
+        return false;
+    }
+
+    /**
+     * This method returns the error message in case the command has not been executed successfully.
+     * @return empty String if the command was executed successfully, the error String otherwise
+     */
+    //Fehlerbehandlung direkt in execute() --> private machen?
+    public String getErrorMessage() {
+        return null;
+    }
 
     // -------------------------------------------------------------------------------------------------------------
     // The following methods handle the outer representation of the command -
