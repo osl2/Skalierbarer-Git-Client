@@ -6,4 +6,8 @@ public class GitBlob {
     private int size;
     private File path;
     /* TODO: SOME WAY TO TRACK CHANGES */
+
+    //for Gitignore.java
+    public boolean isIgnored(){return false;}
+    public boolean isVersioned(){return false;}
 }
