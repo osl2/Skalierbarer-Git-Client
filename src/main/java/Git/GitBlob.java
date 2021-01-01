@@ -8,6 +8,15 @@ public class GitBlob {
     /* TODO: SOME WAY TO TRACK CHANGES */
 
     //for Gitignore.java
-    public boolean isIgnored(){return false;}
-    public boolean isVersioned(){return false;}
+    public boolean isIgnored() {
+        return false;
+    }
+
+    public boolean isVersioned() {
+        return false;
+    }
+
+    /* Is only instantiated inside the Git Package */
+    protected GitBlob() {
+    }
 }

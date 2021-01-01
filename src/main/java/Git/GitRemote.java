@@ -7,5 +7,9 @@ public class GitRemote {
     private GitBranch[] branches;
 
 
+    /* Is only instantiated inside the Git Package */
+    protected GitRemote() {
+    }
+
 
 }

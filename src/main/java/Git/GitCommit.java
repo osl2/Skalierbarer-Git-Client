@@ -9,6 +9,10 @@ public class GitCommit {
 
     /* See: https://git-scm.com/docs/git-stash#_discussion */
     private boolean isStash;
-
     private GitTree tree;
+
+    /* Is only instantiated inside the Git Package */
+    protected GitCommit() {
+
+    }
 }

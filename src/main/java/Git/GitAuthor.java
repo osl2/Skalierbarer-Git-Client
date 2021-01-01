@@ -24,4 +24,9 @@ public class GitAuthor {
         this.name = name;
         this.email = email;
     }
+
+    /* Is only instantiated inside the Git Package */
+    protected GitAuthor() {
+
+    }
 }
