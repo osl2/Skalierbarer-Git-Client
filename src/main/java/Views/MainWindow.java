@@ -1,4 +1,7 @@
 package Views;
 
-public class MainWindow implements IView{
+public class MainWindow implements IView {
+    public void view() {
+
+    }
 }

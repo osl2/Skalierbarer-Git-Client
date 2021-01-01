@@ -3,13 +3,14 @@ package DialogViews;
 import Git.GitBranch;
 import Git.GitCommit;
 
+import java.util.LinkedList;
+
 public class BranchDialogView implements IDialogView {
     private LinkedList<GitBranch> branches = new LinkedList<GitBranch>();
     private LinkedList<GitCommit> commits = new LinkedList<GitCommit>();
     private String nameOfNew;
 
     /**
-     *
      * @return Returns the list of the existing branches
      */
     public LinkedList<GitBranch> getBranches() {

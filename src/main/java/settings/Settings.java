@@ -27,7 +27,7 @@ public class Settings {
         this.user = user;
     }
 
-    public boolean isUseTooltips() {
+    public boolean useTooltips() {
         return useTooltips;
     }
 
