@@ -10,14 +10,6 @@ public class Commit implements ICommand, ICommandGUI{
         return false;
     }
 
-    /**
-     * Only reverts the last commit! In Git: commit --amend
-     * @return true if the last commit has been reverted
-     */
-    public boolean undo() {
-        return false;
-    }
-
     @Override
     public String getErrorMessage() {
         return null;

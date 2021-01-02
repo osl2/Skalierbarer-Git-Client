@@ -11,11 +11,6 @@ public class Status implements ICommand {
     }
 
     @Override
-    public boolean undo() {
-        return false;
-    }
-
-    @Override
     public String getErrorMessage() {
         return null;
     }

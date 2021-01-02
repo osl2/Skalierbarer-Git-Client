@@ -20,14 +20,6 @@ public class Branch implements ICommand, ICommandGUI {
         return false;
     }
 
-    /**
-     * In Git: git branch -d branchname
-     * @return true, if the branch has been deleted successfully
-     * TODO: do we want to support deleting branches?
-     */
-    public boolean undo() {
-        return false;
-    }
 
     @Override
     public String getErrorMessage() {

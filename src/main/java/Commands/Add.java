@@ -15,13 +15,6 @@ public class Add implements ICommand, ICommandGUI {
         return false;
     }
 
-    /**
-     * Reverts execute(), i.e. removes files from staging-area. In Git, this is done by executing git reset HEAD file.
-     * @return true, if the command has been undone successfully.
-     * @see #execute()
-     */
-    public boolean undo(){return false;}
-
 
     /**
      * This method returns the error message in case the command has not been executed successfully.

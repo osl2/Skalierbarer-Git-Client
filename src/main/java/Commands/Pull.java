@@ -68,14 +68,6 @@ public class Pull implements ICommand,ICommandGUI {
         return false;
     }
 
-    /**
-     * This method does nothing.
-     * @return true all the time?
-     */
-    public boolean undo() {
-        return true;
-    }
-
     @Override
     public String getErrorMessage() {
         return null;

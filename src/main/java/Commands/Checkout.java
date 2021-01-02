@@ -13,13 +13,6 @@ public class Checkout implements ICommand, ICommandGUI{
         return false;
     }
 
-    /**
-     * This method does nothing. Checkout can be easily reverted by performing checkout a second time.
-     * @return true all the time?
-     */
-    public boolean undo() {
-        return true;
-    }
 
     @Override
     public String getErrorMessage() {
