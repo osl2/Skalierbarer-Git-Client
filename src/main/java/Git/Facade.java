@@ -12,6 +12,7 @@ public class Facade {
      */
     public GitCommit[] getCommits() {
         /* Welche Klasse diese Funktionalitäten dann Erzeugt ist noch unklar, passiert aber im Git package. */
+        /* TODO: Andere Datenstruktur? Linked-Lists?   */
         return null;
     }
 

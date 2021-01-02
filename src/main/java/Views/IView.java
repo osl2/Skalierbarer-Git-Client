@@ -1,10 +1,11 @@
 package Views;
 
+import javax.swing.*;
+
 public interface IView {
 
     /**
-     * Opens the lower part of the main window.
-     * TODO: discuss: Besser GUI Fragment zurückgeben und die GUI das machen lassen?
+     * Returns the lower part of the main window.
      */
-    public void view();
+    JPanel getView();
 }

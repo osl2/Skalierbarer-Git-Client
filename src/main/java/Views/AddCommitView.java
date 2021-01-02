@@ -1,7 +1,9 @@
 package Views;
 
-public class AddCommitView implements IView {
-    public void view() {
+import javax.swing.*;
 
+public class AddCommitView implements IView {
+    public JPanel getView() {
+        return null;
     }
 }
