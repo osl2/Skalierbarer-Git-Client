@@ -1,10 +1,8 @@
 package Commands;
 
 
-import Git.GitBlob;
-
 public class Add implements ICommand, ICommandGUI {
-
+        // Todo: Change to custom methods as discussed on 2021-01-02
     /**
      * Performs git add
      * @return true, if the command has been executed successfully

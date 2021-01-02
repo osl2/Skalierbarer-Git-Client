@@ -15,48 +15,43 @@ public class Settings {
         return level;
     }
 
-    public void setLevel(ILevel level) {
-        this.level = level;
+    /**
+     * Private Constructor. This class is instantiated by {@see getInstance()}
+     * This class is a SINGLETON
+     */
+    private Settings() {
     }
 
     public GitAuthor getUser() {
         return user;
     }
 
-    public void setUser(GitAuthor user) {
+    public Settings setLevel(ILevel level) {
+        this.level = level;
+
+        return this;
+    }
+
+    public Settings setUser(GitAuthor user) {
         this.user = user;
+
+        return this;
     }
 
     public boolean useTooltips() {
         return useTooltips;
     }
 
-    public void setUseTooltips(boolean useTooltips) {
+    public Settings setUseTooltips(boolean useTooltips) {
         this.useTooltips = useTooltips;
+
+        return this;
     }
 
-    public boolean isShowTreeView() {
-        return showTreeView;
-    }
-
-    public void setShowTreeView(boolean showTreeView) {
+    public Settings setShowTreeView(boolean showTreeView) {
         this.showTreeView = showTreeView;
-    }
 
-    /**
-     * Private Constructor. This class is instantiated by {@see getInstance()}
-     * This class is a SINGLETON
-     */
-    private Settings() {
-        // Load values from file
-        // Instantiate correct ILevel
-    }
-
-    /**
-     * Commits the values of the Settings Object to the settings-file
-     */
-    public void writeToFile() {
-
+        return this;
     }
 
     public static Settings getInstance() {

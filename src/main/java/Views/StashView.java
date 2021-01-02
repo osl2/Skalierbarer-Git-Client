@@ -1,5 +1,7 @@
 package Views;
 
+import javax.swing.*;
+
 /**
  * Stash Frame for the main GUI window.
  *
@@ -9,7 +11,7 @@ public class StashView implements IView {
     /* StashArray */
     /*   */
 
-    public void view() {
-
+    public JPanel getView() {
+        return null;
     }
 }

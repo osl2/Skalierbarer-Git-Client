@@ -1,12 +1,18 @@
 package Commands;
 
-import Levels.ILevel;
-
+/**
+ * This interface represents an executable Command.
+ * Commands are to be prepared using their custom methods
+ * Changes are to be applied to the underlying repository
+ * exclusively via the execute() method.
+ */
 public interface ICommand {
 
     /**
      * Method to execute the command
-     * @return true, if the command has been executed successfully
+     *
+     * @return true if the command has been executed successfully \
+     * false otherwise
      */
     boolean execute();
 
