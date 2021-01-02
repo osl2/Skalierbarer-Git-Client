@@ -14,6 +14,19 @@ public class Checkout implements ICommand, ICommandGUI{
     }
 
     /**
+     * This method does nothing. Checkout can be easily reverted by performing checkout a second time.
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Method to get the Commandline input that would be necessarry to execute the command
      *
      * @param userInput Input wich the user has to make individually for executing the command
@@ -35,9 +48,14 @@ public class Checkout implements ICommand, ICommandGUI{
     /**
      * Method to get a description of the Command to describe for the user, what the command does
      *
-     * @return description as a Sting
+     * @return description as a String
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

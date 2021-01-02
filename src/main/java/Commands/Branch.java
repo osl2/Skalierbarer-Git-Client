@@ -21,6 +21,20 @@ public class Branch implements ICommand, ICommandGUI {
     }
 
     /**
+     * In Git: git branch -d branchname
+     * @return true, if the branch has been deleted successfully
+     * TODO: do we want to support deleting branches?
+     */
+    public boolean undo() {
+        return false;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Creates with the input the command of the commandline
      * @param userInput Input off the user
      * @return Returns command for Commandline
@@ -42,6 +56,12 @@ public class Branch implements ICommand, ICommandGUI {
     public String getDescription() {
         return "Erstellt einen neuen Änderungszweig an entsprechender Stelle";
     }
+
+    @Override
+    public void onButtonClicked() {
+
+    }
+
     /**
      *
      * @return Returns true if the command is represented as Button

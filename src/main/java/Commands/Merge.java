@@ -29,6 +29,19 @@ public class Merge implements ICommand, ICommandGUI {
     }
 
     /**
+     * This method does nothing, because a merge can be undone by undoing the respective commit
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Method to get the Commandline input that would be necessarry to execute the command
      *
      * @param userInput The input that the user needs to make additionally to the standard output of git commit
@@ -54,5 +67,10 @@ public class Merge implements ICommand, ICommandGUI {
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

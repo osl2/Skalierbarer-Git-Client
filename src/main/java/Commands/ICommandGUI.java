@@ -24,7 +24,7 @@ public interface ICommandGUI {
     /**
      * Method to get a description of the Command to describe for the user, what the command does
      *
-     * @return description as a Sting
+     * @return description as a String
      */
     String getDescription();
 

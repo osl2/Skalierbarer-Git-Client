@@ -11,6 +11,19 @@ public class Commit implements ICommand, ICommandGUI{
     }
 
     /**
+     * Only reverts the last commit! In Git: commit --amend
+     * @return true if the last commit has been reverted
+     */
+    public boolean undo() {
+        return false;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Method to get the Commandline input that would be necessarry to execute the command
      *
      * @param userInput Input that the user needs to make additionally to the standard output of git commit
@@ -32,9 +45,14 @@ public class Commit implements ICommand, ICommandGUI{
     /**
      * Method to get a description of the Command to describe for the user, what the command does
      *
-     * @return description as a Sting
+     * @return description as a String
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

@@ -12,6 +12,19 @@ public class Diff implements ICommand{
     }
 
     /**
+     * This method does nothing.
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Sets the commit ID and the file name to compare with the previous one.
      * @param commitID the ID of the selected commit.
      * @param fileName the name of the file to compare to his previous version.

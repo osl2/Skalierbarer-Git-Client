@@ -13,6 +13,16 @@ public class Rebase implements ICommand, ICommandGUI{
         return false;
     }
 
+    @Override
+    public boolean undo() {
+        return false;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
     /**
      * Method to get the Commandline input that would be necessarry to execute the command
      *
@@ -39,5 +49,10 @@ public class Rebase implements ICommand, ICommandGUI{
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

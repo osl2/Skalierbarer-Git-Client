@@ -18,7 +18,7 @@ public class Log implements ICommand, ICommandGUI{
      * @param branchName name of the respective branch.
      * @return a list of commit massages.
      */
-    public List<String> getCommitMassages(String branchName) {return null;}
+    public List<String> getCommitMessages(String branchName) {return null;}
 
     /**
      * Returns a list of all files contained in the given commit.
@@ -35,6 +35,19 @@ public class Log implements ICommand, ICommandGUI{
     public boolean execute() {
         //not implemented yet
         return false;
+    }
+
+    /**
+     * This method does nothing.
+     * @return true all the time
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
     }
 
     /**
@@ -63,5 +76,10 @@ public class Log implements ICommand, ICommandGUI{
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

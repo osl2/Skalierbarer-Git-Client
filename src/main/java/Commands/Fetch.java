@@ -14,6 +14,19 @@ public class Fetch implements ICommand, ICommandGUI{
     }
 
     /**
+     * This method does nothing
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    /**
      * Returns a list containing all remote names.
      * @return a list with with remote names.
      */
@@ -52,5 +65,10 @@ public class Fetch implements ICommand, ICommandGUI{
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

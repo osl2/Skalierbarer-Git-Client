@@ -9,4 +9,42 @@ public class Clone implements ICommand, ICommandGUI{
      * @param gitURL is a URL to a remote git repository.
      */
     public void setGitURL(String gitURL) {}
+
+    @Override
+    public boolean execute() {
+        return false;
+    }
+
+    /**
+     * This method does nothing.
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    @Override
+    public String getCommandLine(String userInput) {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
+    }
 }

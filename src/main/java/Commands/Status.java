@@ -9,4 +9,14 @@ public class Status implements ICommand {
     public boolean execute() {
         return false;
     }
+
+    @Override
+    public boolean undo() {
+        return false;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
 }

@@ -16,6 +16,16 @@ public class Revert implements ICommand, ICommandGUI {
         return false;
     }
 
+    @Override
+    public boolean undo() {
+        return false;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
     /**
      * Creates with the input the command of the commandline
      * @param userInput Input off the user
@@ -37,6 +47,11 @@ public class Revert implements ICommand, ICommandGUI {
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 
     /**

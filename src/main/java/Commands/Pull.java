@@ -9,16 +9,6 @@ public class Pull implements ICommand,ICommandGUI {
     private GitRemote remote;
     private GitBranch remoteBranch;
 
-
-
-
-
-    // -------------------------------------------------------------------------------------------------------------
-    // The following methods handle the outer representation of the command -
-    // perhaps, should be moved to a dedicated class (e.g. AddRepresentation.java)
-    // -------------------------------------------------------------------------------------------------------------
-
-
     /**
      *
      * @param remote from which files are to be fetched
@@ -63,6 +53,11 @@ public class Pull implements ICommand,ICommandGUI {
         return "Lädt Änderungen aus einem Online-Repo und merged sie";
     }
 
+    @Override
+    public void onButtonClicked() {
+
+    }
+
     /**
      * Method to execute the command
      *
@@ -71,5 +66,18 @@ public class Pull implements ICommand,ICommandGUI {
     public boolean execute() {
         //not implemented yet
         return false;
+    }
+
+    /**
+     * This method does nothing.
+     * @return true all the time?
+     */
+    public boolean undo() {
+        return true;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
     }
 }
