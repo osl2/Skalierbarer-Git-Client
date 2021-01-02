@@ -1,6 +1,10 @@
 package Commands;
 
 
+import Git.GitBlob;
+
+import java.util.List;
+
 public class Add implements ICommand, ICommandGUI {
         // Todo: Change to custom methods as discussed on 2021-01-02
     /**
@@ -11,6 +15,11 @@ public class Add implements ICommand, ICommandGUI {
         return false;
     }
 
+    /**
+     * Reverts execute(), i.e. removes files from staging-area. In Git, this is done by executing git reset HEAD file.
+     * @return true, if the command has been undone successfully.
+     * @see #execute()
+     */
     public boolean undo(){return false;}
 
 
@@ -22,10 +31,13 @@ public class Add implements ICommand, ICommandGUI {
         return null;
     }
 
-    // -------------------------------------------------------------------------------------------------------------
-    // The following methods handle the outer representation of the command -
-    // perhaps, should be moved to a dedicated class (e.g. AddRepresentation.java)
-    // -------------------------------------------------------------------------------------------------------------
+    /**
+     * This method passes a list of blobs (changes in files) to add them to the staging area.
+     * The blobs need to be passed before execute() is invoked. Otherwise, execution will fail.
+     * @param blobs A List of changed files. The list must contain at least one item.
+     * TODO: Discuss whether a list of Strings (file paths) would be more suitable
+     */
+    public void setBlobs(List<GitBlob> blobs){};
 
     /**
      *
@@ -59,6 +71,11 @@ public class Add implements ICommand, ICommandGUI {
      */
     public String getDescription() {
         return null;
+    }
+
+    @Override
+    public void onButtonClicked() {
+        
     }
 
 }
