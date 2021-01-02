@@ -66,4 +66,11 @@ public class Branch implements ICommand, ICommandGUI {
         this.commitPointOfBranching = commitPointOfBranching;
     }
 
+    /**
+     * Sets the var branchName on the new bramchName
+     * @param branchName New name of the branch
+     */
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 }
