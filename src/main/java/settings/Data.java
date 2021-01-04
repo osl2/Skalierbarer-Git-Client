@@ -15,4 +15,10 @@ public class Data {
         return null;
     }
 
+    /**
+     * Saves a new path to a repository.
+     * @param path path to a new created git repository;
+     */
+    public void saveNewRepositoryPath(String path) {}
+
 }

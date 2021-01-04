@@ -10,6 +10,7 @@ public class Settings {
     private GitAuthor user;
     private boolean useTooltips = true;
     private boolean showTreeView = false;
+    private String activeRepositoryPath;
 
     public ILevel getLevel() {
         return level;
@@ -24,6 +25,10 @@ public class Settings {
 
     public GitAuthor getUser() {
         return user;
+    }
+
+    public String getActiveRepositoryPath() {
+        return activeRepositoryPath;
     }
 
     public Settings setLevel(ILevel level) {
@@ -50,6 +55,12 @@ public class Settings {
 
     public Settings setShowTreeView(boolean showTreeView) {
         this.showTreeView = showTreeView;
+
+        return this;
+    }
+
+    public Settings setActiveRepositoryPath(String activeRepositoryPath) {
+        this.activeRepositoryPath = activeRepositoryPath;
 
         return this;
     }

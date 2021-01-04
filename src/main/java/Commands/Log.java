@@ -14,18 +14,11 @@ public class Log implements ICommand, ICommandGUI{
     public List<String> getCommitIDs(String branchName) {return null;}
 
     /**
-     * Returns a list of commit massages beginning with the latest commit massage of the given branch.
+     * Returns a list of commit messages beginning with the latest commit massage of the given branch.
      * @param branchName name of the respective branch.
      * @return a list of commit massages.
      */
     public List<String> getCommitMessages(String branchName) {return null;}
-
-    /**
-     * Returns a list of all files contained in the given commit.
-     * @param commitID the ID of the commit.
-     * @return a list of all files contained in the given commit
-     */
-    public List<String> getFileNames(String commitID) {return null;}
 
     /**
      * Method to execute the command

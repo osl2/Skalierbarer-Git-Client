@@ -1,9 +1,11 @@
 package Commands;
 
+import java.util.List;
+
 public class Diff implements ICommand{
 
     /**
-     * Executes the "git diff" command. Can only be used after setDiffID was called once.
+     * Executes the "git diff" command. Can only be used after @setDiffID was called once.
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
@@ -28,4 +30,11 @@ public class Diff implements ICommand{
      * @param output constant that provides information on the output format.
      */
     public void showDiff(int output) {}
+
+    /**
+     * Returns a list of all files contained in the given commit.
+     * @param commitID the ID of the commit.
+     * @return a list of all files contained in the given commit
+     */
+    public List<String> getFileNames(String commitID) {return null;}
 }
