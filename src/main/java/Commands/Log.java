@@ -16,7 +16,7 @@ public class Log implements ICommand, ICommandGUI{
     /**
      * Returns a list of commit messages beginning with the latest commit massage of the given branch.
      * @param branchName name of the respective branch.
-     * @return a list of commit massages.
+     * @return a list of commit messages.
      */
     public List<String> getCommitMessages(String branchName) {return null;}
 
