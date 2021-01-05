@@ -17,10 +17,11 @@ public class AddGitignore implements ICommand {
     }
 
     /**
-     * This method adds the files that should be ignored to the .gitignore file.
-     * @param blobs A list of GitBlobs whose paths should be added to the .gitignore
-     * TODO: reconsider using a list of Strings instead, since the .gitignore may also contain RegExes
+     * This method specifies the names or file paths of files that should be added to the .gitignore. When execute()
+     * is invoked, all patterns in the list are added to the .gitignore file.
+     * @param regexes A list of regular expressions whose paths should be added to the .gitignore
+     * TODO: consider using a list of blobs (concrete files) instead?
      */
-    public void setBlobs(List<GitBlob> blobs){
+    public void setRegex(List<String> regexes){
     }
 }
