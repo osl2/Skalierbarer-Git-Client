@@ -1,7 +1,12 @@
-package Commands;
+package Commands.Remote;
 
+import Commands.ICommand;
+import Commands.ICommandGUI;
 import Git.GitRemote;
 
+/**
+ * TODO: separate command in remote add, remove, setURL, setName in order to use execute() and command pattern properly.
+ */
 public class Remote implements ICommand, ICommandGUI {
 
     /**
