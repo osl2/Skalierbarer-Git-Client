@@ -1,6 +1,15 @@
 package Commands;
 
 public class Commit implements ICommand, ICommandGUI{
+
+    /**
+     * This method sets the commit message of the next commit.
+     * @param commitMessage the message of the next commit.
+     */
+    public void setCommitMessage(String commitMessage){
+
+    }
+
     /**
      * Method to execute the command
      *
