@@ -5,9 +5,9 @@ import Commands.ICommandGUI;
 import Git.GitRemote;
 
 /**
- * This command sets the URL parameter of the remote repository to a new URL
+ * This command changes the name of the remote repository.
  */
-public class RemoteSetURL extends Remote implements ICommand, ICommandGUI {
+public class RemoteSetName extends Remote implements ICommand, ICommandGUI {
     @Override
     public void setRemote(GitRemote remote) {
 

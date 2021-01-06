@@ -2,11 +2,19 @@ package Commands.Remote;
 
 import Commands.ICommand;
 import Commands.ICommandGUI;
+import Git.GitRemote;
 
-/**
- * This command changes the name of the remote repository.
- */
-public class RemoteRename implements ICommand, ICommandGUI {
+public class RemoteGetName extends Remote implements ICommand, ICommandGUI {
+    @Override
+    public void setRemote(GitRemote remote) {
+
+    }
+
+    @Override
+    public GitRemote getRemote() {
+        return null;
+    }
+
     @Override
     public boolean execute() {
         return false;

@@ -4,78 +4,40 @@ import Commands.ICommand;
 import Commands.ICommandGUI;
 import Git.GitRemote;
 
-/**
- * TODO: separate command in remote add, remove, setURL, setName in order to use execute() and command pattern properly.
- */
-public class Remote implements ICommand, ICommandGUI {
+public abstract class Remote implements ICommand, ICommandGUI {
+    /**
+     * @param remote The remote repository on which the command should be executed (getName, getURL, setName, setURL, remove)
+     */
+    public abstract void setRemote(GitRemote remote);
+
+    /**
+     * @return The current remote repository
+     */
+    public abstract GitRemote getRemote();
 
     /**
      * Method to create new Remote
      *
      * @return true, if the command has been executed successfully
      */
-    public boolean execute() {
-        return false;
-    }
+    public abstract boolean execute();
 
     /**
      * Creates with the input the command of the commandline
+     *
      * @param userInput Input off the user
      * @return Returns command for Commandline
      */
-    public String getCommandLine(String userInput) {
-        return "git remote";
-    }
+    public abstract String getCommandLine(String userInput);
 
     /**
-     *
      * @return Returns the name of the command
      */
-    public String getName() {
-        return "remote";
-    }
+    public abstract String getName();
 
     /**
-     *
      * @return Returns a Description of what the command is doing
      */
-    public String getDescription() {
-        return "Ermöglicht es Online-Repos zu speichern und deren URL und Namen zu ändern";
-    }
+    public abstract String getDescription();
 
-    /**
-     * Changes the name of the remote into the name that is given as parameter
-     * @param name New name
-     * @param remote Remote whose name is to be changed
-     */
-    public void setRemoteName(String name, GitRemote remote){
-
-    }
-
-    /**
-     *
-     * @param remote Remote whose name is to be returned
-     * @return Returns name of the remote
-     */
-    public String getRemoteName(GitRemote remote){
-        return "Name muss aus remote gewonnen werden";
-    }
-
-    /**
-     * Changes the URL of the remote into the name that is given as parameter
-     * @param url New URL
-     * @param remote remote whose URL is to be changed
-     */
-    public void setRemoteURL(String url, GitRemote remote){
-
-    }
-
-    /**
-     *
-     * @param remote Remote whose Url is to be returned
-     * @return Returns Url of the remote
-     */
-    public String getRemoteUrl(GitRemote remote){
-        return "Url aus bestimmten remote";
-    }
 }

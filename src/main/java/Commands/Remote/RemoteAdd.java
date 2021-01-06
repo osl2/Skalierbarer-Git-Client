@@ -2,6 +2,7 @@ package Commands.Remote;
 
 import Commands.ICommand;
 import Commands.ICommandGUI;
+import Git.GitRemote;
 
 import java.net.URL;
 
@@ -10,10 +11,20 @@ import java.net.URL;
  * Both parameters can be configured later.
  * @see Commands.Remote
  */
-public class RemoteAdd implements ICommand, ICommandGUI {
+public class RemoteAdd extends Remote implements ICommand, ICommandGUI {
     public void setName(String remoteName){}
 
     public void setURL(URL remoteURL){}
+
+    @Override
+    public void setRemote(GitRemote remote) {
+
+    }
+
+    @Override
+    public GitRemote getRemote() {
+        return null;
+    }
 
     @Override
     public boolean execute() {
