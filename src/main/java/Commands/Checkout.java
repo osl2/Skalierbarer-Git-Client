@@ -1,5 +1,8 @@
 package Commands;
 
+import Git.GitBranch;
+import Git.GitCommit;
+import Git.GitTree;
 import Levels.ILevel;
 
 public class Checkout implements ICommand, ICommandGUI{
@@ -51,4 +54,20 @@ public class Checkout implements ICommand, ICommandGUI{
     public void onButtonClicked() {
 
     }
+
+    public GitTree getTree() {
+        //not implemented yet
+        return null;
+    }
+
+    public boolean checkout (GitCommit commit){
+        //not implemented yet
+        return null;
+    }
+
+    public boolean checkout (GitBranch){
+        return null;
+        //not implemented yet
+    }
+
 }
