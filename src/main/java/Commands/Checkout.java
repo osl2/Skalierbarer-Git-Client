@@ -3,7 +3,6 @@ package Commands;
 import Git.GitBranch;
 import Git.GitCommit;
 import Git.GitTree;
-import Levels.ILevel;
 
 public class Checkout implements ICommand, ICommandGUI{
 
@@ -12,6 +11,7 @@ public class Checkout implements ICommand, ICommandGUI{
      *
      * @return true, if the command has been executed successfully
      */
+    @Override
     public boolean execute() {
         return false;
     }
@@ -28,6 +28,7 @@ public class Checkout implements ICommand, ICommandGUI{
      * @param userInput Input wich the user has to make individually for executing the command
      * @return Returns a String representation of the corresponding git command to display on the command line
      */
+    @Override
     public String getCommandLine(String userInput) {
         return null;
     }
@@ -37,6 +38,7 @@ public class Checkout implements ICommand, ICommandGUI{
      *
      * @return The name of the command
      */
+    @Override
     public String getName() {
         return null;
     }
@@ -46,6 +48,7 @@ public class Checkout implements ICommand, ICommandGUI{
      *
      * @return description as a String
      */
+    @Override
     public String getDescription() {
         return null;
     }
@@ -61,13 +64,11 @@ public class Checkout implements ICommand, ICommandGUI{
     }
 
     public boolean checkout (GitCommit commit){
-        //not implemented yet
-        return null;
+        throw new AssertionError("not implemented");
     }
 
-    public boolean checkout (GitBranch){
-        return null;
-        //not implemented yet
+    public boolean checkout (GitBranch branch){
+        throw new AssertionError("not implemented");
     }
 
 }
