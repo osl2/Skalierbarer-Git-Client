@@ -12,9 +12,14 @@ import java.net.URL;
  * @see Commands.Remote
  */
 public class RemoteAdd extends Remote implements ICommand, ICommandGUI {
-    public void setName(String remoteName){}
+    private String remoteName;
+    private URL remoteURL;
+    private GitRemote remote;
 
-    public void setURL(URL remoteURL){}
+
+    public void setRemoteName(String remoteName){}
+
+    public void setRemoteURL(URL remoteURL){}
 
     @Override
     public void setRemote(GitRemote remote) {

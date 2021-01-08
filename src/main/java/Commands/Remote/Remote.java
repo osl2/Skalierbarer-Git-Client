@@ -15,6 +15,10 @@ public abstract class Remote implements ICommand, ICommandGUI {
      */
     public abstract GitRemote getRemote();
 
+
+
+
+
     /**
      * Method to create new Remote
      *
@@ -39,5 +43,6 @@ public abstract class Remote implements ICommand, ICommandGUI {
      * @return Returns a Description of what the command is doing
      */
     public abstract String getDescription();
+
 
 }

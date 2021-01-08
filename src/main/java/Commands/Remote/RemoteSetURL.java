@@ -4,10 +4,19 @@ import Commands.ICommand;
 import Commands.ICommandGUI;
 import Git.GitRemote;
 
+import java.net.URL;
+
 /**
  * This command sets the URL parameter of the remote repository to a new URL
  */
 public class RemoteSetURL extends Remote implements ICommand, ICommandGUI {
+    private URL remoteURL;
+    private GitRemote remote;
+
+    public void setRemoteURL(URL remoteURL) {
+        this.remoteURL = remoteURL;
+    }
+
     @Override
     public void setRemote(GitRemote remote) {
 
