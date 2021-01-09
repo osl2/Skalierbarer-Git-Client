@@ -1,6 +1,8 @@
 package settings;
 
 
+import Levels.Level;
+
 import java.util.List;
 
 /**
@@ -16,9 +18,18 @@ public class Data {
     }
 
     /**
-     * Saves a new path to a repository.
+     * Stores a new path to a repository.
+     *
      * @param path path to a new created git repository;
      */
-    public void saveNewRepositoryPath(String path) {}
+    public void storeNewRepositoryPath(String path) {
+    }
+
+    /**
+     * @return immutable ordered List of all possible levels in the current configuration
+     */
+    public List<Level> getLevels() {
+        return null;
+    }
 
 }

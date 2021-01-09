@@ -15,7 +15,7 @@ public class Persistency {
         return false;
     }
 
-    public boolean restoreSettings() {
+    private boolean restoreSettings() {
         // Settings.set ...
 
         return true;

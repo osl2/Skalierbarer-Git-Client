@@ -1,19 +1,23 @@
 package settings;
 
 import Git.GitAuthor;
-import Levels.ILevel;
+import Levels.Level;
 
 public class Settings {
 
     private static Settings INSTANCE = null;
-    private ILevel level;
+    private Level level;
     private GitAuthor user;
     private boolean useTooltips = true;
     private boolean showTreeView = false;
     private String activeRepositoryPath;
 
-    public ILevel getLevel() {
+    public Level getLevel() {
         return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     /**
@@ -31,38 +35,29 @@ public class Settings {
         return activeRepositoryPath;
     }
 
-    public Settings setLevel(ILevel level) {
-        this.level = level;
-
-        return this;
+    public boolean showTreeView() {
+        return showTreeView;
     }
 
-    public Settings setUser(GitAuthor user) {
+    public void setUser(GitAuthor user) {
         this.user = user;
-
-        return this;
     }
 
     public boolean useTooltips() {
         return useTooltips;
     }
 
-    public Settings setUseTooltips(boolean useTooltips) {
+    public void setUseTooltips(boolean useTooltips) {
         this.useTooltips = useTooltips;
-
-        return this;
     }
 
-    public Settings setShowTreeView(boolean showTreeView) {
+    public void setShowTreeView(boolean showTreeView) {
         this.showTreeView = showTreeView;
-
-        return this;
     }
 
-    public Settings setActiveRepositoryPath(String activeRepositoryPath) {
+    public void setActiveRepositoryPath(String activeRepositoryPath) {
         this.activeRepositoryPath = activeRepositoryPath;
 
-        return this;
     }
 
     public static Settings getInstance() {
