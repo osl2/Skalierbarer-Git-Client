@@ -15,4 +15,7 @@ public class GitCommit {
     protected GitCommit() {
 
     }
+
+    /* TODO: Diff */
+    /* TODO: DiffToWorkDir */
 }
