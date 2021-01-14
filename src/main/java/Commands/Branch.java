@@ -7,7 +7,7 @@ public class Branch implements ICommand, ICommandGUI {
     private GitBranch pointOfBranching;
     private GitCommit commitPointOfBranching;
     private String branchName;
-    private boolean isButton = true;
+
 
 
 
