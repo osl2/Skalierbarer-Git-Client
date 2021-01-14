@@ -1,8 +1,6 @@
 package Commands;
 
-import Git.GitBlob;
-
-import java.util.List;
+import Git.GitFile;
 
 /**
  * TODO: Ignorieren intern regeln?
@@ -29,6 +27,6 @@ public class GitignoreAdd implements ICommand {
      * @param blob A GitBlob object whose path should be added to the .gitignore
      * TODO: consider using a list of blobs (concrete files) instead?
      */
-    public void setBlob(GitBlob blob){
+    public void setBlob(GitFile blob){
     }
 }

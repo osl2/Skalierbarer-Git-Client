@@ -1,8 +1,5 @@
 package Git;
 
-import Commands.ICommand;
-import Git.GitBlob;
-
 import java.util.List;
 
 /**
@@ -13,7 +10,7 @@ import java.util.List;
 public class GitStatus {
     private static GitStatus gitStatus = null;
 
-    /**
+    /*
      * The constructor is private to ensure there is only one GitStatus object at a time
      */
     private GitStatus(){
@@ -33,10 +30,10 @@ public class GitStatus {
      * Jgit: getAdded(); e.g. what you get if you call git add ... on a newly created file.
      * This method returns a list of files that have been newly added to the index.
      * @return a list of files added to the index, not in HEAD
-     * @see Git.GitBlob
+     * @see GitFile
      * TODO: JGit returns a Set of Strings instead. Modify?
      */
-    public List<GitBlob> getAddedFiles(){
+    public List<GitFile> getAddedFiles(){
         return null;
     }
 
@@ -46,7 +43,7 @@ public class GitStatus {
      * a modified version in the working directory
      * @return a list of files that have changed from HEAD to index
      */
-    public List<GitBlob> getChangedFiles(){
+    public List<GitFile> getChangedFiles(){
         return null;
     }
 
@@ -55,7 +52,7 @@ public class GitStatus {
      * This method returns a list of files in the index that have not been added to the staging-area yet
      * @return a list of files modified on disk relative to the index
      */
-    public List<GitBlob> getModifiedFiles(){
+    public List<GitFile> getModifiedFiles(){
         return null;
     }
 
@@ -63,7 +60,7 @@ public class GitStatus {
      * Jgit: getUntracked(); e.g. what you get if you create a new file without adding it to the index
      * @return list of files that are not ignored, and not in the index
      */
-    public List<GitBlob> getUntrackedFiles(){
+    public List<GitFile> getUntrackedFiles(){
         return null;
     }
 
@@ -73,6 +70,7 @@ public class GitStatus {
      * @see #getUntrackedFiles()
      */
     public List<String> getUntrackedFolders(){
+        //TODO: raus?
         return null;
     }
 
@@ -80,7 +78,8 @@ public class GitStatus {
      * Jgit: getConflicting(); e.g. what you get if you modify a file that was modified by someone else in the meantime
      * @return a list of files that are in conflict
      */
-    public List<GitBlob> getConflictingFiles(){
+    public List<GitFile> getConflictingFiles(){
+        //TODO: raus?
         return null;
     }
 
@@ -90,7 +89,7 @@ public class GitStatus {
      * TODO: data type?
      */
     public void getConflictingStageState(){
-
+        //TODO: raus?
     }
 
     /**
@@ -105,7 +104,8 @@ public class GitStatus {
      * Jgit: getUncommitedChanges(); e.g. all files changed in the index or working tree
      * @return set of files and folders that are known to the repo and changed either in the index or in the working tree
      */
-    public List<GitBlob> getUncommittedChanges(){
+    public List<GitFile> getUncommittedChanges(){
+        //TODO: kann wahrscheinlich raus
         return null;
     }
 

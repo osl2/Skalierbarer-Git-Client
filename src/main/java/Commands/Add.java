@@ -1,7 +1,7 @@
 package Commands;
 
 
-import Git.GitBlob;
+import Git.GitFile;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class Add implements ICommand, ICommandGUI {
      * @param blobs A List of changed files. The list must contain at least one item.
      * TODO: Discuss whether a list of Strings (file paths) would be more suitable
      */
-    public void setBlobs(List<GitBlob> blobs){};
+    public void setBlobs(List<GitFile> blobs){};
 
     /**
      *

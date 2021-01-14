@@ -1,9 +1,6 @@
 package Commands;
 
-import Commands.ICommand;
-import Git.GitBlob;
-
-import java.util.List;
+import Git.GitFile;
 
 public class GitignoreRemove implements ICommand {
     /**
@@ -24,6 +21,6 @@ public class GitignoreRemove implements ICommand {
      * if the given blob has been added to the .gitignore before. Otherwise, execute() will do nothing/ return false?
      * @param blob The GitBlob object that should be removed from .gitignore
      */
-    public void setBLob(GitBlob blob){
+    public void setBLob(GitFile blob){
     }
 }
