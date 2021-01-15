@@ -42,7 +42,7 @@ public class Log implements ICommand, ICommandGUI {
   }
 
   /**
-   * Method to execute the command
+   * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
    */
@@ -57,17 +57,19 @@ public class Log implements ICommand, ICommandGUI {
   }
 
   /**
-   * Method to get the Commandline input that would be necessary to execute the command
+   * Method to get the Commandline input that would be necessary to execute the command.
    *
-   * @param userInput The input that the user needs to make additionally to the standard output of git commit
-   * @return Returns a String representation of the corresponding git command to display on the command line
+   * @param userInput The input that the user needs to make additionally to
+   *                  the standard output of git commit
+   * @return Returns a String representation of the corresponding git command to
+   *     display on the command line
    */
   public String getCommandLine(String userInput) {
     return null;
   }
 
   /**
-   * Method to get the name of the command, that could be displayed in the GUI
+   * Method to get the name of the command, that could be displayed in the GUI.
    *
    * @return The name of the command
    */
@@ -76,7 +78,7 @@ public class Log implements ICommand, ICommandGUI {
   }
 
   /**
-   * Method to get a description of the Command to describe for the user, what the command does
+   * Method to get a description of the Command to describe for the user, what the command does.
    *
    * @return description as a String
    */

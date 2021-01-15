@@ -1,6 +1,6 @@
 package views;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 public interface IView {
 

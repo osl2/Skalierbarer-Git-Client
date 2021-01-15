@@ -2,11 +2,10 @@ package commands;
 
 public class Status implements ICommand {
   /**
-   * This method updates the current GitStatus object and calls getters on it
+   * This method updates the current GitStatus object and calls getters on it.
    * TODO: combine getter invocation like template method, implement observer for GitStatus
    *
-   * @return
-   * @see git.GitStatus
+   * @return true if it is done successfully
    */
   public boolean execute() {
     return false;

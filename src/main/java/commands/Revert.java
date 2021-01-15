@@ -8,7 +8,7 @@ public class Revert implements ICommand, ICommandGUI {
   private GitCommit chosenCommit;
 
   /**
-   * Method to revert back to a chosen commit
+   * Method to revert back to a chosen commit.
    *
    * @return true, if the command has been executed successfully
    */
@@ -22,7 +22,7 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
-   * Creates with the input the command of the commandline
+   * Creates with the input the command of the commandline.
    *
    * @param userInput Input off the user
    * @return Returns command for Commandline
@@ -32,6 +32,8 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get the name of the revert command.
+   *
    * @return Returns the name of the command
    */
   public String getName() {
@@ -39,6 +41,8 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get a description of the revert command.
+   *
    * @return Returns a Description of what the command is doing
    */
   public String getDescription() {
@@ -51,6 +55,8 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get the currently chosen branch.
+   *
    * @return Returns the current chosen branch
    */
   public GitBranch getChosenBranch() {
@@ -58,7 +64,7 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
-   * Sets the variable chosen branch to the new branch
+   * Sets the variable chosen branch to the new branch.
    *
    * @param chosenBranch new value of the variable chosenBranch
    */
@@ -67,6 +73,8 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get the currently chosen commit.
+   *
    * @return Returns the current chosen commit
    */
   public GitCommit getChosenCommit() {
@@ -74,7 +82,7 @@ public class Revert implements ICommand, ICommandGUI {
   }
 
   /**
-   * Sets the variable chosenCommit to the new commit
+   * Sets the variable chosenCommit to the new commit.
    *
    * @param chosenCommit new value of the variable chosenCommit
    */

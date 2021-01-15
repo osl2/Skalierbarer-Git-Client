@@ -10,7 +10,7 @@ public class Branch implements ICommand, ICommandGUI {
 
 
   /**
-   * Method to create the new branch
+   * Method to create the new branch.
    *
    * @return true, if the command has been executed successfully
    */
@@ -25,7 +25,7 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
   /**
-   * Creates with the input the command of the commandline
+   * Creates with the input the command of the commandline.
    *
    * @param userInput Input off the user
    * @return Returns command for Commandline
@@ -35,6 +35,8 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get the name of the Branch command.
+   *
    * @return Returns the name of the command
    */
   public String getName() {
@@ -42,25 +44,33 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get a Description of the "Branch" command.
+   *
    * @return Returns a Description of what the command is doing
    */
   public String getDescription() {
     return "Erstellt einen neuen Änderungszweig an entsprechender Stelle";
   }
 
+  /**
+   * OnClick handler for the GUI button representation.
+   */
   @Override
   public void onButtonClicked() {
-
   }
 
   /**
+   * Method to get if it is a button.
+   *
    * @return Returns true if the command is represented as Button
    */
   public boolean isButton() {
-    return isButton;
+    return isButton();
   }
 
   /**
+   * Method to get the actual commit on witch it is branched.
+   *
    * @return Returns the actual Commit on which is branched
    */
   public GitCommit getActualBranch() {
@@ -68,7 +78,7 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
   /**
-   * Sets the Point of branching to the specified commit
+   * Sets the Point of branching to the specified commit.
    *
    * @param commitPointOfBranching Commit at which a new branch is to be created
    */
@@ -77,7 +87,7 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
   /**
-   * Sets the var branchName on the new bramchName
+   * Sets the var branchName on the new bramchName.
    *
    * @param branchName New name of the branch
    */

@@ -3,23 +3,24 @@ package git;
 import java.util.List;
 
 /**
- * Provides a central point to obtain git objects
+ * Provides a central point to obtain git objects.
  */
 public class GitFacade {
 
   /**
-   * Get all commits of the current Repository
+   * Get all commits of the current Repository.
    *
    * @return Array of all commits without stashes
    */
   public GitCommit[] getCommits() {
-    /* Welche Klasse diese Funktionalitäten dann Erzeugt ist noch unklar, passiert aber im git package. */
+    /* Welche Klasse diese Funktionalitäten dann Erzeugt ist noch unklar,
+        passiert aber im git package. */
     /* TODO: Andere Datenstruktur? Linked-Lists?   */
     return null;
   }
 
   /**
-   * Get all stashes of the current Repository
+   * Get all stashes of the current Repository.
    *
    * @return Array of all Commits which are Stashes
    */
@@ -48,6 +49,8 @@ public class GitFacade {
   }
 
   /**
+   * Method to get a list of the branches, witch are available in the current repository.
+   *
    * @return A list of branches in the repository
    */
   public List<GitBranch> getBranches() {

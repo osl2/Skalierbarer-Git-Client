@@ -2,14 +2,14 @@ package settings;
 
 public class Persistency {
   /**
-   * Saves the current state to Datastore
+   * Saves the current state to Datastore.
    */
   public boolean save() {
     return false;
   }
 
   /**
-   * Load state from Datastore
+   * Load state from Datastore.
    */
   public boolean load() {
     return false;

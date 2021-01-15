@@ -18,8 +18,9 @@ public class GitignoreRemove implements ICommand {
   }
 
   /**
-   * This method specifies the blob that should be removed from the .gitignore file. This should only be possible
-   * if the given blob has been added to the .gitignore before. Otherwise, execute() will do nothing/ return false?
+   * This method specifies the blob that should be removed from the .gitignore file.
+   * This should only be possible if the given blob has been added to the .gitignore before.
+   * Otherwise, execute() will do nothing/ return false?
    *
    * @param blob The GitBlob object that should be removed from .gitignore
    */

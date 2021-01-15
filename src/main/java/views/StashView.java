@@ -1,6 +1,6 @@
 package views;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * Stash Frame for the main GUI window.

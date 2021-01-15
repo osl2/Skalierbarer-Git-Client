@@ -1,8 +1,7 @@
-package dialog_views;
+package dialogviews;
 
 import git.GitBranch;
 import git.GitCommit;
-
 import java.util.LinkedList;
 
 public class BranchDialogView implements IDialogView {
@@ -11,6 +10,8 @@ public class BranchDialogView implements IDialogView {
   private String nameOfNew;
 
   /**
+   * Method to get a list of the existing branches.
+   *
    * @return Returns the list of the existing branches
    */
   public LinkedList<GitBranch> getBranches() {
@@ -18,6 +19,8 @@ public class BranchDialogView implements IDialogView {
   }
 
   /**
+   * Method to set the existing branches.
+   *
    * @param branches Input is a new list of branches
    */
   public void setBranches(LinkedList<GitBranch> branches) {
@@ -25,6 +28,8 @@ public class BranchDialogView implements IDialogView {
   }
 
   /**
+   * Method to get a list of the current commits.
+   *
    * @return Returns list of current commits
    */
   public LinkedList<GitCommit> getCommits() {
@@ -32,6 +37,8 @@ public class BranchDialogView implements IDialogView {
   }
 
   /**
+   * Method to set the list of the commits that are displayed.
+   *
    * @param commits Input is new List of commits
    */
   public void setCommits(LinkedList<GitCommit> commits) {
@@ -39,13 +46,17 @@ public class BranchDialogView implements IDialogView {
   }
 
   /**
-   * @return Retruns name of the new Branch
+   * Method to get the name of the new branch.
+   *
+   * @return Retruns name of the new branch
    */
   public String getNameOfNew() {
     return nameOfNew;
   }
 
   /**
+   * Method to set the name of a new branch.
+   *
    * @param nameOfNew Input is a new name of the next branch (Excetion if "?")
    */
   public void setNameOfNew(String nameOfNew) {

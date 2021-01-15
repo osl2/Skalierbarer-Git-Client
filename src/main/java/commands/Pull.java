@@ -9,6 +9,8 @@ public class Pull implements ICommand, ICommandGUI {
   private GitBranch remoteBranch;
 
   /**
+   * Method to get the current remote.
+   *
    * @return Returns active repo
    */
   public GitRemote getRemote() {
@@ -16,6 +18,8 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
+   * method to set the current remote.
+   *
    * @param remote from which files are to be fetched
    */
   public void setRemote(GitRemote remote) {
@@ -23,6 +27,8 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to get the currently active remote branch.
+   *
    * @return Returns the active remoteBranch
    */
   public GitBranch getRemoteBranch() {
@@ -30,6 +36,8 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to set the current remote Branch.
+   *
    * @param remoteBranch from which files are to be fetched
    */
   public void setRemoteBranch(GitBranch remoteBranch) {
@@ -54,7 +62,7 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
-   * Method to execute the command
+   * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
    */

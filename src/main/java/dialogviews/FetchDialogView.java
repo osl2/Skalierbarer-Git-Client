@@ -1,4 +1,4 @@
-package dialog_views;
+package dialogviews;
 
 public class FetchDialogView implements IDialogView {
 

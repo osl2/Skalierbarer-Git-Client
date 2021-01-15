@@ -7,9 +7,9 @@ public class Clone implements ICommand, ICommandGUI {
    * the URL is a valid git URL. The definition is found in the official
    * git documentary.
    *
-   * @param gitURL is a URL to a remote git repository.
+   * @param gitUrl is a URL to a remote git repository.
    */
-  public void setGitURL(String gitURL) {
+  public void setGitUrl(String gitUrl) {
   }
 
   @Override

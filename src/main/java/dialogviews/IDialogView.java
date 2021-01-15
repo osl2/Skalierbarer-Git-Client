@@ -1,9 +1,9 @@
-package dialog_views;
+package dialogviews;
 
 public interface IDialogView {
 
   /**
-   * Open (and create if necessary) the Dialog
+   * Open (and create if necessary) the Dialog.
    */
   void show();
 

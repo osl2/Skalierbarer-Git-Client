@@ -14,14 +14,18 @@ public class GitFile {
   }
 
   /**
-   * @return true if file has not been added to the index and file path matches a pattern in the .gitignore file
+   * Method to get, if this file is added to the git repository.
+   *
+   * @return true if file has not been added to the index and file
+   *     path matches a pattern in the .gitignore file
    */
   public boolean isIgnoredNotInIndex() {
     return false;
   }
 
   /**
-   * This command returns only files that have been newly created and of whom there is no former version in the index
+   * This command returns only files that have been newly
+   * created and of whom there is no former version in the index.
    *
    * @return true if file is not being tracked, i.e. git add has never been called on this file
    */
@@ -30,7 +34,8 @@ public class GitFile {
   }
 
   /**
-   * This command returns only files that have been newly created and of whom there is no former version in the index
+   * This command returns only files that have been newly created and of whom
+   * there is no former version in the index.
    *
    * @return true if file has been newly created and has been added to the staging-area
    */
@@ -39,17 +44,17 @@ public class GitFile {
   }
 
   /**
-   * This command returns only files of whom an older version is already in the index
+   * This command returns only files of whom an older version is already in the index.
    *
-   * @return true if file is being tracked and there is a modified version in the wd which has not been added to
-   * the staging-area
+   * @return true if file is being tracked and there is a modified version in the
+   *     working directory which has not been added to the staging-area
    */
   public boolean isModified() {
     return false;
   }
 
   /**
-   * This command returns only files of whom an older version is already in the index
+   * This command returns only files of whom an older version is already in the index.
    *
    * @return true if file has been modified and has been added to the staging-area
    */

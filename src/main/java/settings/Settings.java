@@ -19,6 +19,11 @@ public class Settings {
   private Settings() {
   }
 
+  /**
+   * Method to get an instance of the Settings singleton.
+   *
+   * @return The current Settings object
+   */
   public static Settings getInstance() {
     if (INSTANCE == null) {
       INSTANCE = new Settings();

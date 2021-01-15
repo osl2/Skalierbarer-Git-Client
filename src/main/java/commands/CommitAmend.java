@@ -1,12 +1,12 @@
 package commands;
 
 /**
- * This command executes git commit -amend to undo the last commit
+ * This command executes git commit -amend to undo the last commit.
  */
 public class CommitAmend implements ICommand, ICommandGUI {
 
   /**
-   * This method sets the new commitMessage
+   * This method sets the new commitMessage.
    *
    * @param commitMessage The new message
    */
@@ -15,8 +15,8 @@ public class CommitAmend implements ICommand, ICommandGUI {
   }
 
   /**
-   * performs git commit --amend with all the blobs from the last commit plus blobs that have been newly
-   * added to the staging-area (if any).
+   * performs git commit --amend with all the blobs from the last commit plus blobs
+   * that have been newly added to the staging-area (if any).
    * In JGit: calls CommitCommand.setAmend(true)
    *
    * @return True if the commit has been executed successfully, false otherwise
