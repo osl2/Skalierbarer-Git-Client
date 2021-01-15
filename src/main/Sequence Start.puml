@@ -1,0 +1,78 @@
+@startuml
+skinparam monochrome true
+hide footbox
+
+actor user
+participant "mainStart:Main" as main
+participant "persistency:Persistency" as persistency
+participant "settings:Settings" as settings
+participant "author:GitAuthor" as author
+participant "settings.txt" as settingstext
+participant "level:Level" as Level
+participant "level.txt" as leveltext
+participant "maiWindow:MainWindow" as mainWindow
+
+create main
+user -> main : start program
+activate main
+create persistency
+main --> persistency : <<create>>
+
+main -> persistency : load()
+activate persistency
+persistency -> settingstext : read file
+settingstext -> persistency : File handle
+
+create settings
+persistency --> settings : <<create>>
+
+alt settings found
+
+persistency -> persistency : restoreSettings()
+persistency -> settings : setLevel (level)
+activate settings
+settings --> persistency
+
+create author
+persistency --> author : <<create>>
+persistency -> author : setName(name)
+activate author
+author --> persistency
+persistency -> author : setEmail(mail)
+author --> persistency
+deactivate author
+
+persistency -> settings : setAuthor(author)
+settings --> persistency
+
+persistency -> settings : setUseTooltips(boolean)
+settings --> persistency
+
+persistency -> settings : setShowTreeView
+settings --> persistency
+
+persistency -> settings : setActiveRepositoryPath(path)
+settings -> persistency
+
+deactivate settings
+
+else
+persistency -> settings : new settings()
+activate settings
+settings --> persistency
+deactivate settings
+
+end
+
+persistency --> main
+deactivate persistency
+create mainWindow
+main --> mainWindow : <<create>>
+main -> mainWindow : getView()
+activate mainWindow
+mainWindow --> main : jPanel
+deactivate mainWindow
+deactivate main
+
+
+@enduml

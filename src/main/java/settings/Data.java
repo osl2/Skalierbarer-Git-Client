@@ -1,7 +1,7 @@
 package settings;
 
 
-import Levels.Level;
+import levels.Level;
 
 import java.util.List;
 
@@ -10,26 +10,26 @@ import java.util.List;
  */
 public class Data {
 
-    /**
-     * @return list of paths ordered by time last opened ascending
-     */
-    public List<String> getRecentlyOpenedRepositories() {
-        return null;
-    }
+  /**
+   * @return list of paths ordered by time last opened ascending
+   */
+  public List<String> getRecentlyOpenedRepositories() {
+    return null;
+  }
 
-    /**
-     * Stores a new path to a repository.
-     *
-     * @param path path to a new created git repository;
-     */
-    public void storeNewRepositoryPath(String path) {
-    }
+  /**
+   * Stores a new path to a repository.
+   *
+   * @param path path to a new created git repository;
+   */
+  public void storeNewRepositoryPath(String path) {
+  }
 
-    /**
-     * @return immutable ordered List of all possible levels in the current configuration
-     */
-    public List<Level> getLevels() {
-        return null;
-    }
+  /**
+   * @return immutable ordered List of all possible levels in the current configuration
+   */
+  public List<Level> getLevels() {
+    return null;
+  }
 
 }
