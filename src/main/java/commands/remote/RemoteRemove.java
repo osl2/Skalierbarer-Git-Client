@@ -7,30 +7,7 @@ import git.GitRemote;
 /**
  * This command removes a remote from the list of remote repositories.
  */
-public class RemoteRemove extends Remote implements ICommand, ICommandGUI {
-  private String remoteName;
-  private GitRemote remote;
-
-  /**
-   * This method specifies the name of the remote that should be removed from the list.
-   * If the remote with the
-   * given name is not in the list, execute() will return false.
-   *
-   * @param name The name of the remote that should be removed.
-   * @see commands.remote.RemoteAdd
-   */
-  public void setRemoteName(String name) {
-  }
-
-  @Override
-  public GitRemote getRemote() {
-    return null;
-  }
-
-  @Override
-  public void setRemote(GitRemote remote) {
-
-  }
+public class RemoteRemove extends Remote {
 
   @Override
   public boolean execute() {

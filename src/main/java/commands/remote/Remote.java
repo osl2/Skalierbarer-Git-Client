@@ -5,13 +5,13 @@ import commands.ICommandGUI;
 import git.GitRemote;
 
 public abstract class Remote implements ICommand, ICommandGUI {
-
+  protected GitRemote remote;
   /**
    * Method to get the current remote repository.
    *
    * @return The current remote repository
    */
-  public abstract GitRemote getRemote();
+  public GitRemote getRemote(){ return null;}
 
   /**
    * Method to set tue current remote repository.
@@ -19,7 +19,7 @@ public abstract class Remote implements ICommand, ICommandGUI {
    * @param remote The remote repository on which the command should be executed
    *               (getName, getURL, setName, setURL, remove)
    */
-  public abstract void setRemote(GitRemote remote);
+  public void setRemote(GitRemote remote){}
 
   /**
    * Method to create new remote.
@@ -49,6 +49,20 @@ public abstract class Remote implements ICommand, ICommandGUI {
    * @return Returns a Description of what the command is doing
    */
   public abstract String getDescription();
+
+  /**
+   *
+   * @return Returns an error message when execute() fails
+   */
+  public abstract String getErrorMessage();
+
+  /**
+   * This method is not abstract, since there is only one Remote button. When this button is clicked, it calls
+   * onButtonClicked() on Remote and opens the RemoteView
+   */
+  public void onButtonClicked(){
+
+  }
 
 
 }

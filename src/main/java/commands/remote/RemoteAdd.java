@@ -12,27 +12,7 @@ import java.net.URL;
  *
  * @see commands.remote
  */
-public class RemoteAdd extends Remote implements ICommand, ICommandGUI {
-  private String remoteName;
-  private URL remoteURL;
-  private GitRemote remote;
-
-
-  public void setRemoteName(String remoteName) {
-  }
-
-  public void setRemoteUrl(URL remoteURL) {
-  }
-
-  @Override
-  public GitRemote getRemote() {
-    return null;
-  }
-
-  @Override
-  public void setRemote(GitRemote remote) {
-
-  }
+public class RemoteAdd extends Remote {
 
   @Override
   public boolean execute() {
@@ -59,6 +39,9 @@ public class RemoteAdd extends Remote implements ICommand, ICommandGUI {
     return null;
   }
 
+  /**
+   * Should do nothing since there is no dedicated Button for Adding Remotes
+   */
   @Override
   public void onButtonClicked() {
 

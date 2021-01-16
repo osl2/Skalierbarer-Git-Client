@@ -7,24 +7,7 @@ import git.GitRemote;
 /**
  * This command changes the name of the remote repository.
  */
-public class RemoteSetName extends Remote implements ICommand, ICommandGUI {
-  private String remoteName;
-  private GitRemote remote;
-
-  public void setRemoteName(String remoteName) {
-    this.remoteName = remoteName;
-  }
-
-  @Override
-  public GitRemote getRemote() {
-    return null;
-  }
-
-  @Override
-  public void setRemote(GitRemote remote) {
-
-  }
-
+public class RemoteSetName extends Remote {
   @Override
   public boolean execute() {
     return false;
