@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class PushView implements IDialogView {
+public class PushDialogView implements IDialogView {
   public void show() {
 
   }
