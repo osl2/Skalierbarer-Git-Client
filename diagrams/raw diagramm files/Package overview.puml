@@ -1,0 +1,14 @@
+@startuml
+skinparam monochrome true
+
+package gitclient {
+package commands {
+package remote
+}
+package dialogviews
+package git
+package levels
+package settings
+package views
+}
+@enduml
