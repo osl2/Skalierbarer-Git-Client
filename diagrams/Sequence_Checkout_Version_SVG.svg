@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="466.5px" preserveAspectRatio="none" style="width:844px;height:466px;" version="1.1" viewBox="0 0 844 466" width="844.5px" zoomAndPan="magnify"><defs><filter height="300%" id="f1fi5e6jir81f1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="3.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="6.0" dy="6.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="351.9375" style="stroke:#383838;stroke-width:1.5;" width="15" x="98.25" y="77.4141"/><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="248.4961" style="stroke:#383838;stroke-width:1.5;" width="15" x="421.5" y="180.8555"/><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="112.0547" style="stroke:#383838;stroke-width:1.5;" width="15" x="718.5" y="296.2969"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:5.0,5.0;" x1="105" x2="105" y1="62.4141" y2="456.3516"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:5.0,5.0;" x1="428.25" x2="428.25" y1="127.3711" y2="456.3516"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:5.0,5.0;" x1="725.25" x2="725.25" y1="242.8125" y2="456.3516"/><rect fill="#F8F8F8" filter="url(#f1fi5e6jir81f1)" height="47.4141" style="stroke:#383838;stroke-width:2.25;" width="190.5" x="7.5" y="7.5"/><text fill="#000000" font-family="sans-serif" font-size="21" lengthAdjust="spacingAndGlyphs" textLength="169.5" x="18" y="39.7998">main:MainWindow</text><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="351.9375" style="stroke:#383838;stroke-width:1.5;" width="15" x="98.25" y="77.4141"/><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="248.4961" style="stroke:#383838;stroke-width:1.5;" width="15" x="421.5" y="180.8555"/><rect fill="#FFFFFF" filter="url(#f1fi5e6jir81f1)" height="112.0547" style="stroke:#383838;stroke-width:1.5;" width="15" x="718.5" y="296.2969"/><polygon fill="#383838" points="233.25,104.9414,248.25,110.9414,233.25,116.9414,239.25,110.9414" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:2.0,2.0;" x1="113.25" x2="242.25" y1="110.9414" y2="110.9414"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="102" x="123.75" y="103.6567">&lt;&lt;create&gt;&gt;</text><rect fill="#F8F8F8" filter="url(#f1fi5e6jir81f1)" height="47.4141" style="stroke:#383838;stroke-width:2.25;" width="349.5" x="251.25" y="77.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" lengthAdjust="spacingAndGlyphs" textLength="328.5" x="261.75" y="109.7139">checkoutView:CheckoutDialogView</text><polygon fill="#383838" points="403.5,174.8555,418.5,180.8555,403.5,186.8555,409.5,180.8555" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;" x1="113.25" x2="412.5" y1="180.8555" y2="180.8555"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="57" x="123.75" y="173.5708">show()</text><polygon fill="#383838" points="603.75,220.3828,618.75,226.3828,603.75,232.3828,609.75,226.3828" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:2.0,2.0;" x1="436.5" x2="612.75" y1="226.3828" y2="226.3828"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="102" x="447" y="219.0981">&lt;&lt;create&gt;&gt;</text><rect fill="#F8F8F8" filter="url(#f1fi5e6jir81f1)" height="47.4141" style="stroke:#383838;stroke-width:2.25;" width="202.5" x="621.75" y="192.8555"/><text fill="#000000" font-family="sans-serif" font-size="21" lengthAdjust="spacingAndGlyphs" textLength="181.5" x="632.25" y="225.1553">checkout:Checkout</text><polygon fill="#383838" points="700.5,290.2969,715.5,296.2969,700.5,302.2969,706.5,296.2969" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;" x1="436.5" x2="709.5" y1="296.2969" y2="296.2969"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="76.5" x="447" y="289.0122">getTree()</text><polygon fill="#383838" points="453,335.8242,438,341.8242,453,347.8242,447,341.8242" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:2.0,2.0;" x1="444" x2="717" y1="341.8242" y2="341.8242"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="58.5" x="462" y="334.5396">gitTree</text><polygon fill="#383838" points="700.5,381.3516,715.5,387.3516,700.5,393.3516,706.5,387.3516" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;" x1="436.5" x2="709.5" y1="387.3516" y2="387.3516"/><text fill="#000000" font-family="sans-serif" font-size="19.5" lengthAdjust="spacingAndGlyphs" textLength="162" x="447" y="380.0669">checkout (commit)</text><polygon fill="#383838" points="453,402.3516,438,408.3516,453,414.3516,447,408.3516" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:2.0,2.0;" x1="444" x2="724.5" y1="408.3516" y2="408.3516"/><polygon fill="#383838" points="122.25,423.3516,107.25,429.3516,122.25,435.3516,116.25,429.3516" style="stroke:#383838;stroke-width:1.5;"/><line style="stroke:#383838;stroke-width:1.5;stroke-dasharray:2.0,2.0;" x1="113.25" x2="427.5" y1="429.3516" y2="429.3516"/><!--MD5=[b29be1650188578ef71ee966f50ddfc1]
+@startuml
+skinparam monochrome true
+hide footbox
+
+participant "main:MainWindow" as main
+participant "checkoutView:CheckoutDialogView" as checkoutView
+participant "checkout:Checkout" as checkout
+
+activate main
+create checkoutView
+main - -> checkoutView :  <<create>>
+main ->checkoutView : show()
+activate checkoutView
+create checkout
+checkoutView - ->checkout : <<create>>
+checkoutView ->checkout : getTree()
+activate checkout
+checkout - -> checkoutView : gitTree
+checkoutView ->checkout : checkout (commit)
+checkout - ->checkoutView :
+deactivate checkout
+checkoutView - -> main :
+deactivate checkoutView
+
+deactivate main
+
+@enduml
+
+PlantUML version 1.2020.23(Sun Dec 13 20:14:58 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>

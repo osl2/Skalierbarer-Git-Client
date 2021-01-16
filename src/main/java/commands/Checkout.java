@@ -2,7 +2,7 @@ package commands;
 
 import git.GitBranch;
 import git.GitCommit;
-import git.GitTree;
+import java.util.List;
 
 public class Checkout implements ICommand, ICommandGUI {
 
@@ -59,7 +59,7 @@ public class Checkout implements ICommand, ICommandGUI {
 
   }
 
-  public GitTree getTree() {
+  public List<GitBranch> getTree() {
     //not implemented yet
     return null;
   }

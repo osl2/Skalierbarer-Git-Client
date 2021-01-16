@@ -58,11 +58,21 @@ public class GitFacade {
     return null;
   }
 
-  public boolean checkout (GitBranch branch) {
+  /**
+   * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
+   * @param branch branch that should be checked out
+   * @return true if it is successfully checked out, false if something went wrong
+   */
+  public boolean checkout(GitBranch branch) {
     throw new AssertionError("not implemented");
   }
 
-  public boolean checkout (GitCommit commit){
+  /**
+   * Checkout a commit. It loads the data of the commit and provides the data from JGit
+   * @param commit commit that should be checked out
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean checkout(GitCommit commit) {
     throw new AssertionError("not implemented");
   }
 }

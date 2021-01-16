@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="376.5px" preserveAspectRatio="none" style="width:837px;height:376px;" version="1.1" viewBox="0 0 837 376" width="837px" zoomAndPan="magnify"><defs><filter height="300%" id="f1iwflve1fif54" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="3.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="6.0" dy="6.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[557e87fa3e066046f14ec6a24315567e]
+cluster gitclient--><polygon fill="#FFFFFF" filter="url(#f1iwflve1fif54)" points="24,9,118.5,9,129,44.4141,811.5,44.4141,811.5,366,24,366,24,9" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="24" x2="129" y1="44.4141" y2="44.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="85.5" x="30" y="33.7998">gitclient</text><!--MD5=[82e865073170c2da8a76a939041dabe8]
+cluster commands--><polygon fill="#FFFFFF" filter="url(#f1iwflve1fif54)" points="589.5,75,711,75,721.5,110.4141,775.5,110.4141,775.5,214.5,589.5,214.5,589.5,75" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="589.5" x2="721.5" y1="110.4141" y2="110.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="112.5" x="595.5" y="99.7998">commands</text><!--MD5=[92c914d14ffa40bbc0a3a8cb1e0c29f3]
+entity dialogviews--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="48,129,201,129,211.5,164.4141,237,164.4141,237,189.9141,48,189.9141,48,129" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="48" x2="211.5" y1="164.4141" y2="164.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="126" x="63" y="155.2998">dialogviews</text><!--MD5=[4d3fe30f1291fc2fac05ba39abe9dac2]
+entity git--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="289.5,129,343.5,129,354,164.4141,379.5,164.4141,379.5,189.9141,289.5,189.9141,289.5,129" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="289.5" x2="354" y1="164.4141" y2="164.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="27" x="304.5" y="155.2998">git</text><!--MD5=[147c259ed029383ad114747cdedb123f]
+entity levels--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="432.75,129,524.25,129,534.75,164.4141,560.25,164.4141,560.25,189.9141,432.75,189.9141,432.75,129" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="432.75" x2="534.75" y1="164.4141" y2="164.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="64.5" x="447.75" y="155.2998">levels</text><!--MD5=[44df82fb778fec0901a72cffa7010adb]
+entity settings--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="68.25,280.5,180.75,280.5,191.25,315.9141,216.75,315.9141,216.75,341.4141,68.25,341.4141,68.25,280.5" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="68.25" x2="191.25" y1="315.9141" y2="315.9141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="85.5" x="83.25" y="306.7998">settings</text><!--MD5=[1affcf8a646183f59d752b76f98e02e7]
+entity views--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="269.25,280.5,357.75,280.5,368.25,315.9141,393.75,315.9141,393.75,341.4141,269.25,341.4141,269.25,280.5" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="269.25" x2="368.25" y1="315.9141" y2="315.9141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="61.5" x="284.25" y="306.7998">views</text><!--MD5=[200d7cc177ce404b822df68e5d127056]
+entity remote--><polygon fill="#F8F8F8" filter="url(#f1iwflve1fif54)" points="613.5,129,715.5,129,726,164.4141,751.5,164.4141,751.5,189.9141,613.5,189.9141,613.5,129" style="stroke:#000000;stroke-width:2.25;"/><line style="stroke:#000000;stroke-width:2.25;" x1="613.5" x2="726" y1="164.4141" y2="164.4141"/><text fill="#000000" font-family="sans-serif" font-size="21" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="75" x="628.5" y="155.2998">remote</text><!--MD5=[4aa9ef05bd5c42aed10eb05c91b0b5b2]
+link dialogviews to git--><!--MD5=[cdf91ad5fadbaf762c4b98009787002f]
+link git to levels--><!--MD5=[fa3af6a4c43890bfa0ea09fa93d1f2e4]
+link dialogviews to settings--><!--MD5=[bd0eb5975da15e8a38e4665aadd1526d]
+link settings to views--><!--MD5=[c2c36a5b5c89e6a3c442f72b4336a243]
+@startuml
+skinparam monochrome true
+
+package gitclient {
+package commands {
+package remote
+}
+package dialogviews
+package git
+package levels
+package settings
+package views
+}
+@enduml
+
+PlantUML version 1.2020.23(Sun Dec 13 20:14:58 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>

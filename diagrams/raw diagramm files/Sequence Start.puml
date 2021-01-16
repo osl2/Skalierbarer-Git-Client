@@ -7,9 +7,9 @@ participant "mainStart:Main" as main
 participant "persistency:Persistency" as persistency
 participant "settings:Settings" as settings
 participant "author:GitAuthor" as author
+participant "level:Level" as level
 participant "settings.txt" as settingstext
-participant "level:Level" as Level
-participant "level.txt" as leveltext
+participant "data:Data" as data
 participant "maiWindow:MainWindow" as mainWindow
 
 create main
@@ -25,13 +25,34 @@ settingstext -> persistency : File handle
 
 create settings
 persistency --> settings : <<create>>
+persistency -> settings : getInstance()
+activate settings
+settings -> settings : new Settings()
+settings --> persistency : settings:Settings
 
 alt settings found
 
 persistency -> persistency : restoreSettings()
+
+create data
+persistency --> data : <<create>>
+
+persistency -> data : getLevels()
+activate data
+data --> persistency : levels:List<Level>
+deactivate data
+
+loop level:levels
+create level
+persistency --> level : <<create>>
+persistency -> level : getLevelName()
+activate level
+level --> persistency : name:String
+end
+
 persistency -> settings : setLevel (level)
-activate settings
 settings --> persistency
+deactivate level
 
 create author
 persistency --> author : <<create>>
@@ -54,18 +75,13 @@ settings --> persistency
 persistency -> settings : setActiveRepositoryPath(path)
 settings -> persistency
 
-deactivate settings
 
-else
-persistency -> settings : new settings()
-activate settings
-settings --> persistency
-deactivate settings
 
 end
 
 persistency --> main
 deactivate persistency
+deactivate settings
 create mainWindow
 main --> mainWindow : <<create>>
 main -> mainWindow : getView()

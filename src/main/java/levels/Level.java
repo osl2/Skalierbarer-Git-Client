@@ -3,8 +3,10 @@ package levels;
 import commands.ICommand;
 import java.util.List;
 
+
+
 public class Level {
-  //    int getLevelNumber();
+  private String name; //name as a unique identifier
 
   /**
    * Method to get the name of the level for example to display it.
