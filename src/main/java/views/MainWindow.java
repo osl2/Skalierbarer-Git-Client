@@ -1,14 +1,23 @@
 package views;
 
-import javax.swing.JPanel;
+public class MainWindow {
+  /* The MainWindow is NOT a view, rather a container for views, and therefore should NOT implement IView! */
+  /* TODO: This class should probably extend JFrame or the equivalent in JavaFX */
 
-public class MainWindow implements IView {
+  private IView loadedView;
+
+  public boolean setView(IView view) {
+    this.loadedView = view;
+    /* Set View */
+    return false;
+  }
 
   /**
-   * Returns the lower part of the main window.
+   * This method can be used to unload a IView which was loaded with setView.
+   * Currently this method restores an instance of HistoryView
+   * TODO: JavaDoc: Tags
    */
-  @Override
-  public JPanel getView() {
-    throw new AssertionError("Not implemented yet");
+  public void restoreDefaultView() {
+
   }
 }
