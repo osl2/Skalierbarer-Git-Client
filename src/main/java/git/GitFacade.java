@@ -57,4 +57,12 @@ public class GitFacade {
     //TODO: andere Datenstruktur?
     return null;
   }
+
+  public boolean checkout (GitBranch branch) {
+    throw new AssertionError("not implemented");
+  }
+
+  public boolean checkout (GitCommit commit){
+    throw new AssertionError("not implemented");
+  }
 }
