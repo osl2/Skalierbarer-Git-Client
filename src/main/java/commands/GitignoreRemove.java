@@ -3,6 +3,7 @@ package commands;
 import git.GitFile;
 
 public class GitignoreRemove implements ICommand {
+  private String errorMessage;
   /**
    * TODO: find JGit internal method that removes files from .gitignore
    *
@@ -12,7 +13,6 @@ public class GitignoreRemove implements ICommand {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }

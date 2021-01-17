@@ -6,6 +6,10 @@ import git.GitRemote;
 import java.net.URL;
 
 public class RemoteGetURL extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   @Override
   public boolean execute() {

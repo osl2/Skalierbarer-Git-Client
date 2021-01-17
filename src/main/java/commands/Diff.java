@@ -3,6 +3,7 @@ package commands;
 import java.util.List;
 
 public class Diff implements ICommand {
+  private String errorMessage;
 
   /**
    * Executes the "git diff" command. Can only be used after @setDiffID was called once.
@@ -14,7 +15,6 @@ public class Diff implements ICommand {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }

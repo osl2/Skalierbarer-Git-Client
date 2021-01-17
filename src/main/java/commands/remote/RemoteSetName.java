@@ -8,6 +8,11 @@ import git.GitRemote;
  * This command changes the name of the remote repository.
  */
 public class RemoteSetName extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
+
   @Override
   public boolean execute() {
     return false;

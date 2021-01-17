@@ -6,6 +6,7 @@ import git.GitFile;
  * TODO: Ignorieren intern regeln?.
  */
 public class GitignoreAdd implements ICommand {
+  private String errorMessage;
 
   /**
    * This method calls the jgit StatusCommand.setIgnoreSubmodules() method.
@@ -16,7 +17,6 @@ public class GitignoreAdd implements ICommand {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }

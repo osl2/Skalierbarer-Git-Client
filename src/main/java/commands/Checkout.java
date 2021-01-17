@@ -5,19 +5,21 @@ import git.GitCommit;
 import java.util.List;
 
 public class Checkout implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
    */
-  @Override
   public boolean execute() {
     return false;
   }
 
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -29,7 +31,6 @@ public class Checkout implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding git command to
    *     display on the command line
    */
-  @Override
   public String getCommandLine(String userInput) {
     return null;
   }
@@ -39,7 +40,6 @@ public class Checkout implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
-  @Override
   public String getName() {
     return null;
   }
@@ -49,12 +49,10 @@ public class Checkout implements ICommand, ICommandGUI {
    *
    * @return description as a String
    */
-  @Override
   public String getDescription() {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

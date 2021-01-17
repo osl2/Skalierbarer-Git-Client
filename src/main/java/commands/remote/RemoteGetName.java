@@ -5,6 +5,10 @@ import commands.ICommandGUI;
 import git.GitRemote;
 
 public class RemoteGetName extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   @Override
   public boolean execute() {

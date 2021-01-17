@@ -13,6 +13,10 @@ import java.net.URL;
  * @see commands.remote
  */
 public class RemoteAdd extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   @Override
   public boolean execute() {

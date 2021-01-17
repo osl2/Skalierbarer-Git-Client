@@ -8,6 +8,10 @@ import git.GitRemote;
  * This command removes a remote from the list of remote repositories.
  */
 public class RemoteRemove extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   @Override
   public boolean execute() {

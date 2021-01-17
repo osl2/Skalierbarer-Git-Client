@@ -3,6 +3,10 @@ package commands;
 import java.util.List;
 
 public class Fetch implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * Executes the "git fetch" command. Can only be used after setRemotes was called once.
@@ -14,7 +18,6 @@ public class Fetch implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -66,7 +69,6 @@ public class Fetch implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

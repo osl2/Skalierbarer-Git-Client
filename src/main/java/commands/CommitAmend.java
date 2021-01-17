@@ -4,6 +4,10 @@ package commands;
  * This command executes git commit -amend to undo the last commit.
  */
 public class CommitAmend implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * This method sets the new commitMessage.
@@ -25,27 +29,22 @@ public class CommitAmend implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
 
-  @Override
   public String getCommandLine(String userInput) {
     return null;
   }
 
-  @Override
   public String getName() {
     return null;
   }
 
-  @Override
   public String getDescription() {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 public class Log implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   //-----------------Display Options for log----------------
 
@@ -51,7 +55,6 @@ public class Log implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -86,7 +89,6 @@ public class Log implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

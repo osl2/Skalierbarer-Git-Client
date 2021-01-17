@@ -5,7 +5,10 @@ import git.GitFile;
 import java.util.List;
 
 public class Add implements ICommand, ICommandGUI {
-  // Todo: Change to custom methods as discussed on 2021-01-02
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * Performs git add.
@@ -75,7 +78,6 @@ public class Add implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

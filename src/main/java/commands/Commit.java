@@ -1,6 +1,10 @@
 package commands;
 
 public class Commit implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * This method sets the commit message of the next commit.
@@ -20,7 +24,6 @@ public class Commit implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -55,7 +58,6 @@ public class Commit implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

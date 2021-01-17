@@ -9,6 +9,10 @@ import java.net.URL;
  * This command sets the URL parameter of the remote repository to a new URL.
  */
 public class RemoteSetURL extends Remote {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   @Override
   public boolean execute() {

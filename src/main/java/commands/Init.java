@@ -3,6 +3,10 @@ package commands;
 import java.util.List;
 
 public class Init implements ICommand, ICommandGUI {
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
   /**
    * Sets the path to a directory. In this directory a new git repository will be created
@@ -24,32 +28,26 @@ public class Init implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public boolean execute() {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
 
-  @Override
   public String getCommandLine(String userInput) {
     return null;
   }
 
-  @Override
   public String getName() {
     return null;
   }
 
-  @Override
   public String getDescription() {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }

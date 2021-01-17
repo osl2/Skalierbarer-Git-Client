@@ -7,6 +7,10 @@ public class Branch implements ICommand, ICommandGUI {
   private GitBranch pointOfBranching;
   private GitCommit commitPointOfBranching;
   private String branchName;
+  private String errorMessage;
+  private String commandLine;
+  private String commandName;
+  private String commandDescription;
 
 
   /**
@@ -19,7 +23,6 @@ public class Branch implements ICommand, ICommandGUI {
   }
 
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -55,7 +58,6 @@ public class Branch implements ICommand, ICommandGUI {
   /**
    * OnClick handler for the GUI button representation.
    */
-  @Override
   public void onButtonClicked() {
   }
 
