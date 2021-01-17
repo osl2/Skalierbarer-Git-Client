@@ -9,6 +9,12 @@ public class GitignoreAdd implements ICommand {
   private String errorMessage;
 
   /**
+   *
+   * @param file The file that should be added to the .gitignore
+   */
+  public GitignoreAdd(GitFile file){}
+
+  /**
    * This method calls the jgit StatusCommand.setIgnoreSubmodules() method.
    *
    * @return

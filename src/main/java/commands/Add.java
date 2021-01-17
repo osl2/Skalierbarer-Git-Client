@@ -9,6 +9,7 @@ public class Add implements ICommand, ICommandGUI {
   private String commandLine;
   private String commandName;
   private String commandDescription;
+  private List<GitFile> files;
 
   /**
    * Performs git add.
@@ -30,14 +31,19 @@ public class Add implements ICommand, ICommandGUI {
   }
 
   /**
-   * This method passes a list of blobs (changes in files) to add them to the staging area.
-   * The blobs need to be passed before execute() is invoked. Otherwise, execution will fail.
+   * This method adds the given file to the internal list of files that will be added to the staging-area when execute()
+   * is called the next time.
    *
-   * @param blobs A List of changed files. The list must contain at least one item.
-   *              TODO: Discuss whether a list of Strings (file paths) would be more suitable
+   * @param file A file that should be added to the staging-area.
    */
-  public void setBlobs(List<GitFile> blobs) {
+  public void addFile(GitFile file) {
   }
+
+  /**
+   * This method removes the given file from the internal list of files that will be added to the staging-area
+   * @param file A file that has been added to the list earlier and should be removed from it
+   */
+  public void removeFile(GitFile file){}
 
   /**
    * The method returns a description of the git add command.
