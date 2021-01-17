@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class PullConflictDialog implements IDialog {
+public class PullConflictDialog implements IDialog, IErrorDialog {
 
 
   public void show() {
@@ -8,6 +8,10 @@ public class PullConflictDialog implements IDialog {
   }
 
   public void update() {
+
+  }
+
+  public void setErrorMessage(String errorMessage) {
 
   }
 }
