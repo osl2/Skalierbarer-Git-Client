@@ -4,7 +4,7 @@ import git.GitBranch;
 import git.GitCommit;
 import java.util.LinkedList;
 
-public class BranchDialog implements IDialog {
+public class BranchDialogView implements IDialogView {
   private LinkedList<GitBranch> branches = new LinkedList<GitBranch>();
   private LinkedList<GitCommit> commits = new LinkedList<GitCommit>();
   private String nameOfNew;

@@ -2,7 +2,7 @@ package dialogviews;
 
 import commands.Merge;
 
-public class MergeDialog implements IDialog {
+public class MergeDialogView implements IDialogView {
 
   private Merge merge;
 

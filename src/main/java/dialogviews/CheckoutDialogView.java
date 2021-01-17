@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class CheckoutDialog implements IDialog {
+public class CheckoutDialogView implements IDialogView {
 
   /**
    * method that is called to show the dialog view.

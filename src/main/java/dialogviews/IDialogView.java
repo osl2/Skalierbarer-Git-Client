@@ -1,6 +1,6 @@
 package dialogviews;
 
-public interface IDialog {
+public interface IDialogView {
 
   /**
    * Open (and create if necessary) the Dialog.

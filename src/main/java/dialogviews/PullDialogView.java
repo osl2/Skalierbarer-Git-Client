@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class FetchDialog implements IDialog {
+public class PullDialogView implements IDialogView {
 
   public void show() {
 

@@ -1,6 +1,7 @@
 package dialogviews;
 
-public class PullConflictDialog implements IDialog, IErrorDialog {
+
+public class PullConflictDialogView implements IDialogView, IErrorDialogView {
 
 
   public void show() {
