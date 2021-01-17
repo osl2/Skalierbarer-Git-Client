@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class PullConflictDialogView implements IDialogView {
+public class PullConflictDialog implements IDialog {
 
 
   public void show() {

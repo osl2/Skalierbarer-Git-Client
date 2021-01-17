@@ -1,6 +1,6 @@
 package dialogviews;
 
-public class CloneDialogView implements IDialogView {
+public class PushDialog implements IDialog {
   public void show() {
 
   }
