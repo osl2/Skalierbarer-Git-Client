@@ -75,4 +75,15 @@ public class Git {
   public boolean checkout(GitCommit commit) {
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Creates a new branch with the specific name at the commit in JGit
+   * @param commit commit where the new branch begins
+   * @param name name of the branch
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean branchOperation(GitCommit commit, String name){
+    throw new AssertionError("not implemented");
+  }
 }
+
