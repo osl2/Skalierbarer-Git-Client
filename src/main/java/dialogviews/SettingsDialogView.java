@@ -1,4 +1,11 @@
 package dialogviews;
 
-public class SettingsDialogView {
+public class SettingsDialogView implements IDialogView {
+    public void show() {
+
+    }
+
+    public void update() {
+
+    }
 }
