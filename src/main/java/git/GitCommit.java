@@ -13,7 +13,34 @@ public class GitCommit {
 
   /* Is only instantiated inside the git Package */
   protected GitCommit() {
+  }
 
+  public GitAuthor getAuthor() {
+    return author;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public GitCommit[] getParents() {
+    return parents;
+  }
+
+  public String getHash() {
+    return hash;
+  }
+
+  public boolean isSigned() {
+    return isSigned;
+  }
+
+  public boolean isStash() {
+    return isStash;
+  }
+
+  public GitTree getTree() {
+    return tree;
   }
 
   /* TODO: Diff */
