@@ -1,11 +1,18 @@
-package commands.remote;
+package commands;
 
 import commands.ICommand;
 import commands.ICommandGUI;
 import git.GitRemote;
 
-public abstract class Remote implements ICommand, ICommandGUI {
-  protected GitRemote remote;
+public class Remote implements ICommand, ICommandGUI {
+  private GitRemote remote;
+  private String commandLine;
+
+  public void setSubcommand(Subcommand subcommand) {
+    this.subcommand = subcommand;
+  }
+
+  private Subcommand subcommand;
   /**
    * Method to get the current remote repository.
    *
@@ -22,39 +29,36 @@ public abstract class Remote implements ICommand, ICommandGUI {
   public void setRemote(GitRemote remote){}
 
   /**
-   * Method to create new remote.
-   *
-   * @return true, if the command has been executed successfully
-   */
-  public abstract boolean execute();
-
-  /**
    * Creates with the input the command of the commandline.
    *
    * @param userInput Input off the user
    * @return Returns command for Commandline
    */
-  public abstract String getCommandLine(String userInput);
+  public String getCommandLine(String userInput){return null;}
 
   /**
    * Method to get the name of the command.
    *
    * @return Returns the name of the command
    */
-  public abstract String getName();
+  public String getName(){return "remote";}
 
   /**
    * Method to get a description of the command.
    *
    * @return Returns a Description of what the command is doing
    */
-  public abstract String getDescription();
+  public String getDescription(){return null;}
+
+  public boolean execute() {
+    return false;
+  }
 
   /**
    *
    * @return Returns an error message when execute() fails
    */
-  public abstract String getErrorMessage();
+  public String getErrorMessage(){return null;}
 
   /**
    * This method is not abstract, since there is only one Remote button. When this button is clicked, it calls
@@ -64,5 +68,9 @@ public abstract class Remote implements ICommand, ICommandGUI {
 
   }
 
+  /**
+   * TBD
+   */
+  public enum Subcommand{ADD, REMOVE, SET_NAME, SET_URL}
 
 }

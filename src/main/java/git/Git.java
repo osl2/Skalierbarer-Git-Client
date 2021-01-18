@@ -3,9 +3,9 @@ package git;
 import java.util.List;
 
 /**
- * Provides a central point to obtain git objects.
+ * Provides a central point to obtain and create a number of git objects.
  */
-public class GitFacade {
+public class Git {
 
   /**
    * Get all commits of the current Repository.
