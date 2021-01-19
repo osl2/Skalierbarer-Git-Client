@@ -12,19 +12,16 @@ public class Git {
    *
    * @return Array of all commits without stashes
    */
-  public GitCommit[] getCommits() {
-    /* Welche Klasse diese Funktionalitäten dann Erzeugt ist noch unklar,
-        passiert aber im git package. */
-    /* TODO: Andere Datenstruktur? Linked-Lists?   */
+  public List<GitCommit> getCommits() {
     return null;
   }
 
   /**
    * Get all stashes of the current Repository.
    *
-   * @return Array of all Commits which are Stashes
+   * @return A list of all Stashes
    */
-  public GitCommit[] getStashes() {
+  public List<GitStash> getStashes() {
     return null;
   }
 
@@ -44,7 +41,6 @@ public class Git {
    * @return A list of all remotes
    */
   public List<GitRemote> getRemotes() {
-    //TODO: andere Datenstruktur?
     return null;
   }
 
@@ -54,7 +50,6 @@ public class Git {
    * @return A list of branches in the repository
    */
   public List<GitBranch> getBranches() {
-    //TODO: andere Datenstruktur?
     return null;
   }
 
@@ -96,9 +91,9 @@ public class Git {
   }
 
   /**
-   * Pulls the files and commits from the brnach of the remote to the lokal repo in Jgit
+   * Pulls the files and commits from the branch of the remote to the local repo in Jgit
    * @param remote remote where the commits come from
-   * @param remoteBranch bchosen branch where the commits  come from
+   * @param remoteBranch chosen branch where the commits originate from
    * @return true if it is performed successfully, false if something went wrong
    */
   public boolean pullOperation(GitRemote remote, GitBranch remoteBranch){
