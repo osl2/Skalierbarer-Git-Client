@@ -112,5 +112,14 @@ public class Git {
   public boolean setRepositoryPath (String path) {
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Commits the files in the staging-area to the git repo and adds the given commit message
+   * @param commitMessage The commit message specified by the user
+   * @return True if the commit was successful
+   */
+  public boolean commitOperation(String commitMessage){
+    throw new AssertionError("not implemented");
+  }
 }
 

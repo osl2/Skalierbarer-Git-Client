@@ -64,11 +64,13 @@ public class GitFile {
 
   /**
    * Adds the file to the staging-area, thereby performing git add
+   * @return True if the file was added to the staging area successfully
    */
-  public void add(){}
+  public boolean add(){return false;}
 
   /**
    * Removes file from the staging-area, thereby performing git restore --staged <file>
+   * @return True if the file was removed from the staging area successfully
    */
-  public void addUndo(){}
+  public boolean addUndo(){return false;}
 }
