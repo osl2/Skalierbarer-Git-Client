@@ -9,4 +9,8 @@ public class DiffView implements IDiffView {
    */
   public void openDiff(String fileName) {
   }
+
+  public void openDiffWindow() {
+
+  }
 }

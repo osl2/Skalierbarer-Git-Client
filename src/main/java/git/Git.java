@@ -116,5 +116,24 @@ public class Git {
   public boolean commitOperation(String commitMessage){
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Pushes the local commit history to the online repo
+   * @param remote The name of the online repo (must have been preconfigured before)
+   * @param branch The name of the branch whose commits shoul be pushed
+   * @return True if the push has been successful, false otherwise, e.g. connection to online repo failed
+   */
+  public boolean pushOperation(GitRemote remote, GitBranch branch, boolean follow){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Reverts the last commit
+   * @param commitMessage The message which replaces the last commit message
+   * @return True if the command has been successful
+   */
+  public boolean commitAmendOperation(String commitMessage){
+    throw new AssertionError("not implemented");
+  }
 }
 
