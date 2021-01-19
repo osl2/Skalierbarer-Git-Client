@@ -3,9 +3,9 @@ package git;
 import java.util.List;
 
 /**
- * Provides a central point to obtain git objects.
+ * Provides a central point to obtain and create a number of git objects.
  */
-public class GitFacade {
+public class Git {
 
   /**
    * Get all commits of the current Repository.
@@ -59,6 +59,15 @@ public class GitFacade {
   }
 
   /**
+   * Method to get list of branches, which are available in the specific online repository
+   * @param remote Online repository, where the branches come from
+   * @return List of branches in the repository
+   */
+  public List<GitBranch> getBranches(GitRemote remote){
+    return null;
+  }
+
+  /**
    * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
    * @param branch branch that should be checked out
    * @return true if it is successfully checked out, false if something went wrong
@@ -75,4 +84,33 @@ public class GitFacade {
   public boolean checkout(GitCommit commit) {
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Creates a new branch with the specific name at the commit in JGit
+   * @param commit commit where the new branch begins
+   * @param name name of the branch
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean branchOperation(GitCommit commit, String name){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Pulls the files and commits from the brnach of the remote to the lokal repo in Jgit
+   * @param remote remote where the commits come from
+   * @param remoteBranch bchosen branch where the commits  come from
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean pullOperation(GitRemote remote, GitBranch remoteBranch){
+    throw new AssertionError("not implemented");
+  }
+
+  public boolean initializeRepository (String path){
+    throw new AssertionError("not implemented");
+  }
+
+  public boolean setRepositoryPath (String path) {
+    throw new AssertionError("not implemented");
+  }
 }
+

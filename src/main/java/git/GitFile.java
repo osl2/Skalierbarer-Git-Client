@@ -61,4 +61,14 @@ public class GitFile {
   public boolean isChanged() {
     return false;
   }
+
+  /**
+   * Adds the file to the staging-area, thereby performing git add
+   */
+  public void add(){}
+
+  /**
+   * Removes file from the staging-area, thereby performing git restore --staged <file>
+   */
+  public void addUndo(){}
 }
