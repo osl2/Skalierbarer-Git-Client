@@ -16,12 +16,8 @@ public class Remote implements ICommand, ICommandGUI {
     this.firstRemoteSubcommand = firstRemoteSubcommand;
   }
 
-  public void setSecRemoteSubcommand(RemoteSubcommand secRemoteSubcommand) {
-    this.secRemoteSubcommand = secRemoteSubcommand;
-  }
 
   private RemoteSubcommand firstRemoteSubcommand;
-  private RemoteSubcommand secRemoteSubcommand = null;
   /**
    * Method to get the current remote repository.
    *
