@@ -59,6 +59,15 @@ public class Git {
   }
 
   /**
+   * Method to get list of branches, which are available in the specific online repository
+   * @param remote Online repository, where the branches come from
+   * @return List of branches in the repository
+   */
+  public List<GitBranch> getBranches(GitRemote remote){
+    return null;
+  }
+
+  /**
    * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
    * @param branch branch that should be checked out
    * @return true if it is successfully checked out, false if something went wrong
