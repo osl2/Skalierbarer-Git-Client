@@ -104,5 +104,13 @@ public class Git {
   public boolean pullOperation(GitRemote remote, GitBranch remoteBranch){
     throw new AssertionError("not implemented");
   }
+
+  public boolean initializeRepository (String path){
+    throw new AssertionError("not implemented");
+  }
+
+  public boolean setRepositoryPath (String path) {
+    throw new AssertionError("not implemented");
+  }
 }
 
