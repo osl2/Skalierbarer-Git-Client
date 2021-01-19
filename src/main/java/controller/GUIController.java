@@ -27,7 +27,7 @@ public class GUIController {
 
     }
 
-    public void setCommandLine() {
+    public void setCommandLine(String commandLine) {
 
     }
 
