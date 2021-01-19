@@ -85,5 +85,15 @@ public class Git {
   public boolean branchOperation(GitCommit commit, String name){
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Pulls the files and commits from the brnach of the remote to the lokal repo in Jgit
+   * @param remote remote where the commits come from
+   * @param remoteBranch bchosen branch where the commits  come from
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean pullOperation(GitRemote remote, GitBranch remoteBranch){
+    throw new AssertionError("not implemented");
+  }
 }
 
