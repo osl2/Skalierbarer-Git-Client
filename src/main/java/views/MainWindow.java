@@ -14,14 +14,6 @@ public class MainWindow implements  IView {
     return false;
   }
 
-  /**
-   * This method can be used to unload a IView which was loaded with setView.
-   * Currently this method restores an instance of HistoryView
-   * TODO: JavaDoc: Tags
-   */
-  public void restoreDefaultView() {
-
-  }
 
   /**
    * Returns the lower part of the main window.
