@@ -27,6 +27,10 @@ public class GUIController {
 
     }
 
+    public void closeDialogView(IDialogView dialog) {
+
+    }
+
     public void setCommandLine(String commandLine) {
 
     }
