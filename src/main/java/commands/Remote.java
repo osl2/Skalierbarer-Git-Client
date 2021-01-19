@@ -4,15 +4,24 @@ import commands.ICommand;
 import commands.ICommandGUI;
 import git.GitRemote;
 
+import java.net.URL;
+
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
   private String commandLine;
+  private String name;
+  private URL url;
 
-  public void setSubcommand(Subcommand subcommand) {
-    this.subcommand = subcommand;
+  public void setFirstRemoteSubcommand(RemoteSubcommand firstRemoteSubcommand) {
+    this.firstRemoteSubcommand = firstRemoteSubcommand;
   }
 
-  private Subcommand subcommand;
+  public void setSecRemoteSubcommand(RemoteSubcommand secRemoteSubcommand) {
+    this.secRemoteSubcommand = secRemoteSubcommand;
+  }
+
+  private RemoteSubcommand firstRemoteSubcommand;
+  private RemoteSubcommand secRemoteSubcommand = null;
   /**
    * Method to get the current remote repository.
    *
@@ -71,6 +80,6 @@ public class Remote implements ICommand, ICommandGUI {
   /**
    * TBD
    */
-  public enum Subcommand{ADD, REMOVE, SET_NAME, SET_URL}
+  public enum RemoteSubcommand{ADD, REMOVE, SET_NAME, SET_URL}
 
 }

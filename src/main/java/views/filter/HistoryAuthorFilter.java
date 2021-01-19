@@ -4,7 +4,7 @@ import git.GitAuthor;
 import git.GitCommit;
 
 /**
- * Filter {@link views.HistoryView} by {@link GitAuthor}
+ * Filter {@link views.HistoryView} by {@link git.GitAuthor}
  */
 public class HistoryAuthorFilter extends AbstractHistoryFilter {
 

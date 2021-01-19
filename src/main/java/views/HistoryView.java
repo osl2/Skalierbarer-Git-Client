@@ -4,9 +4,9 @@ import views.filter.AbstractHistoryFilter;
 
 import javax.swing.JPanel;
 
-public class HistoryView implements IView {
+public class HistoryView extends JPanel implements IView {
   public JPanel getView() {
-    return null;
+    return this;
   }
 
   private void applyFilter(AbstractHistoryFilter filter) {

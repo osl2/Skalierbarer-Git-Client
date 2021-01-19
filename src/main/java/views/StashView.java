@@ -7,7 +7,7 @@ import javax.swing.JPanel;
  *
  * @author Tobias Manske
  */
-public class StashView implements IView {
+public class StashView extends JPanel implements IView {
   /* StashArray */
   /*   */
 
