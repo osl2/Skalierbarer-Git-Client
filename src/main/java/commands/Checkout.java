@@ -9,6 +9,8 @@ public class Checkout implements ICommand, ICommandGUI {
   private String commandLine;
   private String commandName;
   private String commandDescription;
+  private GitBranch branch;
+  private GitCommit commit;
 
   /**
    * Method to execute the command.
