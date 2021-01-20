@@ -1,5 +1,6 @@
 package git;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -97,6 +98,45 @@ public class Git {
    * @return true if it is performed successfully, false if something went wrong
    */
   public boolean pullOperation(GitRemote remote, GitBranch remoteBranch){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Creates a new Remote in JGit
+   * @param name name of the new remote
+   * @param url Url of the repository
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean remoteAddOperation(String name, URL url){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Removes an existing remote from JGit
+   * @param remote remote, that should be removed
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean remoteRemoveOperation(GitRemote remote){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Changes name of a remote
+   * @param remote remote, whose name should be changed
+   * @param name new name
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean remoteSetNameOperation(GitRemote remote, String name){
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Changes Url of a remote
+   * @param remote remote, whose url should be changed
+   * @param url new url
+   * @return true if it is performed successfully, false if something went wrong
+   */
+  public boolean remoteSetUrlOperation(GitRemote remote, URL url){
     throw new AssertionError("not implemented");
   }
 
