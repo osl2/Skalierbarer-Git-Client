@@ -1,22 +1,22 @@
 package commands;
 
+import git.GitBranch;
 import git.GitChangeConflict;
-import git.GitCommit;
 
 import java.util.List;
 
 public class Merge implements ICommand, ICommandGUI {
-    private final GitCommit commitA;
-    private final GitCommit commitB;
+    private final GitBranch branchA;
+    private final GitBranch branchB;
     private boolean fastForward = true;
 
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
-    public Merge(GitCommit a, GitCommit b) {
-        this.commitA = a;
-        this.commitB = b;
+    public Merge(GitBranch a, GitBranch b) {
+        this.branchA = a;
+        this.branchB = b;
     }
 
     /**
