@@ -36,6 +36,16 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
+   * Starts mergeprogress for conflict
+   */
+  public void startMerging(){}
+
+  /**
+   * Starts rebaseprogress for conflict
+   */
+  public void startRebasing(){}
+
+  /**
    * Method to set the current remote Branch.
    *
    * @param remoteBranch from which files are to be fetched

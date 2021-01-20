@@ -1,22 +1,34 @@
 package commands;
 
+import git.GitBranch;
 import git.GitChangeConflict;
-import git.GitCommit;
 
 import java.util.List;
 
 public class Merge implements ICommand, ICommandGUI {
-    private final GitCommit commitA;
-    private final GitCommit commitB;
+    private GitBranch branchA;
+    private GitBranch branchB;
     private boolean fastForward = true;
 
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
-    public Merge(GitCommit a, GitCommit b) {
-        this.commitA = a;
-        this.commitB = b;
+    public Merge(GitBranch src, GitBranch dest) {
+        this.branchA = src;
+        this.branchB = dest;
+    }
+
+    public Merge() {
+
+    }
+
+    public void setSourceBranch(GitBranch branchA) {
+        this.branchA = branchA;
+    }
+
+    public void setDestinationBranch(GitBranch branchB) {
+        this.branchB = branchB;
     }
 
     /**
@@ -28,8 +40,15 @@ public class Merge implements ICommand, ICommandGUI {
         return null;
     }
 
-    private void applyChanges() {
-        // Make sure the right version of a change is applied to the Git repo below.
+    /**
+     * This function needs to be called to make sure that all conflicts are resolved before {@link #execute()}
+     * can succeed.
+     * <p>
+     * If necessary a MergeDialogView will be opened to interact with the user.
+     */
+    public void resolveConflicts() {
+        // Open GUI or another way to make sure all conflicts are resolved.
+        // Probably a good point for dependency injection in the future.
     }
 
     /**
