@@ -1,0 +1,78 @@
+@startuml
+skinparam monochrome true
+hide footbox
+actor Benutzer as user
+
+participant "main:MainWindow" as main
+participant "c:GUIController" as controller
+participant "dummy:Checkout" as checkout
+participant "checkoutView:CheckoutDialogView" as checkoutView
+participant "checkout:Checkout" as checkoutCommand
+participant "git:Git" as facade
+participant "git:Git" as facade
+participant "commit:GitCommit" as commit
+participant "JGit:JGit" as JGit
+
+user -> main : Drücken auf Checkout
+activate main
+create checkout
+main --> checkout : <<create>>
+main -> checkout : onButtonClicked()
+activate checkout
+create checkoutView
+checkout --> checkoutView :  <<create>>
+activate checkoutView
+
+create facade
+checkoutView --> facade : <<create>>
+checkoutView -> facade : getBranches()
+activate facade
+facade --> checkoutView : List<GitBranch>
+checkoutView -> facade : getCommits()
+facade --> checkoutView : List<GitCommit>
+deactivate facade
+
+checkout -> checkoutView : getView()
+checkoutView --> checkout : view:JPanel
+
+checkout -> controller : openView(view)
+activate controller
+controller -> main : setView(view)
+deactivate controller
+deactivate checkout
+user -> checkoutView : Nutzerintaraktion
+
+create checkoutCommand
+checkoutView --> checkoutCommand : <<create>>
+
+checkoutView ->checkoutCommand : checkout (commit)
+activate checkoutCommand
+checkoutCommand -> facade : checkout(commit)
+activate facade
+facade -> commit : getHash()
+activate commit
+commit --> facade : name:String
+deactivate commit
+create JGit
+facade --> JGit : <<create>>
+facade -> JGit : checkout().setName(name).call()
+activate JGit
+JGit --> facade :
+deactivate JGit
+checkoutCommand -> controller : setCommandLine(cl:String)
+activate controller
+controller -> main : setCommandLine(cl:String)
+deactivate controller
+facade --> checkoutCommand : boolean
+deactivate facade
+checkoutCommand --> checkoutView : boolean
+deactivate checkoutView
+checkoutView -> controller : restoreDefaultView()
+activate controller
+controller -> main : restoreDefaultView()
+deactivate controller
+
+
+deactivate main
+
+@enduml

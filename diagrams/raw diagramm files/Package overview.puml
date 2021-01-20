@@ -2,13 +2,16 @@
 skinparam monochrome true
 
 package gitclient {
-package commands {
-package remote
-}
+package commands
+package controller
 package dialogviews
-package git
+package git{
+package exceptions
+ }
 package levels
 package settings
-package views
+package views {
+package filter
+}
 }
 @enduml
