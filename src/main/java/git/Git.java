@@ -175,5 +175,9 @@ public class Git {
   public boolean commitAmendOperation(String commitMessage){
     throw new AssertionError("not implemented");
   }
+
+  public boolean rebase(GitBranch branchB){
+    throw new AssertionError("not implemented");
+  }
 }
 
