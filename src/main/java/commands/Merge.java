@@ -6,17 +6,29 @@ import git.GitChangeConflict;
 import java.util.List;
 
 public class Merge implements ICommand, ICommandGUI {
-    private final GitBranch branchA;
-    private final GitBranch branchB;
+    private GitBranch branchA;
+    private GitBranch branchB;
     private boolean fastForward = true;
 
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
-    public Merge(GitBranch a, GitBranch b) {
-        this.branchA = a;
-        this.branchB = b;
+    public Merge(GitBranch src, GitBranch dest) {
+        this.branchA = src;
+        this.branchB = dest;
+    }
+
+    public Merge() {
+
+    }
+
+    public void setSourceBranch(GitBranch branchA) {
+        this.branchA = branchA;
+    }
+
+    public void setDestinationBranch(GitBranch branchB) {
+        this.branchB = branchB;
     }
 
     /**
