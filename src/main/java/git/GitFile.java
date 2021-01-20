@@ -75,7 +75,7 @@ public class GitFile {
   public boolean addUndo(){return false;}
 
   /**
-   * Adds or removes the file from the .gitignore 
+   * Adds or removes the file from the .gitignore
    * @param ignored Whether the file should be added to the .gitignore or be removed from it
    * @return True if command has been executed successfully
    */
