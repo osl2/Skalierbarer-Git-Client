@@ -7,10 +7,6 @@ public class Branch implements ICommand, ICommandGUI {
   private GitBranch pointOfBranching;
   private GitCommit commitPointOfBranching;
   private String branchName;
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
 
 
   /**
@@ -59,15 +55,6 @@ public class Branch implements ICommand, ICommandGUI {
    * OnClick handler for the GUI button representation.
    */
   public void onButtonClicked() {
-  }
-
-  /**
-   * Method to get if it is a button.
-   *
-   * @return Returns true if the command is represented as Button
-   */
-  public boolean isButton() {
-    return isButton();
   }
 
   /**
