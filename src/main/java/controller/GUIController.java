@@ -42,9 +42,9 @@ public class GUIController {
     public void openView(IView view) {
     }
 
-    public void updateView(IView view) {
+    public void update(IView view) {
     }
 
-    public void updateDialogView(IDialogView dialog) {
+    public void update(IDialogView dialog) {
     }
 }
