@@ -6,7 +6,7 @@ public class Diff implements ICommand {
   private String errorMessage;
 
   /**
-   * Executes the "git diff" command. Can only be used after @setDiffID was called once.
+   * Executes the "git diff" command. Can only be used after @setDiffCommit was called once.
    *
    * @return true, if the command has been executed successfully
    */
@@ -25,7 +25,7 @@ public class Diff implements ICommand {
    * @param commitID the ID of the selected commit.
    * @param fileName the name of the file to compare to his previous version.
    */
-  public void setDiffID(String commitID, String fileName) {
+  public void setDiffCommit(GitCommit activeCommit, GitFile file) {
   }
 
   /**
@@ -35,6 +35,12 @@ public class Diff implements ICommand {
    */
   public void showDiff(int output) {
   }
+
+  /**
+   * Can only be called after setDiffCommit was called.
+   * @return the git diff of the given commit and the given file.
+   */
+  public String diffGit() {return null;}
 
   /**
    * Returns a list of all files contained in the given commit.

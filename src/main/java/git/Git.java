@@ -104,6 +104,13 @@ public class Git {
     throw new AssertionError("not implemented");
   }
 
+  public boolean cloneRepository (String gitURL, String dest) {
+        throw new AssertionError("not implemented");
+    }
+    public boolean fetchRemotes (List<GitRemote>) {
+        throw new AssertionError("not implemented");
+    }
+
   public boolean setRepositoryPath (String path) {
     throw new AssertionError("not implemented");
   }

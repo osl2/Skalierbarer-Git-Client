@@ -72,5 +72,5 @@ public class Settings {
     this.showTreeView = showTreeView;
   }
 
-
+  public boolean settingsChanged() {return false;}
 }

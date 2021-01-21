@@ -11,10 +11,12 @@ public class Clone implements ICommand, ICommandGUI {
    * the URL is a valid git URL. The definition is found in the official
    * git documentary.
    *
-   * @param gitUrl is a URL to a remote git repository.
+   * @param gitURL is a URL to a remote git repository.
    */
-  public void setGitUrl(String gitUrl) {
+  public void setGitURL(String gitURL) {
   }
+
+  public void setPath(String path) {}
 
   public boolean execute() {
     return false;

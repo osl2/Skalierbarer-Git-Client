@@ -6,4 +6,6 @@ public class Main {
     // Apply Plugin changes
     // Open GUI
   }
+
+  public static void restart(String commandLine){}
 }

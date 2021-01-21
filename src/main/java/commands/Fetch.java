@@ -27,7 +27,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @return a list with with remote names.
    */
-  public List<String> getRemotes() {
+  public List<GitRemote> getRemotes() {
     return null;
   }
 
@@ -36,7 +36,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @param names the names of the selected remotes.
    */
-  public void setRemotes(List<String> names) {
+  public void setRemotes(List<GitRemote> names) {
   }
 
   /**

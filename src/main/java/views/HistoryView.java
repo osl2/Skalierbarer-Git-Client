@@ -11,4 +11,7 @@ public class HistoryView extends JPanel implements IView {
 
   private void applyFilter(AbstractHistoryFilter filter) {
   }
+
+  public void getFiles(GitCommit commit) {}
+
 }
