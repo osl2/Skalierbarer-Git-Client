@@ -5,6 +5,16 @@ public class Commit implements ICommand, ICommandGUI {
   private String commandLine;
   private String commandName;
   private String commandDescription;
+  private String commitMessage;
+  private boolean amend;
+
+  /**
+   * This method determines whether the commit should amend the last commit.
+   * @param amend True if git commit --amend should be performed, false otherwise.
+   */
+  public void setAmend(boolean amend){
+    this.amend = amend;
+  }
 
   /**
    * This method sets the commit message of the next commit.
