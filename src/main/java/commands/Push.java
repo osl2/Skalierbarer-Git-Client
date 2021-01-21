@@ -4,6 +4,10 @@ import git.GitBranch;
 import git.GitRemote;
 
 public class Push implements ICommand, ICommandGUI {
+  private GitBranch branch;
+  private GitRemote remote;
+  private boolean following;
+
   /**
    * Method to execute the command.
    *

@@ -159,11 +159,13 @@ public class Git {
   }
 
   /**
-   * Commits the files in the staging-area to the git repo and adds the given commit message
+   * Commits the files in the staging-area to the git repo and adds the given commit message. If amend is set to true,
+   * the last commit is simply amended with the currently added files and the new message
    * @param commitMessage The commit message specified by the user
+   * @param amend true if the last commit should be amended, false otherwise
    * @return True if the commit was successful
    */
-  public boolean commitOperation(String commitMessage){
+  public boolean commitOperation(String commitMessage, boolean amend){
     throw new AssertionError("not implemented");
   }
 
@@ -177,14 +179,6 @@ public class Git {
     throw new AssertionError("not implemented");
   }
 
-  /**
-   * Reverts the last commit
-   * @param commitMessage The message which replaces the last commit message
-   * @return True if the command has been successful
-   */
-  public boolean commitAmendOperation(String commitMessage){
-    throw new AssertionError("not implemented");
-  }
 
   public boolean rebase(GitBranch branchB){
     throw new AssertionError("not implemented");

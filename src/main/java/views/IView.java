@@ -8,4 +8,11 @@ public interface IView {
    * Returns the lower part of the main window.
    */
   JPanel getView();
+
+  /**
+   * Updates the view
+   */
+  public void update();
+
+
 }

@@ -11,4 +11,8 @@ public class StashView extends JPanel implements IView {
   public JPanel getView() {
     return null;
   }
+
+  public void update() {
+
+  }
 }
