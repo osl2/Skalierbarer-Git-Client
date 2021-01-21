@@ -16,6 +16,8 @@ public class Clone implements ICommand, ICommandGUI {
   public void setGitURL(String gitURL) {
   }
 
+  public void setDestination(String path){}
+
   public void setPath(String path) {}
 
   public boolean execute() {
