@@ -10,7 +10,7 @@ public class GitFile {
   //for Gitignore.java
 
   /* Is only instantiated inside the git Package */
-  protected GitFile() {
+  GitFile() {
   }
 
   /**

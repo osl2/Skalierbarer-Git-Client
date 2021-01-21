@@ -10,7 +10,9 @@ public class GitRemote {
 
 
   /* Is only instantiated inside the git Package */
-  protected GitRemote() {
+  GitRemote(String url, String gitUser, String name) {
+    this.url = url;
+    this.gitUser = gitUser;
+    this.name = name;
   }
-
 }

@@ -3,6 +3,8 @@ package settings;
 import git.GitAuthor;
 import levels.Level;
 
+import java.io.File;
+
 public class Settings {
 
   private static Settings INSTANCE = null;
@@ -10,7 +12,7 @@ public class Settings {
   private GitAuthor user;
   private boolean useTooltips = true;
   private boolean showTreeView = false;
-  private String activeRepositoryPath;
+  private File activeRepositoryPath;
 
   /**
    * Private Constructor. This class is instantiated by {@see getInstance()}
@@ -47,11 +49,11 @@ public class Settings {
     this.user = user;
   }
 
-  public String getActiveRepositoryPath() {
+  public File getActiveRepositoryPath() {
     return activeRepositoryPath;
   }
 
-  public void setActiveRepositoryPath(String activeRepositoryPath) {
+  public void setActiveRepositoryPath(File activeRepositoryPath) {
     this.activeRepositoryPath = activeRepositoryPath;
 
   }

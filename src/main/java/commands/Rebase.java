@@ -5,8 +5,8 @@ import git.GitBranch;
 
 public class Rebase implements ICommand, ICommandGUI {
 
-  public final GitBranch branchA;
-  public final GitBranch branchB;
+  private final GitBranch branchA;
+  private final GitBranch branchB;
 
   public Rebase(GitBranch branchA, GitBranch branchB) {
     this.branchA = branchA;

@@ -1,5 +1,6 @@
 package git;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -24,6 +25,15 @@ public class Git {
    */
   public List<GitStash> getStashes() {
     return null;
+  }
+
+  /**
+   * Create a new Stash
+   *
+   * @return true iff stash was created successfully
+   */
+  public boolean createStash() {
+    return false;
   }
 
   /**
@@ -140,11 +150,11 @@ public class Git {
     throw new AssertionError("not implemented");
   }
 
-  public boolean initializeRepository (String path){
+  public boolean initializeRepository(File path) {
     throw new AssertionError("not implemented");
   }
 
-  public boolean setRepositoryPath (String path) {
+  public boolean setRepositoryPath(File path) {
     throw new AssertionError("not implemented");
   }
 

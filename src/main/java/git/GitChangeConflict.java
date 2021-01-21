@@ -5,7 +5,7 @@ package git;
  */
 public class GitChangeConflict {
   /* Is only instantiated inside the git Package */
-  protected GitChangeConflict() {
+  GitChangeConflict() {
 
   }
 
