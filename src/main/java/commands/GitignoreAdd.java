@@ -4,6 +4,11 @@ import git.GitFile;
 
 public class GitignoreAdd implements ICommand {
   private String errorMessage;
+  private GitFile file;
+
+  public GitignoreAdd(GitFile file){
+    this.file = file;
+  }
 
   /**
    * This method calls the jgit StatusCommand.setIgnoreSubmodules() method.
