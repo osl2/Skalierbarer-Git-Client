@@ -9,6 +9,8 @@ public class Checkout implements ICommand, ICommandGUI {
   private String commandLine;
   private String commandName;
   private String commandDescription;
+  private GitBranch branch;
+  private GitCommit commit;
 
   /**
    * Method to execute the command.
@@ -56,12 +58,7 @@ public class Checkout implements ICommand, ICommandGUI {
   public void onButtonClicked() {
 
   }
-
-  public List<GitBranch> getTree() {
-    //not implemented yet
-    return null;
-  }
-
+  
   public void checkout(GitCommit commit) {
     throw new AssertionError("not implemented");
   }

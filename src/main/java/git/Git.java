@@ -170,5 +170,8 @@ public class Git {
   }
 
 
+  public boolean rebase(GitBranch branchB){
+    throw new AssertionError("not implemented");
+  }
 }
 

@@ -9,7 +9,7 @@ import java.net.URL;
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
   private String commandLine;
-  private String name;
+  private String remoteName;
   private URL url;
 
   public void setRemoteSubcommand(RemoteSubcommand remoteSubcommand) {
