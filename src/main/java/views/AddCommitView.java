@@ -9,4 +9,8 @@ public class AddCommitView extends JPanel implements IView {
     return null;
   }
 
+  public void update() {
+
+  }
+
 }

@@ -9,6 +9,10 @@ public class HistoryView extends JPanel implements IView {
     return this;
   }
 
+  public void update() {
+
+  }
+
   private void applyFilter(AbstractHistoryFilter filter) {
   }
 }
