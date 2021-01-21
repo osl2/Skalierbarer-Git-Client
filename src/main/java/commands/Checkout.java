@@ -58,12 +58,7 @@ public class Checkout implements ICommand, ICommandGUI {
   public void onButtonClicked() {
 
   }
-
-  public List<GitBranch> getTree() {
-    //not implemented yet
-    return null;
-  }
-
+  
   public void checkout(GitCommit commit) {
     throw new AssertionError("not implemented");
   }
