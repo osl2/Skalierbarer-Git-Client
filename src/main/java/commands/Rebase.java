@@ -1,7 +1,17 @@
 package commands;
 
 
+import git.GitBranch;
+
 public class Rebase implements ICommand, ICommandGUI {
+
+  private final GitBranch branchA;
+  private final GitBranch branchB;
+
+  public Rebase(GitBranch branchA, GitBranch branchB) {
+    this.branchA = branchA;
+    this.branchB = branchB;
+  }
 
   /**
    * Method to execute the command.
@@ -22,7 +32,7 @@ public class Rebase implements ICommand, ICommandGUI {
    * @param userInput The input that the user needs to make additionally
    *                  to the standard output of git commit
    * @return Returns a String representation of the corresponding
-   *     git command to display on the command line
+   * git command to display on the command line
    */
   public String getCommandLine(String userInput) {
     return null;
@@ -48,6 +58,8 @@ public class Rebase implements ICommand, ICommandGUI {
 
   public void onButtonClicked() {
   }
-
-
 }
+
+//  Config view geöffnet dann merge oder rebase bei Dann rebase ohne weiterer Eingabe
+
+//  Zwei Branches setzen darauf dann execute...

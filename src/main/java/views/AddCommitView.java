@@ -9,12 +9,8 @@ public class AddCommitView extends JPanel implements IView {
     return null;
   }
 
-  /**
-   * Method to get a list of the modified files.
-   *
-   * @return a list of GitBlobs that should be added to the staging-area when execute() is called
-   */
-  public List<GitFile> getBlobs() {
-    return null;
+  public void update() {
+
   }
+
 }

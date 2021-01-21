@@ -2,8 +2,6 @@ package views;
 
 public class DiffView implements IDiffView {
 
-
-
   /**
    * Opens the difference between the given file and and the previous version of the file.
    *

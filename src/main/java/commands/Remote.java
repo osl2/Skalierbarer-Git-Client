@@ -8,20 +8,16 @@ import java.net.URL;
 
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
-  private String commandLine;
-  private String name;
+  private String subCommandName;
+  private String remoteName;
   private URL url;
 
-  public void setFirstRemoteSubcommand(RemoteSubcommand firstRemoteSubcommand) {
-    this.firstRemoteSubcommand = firstRemoteSubcommand;
+  public void setRemoteSubcommand(RemoteSubcommand remoteSubcommand) {
+    this.remoteSubcommand = remoteSubcommand;
   }
 
-  public void setSecRemoteSubcommand(RemoteSubcommand secRemoteSubcommand) {
-    this.secRemoteSubcommand = secRemoteSubcommand;
-  }
 
-  private RemoteSubcommand firstRemoteSubcommand;
-  private RemoteSubcommand secRemoteSubcommand = null;
+  private RemoteSubcommand remoteSubcommand;
   /**
    * Method to get the current remote repository.
    *

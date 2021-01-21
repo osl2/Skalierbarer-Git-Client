@@ -45,15 +45,6 @@ public class Add implements ICommand, ICommandGUI {
    */
   public void removeFile(GitFile file){}
 
-  /**
-   * The method returns a description of the git add command.
-   *
-   * @return Returns a short description of the command,
-   *     which can be displayed to the user if necessary
-   */
-  public String getCommandDescription() {
-    return "Fügt Änderungen zur Staging-Area hinzu";
-  }
 
   /**
    * Method to get the Commandline input that would be

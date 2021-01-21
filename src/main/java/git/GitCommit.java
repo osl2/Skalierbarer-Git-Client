@@ -1,18 +1,21 @@
 package git;
 
+import java.util.Date;
+
 public class GitCommit {
   private GitAuthor author;
   private String message;
   private GitCommit[] parents;
   private String hash;
   private boolean isSigned;
-
-  /* See: https://git-scm.com/docs/git-stash#_discussion */
-  private boolean isStash;
-  private GitTree tree;
+  private Date date;
 
   /* Is only instantiated inside the git Package */
-  protected GitCommit() {
+  GitCommit(GitAuthor author, String message, String hash, boolean isSigned) {
+    this.author = author;
+    this.message = message;
+    this.hash = hash;
+    this.isSigned = isSigned;
   }
 
   public GitAuthor getAuthor() {
@@ -35,14 +38,28 @@ public class GitCommit {
     return isSigned;
   }
 
-  public boolean isStash() {
-    return isStash;
+
+  public boolean revert() {
+    return false;
   }
 
-  public GitTree getTree() {
-    return tree;
+  /**
+   * Generates the difference between this commit and the one passed
+   *
+   * @param other the other commit
+   * @return String representation of the diff
+   */
+  public String getDiff(GitCommit other) {
+    return null;
   }
 
-  /* TODO: Diff */
-  /* TODO: DiffToWorkDir */
+  /**
+   * Generates the difference to the working directory
+   *
+   * @return String representation to the working directory
+   */
+  public String getDiff() {
+    return null;
+  }
+
 }

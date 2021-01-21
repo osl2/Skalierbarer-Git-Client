@@ -1,6 +1,13 @@
 package commands;
 
+import git.GitBranch;
+import git.GitRemote;
+
 public class Push implements ICommand, ICommandGUI {
+  private GitBranch branch;
+  private GitRemote remote;
+  private boolean following;
+
   /**
    * Method to execute the command.
    *
@@ -10,7 +17,6 @@ public class Push implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -45,8 +51,25 @@ public class Push implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }
+
+  /**
+   * Sets the local branch that should be pushed to the online repo
+   * @param branch The local branch whose commits should be pushed
+   */
+  public void setBranch(GitBranch branch){}
+
+  /**
+   * Sets the remote repo the local commits should be pushed to
+   * @param remote The online repo (must have been configured before)
+   */
+  public void setRemote(GitRemote remote){}
+
+  /**
+   * Chooses if the local repo should follow the remote repo that was configured in setRemote()
+   * @param following True if the local repo should follow the remote repo after the push was executed
+   */
+  public void setFollowing(boolean following){}
 }

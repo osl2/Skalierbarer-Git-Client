@@ -10,7 +10,7 @@ public class GitFile {
   //for Gitignore.java
 
   /* Is only instantiated inside the git Package */
-  protected GitFile() {
+  GitFile() {
   }
 
   /**
@@ -64,11 +64,23 @@ public class GitFile {
 
   /**
    * Adds the file to the staging-area, thereby performing git add
+   * @return True if the file was added to the staging area successfully
    */
-  public void add(){}
+  public boolean add(){return false;}
 
   /**
    * Removes file from the staging-area, thereby performing git restore --staged <file>
+   * @return True if the file was removed from the staging area successfully
    */
-  public void addUndo(){}
+  public boolean addUndo(){return false;}
+
+  /**
+   * Adds or removes the file from the .gitignore
+   * @param ignored Whether the file should be added to the .gitignore or be removed from it
+   * @return True if command has been executed successfully
+   */
+  public boolean setIgnored(boolean ignored){
+    return false;
+  }
+
 }

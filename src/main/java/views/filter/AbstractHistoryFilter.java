@@ -4,6 +4,9 @@ import git.GitCommit;
 
 import java.util.Collection;
 
+/**
+ * Generic Filter for the HistoryView module
+ */
 public abstract class AbstractHistoryFilter {
 
     /**

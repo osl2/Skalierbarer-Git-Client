@@ -44,6 +44,16 @@ public class Pull implements ICommand, ICommandGUI {
     this.remoteBranch = remoteBranch;
   }
 
+  /**
+   * Starts mergeprogress for conflict
+   */
+  public void startMerging(){}
+
+  /**
+   * Starts rebaseprogress for conflict
+   */
+  public void startRebasing(){}
+
   public String getCommandLine(String userInput) {
     return "git pull";
   }
@@ -53,7 +63,7 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   public String getDescription() {
-    return "Lädt Änderungen aus einem Online-Repo und merged sie";
+    return "Lädt Änderungen aus einem Online-Repo.";
   }
 
   @Override

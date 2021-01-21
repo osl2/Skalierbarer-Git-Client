@@ -6,4 +6,8 @@ public class RemoteView extends JPanel implements IView {
   public JPanel getView() {
     return null;
   }
+
+  public void update() {
+
+  }
 }
