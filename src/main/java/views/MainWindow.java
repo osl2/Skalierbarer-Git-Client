@@ -21,4 +21,8 @@ public class MainWindow implements  IView {
   public JPanel getView() {
     throw new AssertionError("not implemented yet");
   }
+
+  public void update() {
+
+  }
 }
