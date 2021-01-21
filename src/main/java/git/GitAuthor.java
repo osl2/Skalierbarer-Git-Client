@@ -1,5 +1,10 @@
 package git;
 
+import java.util.Objects;
+
+/**
+ * Represents a single author in Git
+ */
 public class GitAuthor {
   private String name;
   private String email;
@@ -10,7 +15,7 @@ public class GitAuthor {
   }
 
   /* Is only instantiated inside the git Package */
-  protected GitAuthor() {
+  GitAuthor() {
 
   }
 
@@ -28,5 +33,18 @@ public class GitAuthor {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof GitAuthor)) return false;
+    GitAuthor gitAuthor = (GitAuthor) o;
+    return name.equals(gitAuthor.name) && email.equals(gitAuthor.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, email);
   }
 }

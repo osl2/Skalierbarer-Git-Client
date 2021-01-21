@@ -4,12 +4,9 @@ import javax.swing.JPanel;
 
 /**
  * Stash Frame for the main GUI window.
- *
- * @author Tobias Manske
  */
 public class StashView extends JPanel implements IView {
-  /* StashArray */
-  /*   */
+  /* Methoden aus Git: getStashes(), createStash(), */
 
   public JPanel getView() {
     return null;

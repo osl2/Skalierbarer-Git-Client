@@ -7,7 +7,7 @@ public class GitBranch {
   private String name;
 
   /* Is only instantiated inside the git Package */
-  protected GitBranch() {
+  GitBranch() {
 
   }
 
