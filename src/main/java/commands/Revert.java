@@ -16,7 +16,6 @@ public class Revert implements ICommand, ICommandGUI {
     return false;
   }
 
-  @Override
   public String getErrorMessage() {
     return null;
   }
@@ -49,7 +48,6 @@ public class Revert implements ICommand, ICommandGUI {
     return null;
   }
 
-  @Override
   public void onButtonClicked() {
 
   }
