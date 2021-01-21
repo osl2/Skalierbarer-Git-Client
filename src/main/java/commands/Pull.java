@@ -36,6 +36,15 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   /**
+   * Method to set the current remote Branch.
+   *
+   * @param remoteBranch from which files are to be fetched
+   */
+  public void setRemoteBranch(GitBranch remoteBranch) {
+    this.remoteBranch = remoteBranch;
+  }
+
+  /**
    * Starts mergeprogress for conflict
    */
   public void startMerging(){}
@@ -44,15 +53,6 @@ public class Pull implements ICommand, ICommandGUI {
    * Starts rebaseprogress for conflict
    */
   public void startRebasing(){}
-
-  /**
-   * Method to set the current remote Branch.
-   *
-   * @param remoteBranch from which files are to be fetched
-   */
-  public void setRemoteBranch(GitBranch remoteBranch) {
-    this.remoteBranch = remoteBranch;
-  }
 
   public String getCommandLine(String userInput) {
     return "git pull";
@@ -63,7 +63,7 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
   public String getDescription() {
-    return "Lädt Änderungen aus einem Online-Repo und merged sie";
+    return "Lädt Änderungen aus einem Online-Repo.";
   }
 
   @Override
