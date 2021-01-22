@@ -4,7 +4,7 @@ import views.IView;
 
 import javax.swing.*;
 
-public class FirstuseView implements IDialogView {
+public class FirstUseDialogView implements IDialogView {
 
     /**
      * Returns the lower part of the main window.

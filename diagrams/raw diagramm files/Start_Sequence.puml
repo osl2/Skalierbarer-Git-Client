@@ -4,14 +4,14 @@ hide footbox
 
 actor user
 participant "mainStart:Main" as main
-participant "firstuseView:FirstuseView" as firstuse
+participant "firstuseView:FirstuseDialogView" as firstuse
 participant "persistency:Persistency" as persistency
 participant "settings:Settings" as settings
 participant "author:GitAuthor" as author
 participant "level:Level" as level
 participant "settings.txt" as settingstext
 participant "data:Data" as data
-participant "facade:Facade" as git
+participant "facade:GitFacade" as git
 participant "maiWindow:MainWindow" as mainWindow
 
 create main
