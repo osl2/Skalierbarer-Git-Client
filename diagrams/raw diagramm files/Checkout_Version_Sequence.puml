@@ -45,8 +45,10 @@ user -> checkoutView : Nutzerintaraktion
 create checkoutCommand
 checkoutView --> checkoutCommand : <<create>>
 
-checkoutView ->checkoutCommand : checkout (commit)
+checkoutView ->checkoutCommand : setDestination(commit)
 activate checkoutCommand
+checkoutCommand --> checkoutView
+checkoutView -> checkoutCommand : execute()
 create facade
 checkoutCommand --> facade : <<create>>
 checkoutCommand -> facade : checkout(commit)

@@ -59,11 +59,11 @@ public class Checkout implements ICommand, ICommandGUI {
 
   }
   
-  public void checkout(GitCommit commit) {
+  public void setDestination(GitCommit commit) {
     throw new AssertionError("not implemented");
   }
 
-  public void checkout(GitBranch branch) {
+  public void setDestination(GitBranch branch) {
     throw new AssertionError("not implemented");
   }
 
