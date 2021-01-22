@@ -18,8 +18,6 @@ public class Clone implements ICommand, ICommandGUI {
 
   public void setDestination(String path){}
 
-  public void setPath(String path) {}
-
   public boolean execute() {
     return false;
   }

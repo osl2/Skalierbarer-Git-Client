@@ -29,26 +29,9 @@ public class Diff implements ICommand {
   }
 
   /**
-   * Sets the output format of the "git diff" command.
-   *
-   * @param output constant that provides information on the output format.
-   */
-  public void showDiff(int output) {
-  }
-
-  /**
    * Can only be called after setDiffCommit was called.
    * @return the git diff of the given commit and the given file.
    */
   public String diffGit() {return null;}
 
-  /**
-   * Returns a list of all files contained in the given commit.
-   *
-   * @param commitID the ID of the commit.
-   * @return a list of all files contained in the given commit
-   */
-  public List<String> getFileNames(String commitID) {
-    return null;
-  }
 }
