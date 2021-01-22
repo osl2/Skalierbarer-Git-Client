@@ -11,7 +11,7 @@ participant "author:GitAuthor" as author
 participant "level:Level" as level
 participant "settings.txt" as settingstext
 participant "data:Data" as data
-participant "git:Git" as git
+participant "facade:Facade" as git
 participant "maiWindow:MainWindow" as mainWindow
 
 create main

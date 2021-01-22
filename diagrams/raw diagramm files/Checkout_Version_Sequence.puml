@@ -8,8 +8,8 @@ participant "c:GUIController" as controller
 participant "dummy:Checkout" as checkout
 participant "checkoutView:CheckoutDialogView" as checkoutView
 participant "checkout:Checkout" as checkoutCommand
-participant "git:Git" as facade
-participant "git:Git" as facade
+participant "git:Git" as git
+participant "facade:GitFacade" as facade
 participant "commit:GitCommit" as commit
 participant "JGit:JGit" as JGit
 
@@ -23,14 +23,14 @@ create checkoutView
 checkout --> checkoutView :  <<create>>
 activate checkoutView
 
-create facade
-checkoutView --> facade : <<create>>
-checkoutView -> facade : getBranches()
-activate facade
-facade --> checkoutView : List<GitBranch>
-checkoutView -> facade : getCommits()
-facade --> checkoutView : List<GitCommit>
-deactivate facade
+create git
+checkoutView --> git : <<create>>
+checkoutView -> git : getBranches()
+activate git
+git --> checkoutView : List<GitBranch>
+checkoutView -> git : getCommits()
+git --> checkoutView : List<GitCommit>
+deactivate git
 
 checkout -> checkoutView : getView()
 checkoutView --> checkout : view:JPanel
@@ -47,6 +47,8 @@ checkoutView --> checkoutCommand : <<create>>
 
 checkoutView ->checkoutCommand : checkout (commit)
 activate checkoutCommand
+create facade
+checkoutCommand --> facade : <<create>>
 checkoutCommand -> facade : checkout(commit)
 activate facade
 facade -> commit : getHash()

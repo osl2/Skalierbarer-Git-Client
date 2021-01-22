@@ -3,7 +3,7 @@ skinparam monochrome true
 hide footbox
 participant "p:Pull" as pull
 participant "rebase:Rebase" as rebase
-participant "git:Git" as git
+participant "facade:Facade" as git
 
 create rebase
 activate pull
