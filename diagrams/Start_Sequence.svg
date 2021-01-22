@@ -5,7 +5,7 @@ hide footbox
 
 actor user
 participant "mainStart:Main" as main
-participant "firstuseView:FirstuseView" as firstuse
+participant "firstuseView:FirstUseDialogView" as firstuse
 participant "persistency:Persistency" as persistency
 participant "settings:Settings" as settings
 participant "author:GitAuthor" as author
