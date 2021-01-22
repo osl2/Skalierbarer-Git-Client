@@ -1,5 +1,7 @@
 package commands;
 
+import git.GitRemote;
+
 import java.util.List;
 
 public class Fetch implements ICommand, ICommandGUI {
