@@ -3,6 +3,7 @@ package commands;
 import git.GitFile;
 
 public class GitignoreAdd implements ICommand {
+  // TODO: Mit GitignoreRemove zusammenfassen?
   private String errorMessage;
   private GitFile file;
 

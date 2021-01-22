@@ -1,5 +1,6 @@
 package views;
 
+import git.GitCommit;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.JPanel;

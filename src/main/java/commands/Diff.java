@@ -1,5 +1,8 @@
 package commands;
 
+import git.GitCommit;
+import git.GitFile;
+
 import java.util.List;
 
 public class Diff implements ICommand {
@@ -21,6 +24,7 @@ public class Diff implements ICommand {
 
   /**
    * Sets the commit ID and the file name to compare with the previous one.
+   * TODO: Fix params
    *
    * @param commitID the ID of the selected commit.
    * @param fileName the name of the file to compare to his previous version.

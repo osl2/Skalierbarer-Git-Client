@@ -33,7 +33,7 @@ public interface ICommandGUI {
   /**
    * OnClick handler for the GUI button representation.
    */
-  void onButtonClicked(/* TODO: Some kind of GUI handler needs to be passed here */);
+  void onButtonClicked();
   // Otherwise we can't change the view in the gui.
 
 }
