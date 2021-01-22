@@ -174,5 +174,7 @@ public class Git {
     public boolean revert(GitCommit commit) {
       throw new AssertionError("not implemented");
     }
+
+    public String getDiff(GitCommit activeCommit){return null;}
 }
 
