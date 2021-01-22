@@ -1,9 +1,12 @@
 package commands;
 
+import git.GitBranch;
+import git.GitCommit;
+
 import java.util.Date;
 import java.util.List;
 
-public class Log implements ICommand, ICommandGUI {
+public class Log implements ICommand {
   private String errorMessage;
   private String commandLine;
   private String commandName;
@@ -59,27 +62,5 @@ public class Log implements ICommand, ICommandGUI {
    */
   public String getCommandLine(String userInput) {
     return null;
-  }
-
-  /**
-   * Method to get the name of the command, that could be displayed in the GUI.
-   *
-   * @return The name of the command
-   */
-  public String getName() {
-    return null;
-  }
-
-  /**
-   * Method to get a description of the Command to describe for the user, what the command does.
-   *
-   * @return description as a String
-   */
-  public String getDescription() {
-    return null;
-  }
-
-  public void onButtonClicked() {
-
   }
 }
