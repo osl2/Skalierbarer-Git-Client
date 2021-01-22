@@ -119,5 +119,7 @@ public class GitFacade {
         throw new AssertionError("not implemented");
     }
 
-    public String getDiff(GitCommit activeCommit) {return null;}
+    public String getDiff(GitCommit activeCommit) {
+        return null;
+    }
 }

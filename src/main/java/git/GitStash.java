@@ -5,9 +5,9 @@ import java.util.List;
 
 public class GitStash {
 
-    private List<GitFile> changes;
-    private String id;
-    private Date date;
+    private final List<GitFile> changes;
+    private final String id;
+    private final Date date;
 
     GitStash(List<GitFile> changes, String id, Date date) {
         this.changes = changes;
