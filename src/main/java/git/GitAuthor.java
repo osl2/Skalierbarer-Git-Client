@@ -40,7 +40,7 @@ public class GitAuthor {
         if (this == o) return true;
         if (!(o instanceof GitAuthor)) return false;
         GitAuthor gitAuthor = (GitAuthor) o;
-        return name.equals(gitAuthor.name) && email.equals(gitAuthor.email);
+        return (name.equals(gitAuthor.name) && email.equals(gitAuthor.email));
     }
 
     @Override
