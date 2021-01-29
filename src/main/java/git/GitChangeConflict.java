@@ -6,12 +6,17 @@ package git;
 public class GitChangeConflict {
     /* Is only instantiated inside the git Package */
     GitChangeConflict() {
-
     }
 
+    /**
+     * accepts the first option
+     */
     public void acceptA() {
     }
 
+    /**
+     * accepts the second option
+     */
     public void acceptB() {
     }
 

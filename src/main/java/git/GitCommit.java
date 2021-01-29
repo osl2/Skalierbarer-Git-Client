@@ -11,11 +11,13 @@ public class GitCommit {
     private Date date;
 
     /* Is only instantiated inside the git Package */
-    GitCommit(GitAuthor author, String message, String hash, boolean isSigned) {
+    GitCommit(GitAuthor author, String message, String hash, boolean isSigned, Date date, GitCommit[] parents) {
         this.author = author;
         this.message = message;
         this.hash = hash;
+        this.parents = parents;
         this.isSigned = isSigned;
+        this.date = date;
     }
 
     public GitAuthor getAuthor() {
@@ -40,7 +42,7 @@ public class GitCommit {
 
 
     public boolean revert() {
-        return false;
+        throw new AssertionError("not implemented yet");
     }
 
     /**
@@ -50,7 +52,7 @@ public class GitCommit {
      * @return String representation of the diff
      */
     public String getDiff(GitCommit other) {
-        return null;
+        throw new AssertionError("not implemented yet");
     }
 
     /**
@@ -59,7 +61,7 @@ public class GitCommit {
      * @return String representation to the working directory
      */
     public String getDiff() {
-        return null;
+        throw new AssertionError("not implemented yet");
     }
 
 }
