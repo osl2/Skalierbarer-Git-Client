@@ -1,28 +1,97 @@
 package views;
 
+import settings.Settings;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
-public class MainWindow implements  IView {
-  /* The MainWindow is NOT a view, rather a container for views, and therefore should NOT implement IView! */
-  /* TODO: This class should probably extend JFrame or the equivalent in JavaFX */
+public class MainWindow extends JFrame {
 
-  private IView loadedView;
+    private IView loadedView;
+    // Main-Panel
+    private JPanel contentPane;
+    // Panel containing our button row
+    private JPanel buttonPanel;
+    // Replacable panel
+    private JPanel viewPanel;
+    // Test-Button im Gui-Designer
+    private JButton button1;
 
-  public boolean setView(IView view) {
-    this.loadedView = view;
-    /* Set View */
-    return false;
-  }
+    /**
+     * Replace the lower view of the window.
+     * This will invoke {@link #update()}
+     *
+     * @param view the IView to show
+     * @return true if view was able to be changed
+     */
+    public boolean setView(IView view) {
+        this.loadedView = view;
+        // New Data -> Refresh view
+        this.update();
+        return true;
+    }
 
 
-  /**
-   * Returns the lower part of the main window.
-   */
-  public JPanel getView() {
-    throw new AssertionError("not implemented yet");
-  }
+    /**
+     * Get the lower part of the window
+     *
+     * @return the IView loaded into the lower part of the window
+     */
+    public IView getView() {
+        return this.loadedView;
+    }
 
-  public void update() {
 
-  }
+    /**
+     * Refreshes all dynamic parts of the Window. Including the MenuBar and loaded View
+     */
+    @SuppressWarnings("BoundFieldAssignment")
+    public void update() {
+        if (this.loadedView != null)
+            this.viewPanel = this.loadedView.getView();
+
+        // Refresh menubar
+        createMenubar();
+
+        // Enable or disable Tooltips
+        ToolTipManager.sharedInstance().setEnabled(Settings.getInstance().useTooltips());
+    }
+
+    /**
+     * Add a new Button to the ButtonRow in the top
+     *
+     * @param text     The Button Text
+     * @param toolTip  The Tooltip to be shown if {@link Settings#useTooltips()} returns true
+     * @param listener The ActionListener to be called when the Button is clicked.
+     */
+    public void addButton(String text, String toolTip, ActionListener listener) {
+        JButton newButton = new JButton(text);
+        newButton.setToolTipText(toolTip);
+        newButton.addActionListener(listener);
+        this.buttonPanel.add(newButton);
+    }
+
+    /**
+     * Open the Window. This invokes {@link #update()}
+     */
+    public void open() {
+        this.update();
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setContentPane(this.contentPane);
+        this.setPreferredSize(new Dimension(1280, 720));
+        this.pack();
+        this.setVisible(true);
+    }
+
+    private void createMenubar() {
+        JMenuBar bar = new JMenuBar();
+        JMenu m1 = new JMenu("Menu 1");
+        JMenu m2 = new JMenu("Menu 2");
+
+        bar.add(m1);
+        bar.add(m2);
+        this.setJMenuBar(bar);
+    }
+
 }

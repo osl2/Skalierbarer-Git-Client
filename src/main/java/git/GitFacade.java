@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GitFacade {
 
-    private Git git;
+    private GitData gitData;
 
     /**
      * Create a new Stash
