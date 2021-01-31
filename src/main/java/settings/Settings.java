@@ -74,5 +74,9 @@ public class Settings {
     this.showTreeView = showTreeView;
   }
 
+  /**
+   * TODO Was macht methode? Wofür ist sie gedacht?
+   * @return
+   */
   public boolean settingsChanged() {return false;}
 }
