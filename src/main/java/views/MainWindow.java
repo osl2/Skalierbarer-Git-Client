@@ -1,5 +1,7 @@
 package views;
 
+import settings.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -16,21 +18,34 @@ public class MainWindow extends JFrame {
     // Test-Button im Gui-Designer
     private JButton button1;
 
+    /**
+     * Replace the lower view of the window.
+     * This will invoke {@link #update()}
+     *
+     * @param view the IView to show
+     * @return true if view was able to be changed
+     */
     public boolean setView(IView view) {
         this.loadedView = view;
         // New Data -> Refresh view
         this.update();
-        return false;
+        return true;
     }
 
 
     /**
-     * Returns the lower part of the main window.
+     * Get the lower part of the window
+     *
+     * @return the IView loaded into the lower part of the window
      */
-    public JPanel getView() {
-        throw new AssertionError("not implemented yet");
+    public IView getView() {
+        return this.loadedView;
     }
 
+
+    /**
+     * Refreshes all dynamic parts of the Window. Including the MenuBar and loaded View
+     */
     @SuppressWarnings("BoundFieldAssignment")
     public void update() {
         if (this.loadedView != null)
@@ -38,8 +53,18 @@ public class MainWindow extends JFrame {
 
         // Refresh menubar
         createMenubar();
+
+        // Enable or disable Tooltips
+        ToolTipManager.sharedInstance().setEnabled(Settings.getInstance().useTooltips());
     }
 
+    /**
+     * Add a new Button to the ButtonRow in the top
+     *
+     * @param text     The Button Text
+     * @param toolTip  The Tooltip to be shown if {@link Settings#useTooltips()} returns true
+     * @param listener The ActionListener to be called when the Button is clicked.
+     */
     public void addButton(String text, String toolTip, ActionListener listener) {
         JButton newButton = new JButton(text);
         newButton.setToolTipText(toolTip);
@@ -47,6 +72,9 @@ public class MainWindow extends JFrame {
         this.buttonPanel.add(newButton);
     }
 
+    /**
+     * Open the Window. This invokes {@link #update()}
+     */
     public void open() {
         this.update();
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
