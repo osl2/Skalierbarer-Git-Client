@@ -8,7 +8,7 @@ import java.util.List;
 public class Level {
   private final String name; //name as a unique identifier
   private final int id; //For comparing
-  List<ICommand> commands;
+  private List<ICommand> commands;
 
   public Level(String name, List<ICommand> commands, int id) {
     this.commands = commands;
