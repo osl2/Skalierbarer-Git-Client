@@ -1,12 +1,13 @@
 package git;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import settings.Settings;
 
@@ -31,22 +32,16 @@ public class GitData {
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             builder.setMustExist(true);
-            builder.setGitDir(path);
+            if (path.getAbsolutePath().matches(".*/.git$"))
+                builder.setGitDir(path);
+            else
+                builder.setWorkTree(path);
+            //builder.setGitDir(path);
             repository = builder.build();
-            git = git.open(path);
+            git = Git.open(path);
         } catch (IOException e) {
+            System.out.println(e);
             //TODO: Fehlerbehandlung machen
-        }
-        try {
-            //Path to the .git folder
-            String pathToRepo;
-            pathToRepo = path + "\\.git";
-            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-            repositoryBuilder.setMustExist( true );
-            repositoryBuilder.setGitDir(new File(pathToRepo));
-            repository = repositoryBuilder.build();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -98,16 +93,14 @@ public class GitData {
     public List<GitBranch> getBranches() {
         try {
             List<Ref> branches = git.branchList().call();
-            List<GitBranch> gitBranches = new ArrayList<GitBranch>();
-            for (Ref branch : branches){
+            List<GitBranch> gitBranches = new ArrayList<>();
+            for (Ref branch : branches) {
                 gitBranches.add(getBranch(branch));
             }
             return gitBranches;
         } catch (GitAPIException e) {
             //TODO: Fehlerbehandlung
-        } catch (MissingObjectException e) {
-            e.printStackTrace();
-        } catch (IncorrectObjectTypeException e) {
+        } catch (MissingObjectException | IncorrectObjectTypeException e) {
             e.printStackTrace();
         }
 
@@ -122,20 +115,18 @@ public class GitData {
      */
     public List<GitBranch> getBranches(GitRemote remote) {
 
-        List<Ref> branches = null; //creates a new list of branches from JGit
+        List<Ref> branches; //creates a new list of branches from JGit
         List<GitBranch> toReturn = new ArrayList<>(); //List of Branches from Git Client
         try {
             branches = git.branchList().call();
-        GitBranch branchToAdd;
-        for (Ref branch : branches){
-            toReturn.add(getBranch(branch));
+            GitBranch branchToAdd;
+            for (Ref branch : branches) {
+                toReturn.add(getBranch(branch));
 
-        }
+            }
         } catch (GitAPIException e) {
             //TODO: Exception fangen
-        } catch (MissingObjectException e) {
-            e.printStackTrace();
-        } catch (IncorrectObjectTypeException e) {
+        } catch (MissingObjectException | IncorrectObjectTypeException e) {
             e.printStackTrace();
         }
         return toReturn;
@@ -162,19 +153,27 @@ public class GitData {
 
     /**
      * Method to create a GitCommit from a JGit reference
+     *
      * @param revCommit RevCommit to the Commit that should be created
      * @return GitCommit, that is equivalent to the RevCommit
      */
-    private GitCommit getCommit (RevCommit revCommit){
+    private GitCommit getCommit(RevCommit revCommit) {
+        RevWalk walk = new RevWalk(repository);
+        try {
+            walk.parseHeaders(revCommit);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String authorName = revCommit.getAuthorIdent().getName();
         String authorEMail = revCommit.getAuthorIdent().getEmailAddress();
         GitAuthor author = new GitAuthor(authorName, authorEMail);
 
         String message = revCommit.getFullMessage();
 
-        List <GitCommit> parentsList = new ArrayList<>();
+        List<GitCommit> parentsList = new ArrayList<>();
         RevCommit[] parentsRev = revCommit.getParents();
-        for (RevCommit parent : parentsRev){ //Resolve for each parent
+        for (RevCommit parent : parentsRev) { //Resolve for each parent
+            assert parent != null;
             parentsList.add(getCommit(parent)); //Hier habe ich einen Nullpointer, wenn ich den Author des Parents o.ä. abfrage...
         }
         GitCommit[] parents = parentsList.toArray(GitCommit[]::new);
@@ -182,11 +181,7 @@ public class GitData {
         String hash = revCommit.getName();
 
         boolean isSigned;
-        if (revCommit.getRawGpgSignature() != null){
-            isSigned = true;
-        } else {
-            isSigned = false;
-        }
+        isSigned = revCommit.getRawGpgSignature() != null;
 
 
         int commitTime = revCommit.getCommitTime();
