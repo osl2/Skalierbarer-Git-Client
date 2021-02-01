@@ -64,7 +64,6 @@ public class FirstUseDialogView implements IDialogView {
   }
 
   public void show() {
-    JFrame frame = new JFrame("FirstUseDialogView");
     frame.setContentPane(new FirstUseDialogView().FirstUseDialog);
     JPanel panel = new JPanel();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,10 +74,6 @@ public class FirstUseDialogView implements IDialogView {
 
   public void update() {
 
-  }
-  public static void main(String args[]){
-    FirstUseDialogView f = new FirstUseDialogView();
-    f.show();
   }
 
 }
