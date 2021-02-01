@@ -12,7 +12,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-.idea
+.idea/*
 
 # Generated files
 .idea/**/contentModel.xml
@@ -197,7 +197,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -221,4 +222,3 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/linux,osx
 
 .idea/checkstyleidea-libs/
-*.iml
