@@ -4,6 +4,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 public class GitCommit {
   private final GitAuthor author;
@@ -80,4 +81,12 @@ public class GitCommit {
     throw new AssertionError("not implemented yet");
   }
 
+
+  /**
+   * Method to get the files changed in that Commit
+   * @return List of the changed Files
+   */
+  public List<GitFile> getChangedFiles () {
+    throw new AssertionError("not implemented");
+  }
 }
