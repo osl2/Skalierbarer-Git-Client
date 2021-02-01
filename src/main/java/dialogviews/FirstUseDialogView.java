@@ -4,6 +4,7 @@ import commands.Config;
 import commands.Init;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -63,13 +64,43 @@ public class FirstUseDialogView implements IDialogView {
     });
   }
 
-  public void show() {
+/*  public void show() {
     frame.setContentPane(new FirstUseDialogView().FirstUseDialog);
     JPanel panel = new JPanel();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();
     frame.setSize(700, 300);
     frame.setVisible(true);
+  }*/
+
+  /**
+   * DialogWindow Title
+   *
+   * @return Window Title as String
+   */
+  @Override
+  public String getTitle() {
+    return null;
+  }
+
+  /**
+   * The Size of the newly created Dialog
+   *
+   * @return 2D Dimension
+   */
+  @Override
+  public Dimension getDimension() {
+    return null;
+  }
+
+  /**
+   * The content Panel containing all contents of the Dialog
+   *
+   * @return the shown content
+   */
+  @Override
+  public JPanel getPanel() {
+    return null;
   }
 
   public void update() {

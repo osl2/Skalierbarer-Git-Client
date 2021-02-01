@@ -1,12 +1,39 @@
 package dialogviews;
 
-public class RevertDialogView implements IDialogView{
+import javax.swing.*;
+import java.awt.*;
+
+public class RevertDialogView implements IDialogView {
+
 
     /**
-     * Open (and create if necessary) the Dialog.
+     * DialogWindow Title
+     *
+     * @return Window Title as String
      */
-    public void show() {
+    @Override
+    public String getTitle() {
+        return null;
+    }
 
+    /**
+     * The Size of the newly created Dialog
+     *
+     * @return 2D Dimension
+     */
+    @Override
+    public Dimension getDimension() {
+        return null;
+    }
+
+    /**
+     * The content Panel containing all contents of the Dialog
+     *
+     * @return the shown content
+     */
+    @Override
+    public JPanel getPanel() {
+        return null;
     }
 
     /**
