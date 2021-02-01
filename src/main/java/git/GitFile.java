@@ -13,6 +13,11 @@ public class GitFile {
     GitFile() {
     }
 
+    GitFile(int size, File path) {
+        this.size = size;
+        this.path = path;
+    }
+
     /**
      * Method to get, if this file is added to the git repository.
      *
