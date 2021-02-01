@@ -1,6 +1,9 @@
 package git;
 
+import commands.Remote;
+import commands.Stash;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -9,12 +12,18 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -75,7 +84,18 @@ public class GitData {
      * @return A list of all Stashes
      */
     public List<GitStash> getStashes() {
-        throw new AssertionError("not implemented yet");
+        try {
+        StashListCommand stashListCommand = new StashListCommand(repository);
+        Collection<RevCommit> listOfStashes = stashListCommand.call();
+        List<GitStash> gitStashes = new ArrayList<>();
+        for (RevCommit stash : listOfStashes){
+            gitStashes.add(new GitStash(stash));
+        }
+        return gitStashes;
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -95,7 +115,23 @@ public class GitData {
      * @return A list of all remotes
      */
     public List<GitRemote> getRemotes() {
-        throw new AssertionError("not implemented yet");
+        try {
+            List<RemoteConfig> remotes = git.remoteList().call();
+            List<GitRemote> gitRemotes = new ArrayList<>();
+            for (RemoteConfig config: remotes){
+                List<URIish> uris = config.getURIs();
+                String user = uris.iterator().next().getUser();
+                String name = config.getName();
+                String urlString = uris.iterator().next().getPath();
+                URIish uri = config.getURIs().iterator().next();
+                URL url = new URL (uri.toString());
+                gitRemotes.add(new GitRemote(url, user, name));
+            }
+            return gitRemotes;
+        } catch (GitAPIException | MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -103,7 +139,7 @@ public class GitData {
      *
      * @return A list of branches in the repository
      */
-    public List<GitBranch> getBranches() throws IOException {
+    public List<GitBranch> getBranches() {
         try {
             List<Ref> branches = git.branchList().call();
             List<GitBranch> gitBranches = new ArrayList<>();
@@ -114,6 +150,8 @@ public class GitData {
         } catch (GitAPIException e) {
             //TODO: Fehlerbehandlung
         } catch (MissingObjectException | IncorrectObjectTypeException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -126,8 +164,8 @@ public class GitData {
      * @param remote Online repository, where the branches come from
      * @return List of branches in the repository
      */
-    public List<GitBranch> getBranches(GitRemote remote) {
-
+    public List<GitBranch> getBranches(GitRemote remote) throws IOException {
+//TODO: Überarbeiten
         List<Ref> branches; //creates a new list of branches from JGit
         List<GitBranch> toReturn = new ArrayList<>(); //List of Branches from Git Client
         try {
@@ -153,7 +191,7 @@ public class GitData {
      * @throws IncorrectObjectTypeException
      * @throws MissingObjectException
      */
-    private GitBranch getBranch (Ref branchRef) throws GitAPIException, IncorrectObjectTypeException, MissingObjectException {
+    private GitBranch getBranch (Ref branchRef) throws GitAPIException, IOException {
         GitBranch gitBranch = new GitBranch();
         gitBranch.setName(branchRef.getName());
         //Gets a List of the newest Commits from the Branch
@@ -165,12 +203,13 @@ public class GitData {
     }
 
     /**
-     * Method to create a GitCommit from a JGit reference
+     * Method to create a GitCommit from a JGit reference.
      *
      * @param revCommit RevCommit to the Commit that should be created
      * @return GitCommit, that is equivalent to the RevCommit
+     * @throws IOException If the parrent-Commits can´t be resolved
      */
-    private GitCommit getCommit(RevCommit revCommit) {
+    private GitCommit getCommit(RevCommit revCommit) throws IOException {
         RevWalk walk = new RevWalk(repository);
         try {
             walk.parseHeaders(revCommit);
@@ -186,8 +225,8 @@ public class GitData {
         List<GitCommit> parentsList = new ArrayList<>();
         RevCommit[] parentsRev = revCommit.getParents();
         for (RevCommit parent : parentsRev) { //Resolve for each parent
-            assert parent != null;
-            parentsList.add(getCommit(parent)); //Hier habe ich einen Nullpointer, wenn ich den Author des Parents o.ä. abfrage...
+            RevWalk revWalk = new RevWalk(repository);
+            parentsList.add(getCommit(revWalk.parseCommit(parent.getId())));
         }
         GitCommit[] parents = parentsList.toArray(GitCommit[]::new);
 
