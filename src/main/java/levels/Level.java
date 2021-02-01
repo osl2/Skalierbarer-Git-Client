@@ -6,10 +6,14 @@ import java.util.List;
 
 
 public class Level {
-  private String name; //name as a unique identifier
+  private final String name; //name as a unique identifier
+  private final int id; //For comparing
+  private List<ICommand> commands;
 
-  public Level(String name, List<ICommand> commands) {
+  public Level(String name, List<ICommand> commands, int id) {
+    this.commands = commands;
     this.name = name;
+    this.id = id;
   }
 
   /**
@@ -18,7 +22,7 @@ public class Level {
    * @return name of the level
    */
   String getLevelName() {
-    return "";
+    return name;
   }
 
   /**
@@ -27,7 +31,15 @@ public class Level {
    * @return List of callable commands
    */
   public List<ICommand> getCommands() {
-    return null;
+
+    return commands;
   }
 
+  /**
+   * Method to get the id of the Level
+   * @return Returns the id
+   */
+  public int getId() {
+    return id;
+  }
 }
