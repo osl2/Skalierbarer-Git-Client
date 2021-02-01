@@ -2,9 +2,10 @@ package views.filter;
 
 import git.GitAuthor;
 import git.GitCommit;
+import views.HistoryView;
 
 /**
- * Filter {@link views.HistoryView} by {@link git.GitAuthor}
+ * Filter {@link HistoryView} by {@link git.GitAuthor}
  */
 public class HistoryAuthorFilter extends AbstractHistoryFilter {
 

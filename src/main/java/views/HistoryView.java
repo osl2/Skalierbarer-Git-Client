@@ -3,20 +3,25 @@ package views;
 import git.GitCommit;
 import views.filter.AbstractHistoryFilter;
 
-import javax.swing.JPanel;
+import git.GitCommit;
+import views.filter.AbstractHistoryFilter;
+
+import javax.swing.*;
 
 public class HistoryView extends JPanel implements IView {
-  public JPanel getView() {
-    return this;
-  }
+    private JList list1;
+    private JScrollPane scrollPane;
+    private JList list2;
+    public JPanel getView() {
+        return this;
+    }
 
-  public void update() {
+    public void update() {
 
-  }
+    }
 
-  private void applyFilter(AbstractHistoryFilter filter) {
-  }
+    private void applyFilter(AbstractHistoryFilter filter) {
+    }
 
-  public void getFiles(GitCommit commit) {}
-
+    public void getFiles(GitCommit commit) {}
 }
