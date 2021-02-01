@@ -1,5 +1,6 @@
 package controller;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import dialogviews.IDialogView;
 import views.HistoryView;
 import views.IView;
@@ -12,6 +13,12 @@ public class GUIController {
 
     private GUIController() {
         /* This class is a singleton */
+
+        // Install FlatLaf light style
+        FlatLightLaf.install();
+
+        // Setup MainWindow
+        initializeMainWindow();
     }
 
     public static GUIController getInstance() {
@@ -19,15 +26,6 @@ public class GUIController {
             INSTANCE = new GUIController();
 
         return INSTANCE;
-    }
-
-    /**
-     * Set the instance to be managed by the controller
-     *
-     * @param window the instance to be managed
-     */
-    public void setWindow(MainWindow window) {
-        this.window = window;
     }
 
     /**
@@ -57,6 +55,16 @@ public class GUIController {
      */
     public void setCommandLine(String commandLine) {
 
+    }
+
+    private void initializeMainWindow() {
+        this.window = new MainWindow();
+        for (int i = 1; i <= 10; i++) {
+            int finalI = i;
+            this.window.addButton("Button " + i, "Tooltip" + i,
+                    e -> System.out.printf("Button %d gedrückt%n", finalI)
+            );
+        }
     }
 
     /**
