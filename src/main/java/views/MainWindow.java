@@ -15,8 +15,6 @@ public class MainWindow extends JFrame {
     private JPanel buttonPanel;
     // Replacable panel
     private JPanel viewPanel;
-    // Test-Button im Gui-Designer
-    private JButton button1;
 
     /**
      * Replace the lower view of the window.
