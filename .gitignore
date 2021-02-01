@@ -220,3 +220,4 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/linux,osx
 
 .idea/checkstyleidea-libs/
+*.iml
