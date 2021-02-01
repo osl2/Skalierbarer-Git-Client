@@ -1,6 +1,8 @@
 package git;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 
@@ -35,6 +37,17 @@ public class GitData {
         } catch (IOException e) {
             //TODO: Fehlerbehandlung machen
         }
+        try {
+            //Path to the .git folder
+            String pathToRepo;
+            pathToRepo = path + "\\.git";
+            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+            repositoryBuilder.setMustExist( true );
+            repositoryBuilder.setGitDir(new File(pathToRepo));
+            repository = repositoryBuilder.build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -43,9 +56,10 @@ public class GitData {
      * @return Array of all commits without stashes
      */
     public List<GitCommit> getCommits() {
-        throw new AssertionError("not implemented yet");
 
+        throw new AssertionError("not implemented yet");
     }
+
 
     /**
      * Get all stashes of the current Repository.
@@ -82,8 +96,22 @@ public class GitData {
      * @return A list of branches in the repository
      */
     public List<GitBranch> getBranches() {
-//        List<Ref> branches = git.branchList().call();
-        throw new AssertionError("not implemented yet");
+        try {
+            List<Ref> branches = git.branchList().call();
+            List<GitBranch> gitBranches = new ArrayList<GitBranch>();
+            for (Ref branch : branches){
+                gitBranches.add(getBranch(branch));
+            }
+            return gitBranches;
+        } catch (GitAPIException e) {
+            //TODO: Fehlerbehandlung
+        } catch (MissingObjectException e) {
+            e.printStackTrace();
+        } catch (IncorrectObjectTypeException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
@@ -102,33 +130,41 @@ public class GitData {
         for (Ref branch : branches){
             toReturn.add(getBranch(branch));
 
-//           branchToAdd = new GitBranch();
-//           branchToAdd.setName(branch.getName());
-//           RevCommit commit = git.log().setMaxCount(1).call().iterator().next();
-//           branchToAdd.setHead(getCommit(commit));
-//           toReturn.add(branchToAdd);
         }
         } catch (GitAPIException e) {
             //TODO: Exception fangen
+        } catch (MissingObjectException e) {
+            e.printStackTrace();
+        } catch (IncorrectObjectTypeException e) {
+            e.printStackTrace();
         }
         return toReturn;
     }
 
-    private GitBranch getBranch (Ref branchRef) throws GitAPIException {
+    /**
+     * Method to get the given Branch as a GitBranch
+     * @param branchRef
+     * @return
+     * @throws GitAPIException
+     * @throws IncorrectObjectTypeException
+     * @throws MissingObjectException
+     */
+    private GitBranch getBranch (Ref branchRef) throws GitAPIException, IncorrectObjectTypeException, MissingObjectException {
         GitBranch gitBranch = new GitBranch();
         gitBranch.setName(branchRef.getName());
-
-        //Gets the last commit in the branch
-        System.out.println(branchRef.getName());
-        RevCommit checkedOut = git.log().setMaxCount(1).call().iterator().next();
-        git.checkout().setName(branchRef.getName()).call();
-        RevCommit newestCommitOfBranch = git.log().setMaxCount(1).call().iterator().next();
-        git.checkout().setName(checkedOut.getName()).call();
-
-        gitBranch.setHead(getCommit(newestCommitOfBranch));
+        //Gets a List of the newest Commits from the Branch
+        Iterable<RevCommit> commits = git.log().add(branchRef.getObjectId()).setMaxCount(1).call();
+        //Gets the first commit of the list above
+        RevCommit newestCommit = commits.iterator().next();
+        gitBranch.setHead(getCommit(newestCommit));
         return gitBranch;
     }
 
+    /**
+     * Method to create a GitCommit from a JGit reference
+     * @param revCommit RevCommit to the Commit that should be created
+     * @return GitCommit, that is equivalent to the RevCommit
+     */
     private GitCommit getCommit (RevCommit revCommit){
         String authorName = revCommit.getAuthorIdent().getName();
         String authorEMail = revCommit.getAuthorIdent().getEmailAddress();
@@ -139,7 +175,7 @@ public class GitData {
         List <GitCommit> parentsList = new ArrayList<>();
         RevCommit[] parentsRev = revCommit.getParents();
         for (RevCommit parent : parentsRev){ //Resolve for each parent
-            parentsList.add(getCommit(parent));
+            parentsList.add(getCommit(parent)); //Hier habe ich einen Nullpointer, wenn ich den Author des Parents o.ä. abfrage...
         }
         GitCommit[] parents = parentsList.toArray(GitCommit[]::new);
 
