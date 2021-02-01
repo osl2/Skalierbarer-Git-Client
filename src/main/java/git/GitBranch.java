@@ -62,4 +62,15 @@ public class GitBranch {
     //TODO: Implementieren!!
     return null;
   }
+
+  @Override
+  public boolean equals (Object o){
+    if (o.getClass() == this.getClass()){
+      GitBranch toCheck = (GitBranch) o;
+      if (toCheck.getCommit() == this.getCommit() && toCheck.getName() == this.getName()){
+        return true;
+      }
+    }
+    return false;
+  }
 }
