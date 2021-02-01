@@ -51,8 +51,21 @@ public class GitData {
      * @return Array of all commits without stashes
      */
     public List<GitCommit> getCommits() {
-
-        throw new AssertionError("not implemented yet");
+        try {
+            Iterable<RevCommit> allCommits = null;
+            allCommits = git.log().all().call();
+            List<GitCommit> commits = new ArrayList<>();
+            for (RevCommit commit : allCommits) {
+                commits.add(new GitCommit(commit));
+            }
+            return commits;
+        } catch (GitAPIException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        //TODO: Fehlerbehandlung
+            e.printStackTrace();
+    }
+        return null;
     }
 
 
@@ -90,7 +103,7 @@ public class GitData {
      *
      * @return A list of branches in the repository
      */
-    public List<GitBranch> getBranches() {
+    public List<GitBranch> getBranches() throws IOException {
         try {
             List<Ref> branches = git.branchList().call();
             List<GitBranch> gitBranches = new ArrayList<>();
