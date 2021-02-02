@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="views.MainWindow">
-  <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="0" bottom="0" right="0"/>
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
       <xy x="20" y="20" width="1280" height="720"/>
     </constraints>
@@ -11,9 +10,7 @@
     <border type="none"/>
     <children>
       <grid id="c0e61" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
+        <constraints border-constraint="North"/>
         <properties/>
         <border type="none"/>
         <children>
@@ -27,9 +24,7 @@
       </grid>
       <grid id="2eb50" binding="viewPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="2" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
+        <constraints border-constraint="Center"/>
         <properties>
           <background color="-4521838"/>
           <opaque value="true"/>

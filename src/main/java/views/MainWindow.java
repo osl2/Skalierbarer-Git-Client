@@ -48,8 +48,13 @@ public class MainWindow extends JFrame {
      */
     @SuppressWarnings("BoundFieldAssignment")
     public void update() {
-        if (this.loadedView != null)
+        if (this.loadedView != null) {
+            this.contentPane.remove(viewPanel);
             this.viewPanel = this.loadedView.getView();
+            this.contentPane.add(viewPanel);
+            this.viewPanel.revalidate();
+            this.viewPanel.repaint();
+        }
 
         // Refresh menubar
         createMenubar();
