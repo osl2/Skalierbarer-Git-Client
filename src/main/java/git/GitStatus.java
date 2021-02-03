@@ -22,7 +22,7 @@ public class GitStatus {
      *
      * @return The unique GitStatus object
      */
-    public GitStatus getGitStatus() {
+    public static GitStatus getGitStatus() {
         if (gitStatus == null) {
             gitStatus = new GitStatus();
         }
