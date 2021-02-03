@@ -7,6 +7,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import settings.Settings;
 
 import java.io.File;
@@ -20,7 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Is testing GitData
  */
 public class GitDataTest {
-    private static final File repo = new File(System.getProperty("java.io.tmpdir"), "testRepo1");
+    private static final String[][] COMMIT_DATA = {
+            new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
+            new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
+            new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
+            new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
+    };
+    @TempDir
+    static File repo;
     GitData gitData;
     Git git;
     Repository repository;
@@ -32,32 +40,25 @@ public class GitDataTest {
         Git.init().setDirectory(repo).setBare(false).call();
         Git git = Git.open(repo);
         // All commits are empty and contain no changes. This needs to change if further testcases check data.
-        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-                .setMessage("Commit 1").call();
-        git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-                .setMessage("Commit 2").call();
-        git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-                .setMessage("Commit 3").call();
-        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-                .setMessage("Commit 4").call();
 
-        // Delete the Repository when the VM dies.
-        repo.deleteOnExit();
+        for (String[] data : COMMIT_DATA) {
+            git.commit()
+                    .setCommitter(data[0], data[1])
+                    .setSign(false)
+                    .setMessage(data[2])
+                    .call();
+        }
         git.close();
     }
 
 
     @BeforeEach
-    public void init() {
+    public void init() throws IOException {
         settings = Settings.getInstance();
         settings.setActiveRepositoryPath(repo);
         gitData = new GitData();
-        try {
-            git = Git.open(repo);
-            repository = git.getRepository();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        git = Git.open(repo);
+        repository = git.getRepository();
     }
 
     @Test
@@ -69,5 +70,22 @@ public class GitDataTest {
 
     }
 
+    @Test
+    public void commitsAreSortedFromNewestToOldestTest() {
+        assertEquals(COMMIT_DATA.length, gitData.getCommits().size());
+        for (int i = COMMIT_DATA.length - 1; i >= 0; i--) {
+            assertEquals(new GitAuthor(COMMIT_DATA[i][0], COMMIT_DATA[i][1]),
+                    gitData.getCommits().get(COMMIT_DATA.length - i - 1).getAuthor());
+        }
+
+    }
+
+    @Test
+    public void commitsHaveCorrectCommitMessageTest() {
+        for (int i = COMMIT_DATA.length - 1; i >= 0; i--) {
+            assertEquals(COMMIT_DATA[i][2],
+                    gitData.getCommits().get(COMMIT_DATA.length - i - 1).getMessage());
+        }
+    }
 }
 
