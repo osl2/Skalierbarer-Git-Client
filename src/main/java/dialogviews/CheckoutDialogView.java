@@ -5,6 +5,15 @@ import java.awt.*;
 
 public class CheckoutDialogView implements IDialogView {
 
+    private JTree tree1;
+    private JButton abortButton;
+    private JButton okButton;
+
+    /**
+     * method that is called to show the dialog view.
+     */
+    public void show() {
+    }
 
     /**
      * DialogWindow Title
@@ -41,5 +50,5 @@ public class CheckoutDialogView implements IDialogView {
      */
     public void update() {
 
-    }
+  }
 }
