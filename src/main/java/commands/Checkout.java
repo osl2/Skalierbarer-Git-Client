@@ -70,11 +70,22 @@ public class Checkout implements ICommand, ICommandGUI {
 
     }
 
+    /**
+     * Defines the target of the executed checkout command.
+     * The last setDestination which is called defines the final target.
+     *
+     * @param commit the commit to check out
+     */
     public void setDestination(GitCommit commit) {
         this.branch = null;
         this.commit = commit;
     }
 
+    /**
+     * See {@link #setDestination(GitCommit)}
+     *
+     * @param branch the branch to check out
+     */
     public void setDestination(GitBranch branch) {
         this.commit = null;
         this.branch = branch;
