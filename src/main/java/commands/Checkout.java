@@ -2,6 +2,7 @@ package commands;
 
 import git.GitBranch;
 import git.GitCommit;
+import git.GitFacade;
 
 public class Checkout implements ICommand, ICommandGUI {
     private String errorMessage;
@@ -17,12 +18,21 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
+        GitFacade facade = new GitFacade();
+        if (branch != null) {
+            this.errorMessage = "";
+            return facade.checkout(branch);
+        } else if (commit != null) {
+            this.errorMessage = "";
+            return facade.checkout(commit);
+        }
+        this.errorMessage = "Weder Zweig noch Einbuchung ausgewählt.";
         return false;
     }
 
 
     public String getErrorMessage() {
-        return null;
+        return this.errorMessage;
     }
 
     /**
@@ -42,7 +52,8 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return The name of the command
      */
     public String getName() {
-        return null;
+        // TODO: lokalisierung
+        return "Checkout";
     }
 
     /**
@@ -51,7 +62,8 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return description as a String
      */
     public String getDescription() {
-        return null;
+        // TODO: lokalisierung
+        return "Wechselt auf einen anderen Zweig / eine andere Einbuchung";
     }
 
     public void onButtonClicked() {
@@ -59,11 +71,13 @@ public class Checkout implements ICommand, ICommandGUI {
     }
 
     public void setDestination(GitCommit commit) {
-        throw new AssertionError("not implemented");
+        this.branch = null;
+        this.commit = commit;
     }
 
     public void setDestination(GitBranch branch) {
-        throw new AssertionError("not implemented");
+        this.commit = null;
+        this.branch = branch;
     }
 
 }
