@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HistoryViewRenderer extends JTextArea implements ListCellRenderer {
-  int minRows;
+  private int minRows;
 
   /**
    * Sets the minimal amount of rows required by one list entry. A list entry has to be a String
@@ -36,6 +36,7 @@ public class HistoryViewRenderer extends JTextArea implements ListCellRenderer {
     if (width > 0) {
       this.setSize(width, Short.MAX_VALUE);
     }
+    this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     return this;
 
   }

@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
@@ -35,9 +36,10 @@ public class HistoryView extends JPanel implements IView {
               "ggggggggggggggggggggggg \n" +
               "Guten Tag am heutigen Tag haben wiraber ein sehr schönes Wetter nicht wahr. Es scheint das die Sonne scheint. ggggggggggg ggggggggggggggggg gggggggggggg gggggggggggggggg ggggggggggggg ggggggggg gggggggggggggggg ggggggggggggggg ggggggggg gggggggg" +
               "ggggggg gggggggggggggggg ggggggggggggggggg gggggggggggg gggggggggggggg gggggggggggggggggg gggggggggggggg ggggggggggggggggg ggggggg" + i);
-      dummyListe2.add("Eintrag" + i);
+      dummyListe2.add("Eintraggggggggggggggggggggggggggggggggggggggggggggggggggggggggg" + i);
       System.out.println(dummyListe1.get(i));
     }
+    dummyListe1.add(0, "Hallo");
   }
 
   /**
@@ -46,6 +48,8 @@ public class HistoryView extends JPanel implements IView {
    */
   public HistoryView() {
     //this.add(new HistoryView().historyView);
+    commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+    fileScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
@@ -74,7 +78,7 @@ public class HistoryView extends JPanel implements IView {
   }
 
   public JPanel getView() {
-    return this;
+    return new HistoryView().historyView;
   }
 
   public void update() {
@@ -99,20 +103,6 @@ public class HistoryView extends JPanel implements IView {
   private void applyCellRenderer() {
     commitList.setCellRenderer(new views.listCellRenderer.HistoryViewRenderer(6));
     fileList.setCellRenderer(new views.listCellRenderer.HistoryViewRenderer(1));
-
-    ComponentListener l = new ComponentAdapter() {
-
-      @Override
-      public void componentResized(ComponentEvent e) {
-        // next line possible if list is of type JXList
-        // list.invalidateCellSizeCache();
-        // for core: force cache invalidation by temporarily setting fixed height
-        fileList.setFixedCellHeight(10);
-        fileList.setFixedCellHeight(-1);
-      }
-
-    };
-    fileList.addComponentListener(l);
   }
 
   /**
@@ -126,7 +116,11 @@ public class HistoryView extends JPanel implements IView {
         int index = commitList.getSelectedIndex();
         //GitCommit selectedCommit = listOfCommits.get(index);
         //String activeMessage = selectedCommit.getMessage();
-        //commitMessage.setText(activeMessage);
+        //GitAuthor author = selectedCommit.getAuthor();
+        //String name = author.getName();
+        //String eMail = author.getEmail();
+        //Date date = selectedCommit.getDate();
+        //commitMessage.setText(name + " " + eMail + " " + date ": " + activeMessage);
         DefaultListModel fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -134,9 +128,13 @@ public class HistoryView extends JPanel implements IView {
         String s = dummyListe1.get(index);
         int width = commitMessage.getWidth();
         commitMessage.setVisible(true);
+        // Margin not working
+        Insets inset = new Insets(10, 10, 10, 10);
+        commitMessage.setMargin(inset);
         if(width > 0) {
           commitMessage.setSize(width, Short.MAX_VALUE);
         }
+        commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         commitMessage.setLineWrap(true);
         commitMessage.setWrapStyleWord(true);
         commitMessage.setText(s);
