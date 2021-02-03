@@ -80,12 +80,7 @@ public class GUIController {
     }
 
 
-    // TODO: Resolve: Why do we have this split? Is it even necessary? Would a composition pattern make more sense here?
-    public void update(IView view) {
-        throw new AssertionError("not implemented");
-    }
-
-    public void update(IDialogView dialog) {
+    public void update() {
         throw new AssertionError("not implemented");
     }
 
