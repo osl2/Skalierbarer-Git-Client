@@ -5,14 +5,18 @@ import java.awt.*;
 
 public class CheckoutDialogView implements IDialogView {
 
+    private JPanel contentPane;
+
     private JTree tree1;
     private JButton abortButton;
     private JButton okButton;
 
-    /**
-     * method that is called to show the dialog view.
-     */
-    public void show() {
+    public CheckoutDialogView() {
+        // Todo: localize
+        this.abortButton.setText("Abbrechen");
+
+        // Todo: localize
+        this.okButton.setText("Ok");
     }
 
     /**
@@ -22,7 +26,7 @@ public class CheckoutDialogView implements IDialogView {
      */
     @Override
     public String getTitle() {
-        return null;
+        return "Titel";
     }
 
     /**
@@ -32,7 +36,7 @@ public class CheckoutDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return null;
+        return new Dimension(400, 600);
     }
 
     /**
@@ -42,7 +46,7 @@ public class CheckoutDialogView implements IDialogView {
      */
     @Override
     public JPanel getPanel() {
-        return null;
+        return this.contentPane;
     }
 
     /**
