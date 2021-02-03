@@ -1,16 +1,35 @@
 package dialogviews;
 
+import javax.swing.*;
+import java.awt.*;
+
 public interface IDialogView {
 
-  /**
-   * Open (and create if necessary) the Dialog.
-   */
-  void show();
+    /**
+     * DialogWindow Title
+     *
+     * @return Window Title as String
+     */
+    String getTitle();
 
-  /**
-   * Refresh the contents of the Dialog window,
-   * i.e. when data changes
-   */
-  void update();
+    /**
+     * The Size of the newly created Dialog
+     *
+     * @return 2D Dimension
+     */
+    Dimension getDimension();
+
+    /**
+     * The content Panel containing all contents of the Dialog
+     *
+     * @return the shown content
+     */
+    JPanel getPanel();
+
+    /**
+     * Refresh the contents of the Dialog window,
+     * i.e. when data changes
+     */
+    void update();
 
 }
