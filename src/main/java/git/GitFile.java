@@ -32,6 +32,18 @@ public class GitFile {
     }
 
     /**
+     * Method to get the size of the file
+     * @return Size of the file
+     */
+    public int getSize(){
+        return this.size;
+    }
+
+    public File getPath(){
+        return this.path;
+    }
+
+    /**
      * Method to get, if this file is added to the git repository.
      *
      * @return true if file has not been added to the index and file
