@@ -6,6 +6,7 @@ import views.IView;
 import views.MainWindow;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
 
 public class GUIController {
 
@@ -44,13 +45,12 @@ public class GUIController {
 
     /**
      * Close an open Dialog.
+     * TODO: remove parameter?
      *
      * @param dialog the Dialog to be closed
      */
     public void closeDialogView(IDialogView dialog) {
-        // Do we need custom modal logic? Will our dialogs just give us a JPanel?
-
-
+        this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
     }
 
     /**
