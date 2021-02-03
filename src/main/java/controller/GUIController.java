@@ -5,10 +5,13 @@ import views.HistoryView;
 import views.IView;
 import views.MainWindow;
 
+import javax.swing.*;
+
 public class GUIController {
 
     private static GUIController INSTANCE;
     private MainWindow window;
+    private JDialog currentDialog;
 
     private GUIController() {
         /* This class is a singleton */
@@ -65,8 +68,19 @@ public class GUIController {
      * @param dialog the Dialog to be opened
      */
     public void openDialog(IDialogView dialog) {
-        /* TODO: Resolve: The easiest way to resolve the modality issue would be to construct the JDialog here
-                          For that we need more stuff (Title, Size, etc.) in the IDialogView interface */
+        this.currentDialog = createDialog(dialog);
+        currentDialog.setVisible(true);
+    }
+
+    private JDialog createDialog(IDialogView dialogView) {
+        JDialog dialog = new JDialog(window, dialogView.getTitle(), true);
+        dialog.setResizable(false);
+        dialog.setContentPane(dialogView.getPanel());
+        dialog.revalidate();
+        dialog.repaint();
+        dialog.setSize(dialogView.getDimension());
+        dialog.setLocationRelativeTo(window);
+        return dialog;
     }
 
     /**
