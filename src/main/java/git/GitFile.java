@@ -8,8 +8,11 @@ import settings.Settings;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
+import settings.Settings;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.IOException;
 
 public class GitFile {
@@ -96,9 +99,14 @@ public class GitFile {
         GitData gitData = new GitData();
         Repository repository = GitData.getRepository();
         Git git = gitData.getJGit();
-        String pathPath = path.getAbsolutePath();
-        String base = repository.getDirectory().getAbsolutePath();
-        String relative = new File(base).toURI().relativize(new File(pathPath).toURI()).getPath();
+        Path repoPath = Paths.get(repository.getDirectory().toURI());
+        Path filePath = Paths.get(this.path.toURI());
+        String relative = repoPath.relativize(filePath).toString();
+        if(relative.substring(0,3).equals(("..\\").substring(0,3))){
+            relative = relative.substring(3);
+        } else {
+            throw new GitException("something with the Filepath went wrong");
+        }
         try {
             git.add().addFilepattern(relative).call();
             return true;
