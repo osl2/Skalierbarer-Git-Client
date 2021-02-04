@@ -14,6 +14,11 @@ public class ICommandDeserializer extends StdDeserializer<ICommand> {
         super(vc);
     }
 
+    @SuppressWarnings("unused") /* Jackson uses it. */
+    public ICommandDeserializer() {
+        this(null);
+    }
+
     @Override
     public ICommand deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
