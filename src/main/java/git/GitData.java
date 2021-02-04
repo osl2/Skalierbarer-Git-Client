@@ -1,7 +1,11 @@
 package git;
 
+import commands.Remote;
+import commands.Stash;
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -136,7 +140,8 @@ public class GitData {
      * @return The singleton status object
      */
     public GitStatus getStatus() {
-        throw new AssertionError("not implemented yet");
+            GitStatus status = GitStatus.getGitStatus();
+            return status;
     }
 
     /**
