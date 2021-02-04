@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
@@ -91,7 +92,7 @@ public class GitFile {
      *
      * @return True if the file was added to the staging area successfully
      */
-    public boolean add() {
+    public boolean add() throws GitException {
         GitData gitData = new GitData();
         Repository repository = GitData.getRepository();
         Git git = gitData.getJGit();
@@ -102,7 +103,7 @@ public class GitFile {
             git.add().addFilepattern(relative).call();
             return true;
         } catch (GitAPIException e) {
-            return false;
+            throw new GitException("File not found in Git");
 
         }
     }
