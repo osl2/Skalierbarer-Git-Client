@@ -1,5 +1,6 @@
 package commands;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import git.GitFile;
 
 public class GitignoreAdd implements ICommand {
@@ -7,8 +8,14 @@ public class GitignoreAdd implements ICommand {
   private String errorMessage;
   private GitFile file;
 
-  public GitignoreAdd(GitFile file){
+  public GitignoreAdd(GitFile file) {
     this.file = file;
+  }
+
+  @JsonCreator
+  public GitignoreAdd() {
+    /* Used by Jackson to create object for Level */
+    this.file = null;
   }
 
   /**

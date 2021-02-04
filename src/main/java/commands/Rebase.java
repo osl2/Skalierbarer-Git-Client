@@ -1,6 +1,7 @@
 package commands;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import git.GitBranch;
 
 public class Rebase implements ICommand, ICommandGUI {
@@ -11,6 +12,13 @@ public class Rebase implements ICommand, ICommandGUI {
   public Rebase(GitBranch branchA, GitBranch branchB) {
     this.branchA = branchA;
     this.branchB = branchB;
+  }
+
+  @JsonCreator
+  public Rebase() {
+    /* Used by Jackson to create object for Level */
+    this.branchA = null;
+    this.branchB = null;
   }
 
   /**
