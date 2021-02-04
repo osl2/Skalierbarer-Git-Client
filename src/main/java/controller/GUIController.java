@@ -6,10 +6,14 @@ import views.HistoryView;
 import views.IView;
 import views.MainWindow;
 
+import javax.swing.*;
+import java.awt.event.WindowEvent;
+
 public class GUIController {
 
     private static GUIController INSTANCE;
     private MainWindow window;
+    private JDialog currentDialog;
 
     private GUIController() {
         /* This class is a singleton */
@@ -38,14 +42,10 @@ public class GUIController {
     }
 
     /**
-     * Close an open Dialog.
-     *
-     * @param dialog the Dialog to be closed
+     * Close the open Dialog.
      */
-    public void closeDialogView(IDialogView dialog) {
-        // Do we need custom modal logic? Will our dialogs just give us a JPanel?
-
-
+    public void closeDialogView() {
+        this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
     }
 
     /**
@@ -73,8 +73,19 @@ public class GUIController {
      * @param dialog the Dialog to be opened
      */
     public void openDialog(IDialogView dialog) {
-        /* TODO: Resolve: The easiest way to resolve the modality issue would be to construct the JDialog here
-                          For that we need more stuff (Title, Size, etc.) in the IDialogView interface */
+        this.currentDialog = createDialog(dialog);
+        currentDialog.setVisible(true);
+    }
+
+    private JDialog createDialog(IDialogView dialogView) {
+        JDialog dialog = new JDialog(window, dialogView.getTitle(), true);
+        dialog.setResizable(false);
+        dialog.setContentPane(dialogView.getPanel());
+        dialog.revalidate();
+        dialog.repaint();
+        dialog.setSize(dialogView.getDimension());
+        dialog.setLocationRelativeTo(window);
+        return dialog;
     }
 
     /**
