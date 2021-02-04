@@ -25,7 +25,7 @@ public class Data {
      * @return list of paths ordered by time last opened ascending
      */
     public List<File> getRecentlyOpenedRepositories() {
-        return repoList;
+        return (List<File>) repoList.clone();
     }
 
     /**
