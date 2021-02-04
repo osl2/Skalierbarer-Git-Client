@@ -120,7 +120,10 @@ public class GitFacade {
    */
   public boolean commitOperation(String commitMessage, boolean amend) throws GitException {
     try {
-      gitData.getJGit().commit().setMessage(commitMessage).setAmend(amend).call();
+      Settings settings = Settings.getInstance();
+      GitAuthor author = settings.getUser();
+      Git jgit = gitData.getJGit();
+      jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail()).setAmend(amend).call();
       return true;
     } catch (GitAPIException e) {
       throw new GitException("Mit dem Commit ist etwas schief gelaufen: \n Fehlermeldung: "
