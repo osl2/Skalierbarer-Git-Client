@@ -1,6 +1,12 @@
 package git;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,18 +30,6 @@ public class GitFile {
      * @return Size of the file
      */
     public int getSize() {
-        return this.size;
-    }
-
-    public File getPath(){
-        return this.path;
-    }
-
-    /**
-     * Method to get the size of the file
-     * @return Size of the file
-     */
-    public int getSize(){
         return this.size;
     }
 
@@ -98,7 +92,19 @@ public class GitFile {
      * @return True if the file was added to the staging area successfully
      */
     public boolean add() {
-        return false;
+        GitData gitData = new GitData();
+        Repository repository = GitData.getRepository();
+        Git git = gitData.getJGit();
+        String pathPath = path.getAbsolutePath();
+        String base = repository.getDirectory().getAbsolutePath();
+        String relative = new File(base).toURI().relativize(new File(pathPath).toURI()).getPath();
+        try {
+            git.add().addFilepattern(relative).call();
+            return true;
+        } catch (GitAPIException e) {
+            return false;
+
+        }
     }
 
     /**
