@@ -43,7 +43,7 @@ public class CheckoutDialogView implements IDialogView {
         BranchTreeNode root = new BranchTreeNode(b);
         GitCommit c = b.getCommit();
         for (int i = 0; i < MAX_BRANCH_DEPTH; i++) {
-            if (c.getParents().length > 1)
+            if (c.getParents().length != 1)
                 break;
 
             CommitTreeNode node = new CommitTreeNode(c);
