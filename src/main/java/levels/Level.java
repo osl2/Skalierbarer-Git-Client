@@ -1,16 +1,23 @@
 package levels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import commands.ICommand;
-import java.util.List;
 
+import java.util.List;
+import java.util.Objects;
 
 
 public class Level {
+  @JsonProperty("name")
   private final String name; //name as a unique identifier
   private final int id; //For comparing
   private List<ICommand> commands;
 
-  public Level(String name, List<ICommand> commands, int id) {
+  @JsonCreator
+  public Level(@JsonProperty("name") String name,
+               @JsonProperty("commands") List<ICommand> commands,
+               @JsonProperty("id") int id) {
     this.commands = commands;
     this.name = name;
     this.id = id;
@@ -37,9 +44,30 @@ public class Level {
 
   /**
    * Method to get the id of the Level
+   *
    * @return Returns the id
    */
   public int getId() {
     return id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Level)) return false;
+    Level level = (Level) o;
+
+    // Check if commands contains instances of the same classes
+
+    return id == level.id && name.equals(level.name) && iCommandListEquals(commands, level.commands);
+  }
+
+  private boolean iCommandListEquals(List<ICommand> a, List<ICommand> b) {
+    return a.stream().allMatch(e -> b.stream().anyMatch(x -> e.getClass() == x.getClass()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, id);
   }
 }

@@ -1,11 +1,11 @@
 package settings;
 
-import java.io.File;
-import java.util.*;
-
 import commands.*;
-import git.GitRemote;
 import levels.Level;
+
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class holds general purpose data which needs to be persisted.
@@ -89,7 +89,6 @@ public class Data {
 
         switch (id) {
             case 1:
-                commands = null;
                 commands.add(add);
                 commands.add(commit);
                 commands.add(init);
@@ -98,7 +97,6 @@ public class Data {
                 commands.add(gitignoreAdd);
             break;
             case 2:
-                commands = null;
                 commands.add(add);
                 commands.add(commit);
                 commands.add(init);
@@ -108,7 +106,6 @@ public class Data {
                 commands.add(merge);
             break;
             case 3:
-                commands = null;
                 commands.add(add);
                 commands.add(commit);
                 commands.add(init);
@@ -121,7 +118,6 @@ public class Data {
                 commands.add(push);
             break;
             case 4:
-                commands = null;
                 commands.add(add);
                 commands.add(commit);
                 commands.add(init);

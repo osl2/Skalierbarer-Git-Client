@@ -2,12 +2,19 @@ package commands;
 
 import git.exception.GitException;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import settings.ICommandDeserializer;
+import settings.ICommandSerializer;
+
 /**
  * This interface represents an executable Command.
  * commands are to be prepared using their custom methods
  * Changes are to be applied to the underlying repository
  * exclusively via the execute() method.
  */
+@JsonDeserialize(using = ICommandDeserializer.class)
+@JsonSerialize(using = ICommandSerializer.class)
 public interface ICommand {
 
   /**
