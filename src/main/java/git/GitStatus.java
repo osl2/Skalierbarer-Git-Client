@@ -1,6 +1,14 @@
 package git;
 
+import git.exception.GitException;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class holds the current status of the git repo and acts as an adapter class
@@ -37,8 +45,25 @@ public class GitStatus {
      * @see GitFile
      * TODO: JGit returns a Set of Strings instead. Modify?
      */
-    public List<GitFile> getAddedFiles() {
-        return null;
+    public List<GitFile> getAddedFiles() throws GitException {
+        try {
+        GitData data = new GitData();
+        Repository repository = data.getRepository();
+        Git git = data.getJGit();
+        Set<String> filesAddedJgit = null;
+            filesAddedJgit = git.status().call().getAdded();
+        String repoPath = repository.getWorkTree().getAbsolutePath();
+        String absolutePath;
+        List<GitFile> gitFiles = new ArrayList<>();
+        for (String file : filesAddedJgit){
+            absolutePath =repoPath + file;
+            File toGitFile = new File(absolutePath);
+            gitFiles.add(new GitFile((int) toGitFile.getTotalSpace(), toGitFile));
+        }
+        return gitFiles;
+        } catch (GitAPIException e) {
+            throw new GitException("Git Status konnte nicht erfolgreich ausgeführt werden, Fehlernachricht: " +e.getMessage());
+        }
     }
 
     /**
