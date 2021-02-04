@@ -44,12 +44,9 @@ public class GUIController {
     }
 
     /**
-     * Close an open Dialog.
-     * TODO: remove parameter?
-     *
-     * @param dialog the Dialog to be closed
+     * Close the open Dialog.
      */
-    public void closeDialogView(IDialogView dialog) {
+    public void closeDialogView() {
         this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
     }
 
