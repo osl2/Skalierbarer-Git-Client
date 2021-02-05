@@ -1,7 +1,5 @@
 package git;
 
-import commands.Remote;
-import commands.Stash;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -10,7 +8,6 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
@@ -19,12 +16,9 @@ import settings.Settings;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,10 +26,20 @@ import java.util.List;
  */
 public class GitData {
 
-    org.eclipse.jgit.api.Git git;
-    Repository repository;
+    private static org.eclipse.jgit.api.Git git;
+    private static Repository repository;
 
-    public GitData(){
+    public GitData() {
+        if (git == null || repository == null) {
+            initializeRepository();
+        }
+    }
+
+    static Repository getRepository() {
+        return repository;
+    }
+
+    private void initializeRepository() {
         Settings settings = Settings.getInstance();
         File path = settings.getActiveRepositoryPath();
         try {
@@ -54,6 +58,7 @@ public class GitData {
         }
     }
 
+
     /**
      * Get all commits of the current Repository.
      *
@@ -69,11 +74,11 @@ public class GitData {
             }
             return commits;
         } catch (GitAPIException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        //TODO: Fehlerbehandlung
             e.printStackTrace();
-    }
+        } catch (IOException e) {
+            //TODO: Fehlerbehandlung
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -85,13 +90,13 @@ public class GitData {
      */
     public List<GitStash> getStashes() {
         try {
-        StashListCommand stashListCommand = new StashListCommand(repository);
-        Collection<RevCommit> listOfStashes = stashListCommand.call();
-        List<GitStash> gitStashes = new ArrayList<>();
-        for (RevCommit stash : listOfStashes){
-            gitStashes.add(new GitStash(stash));
-        }
-        return gitStashes;
+            StashListCommand stashListCommand = new StashListCommand(repository);
+            Collection<RevCommit> listOfStashes = stashListCommand.call();
+            List<GitStash> gitStashes = new ArrayList<>();
+            for (RevCommit stash : listOfStashes) {
+                gitStashes.add(new GitStash(stash));
+            }
+            return gitStashes;
         } catch (GitAPIException e) {
             e.printStackTrace();
             return null;
@@ -118,13 +123,13 @@ public class GitData {
         try {
             List<RemoteConfig> remotes = git.remoteList().call();
             List<GitRemote> gitRemotes = new ArrayList<>();
-            for (RemoteConfig config: remotes){
+            for (RemoteConfig config : remotes) {
                 List<URIish> uris = config.getURIs();
                 String user = uris.iterator().next().getUser();
                 String name = config.getName();
                 String urlString = uris.iterator().next().getPath();
                 URIish uri = config.getURIs().iterator().next();
-                URL url = new URL (uri.toString());
+                URL url = new URL(uri.toString());
                 gitRemotes.add(new GitRemote(url, user, name));
             }
             return gitRemotes;
@@ -185,62 +190,22 @@ public class GitData {
 
     /**
      * Method to get the given Branch as a GitBranch
+     *
      * @param branchRef
      * @return
      * @throws GitAPIException
      * @throws IncorrectObjectTypeException
      * @throws MissingObjectException
      */
-    private GitBranch getBranch (Ref branchRef) throws GitAPIException, IOException {
+    private GitBranch getBranch(Ref branchRef) throws GitAPIException, IOException {
         GitBranch gitBranch = new GitBranch();
         gitBranch.setName(branchRef.getName());
         //Gets a List of the newest Commits from the Branch
         Iterable<RevCommit> commits = git.log().add(branchRef.getObjectId()).setMaxCount(1).call();
         //Gets the first commit of the list above
         RevCommit newestCommit = commits.iterator().next();
-        gitBranch.setHead(getCommit(newestCommit));
+        gitBranch.setHead(new GitCommit(newestCommit));
         return gitBranch;
     }
-
-    /**
-     * Method to create a GitCommit from a JGit reference.
-     *
-     * @param revCommit RevCommit to the Commit that should be created
-     * @return GitCommit, that is equivalent to the RevCommit
-     * @throws IOException If the parrent-Commits can´t be resolved
-     */
-    private GitCommit getCommit(RevCommit revCommit) throws IOException {
-        RevWalk walk = new RevWalk(repository);
-        try {
-            walk.parseHeaders(revCommit);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String authorName = revCommit.getAuthorIdent().getName();
-        String authorEMail = revCommit.getAuthorIdent().getEmailAddress();
-        GitAuthor author = new GitAuthor(authorName, authorEMail);
-
-        String message = revCommit.getFullMessage();
-
-        List<GitCommit> parentsList = new ArrayList<>();
-        RevCommit[] parentsRev = revCommit.getParents();
-        for (RevCommit parent : parentsRev) { //Resolve for each parent
-            RevWalk revWalk = new RevWalk(repository);
-            parentsList.add(getCommit(revWalk.parseCommit(parent.getId())));
-        }
-        GitCommit[] parents = parentsList.toArray(GitCommit[]::new);
-
-        String hash = revCommit.getName();
-
-        boolean isSigned;
-        isSigned = revCommit.getRawGpgSignature() != null;
-
-
-        int commitTime = revCommit.getCommitTime();
-        Instant instant = Instant.ofEpochSecond(commitTime);
-        Date date = Date.from(instant);
-        return new GitCommit (author, message, hash, isSigned, date, parents);
-    }
-
 }
 

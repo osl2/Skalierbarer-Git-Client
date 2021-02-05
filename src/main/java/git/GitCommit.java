@@ -1,60 +1,64 @@
 package git;
 
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 
+import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class GitCommit {
-  private final GitAuthor author;
-  private final String message;
-  private GitCommit[] parents;
-  private final String hash;
-  private final boolean isSigned;
-  private final Date date;
-
-  /* Is only instantiated inside the git Package */
-  GitCommit(GitAuthor author, String message, String hash, boolean isSigned, Date date, GitCommit[] parents) {
-    this.author = author;
-    this.message = message;
-    this.hash = hash;
-    this.parents = parents;
-    this.isSigned = isSigned;
-    this.date = date;
-  }
+  private final RevCommit revCommit;
 
   GitCommit(RevCommit revCommit) {
-    GitAuthor author = new GitAuthor();
-    author.setName(revCommit.getAuthorIdent().getName());
-    author.setEmail(revCommit.getAuthorIdent().getEmailAddress());
-    this.author = author;
-    this.message = revCommit.getFullMessage();
-    this.isSigned = revCommit.getRawGpgSignature() != null;
-    int commitTime = revCommit.getCommitTime();
-    Instant instant = Instant.ofEpochSecond(commitTime);
-    this.date = Date.from(instant);
-    this.hash = revCommit.getName();
+    this.revCommit = revCommit;
+  }
+
+  private void initializeCommit() {
+    if (revCommit.getRawBuffer() == null) {
+      RevWalk revWalk = new RevWalk(GitData.getRepository());
+      try {
+        revWalk.parseHeaders(this.revCommit);
+      } catch (IOException e) {
+        e.printStackTrace();
+      } finally {
+        revWalk.dispose();
+      }
+    }
   }
 
   public GitAuthor getAuthor() {
-    return author;
+    initializeCommit();
+    return new GitAuthor(
+            revCommit.getAuthorIdent().getName(),
+            revCommit.getAuthorIdent().getEmailAddress());
   }
 
   public String getMessage() {
-    return message;
+    initializeCommit();
+    return this.revCommit.getFullMessage();
   }
 
   public GitCommit[] getParents() {
-    return parents;
+    initializeCommit();
+    return (GitCommit[]) Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray();
+  }
+
+  public Date getDate() {
+    initializeCommit();
+    return Date.from(Instant.ofEpochSecond(this.revCommit.getCommitTime()));
   }
 
   public String getHash() {
-    return hash;
+    initializeCommit();
+    return this.revCommit.getName();
   }
 
   public boolean isSigned() {
-    return isSigned;
+    initializeCommit();
+    return this.revCommit.getRawGpgSignature() != null;
   }
 
 
