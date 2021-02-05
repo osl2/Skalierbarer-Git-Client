@@ -4,6 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SettingsDialogView implements IDialogView {
+    private JPanel settingsPanel;
+    private JComboBox levelComboBox;
+    private JTextField nameField;
+    private JTextField eMailField;
+    private JCheckBox tooltipsCheckbox;
+    private JCheckBox treeViewCheckbox;
+    private JButton saveButton;
+    private JButton cancelButton;
 
     /**
      * DialogWindow Title
