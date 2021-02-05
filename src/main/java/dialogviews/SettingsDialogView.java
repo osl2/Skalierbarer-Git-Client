@@ -1,5 +1,6 @@
 package dialogviews;
 
+import controller.GUIController;
 import git.GitAuthor;
 import levels.Level;
 import settings.Data;
@@ -64,6 +65,13 @@ public class SettingsDialogView implements IDialogView {
                 Settings.getInstance().setLevel(levels.get(index));
                 //This is used to apply the Settings changes;
                 Settings.getInstance().settingsChanged();
+                GUIController.getInstance().closeDialogView();
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GUIController.getInstance().closeDialogView();
             }
         });
     }
@@ -75,7 +83,7 @@ public class SettingsDialogView implements IDialogView {
      */
     @Override
     public String getTitle() {
-        return null;
+        return "Einstellungen";
     }
 
     /**
@@ -85,7 +93,8 @@ public class SettingsDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return null;
+        Dimension dim = new Dimension(400, 500);
+        return dim;
     }
 
     /**
@@ -95,7 +104,7 @@ public class SettingsDialogView implements IDialogView {
      */
     @Override
     public JPanel getPanel() {
-        return null;
+        return settingsPanel;
     }
 
     public void update() {
