@@ -37,6 +37,10 @@ public class GitData {
         return repository;
     }
 
+    public void reinitialize() {
+        initializeRepository();
+    }
+
     private void initializeRepository() {
         Settings settings = Settings.getInstance();
         File path = settings.getActiveRepositoryPath();
