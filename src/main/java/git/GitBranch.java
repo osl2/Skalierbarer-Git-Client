@@ -5,6 +5,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,6 +19,9 @@ public class GitBranch {
         this.ref = branch;
     }
 
+    public Iterator<GitCommit> getCommits() {
+        return new GitData().getCommits(this);
+    }
 
     /**
      * Method to get the current value of the Branch name.
