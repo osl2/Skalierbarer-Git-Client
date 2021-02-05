@@ -29,7 +29,7 @@ public class CheckoutDialogView implements IDialogView {
         this.abortButton.setText("Abbrechen");
         this.okButton.setText("Ok");
 
-        this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView(this));
+        this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
         this.okButton.addActionListener(this::OkButtonHandler);
 
         // Build branch-tree
@@ -70,7 +70,7 @@ public class CheckoutDialogView implements IDialogView {
         node.configureCheckout(command);
 
         if (command.execute()) {
-            GUIController.getInstance().closeDialogView(this);
+            GUIController.getInstance().closeDialogView();
         } else {
             JOptionPane.showMessageDialog(null,
                     "Es ist ein unerwarteter Fehler aufgetreten",

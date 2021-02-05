@@ -26,6 +26,7 @@ public class Checkout implements ICommand, ICommandGUI {
             this.errorMessage = "";
             return facade.checkout(commit);
         }
+        //todo: lokalisierung
         this.errorMessage = "Weder Zweig noch Einbuchung ausgewählt.";
         return false;
     }
