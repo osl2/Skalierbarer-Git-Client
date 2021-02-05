@@ -1,5 +1,7 @@
 package commands;
 
+import git.exception.GitException;
+
 /**
  * This interface represents an executable Command.
  * commands are to be prepared using their custom methods
@@ -9,12 +11,14 @@ package commands;
 public interface ICommand {
 
   /**
-   * Method to execute the command.
+   *Method to execute the command.
    *
    * @return true if the command has been executed successfully \
-   *     false otherwise
+   *    *     false otherwise
+   * @throws GitException If the command could not be performed in JGit internally or if execute() identified missing or
+   * misconfigured parameters
    */
-  boolean execute();
+  boolean execute() throws GitException;
 
   /**
    * Returns the error message of commands when there execution was not successful.
