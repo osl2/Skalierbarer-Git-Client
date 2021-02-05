@@ -42,6 +42,16 @@ public class GitCommit {
         return this.revCommit.getFullMessage();
     }
 
+    public String getShortMessage() {
+        initializeCommit();
+        return this.revCommit.getShortMessage();
+    }
+
+    public String getHashAbbrev() {
+        initializeCommit();
+        return this.revCommit.abbreviate(7).name();
+    }
+
     public GitCommit[] getParents() {
         initializeCommit();
         return Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray(GitCommit[]::new);
