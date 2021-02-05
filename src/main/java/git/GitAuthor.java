@@ -9,14 +9,10 @@ public class GitAuthor {
     private String name;
     private String email;
 
-    public GitAuthor(String name, String email) {
+    /* Is only instantiated inside the git Package */
+    GitAuthor(String name, String email) {
         this.name = name;
         this.email = email;
-    }
-
-    /* Is only instantiated inside the git Package */
-    GitAuthor() {
-
     }
 
     public String getName() {
