@@ -8,89 +8,104 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class GitCommit {
-  private final RevCommit revCommit;
+    private final RevCommit revCommit;
 
-  GitCommit(RevCommit revCommit) {
-    this.revCommit = revCommit;
-  }
-
-  private void initializeCommit() {
-    if (revCommit.getRawBuffer() == null) {
-      RevWalk revWalk = new RevWalk(GitData.getRepository());
-      try {
-        revWalk.parseHeaders(this.revCommit);
-      } catch (IOException e) {
-        e.printStackTrace();
-      } finally {
-        revWalk.dispose();
-      }
+    GitCommit(RevCommit revCommit) {
+        this.revCommit = revCommit;
     }
-  }
 
-  public GitAuthor getAuthor() {
-    initializeCommit();
-    return new GitAuthor(
-            revCommit.getAuthorIdent().getName(),
-            revCommit.getAuthorIdent().getEmailAddress());
-  }
+    private void initializeCommit() {
+        if (revCommit.getRawBuffer() == null) {
+            RevWalk revWalk = new RevWalk(GitData.getRepository());
+            try {
+                revWalk.parseHeaders(this.revCommit);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                revWalk.dispose();
+            }
+        }
+    }
 
-  public String getMessage() {
-    initializeCommit();
-    return this.revCommit.getFullMessage();
-  }
+    public GitAuthor getAuthor() {
+        initializeCommit();
+        return new GitAuthor(
+                revCommit.getAuthorIdent().getName(),
+                revCommit.getAuthorIdent().getEmailAddress());
+    }
 
-  public GitCommit[] getParents() {
-    initializeCommit();
-    return (GitCommit[]) Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray();
-  }
+    public String getMessage() {
+        initializeCommit();
+        return this.revCommit.getFullMessage();
+    }
 
-  public Date getDate() {
-    initializeCommit();
-    return Date.from(Instant.ofEpochSecond(this.revCommit.getCommitTime()));
-  }
+    public GitCommit[] getParents() {
+        initializeCommit();
+        return (GitCommit[]) Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray();
+    }
 
-  public String getHash() {
-    initializeCommit();
-    return this.revCommit.getName();
-  }
+    public Date getDate() {
+        initializeCommit();
+        return Date.from(Instant.ofEpochSecond(this.revCommit.getCommitTime()));
+    }
 
-  public boolean isSigned() {
-    initializeCommit();
-    return this.revCommit.getRawGpgSignature() != null;
-  }
+    public String getHash() {
+        initializeCommit();
+        return this.revCommit.getName();
+    }
 
-
-  public boolean revert() {
-    throw new AssertionError("not implemented yet");
-  }
-
-  /**
-   * Generates the difference between this commit and the one passed
-   *
-   * @param other the other commit
-   * @return String representation of the diff
-   */
-  public String getDiff(GitCommit other) {
-    throw new AssertionError("not implemented yet");
-  }
-
-  /**
-   * Generates the difference to the working directory
-   *
-   * @return String representation to the working directory
-   */
-  public String getDiff() {
-    throw new AssertionError("not implemented yet");
-  }
+    public boolean isSigned() {
+        initializeCommit();
+        return this.revCommit.getRawGpgSignature() != null;
+    }
 
 
-  /**
-   * Method to get the files changed in that Commit
-   * @return List of the changed Files
-   */
-  public List<GitFile> getChangedFiles () {
-    throw new AssertionError("not implemented");
-  }
+    public boolean revert() {
+        throw new AssertionError("not implemented yet");
+    }
+
+    /**
+     * Generates the difference between this commit and the one passed
+     *
+     * @param other the other commit
+     * @return String representation of the diff
+     */
+    public String getDiff(GitCommit other) {
+        throw new AssertionError("not implemented yet");
+    }
+
+    /**
+     * Generates the difference to the working directory
+     *
+     * @return String representation to the working directory
+     */
+    public String getDiff() {
+        throw new AssertionError("not implemented yet");
+    }
+
+
+    /**
+     * Method to get the files changed in that Commit
+     *
+     * @return List of the changed Files
+     */
+    public List<GitFile> getChangedFiles() {
+        throw new AssertionError("not implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GitCommit)) return false;
+        GitCommit gitCommit = (GitCommit) o;
+        return revCommit.getName().equals(gitCommit.revCommit.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(revCommit);
+    }
 }

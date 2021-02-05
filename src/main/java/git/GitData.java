@@ -3,8 +3,6 @@ package git;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -58,6 +56,10 @@ public class GitData {
         }
     }
 
+    public GitBranch getSelectedBranch() throws IOException {
+        String branchName = git.getRepository().getFullBranch();
+        return new GitBranch(repository.exactRef(branchName));
+    }
 
     /**
      * Get all commits of the current Repository.
@@ -66,19 +68,18 @@ public class GitData {
      */
     public List<GitCommit> getCommits() {
         try {
-            Iterable<RevCommit> allCommits = null;
+            Iterable<RevCommit> allCommits;
             allCommits = git.log().all().call();
             List<GitCommit> commits = new ArrayList<>();
             for (RevCommit commit : allCommits) {
                 commits.add(new GitCommit(commit));
             }
             return commits;
-        } catch (GitAPIException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (GitAPIException | IOException e) {
             //TODO: Fehlerbehandlung
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -149,15 +150,11 @@ public class GitData {
             List<Ref> branches = git.branchList().call();
             List<GitBranch> gitBranches = new ArrayList<>();
             for (Ref branch : branches) {
-                gitBranches.add(getBranch(branch));
+                gitBranches.add(new GitBranch(branch));
             }
             return gitBranches;
         } catch (GitAPIException e) {
             //TODO: Fehlerbehandlung
-        } catch (MissingObjectException | IncorrectObjectTypeException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return null;
@@ -169,7 +166,7 @@ public class GitData {
      * @param remote Online repository, where the branches come from
      * @return List of branches in the repository
      */
-    public List<GitBranch> getBranches(GitRemote remote) throws IOException {
+    public List<GitBranch> getBranches(GitRemote remote) {
 //TODO: Überarbeiten
         List<Ref> branches; //creates a new list of branches from JGit
         List<GitBranch> toReturn = new ArrayList<>(); //List of Branches from Git Client
@@ -177,35 +174,14 @@ public class GitData {
             branches = git.branchList().call();
             GitBranch branchToAdd;
             for (Ref branch : branches) {
-                toReturn.add(getBranch(branch));
+                toReturn.add(new GitBranch(branch));
 
             }
         } catch (GitAPIException e) {
             //TODO: Exception fangen
-        } catch (MissingObjectException | IncorrectObjectTypeException e) {
-            e.printStackTrace();
         }
         return toReturn;
     }
 
-    /**
-     * Method to get the given Branch as a GitBranch
-     *
-     * @param branchRef
-     * @return
-     * @throws GitAPIException
-     * @throws IncorrectObjectTypeException
-     * @throws MissingObjectException
-     */
-    private GitBranch getBranch(Ref branchRef) throws GitAPIException, IOException {
-        GitBranch gitBranch = new GitBranch();
-        gitBranch.setName(branchRef.getName());
-        //Gets a List of the newest Commits from the Branch
-        Iterable<RevCommit> commits = git.log().add(branchRef.getObjectId()).setMaxCount(1).call();
-        //Gets the first commit of the list above
-        RevCommit newestCommit = commits.iterator().next();
-        gitBranch.setHead(new GitCommit(newestCommit));
-        return gitBranch;
-    }
 }
 
