@@ -19,3 +19,5 @@ maven_build:
   script:
     - echo "Building project with maven"
     - mvn verify
+    - echo "Generating LOC overview"
+    - tokei
