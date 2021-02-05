@@ -44,7 +44,7 @@ public class GitCommit {
 
     public GitCommit[] getParents() {
         initializeCommit();
-        return (GitCommit[]) Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray();
+        return Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray(GitCommit[]::new);
     }
 
     public Date getDate() {
