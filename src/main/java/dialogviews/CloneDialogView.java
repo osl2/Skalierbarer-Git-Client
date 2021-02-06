@@ -20,7 +20,7 @@ public class CloneDialogView implements IDialogView {
   private File path;
 
   public CloneDialogView() {
-
+    addActionlistener();
   }
 
   private void addActionlistener() {
@@ -44,7 +44,8 @@ public class CloneDialogView implements IDialogView {
           //TODO: ErrorDialogView
           return;
         }
-
+        GUIController.getInstance().setCommandLine(clone.getCommandLine(""));
+        GUIController.getInstance().closeDialogView();
       }
     });
     cancelButton.addActionListener(new ActionListener() {
