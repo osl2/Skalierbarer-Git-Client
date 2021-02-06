@@ -93,7 +93,7 @@ public class SettingsDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(400, 500);
+        Dimension dim = new Dimension(550, 400);
         return dim;
     }
 
