@@ -5,6 +5,7 @@ import controller.GUIController;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitData;
+import git.exception.GitException;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -69,13 +70,19 @@ public class CheckoutDialogView implements IDialogView {
         Checkout command = new Checkout();
         node.configureCheckout(command);
 
-        if (command.execute()) {
-            GUIController.getInstance().closeDialogView();
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "Es ist ein unerwarteter Fehler aufgetreten",
-                    "Fehler",
-                    JOptionPane.ERROR_MESSAGE);
+        try {
+            if (command.execute()) {
+                GUIController.getInstance().closeDialogView();
+            } else {
+                // todo let controller handle that
+                JOptionPane.showMessageDialog(null,
+                        "Es ist ein unerwarteter Fehler aufgetreten",
+                        "Fehler",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (GitException gitException) {
+            // todo let controller handle that
+            gitException.printStackTrace();
         }
     }
 

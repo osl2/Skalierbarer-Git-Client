@@ -3,6 +3,7 @@ package commands;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitFacade;
+import git.exception.GitException;
 
 public class Checkout implements ICommand, ICommandGUI {
     private String errorMessage;
@@ -17,7 +18,7 @@ public class Checkout implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
-    public boolean execute() {
+    public boolean execute() throws GitException {
         GitFacade facade = new GitFacade();
         if (branch != null) {
             this.errorMessage = "";
