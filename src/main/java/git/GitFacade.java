@@ -122,7 +122,7 @@ public class GitFacade {
     try {
       Settings settings = Settings.getInstance();
       GitAuthor author = settings.getUser();
-      Git jgit = gitData.getJGit();
+      Git jgit = GitData.getJGit();
       jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail()).setAmend(amend).call();
       return true;
     } catch (GitAPIException e) {
