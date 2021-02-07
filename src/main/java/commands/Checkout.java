@@ -7,9 +7,6 @@ import git.exception.GitException;
 
 public class Checkout implements ICommand, ICommandGUI {
     private String errorMessage;
-    private String commandLine;
-    private String commandName;
-    private String commandDescription;
     private GitBranch branch;
     private GitCommit commit;
 
@@ -45,6 +42,11 @@ public class Checkout implements ICommand, ICommandGUI {
      * display on the command line
      */
     public String getCommandLine(String userInput) {
+        if (branch != null)
+            return "git checkout -b " + branch.getFullName();
+        else if (commit != null)
+            return "git checkout " + commit.getHashAbbrev();
+
         return null;
     }
 
