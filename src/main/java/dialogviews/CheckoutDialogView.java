@@ -26,6 +26,7 @@ public class CheckoutDialogView implements IDialogView {
     private JButton abortButton;
     private final GitData git;
     private JButton okButton;
+    private JPanel bottomPanel;
     private DefaultTreeModel model;
 
     public CheckoutDialogView() {
@@ -112,7 +113,7 @@ public class CheckoutDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return new Dimension(800, 600);
+        return this.contentPane.getPreferredSize();
     }
 
     /**
