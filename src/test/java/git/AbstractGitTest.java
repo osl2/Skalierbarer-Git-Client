@@ -62,6 +62,9 @@ public abstract class AbstractGitTest {
         gitData = new GitData();
         gitData.reinitialize();
         git = Git.open(repo);
+        // Make sure user supplied signing settings dont crash the tests
+        git.getRepository().getConfig().setBoolean("commit", null, "gpgsign", false);
+        git.getRepository().getConfig().save();
         repository = git.getRepository();
 
         git.checkout().setName("refs/heads/master").call();
