@@ -12,11 +12,9 @@ public class Persistency {
     private static final File CONFIG_DIR = new File(System.getProperty("user.home"));
     private static final String FILENAME_DATA = "data.json";
     private static final String FILENAME_SETTINGS = "settings.json";
-    private final ObjectMapper mapper;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public Persistency() {
-        this.mapper = new ObjectMapper();
-
         // Pretty-Print
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         // Fail if config has unknown values
@@ -26,12 +24,14 @@ public class Persistency {
     /**
      * Saves the current state to Datastore.
      */
-    public boolean save(File configDir) {
+    public boolean save(File directory) throws IOException {
+        if (!directory.isDirectory())
+            throw new IOException(directory.getAbsolutePath() + " is not a directory!");
         try {
-            mapper.writeValue(new File(configDir, FILENAME_DATA), Data.getInstance());
-            mapper.writeValue(new File(configDir, FILENAME_SETTINGS), Settings.getInstance());
+            mapper.writeValue(new File(directory, FILENAME_DATA), Data.getInstance());
+            mapper.writeValue(new File(directory, FILENAME_SETTINGS), Settings.getInstance());
         } catch (IOException e) {
-            Logger l = Logger.getLogger("GitClient");
+            Logger l = Logger.getGlobal();
             l.warning(e.getMessage());
             return false;
         }
@@ -41,17 +41,19 @@ public class Persistency {
     /**
      * {@link #load(File)}
      */
-    public boolean save() {
+    public boolean save() throws IOException {
         return this.save(CONFIG_DIR);
     }
 
     /**
      * Load state from Datastore.
      */
-    public boolean load(File configDir) {
+    public boolean load(File directory) throws IOException {
+        if (!directory.isDirectory())
+            throw new IOException(directory.getAbsolutePath() + " is not a directory!");
         try {
-            Data data = mapper.readValue(new File(configDir, FILENAME_DATA), Data.class);
-            Settings settings = mapper.readValue(new File(configDir, FILENAME_SETTINGS), Settings.class);
+            Data data = mapper.readValue(new File(directory, FILENAME_DATA), Data.class);
+            Settings settings = mapper.readValue(new File(directory, FILENAME_SETTINGS), Settings.class);
         } catch (IOException e) {
             Logger l = Logger.getLogger("GitClient");
             l.warning(e.getMessage());
@@ -63,7 +65,7 @@ public class Persistency {
     /**
      * {@link #load(File)}
      */
-    public boolean load() {
+    public boolean load() throws IOException {
         return this.load(CONFIG_DIR);
     }
 

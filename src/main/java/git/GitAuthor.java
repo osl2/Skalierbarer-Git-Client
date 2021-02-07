@@ -1,5 +1,8 @@
 package git;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 /**
@@ -10,7 +13,10 @@ public class GitAuthor {
     private String email;
 
     /* Is only instantiated inside the git Package */
-    GitAuthor(String name, String email) {
+    @JsonCreator
+    GitAuthor(
+            @JsonProperty("name") String name,
+            @JsonProperty("email") String email) {
         this.name = name;
         this.email = email;
     }

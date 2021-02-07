@@ -15,8 +15,10 @@ public class Data {
     private LinkedList<Level> levels = new LinkedList<Level>();
     private LinkedList<File> repoList = new LinkedList<File>();
 
-
+    // This layout is necessary so that Jackson can create a correctly instantiated class.
     private Data() {
+        if (INSTANCE == null)
+            INSTANCE = this;
     }
 
     /**
@@ -62,7 +64,7 @@ public class Data {
 
     public static Data getInstance() {
         if (INSTANCE == null)
-            INSTANCE = new Data();
+            new Data();
         return INSTANCE;
     }
     private static LinkedList<ICommand> getCommandList(int id){

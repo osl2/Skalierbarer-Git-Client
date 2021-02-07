@@ -19,6 +19,10 @@ public class Settings {
    * This class is a SINGLETON
    */
   private Settings() {
+    // This layout is necessary so that Jackson can create a correctly instantiated class.
+    if (INSTANCE == null) {
+      INSTANCE = this;
+    }
   }
 
   /**
@@ -28,7 +32,7 @@ public class Settings {
    */
   public static Settings getInstance() {
     if (INSTANCE == null) {
-      INSTANCE = new Settings();
+      new Settings();
     }
     return INSTANCE;
   }
@@ -79,4 +83,5 @@ public class Settings {
    * @return
    */
   public boolean settingsChanged() {return false;}
+
 }
