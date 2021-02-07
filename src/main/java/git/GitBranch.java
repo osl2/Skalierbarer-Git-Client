@@ -29,7 +29,7 @@ public class GitBranch {
      * @return Name of the branch
      */
     public String getName() {
-        return ref.getName().substring(ref.getName().lastIndexOf("/") + 1);
+        return ref.getName().substring("refs/heads/".length());
     }
 
     /**
