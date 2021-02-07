@@ -23,7 +23,7 @@ public class GitFacade {
    * @return true iff stash was created successfully
    */
   public boolean createStash(String msg) {
-    return false;
+    throw new AssertionError("not implemented");
   }
 
   /**
@@ -153,6 +153,6 @@ public class GitFacade {
   }
 
   public String getDiff(GitCommit activeCommit) {
-    return null;
+    throw new AssertionError("not implemented");
   }
 }
