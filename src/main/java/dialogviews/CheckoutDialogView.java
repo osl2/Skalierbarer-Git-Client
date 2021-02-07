@@ -8,21 +8,25 @@ import git.GitData;
 import git.exception.GitException;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 
 public class CheckoutDialogView implements IDialogView {
 
-    private static final int MAX_BRANCH_DEPTH = 10;
+    private static final int MAX_BRANCH_DEPTH = 25;
+    private static final int LOAD_MORE_DEPTH = 50;
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     private JPanel contentPane;
     private JTree tree1;
     private JButton abortButton;
     private final GitData git;
     private JButton okButton;
+    private DefaultTreeModel model;
 
     public CheckoutDialogView() {
         git = new GitData();
@@ -33,24 +37,29 @@ public class CheckoutDialogView implements IDialogView {
         this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
         this.okButton.addActionListener(this::OkButtonHandler);
 
+        this.model = (DefaultTreeModel) this.tree1.getModel();
+
         // Build branch-tree
         git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
 
         this.tree1.setRootVisible(false);
-        ((DefaultTreeModel) this.tree1.getModel()).setRoot(root);
+        model.setRoot(root);
     }
 
     private BranchTreeNode buildBranchTree(GitBranch b) {
         BranchTreeNode root = new BranchTreeNode(b);
-        GitCommit c = b.getCommit();
-        for (int i = 0; i < MAX_BRANCH_DEPTH; i++) {
-            if (c.getParents().length != 1)
-                break;
-
-            CommitTreeNode node = new CommitTreeNode(c);
+        Iterator<GitCommit> iter = b.getCommits();
+        int i = 0;
+        while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
+            CommitTreeNode node = new CommitTreeNode(iter.next());
             root.add(node);
-            c = c.getParents()[0];
         }
+
+        // We ran into our load maximum but the iterator had more nodes.
+        if (i > MAX_BRANCH_DEPTH) {
+            root.add(new LoadMoreNode(iter, model));
+        }
+
         return root;
     }
 
@@ -123,13 +132,24 @@ public class CheckoutDialogView implements IDialogView {
 
     }
 
+    private TreeSelectionListener loadMoreListener() {
+        return treeSelectionEvent -> {
+            // todo: Come up with a better way of loading more nodes
+            if (treeSelectionEvent.getPath().getLastPathComponent() instanceof LoadMoreNode) {
+                LoadMoreNode node = (LoadMoreNode) treeSelectionEvent.getPath().getLastPathComponent();
+                node.loadMoreItems();
+
+            }
+        };
+
+    }
 
     private void createUIComponents() {
         this.tree1 = new JTree(this.root);
+        this.tree1.addTreeSelectionListener(loadMoreListener());
     }
 
     private static abstract class RefTreeNode extends DefaultMutableTreeNode {
-
         public RefTreeNode() {
         }
 
@@ -149,8 +169,7 @@ public class CheckoutDialogView implements IDialogView {
 
         @Override
         public String toString() {
-            // todo: use api method
-            return commit.getHash().substring(commit.getHash().length() - 7) + " - " + commit.getMessage();
+            return commit.getHashAbbrev() + " - " + commit.getShortMessage();
         }
 
         @Override
@@ -178,6 +197,37 @@ public class CheckoutDialogView implements IDialogView {
         @Override
         void configureCheckout(Checkout checkout) {
             checkout.setDestination(branch);
+        }
+    }
+
+    private static class LoadMoreNode extends DefaultMutableTreeNode {
+
+        Iterator<GitCommit> iterator;
+        DefaultTreeModel model;
+
+        LoadMoreNode(Iterator<GitCommit> iterator, DefaultTreeModel model) {
+            this.iterator = iterator;
+            this.model = model;
+        }
+
+        void loadMoreItems() {
+            int i = 0;
+            while (i++ < LOAD_MORE_DEPTH && iterator.hasNext()) {
+                parent.insert(new CommitTreeNode(iterator.next()), parent.getChildCount());
+            }
+            RefTreeNode oldParent = (RefTreeNode) this.parent;
+            this.removeFromParent();
+            if (i > LOAD_MORE_DEPTH) {
+                oldParent.insert(this, oldParent.getChildCount());
+            }
+
+            model.reload(this.parent);
+
+        }
+
+        @Override
+        public String toString() {
+            return "Load " + LOAD_MORE_DEPTH + " more";
         }
     }
 
