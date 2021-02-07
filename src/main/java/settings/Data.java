@@ -110,6 +110,7 @@ public class Data {
      *
      * @return list of paths ordered by time last opened ascending
      */
+    @SuppressWarnings("unchecked")
     public List<File> getRecentlyOpenedRepositories() {
         return (List<File>) repoList.clone();
     }

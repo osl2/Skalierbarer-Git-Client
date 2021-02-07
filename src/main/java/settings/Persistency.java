@@ -52,8 +52,8 @@ public class Persistency {
         if (!directory.isDirectory())
             throw new IOException(directory.getAbsolutePath() + " is not a directory!");
         try {
-            Data data = mapper.readValue(new File(directory, FILENAME_DATA), Data.class);
-            Settings settings = mapper.readValue(new File(directory, FILENAME_SETTINGS), Settings.class);
+            mapper.readValue(new File(directory, FILENAME_DATA), Data.class);
+            mapper.readValue(new File(directory, FILENAME_SETTINGS), Settings.class);
         } catch (IOException e) {
             Logger l = Logger.getLogger("GitClient");
             l.warning(e.getMessage());
