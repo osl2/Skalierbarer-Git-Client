@@ -7,6 +7,7 @@ import java.io.File;
 
 public class Settings {
 
+  // Modify settings.PersistencyTest if you add or remove a field!
   private static Settings INSTANCE = null;
   private Level level;
   private GitAuthor user;

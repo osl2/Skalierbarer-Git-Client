@@ -12,12 +12,14 @@ public class ICommandSerializer extends StdSerializer<ICommand> {
         super(t);
     }
 
+    // Do not remove! Needed by Jackson.
     public ICommandSerializer() {
         this(null);
     }
 
     @Override
-    public void serialize(ICommand iCommand, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(ICommand iCommand, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("classPath", iCommand.getClass().getCanonicalName());
         jsonGenerator.writeEndObject();

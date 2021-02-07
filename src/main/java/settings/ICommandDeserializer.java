@@ -25,6 +25,8 @@ public class ICommandDeserializer extends StdDeserializer<ICommand> {
         String classPath = node.get("classPath").asText();
         try {
             Class<?> cl = this.getClass().getClassLoader().loadClass(classPath);
+
+            // Class implements ICommand?
             if (ICommand.class.isAssignableFrom(cl)) {
                 return (ICommand) cl.getConstructor().newInstance();
             } else {
