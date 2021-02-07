@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -70,15 +71,31 @@ public class GitData {
      *
      * @return Array of all commits without stashes
      */
-    public List<GitCommit> getCommits() {
+    public Iterator<GitCommit> getCommits() {
         try {
             Iterable<RevCommit> allCommits;
             allCommits = git.log().all().call();
-            List<GitCommit> commits = new ArrayList<>();
-            for (RevCommit commit : allCommits) {
-                commits.add(new GitCommit(commit));
-            }
-            return commits;
+            return new CommitIterator(allCommits);
+        } catch (GitAPIException | IOException e) {
+            //TODO: Fehlerbehandlung
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get a page of commits for a branch
+     *
+     * @param branch the Branch to get commits for
+     * @return Array of all commits without stashes
+     */
+    Iterator<GitCommit> getCommits(GitBranch branch) {
+        try {
+            Iterable<RevCommit> allCommits;
+            allCommits = git.log().add(repository.resolve(branch.getFullName()))
+                    .call();
+            return new CommitIterator(allCommits);
         } catch (GitAPIException | IOException e) {
             //TODO: Fehlerbehandlung
             e.printStackTrace();
@@ -159,6 +176,7 @@ public class GitData {
             return gitBranches;
         } catch (GitAPIException e) {
             //TODO: Fehlerbehandlung
+            e.printStackTrace();
         }
 
         return null;

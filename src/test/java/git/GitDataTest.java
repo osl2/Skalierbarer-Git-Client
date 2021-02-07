@@ -5,6 +5,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,19 +35,29 @@ public class GitDataTest extends AbstractGitTest {
 
     @Test
     public void commitsAreSortedFromNewestToOldestTest() {
-        assertEquals(COMMIT_DATA.length, gitData.getCommits().size());
-        for (int i = COMMIT_DATA.length - 1; i >= 0; i--) {
-            assertEquals(new GitAuthor(COMMIT_DATA[i][0], COMMIT_DATA[i][1]),
-                    gitData.getCommits().get(COMMIT_DATA.length - i - 1).getAuthor());
+        int size = 0;
+        Iterator<GitCommit> it = gitData.getCommits();
+        while (it.hasNext()) {
+            size++;
+            it.next();
+        }
+        assertEquals(COMMIT_DATA.length, size);
+        it = gitData.getCommits();
+        int i = size - 1;
+        while (it.hasNext()) {
+            assertEquals(new GitAuthor(COMMIT_DATA[i][0], COMMIT_DATA[i][1]), it.next().getAuthor());
+            i--;
         }
 
     }
 
     @Test
     public void commitsHaveCorrectCommitMessageTest() {
-        for (int i = COMMIT_DATA.length - 1; i >= 0; i--) {
-            assertEquals(COMMIT_DATA[i][2],
-                    gitData.getCommits().get(COMMIT_DATA.length - i - 1).getMessage());
+        int i = COMMIT_DATA.length - 1;
+        Iterator<GitCommit> it = gitData.getCommits();
+        while (it.hasNext()) {
+            assertEquals(COMMIT_DATA[i--][2],
+                    it.next().getMessage());
         }
     }
 
