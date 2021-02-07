@@ -97,4 +97,8 @@ public class MainWindow extends JFrame {
         this.setJMenuBar(bar);
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        this.buttonPanel = new JPanel();
+    }
 }
