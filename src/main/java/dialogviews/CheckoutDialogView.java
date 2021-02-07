@@ -218,11 +218,11 @@ public class CheckoutDialogView implements IDialogView {
             }
             RefTreeNode oldParent = (RefTreeNode) this.parent;
             this.removeFromParent();
-            if (i > LOAD_MORE_DEPTH) {
+            if (i > LOAD_MORE_DEPTH && iterator.hasNext()) {
                 oldParent.insert(this, oldParent.getChildCount());
             }
 
-            model.reload(this.parent);
+            model.reload(oldParent);
 
         }
 
