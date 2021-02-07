@@ -21,11 +21,11 @@ public abstract class AbstractGitTest {
             new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
     };
     @TempDir
-    static File repo;
-    GitData gitData;
-    Git git;
-    Repository repository;
-    Settings settings;
+    protected static File repo;
+    protected GitData gitData;
+    protected Git git;
+    protected Repository repository;
+    protected Settings settings;
 
     @BeforeEach
     protected void beforeEach() throws GitAPIException, IOException, GitException {
