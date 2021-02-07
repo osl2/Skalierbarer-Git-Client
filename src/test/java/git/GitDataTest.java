@@ -3,6 +3,8 @@ package git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import settings.Settings;
 
 import java.io.IOException;
 import java.util.Iterator;

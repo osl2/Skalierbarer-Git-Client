@@ -28,7 +28,10 @@ public abstract class AbstractGitTest {
 
     @BeforeEach
     protected void beforeEach() throws GitAPIException, IOException {
+        FileUtils.deleteDirectory(repo);
+        FileUtils.forceMkdir(repo);
         setupRepo();
+
         init();
     }
 
@@ -38,8 +41,6 @@ public abstract class AbstractGitTest {
     }
 
     protected void setupRepo() throws GitAPIException, IOException {
-        FileUtils.deleteDirectory(repo);
-        FileUtils.forceMkdir(repo);
         Git.init().setDirectory(repo).setBare(false).call();
         Git git = Git.open(repo);
         // All commits are empty and contain no changes. This needs to change if further testcases check data.

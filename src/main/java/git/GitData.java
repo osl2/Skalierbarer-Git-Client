@@ -38,6 +38,10 @@ public class GitData {
         return repository;
     }
 
+    static Git getJGit() {
+        return git;
+    }
+
     public void reinitialize() {
         initializeRepository();
     }
@@ -99,8 +103,7 @@ public class GitData {
         } catch (GitAPIException | IOException e) {
             //TODO: Fehlerbehandlung
             e.printStackTrace();
-        }
-
+    }
         return null;
     }
 

@@ -1,21 +1,34 @@
 package git;
 
+import settings.Settings;
+
 import java.io.File;
+import java.io.IOException;
 
 public class GitFile {
     private int size;
     private File path;
     /* TODO: SOME WAY TO TRACK CHANGES */
 
-    //for Gitignore.java
-
-    /* Is only instantiated inside the git Package */
-    GitFile() {
-    }
-
-    GitFile(int size, File path) {
+    GitFile(int size, File path) throws IOException {
+        if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
+            throw new IOException("File is not located in the repository directory!");
+        }
         this.size = size;
         this.path = path;
+    }
+
+    /**
+     * Method to get the size of the file
+     *
+     * @return Size of the file
+     */
+    public int getSize() {
+        return this.size;
+    }
+
+    public File getPath(){
+        return this.path;
     }
 
     /**
