@@ -136,7 +136,7 @@ public class GitData {
      * @return The singleton status object
      */
     public GitStatus getStatus() {
-        throw new AssertionError("not implemented yet");
+        return GitStatus.getGitStatus();
     }
 
     /**

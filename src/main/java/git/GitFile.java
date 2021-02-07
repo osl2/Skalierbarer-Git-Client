@@ -1,16 +1,22 @@
 package git;
 
+import git.exception.GitException;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GitFile {
-    private int size;
+    private long size;
     private File path;
     /* TODO: SOME WAY TO TRACK CHANGES */
 
-    GitFile(int size, File path) throws IOException {
+    GitFile(long size, File path) throws IOException {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
             throw new IOException("File is not located in the repository directory!");
         }
@@ -23,7 +29,7 @@ public class GitFile {
      *
      * @return Size of the file
      */
-    public int getSize() {
+    public long getSize() {
         return this.size;
     }
 
@@ -85,8 +91,24 @@ public class GitFile {
      *
      * @return True if the file was added to the staging area successfully
      */
-    public boolean add() {
-        return false;
+    public boolean add() throws GitException {
+        Repository repository = GitData.getRepository();
+        Git git = GitData.getJGit();
+        Path repoPath = Paths.get(repository.getDirectory().toURI());
+        Path filePath = Paths.get(this.path.toURI());
+        String relative = repoPath.relativize(filePath).toString();
+        if (relative.substring(0, 3).equals((".." + File.separatorChar).substring(0, 3))) {
+            relative = relative.substring(3);
+        } else {
+            throw new GitException("something with the Filepath went wrong");
+        }
+        try {
+            git.add().addFilepattern(relative).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException("File not found in Git");
+
+        }
     }
 
     /**
