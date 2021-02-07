@@ -31,7 +31,7 @@ public class GitStatus {
      *
      * @return The unique GitStatus object
      */
-    public static GitStatus getGitStatus() {
+    static GitStatus getGitStatus() {
         if (gitStatus == null) {
             gitStatus = new GitStatus();
         }
@@ -88,6 +88,12 @@ public class GitStatus {
     public List<GitFile> getModifiedFiles() {
         return null;
     }
+
+    /**
+     * Returns the list union of getChangedFiles() and getAddedFiles(), i.e. all files (newly created and modified) in the staging-area
+     * @return a list of all files in the staging-area
+     */
+    public List<GitFile> getStagedFiles(){return null;}
 
     /**
      * Jgit: getUntracked(); e.g. what you get if you create a new file without adding it to the index
