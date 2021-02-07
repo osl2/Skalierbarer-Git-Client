@@ -43,7 +43,7 @@ public class Checkout implements ICommand, ICommandGUI {
      */
     public String getCommandLine(String userInput) {
         if (branch != null)
-            return "git checkout -b " + branch.getFullName();
+            return "git checkout -b " + branch.getName();
         else if (commit != null)
             return "git checkout " + commit.getHashAbbrev();
 
