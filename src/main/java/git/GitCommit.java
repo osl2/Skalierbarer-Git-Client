@@ -1,14 +1,21 @@
 package git;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.AbstractTreeIterator;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class GitCommit {
     private final RevCommit revCommit;
@@ -98,15 +105,57 @@ public class GitCommit {
 
 
     /**
+     * Method to get a CanonicalTreeParser
+     * TODO: JAVADOC
+     *
+     * @param commitId
+     * @param git
+     * @return
+     * @throws IOException
+     */
+    private static AbstractTreeIterator getCanonicalTreeParser(ObjectId commitId, Git git) throws IOException {
+        RevWalk walk = new RevWalk(git.getRepository());
+        RevCommit commit = walk.parseCommit(commitId);
+        ObjectId treeId = commit.getTree().getId();
+        try (ObjectReader reader = git.getRepository().newObjectReader()) {
+            return new CanonicalTreeParser(null, reader, treeId);
+        }
+
+    }
+
+    /**
      * Method to get the files changed in that Commit
      *
      * @return List of the changed Files
      */
-    public List<GitFile> getChangedFiles() {
-        throw new AssertionError("not implemented");
-    }
+    public List<GitFile> getChangedFiles() throws IOException {
+        initializeCommit();
+        Repository repository = GitData.getRepository();
+        Git git = GitData.getJGit();
+        RevWalk walk = new RevWalk(repository);
+        RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
 
-    @Override
+        AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
+
+        DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+        diffFormatter.setRepository(repository);
+        List<DiffEntry> diffEntries = diffFormatter.scan(oldTreeIterator, newTreeIterator);
+        List<GitFile> files = new ArrayList<>();
+      String path;
+      File filePath;
+      int size;
+
+      for (DiffEntry diffEntry : diffEntries) {
+          path = diffEntry.getPath(DiffEntry.Side.NEW);
+          filePath = new File(repository.getWorkTree(), path);
+          size = (int) filePath.length();
+          files.add(new GitFile(size, filePath));
+      }
+      return  files;
+  }
+
+  @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GitCommit)) return false;
