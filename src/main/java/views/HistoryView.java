@@ -2,17 +2,14 @@ package views;
 
 import commands.Log;
 import git.GitCommit;
+import git.GitData;
 import git.GitFile;
-import views.filter.AbstractHistoryFilter;
-
-import git.GitCommit;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
@@ -59,13 +56,13 @@ public class HistoryView extends JPanel implements IView {
     diffView = new DiffView();
     diffPane.add(diffView.openDiffView());
     applyCellRenderer();
-    //log = new Log();
-    //log.execute();
-    // Branch name fehlt noch
+    log = new Log();
+    log.execute();
+    listOfCommits = log.getCommits(null);
     int entries; //= listOfCommits.size();
 
     //
-    entries = 10;
+    entries = 11;
     initList();
     //
     for(int i = 0; i < entries; i++) {
@@ -90,19 +87,9 @@ public class HistoryView extends JPanel implements IView {
 
   public void getFiles(GitCommit commit) {}
 
-  public static void main(String arg[]) {
-    JFrame frame = new JFrame("HistoryView");
-    frame.setContentPane(new HistoryView().historyView);
-    JPanel panel = new JPanel();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.pack();
-    frame.setSize(1280, 720);
-    frame.setVisible(true);
-  }
-
   private void applyCellRenderer() {
-    commitList.setCellRenderer(new views.listCellRenderer.HistoryViewRenderer(6));
-    fileList.setCellRenderer(new views.listCellRenderer.HistoryViewRenderer(1));
+    commitList.setCellRenderer(new HistoryViewRenderer(6));
+    fileList.setCellRenderer(new HistoryViewRenderer(1));
   }
 
   /**
@@ -154,5 +141,45 @@ public class HistoryView extends JPanel implements IView {
         diffView.setDiff(commit, file);
       }
     });
+  }
+
+  private static class HistoryViewRenderer extends JTextArea implements ListCellRenderer {
+    private int minRows;
+
+    /**
+     * Sets the minimal amount of rows required by one list entry. A list entry has to be a String
+     * in order to work properly. If the item size should dynamically grow set minRows = 1.
+     * The JList which wants to dynamically grow needs to invoke a componentListener.
+     * For an example how to use the componentListener look in the class HistoryView.
+     * @param minRows the minimal count of rows contained in one ListCell.
+     */
+    public HistoryViewRenderer(int minRows) {
+      this.minRows = minRows;
+      this.setLineWrap(true);
+      this.setWrapStyleWord(true);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+                                                  final Object value, final int index, final boolean isSelected,
+                                                  final boolean hasFocus) {
+      Color background = Color.WHITE;
+      this.setText((String) value);
+      // Only the first 6 lines of the commit message should be shown;
+      this.setRows(minRows);
+      int width = list.getWidth();
+      if(isSelected) {
+        // This color is light blue.
+        background = new Color(0xAAD8E6);
+      }
+      this.setBackground(background);
+      // this is just to activate the JTextAreas internal sizing mechanism
+      if (width > 0) {
+        this.setSize(width, Short.MAX_VALUE);
+      }
+      this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+      return this;
+
+    }
   }
 }

@@ -2,15 +2,16 @@ package commands;
 
 import git.GitBranch;
 import git.GitCommit;
+import git.GitData;
 
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class Log implements ICommand {
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
+  private String errorMessage = "";
+  private GitData gitData;
+  private GitBranch activeBranch;
+  private List<GitCommit> commits;
 
   //-----------------Display Options for log----------------
 
@@ -35,7 +36,14 @@ public class Log implements ICommand {
    * @return a list of commit messages.
    */
   public List<GitCommit> getCommits(GitBranch branch) {
-    return null;
+    commits = new ArrayList<GitCommit>();
+    GitCommit latestCommit = activeBranch.getCommit();
+    commits.add(latestCommit);
+    while(latestCommit.getParents()[0] != null) {
+      latestCommit = latestCommit.getParents()[0];
+      commits.add(latestCommit);
+    }
+    return commits;
   }
 
   /**
@@ -44,23 +52,20 @@ public class Log implements ICommand {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() {
-    //not implemented yet
-    return false;
+    gitData = new GitData();
+    commits = gitData.getCommits();
+    try {
+      activeBranch = gitData.getSelectedBranch();
+    } catch (IOException e) {
+      errorMessage = "Es konnte kein branch Name gefunden werden";
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
 
   public String getErrorMessage() {
-    return null;
+    return errorMessage;
   }
 
-  /**
-   * Method to get the Commandline input that would be necessary to execute the command.
-   *
-   * @param userInput The input that the user needs to make additionally to
-   *                  the standard output of git commit
-   * @return Returns a String representation of the corresponding git command to
-   *     display on the command line
-   */
-  public String getCommandLine(String userInput) {
-    return null;
-  }
 }
