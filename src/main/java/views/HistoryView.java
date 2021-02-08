@@ -29,59 +29,13 @@ public class HistoryView extends JPanel implements IView {
   private Log log;
   private List<GitCommit> listOfCommits;
   private List<GitFile> listOfFiles;
-  private List<String> dummyListe1 = new ArrayList<String>();
-  private List<String> dummyListe2 = new ArrayList<String>();
 
-  private File path = new File("D:\\Eclipse_Workplace_5\\.git");
-  private File file = new File("D:\\Eclipse_Workplace_5");
-  GitData gitData;
-  Git git;
-  Repository repository;
-
-  private void initList() {
-    for(int i = 0; i < 10; i++) {
-      dummyListe1.add("Eintraggggggg" + System.lineSeparator() +
-              "ggggggggggggggggggggggg \n" +
-              "Guten Tag am heutigen Tag haben wiraber ein sehr schönes Wetter nicht wahr. Es scheint das die Sonne scheint. ggggggggggg ggggggggggggggggg gggggggggggg gggggggggggggggg ggggggggggggg ggggggggg gggggggggggggggg ggggggggggggggg ggggggggg gggggggg" +
-              "ggggggg gggggggggggggggg ggggggggggggggggg gggggggggggg gggggggggggggg gggggggggggggggggg gggggggggggggg ggggggggggggggggg ggggggg" + i);
-      dummyListe2.add("Eintraggggggggggggggggggggggggggggggggggggggggggggggggggggggggg" + i);
-      System.out.println(dummyListe1.get(i));
-    }
-    dummyListe1.add(0, "Hallo");
-  }
-
-  private void initRepo() {
-    /*FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-    repositoryBuilder.setMustExist( true );
-    repositoryBuilder.setGitDir(path);
-    try {
-      repository = repositoryBuilder.build();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }*/
-    try {
-      git = Git.open(path);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    Settings.getInstance().setActiveRepositoryPath(file);
-    gitData = new GitData();
-    gitData.reinitialize();
-    String branchName = "";
-    try {
-      branchName = git.getRepository().getFullBranch();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    System.out.println(branchName);
-  }
 
   /**
    * Creates the content of the commit list. This is located at
    * the left side of the JPanel.
    */
   public HistoryView() {
-    initRepo();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     fileScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);
@@ -97,16 +51,10 @@ public class HistoryView extends JPanel implements IView {
     log.execute();
     listOfCommits = log.getCommits(null);
     int entries = listOfCommits.size();
-
-    //
-    //entries = 11;
-    //initList();
-    //
     for(int i = 0; i < entries; i++) {
       GitCommit current = listOfCommits.get(i);
       String message = current.getMessage();
       listModel.addElement(message);
-      //listModel.addElement(dummyListe1.get(i));
     }
     addMouseListeners();
   }
@@ -160,9 +108,16 @@ public class HistoryView extends JPanel implements IView {
         commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         commitMessage.setLineWrap(true);
         commitMessage.setWrapStyleWord(true);
-        /*for(int i = 0; i < 5; i++) {
-          fileListModel.addElement(dummyListe2.get(i));
-        }*/
+        try {
+          listOfFiles = selectedCommit.getChangedFiles();
+        } catch (IOException ioException) {
+          ioException.printStackTrace();
+        }
+        int size = listOfFiles.size();
+        for(int i = 0; i < size; i++) {
+          String activeFile = listOfFiles.get(i).getPath().getName();
+          fileListModel.addElement(activeFile);
+        }
       }
     });
     fileList.addMouseListener(new MouseAdapter() {
