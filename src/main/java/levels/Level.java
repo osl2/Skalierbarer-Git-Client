@@ -28,7 +28,7 @@ public class Level {
      *
      * @return name of the level
      */
-    String getLevelName() {
+    public String getName() {
         return name;
     }
 
@@ -38,7 +38,6 @@ public class Level {
      * @return List of callable commands
      */
     public List<ICommand> getCommands() {
-
         return commands;
     }
 

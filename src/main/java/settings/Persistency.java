@@ -59,6 +59,7 @@ public class Persistency {
             l.warning(e.getMessage());
             return false;
         }
+        Settings.getInstance().settingsSavedListener();
         return true;
     }
 
