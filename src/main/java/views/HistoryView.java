@@ -1,15 +1,20 @@
 package views;
 
 import commands.Log;
-import git.GitCommit;
-import git.GitData;
-import git.GitFile;
+import git.*;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import settings.Settings;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
@@ -27,6 +32,12 @@ public class HistoryView extends JPanel implements IView {
   private List<String> dummyListe1 = new ArrayList<String>();
   private List<String> dummyListe2 = new ArrayList<String>();
 
+  private File path = new File("D:\\Eclipse_Workplace_5\\.git");
+  private File file = new File("D:\\Eclipse_Workplace_5");
+  GitData gitData;
+  Git git;
+  Repository repository;
+
   private void initList() {
     for(int i = 0; i < 10; i++) {
       dummyListe1.add("Eintraggggggg" + System.lineSeparator() +
@@ -39,12 +50,38 @@ public class HistoryView extends JPanel implements IView {
     dummyListe1.add(0, "Hallo");
   }
 
+  private void initRepo() {
+    /*FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+    repositoryBuilder.setMustExist( true );
+    repositoryBuilder.setGitDir(path);
+    try {
+      repository = repositoryBuilder.build();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }*/
+    try {
+      git = Git.open(path);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Settings.getInstance().setActiveRepositoryPath(file);
+    gitData = new GitData();
+    gitData.reinitialize();
+    String branchName = "";
+    try {
+      branchName = git.getRepository().getFullBranch();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.println(branchName);
+  }
+
   /**
    * Creates the content of the commit list. This is located at
    * the left side of the JPanel.
    */
   public HistoryView() {
-    //this.add(new HistoryView().historyView);
+    initRepo();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     fileScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);
@@ -59,17 +96,17 @@ public class HistoryView extends JPanel implements IView {
     log = new Log();
     log.execute();
     listOfCommits = log.getCommits(null);
-    int entries; //= listOfCommits.size();
+    int entries = listOfCommits.size();
 
     //
-    entries = 11;
-    initList();
+    //entries = 11;
+    //initList();
     //
     for(int i = 0; i < entries; i++) {
-      //GitCommit current = listOfCommits.get(i);
-      //String message = current.getMessage();
-      //listModel.addElement(message);
-      listModel.addElement(dummyListe1.get(i));
+      GitCommit current = listOfCommits.get(i);
+      String message = current.getMessage();
+      listModel.addElement(message);
+      //listModel.addElement(dummyListe1.get(i));
     }
     addMouseListeners();
   }
@@ -101,18 +138,17 @@ public class HistoryView extends JPanel implements IView {
       public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
         int index = commitList.getSelectedIndex();
-        //GitCommit selectedCommit = listOfCommits.get(index);
-        //String activeMessage = selectedCommit.getMessage();
-        //GitAuthor author = selectedCommit.getAuthor();
-        //String name = author.getName();
-        //String eMail = author.getEmail();
-        //Date date = selectedCommit.getDate();
-        //commitMessage.setText(name + " " + eMail + " " + date ": " + activeMessage);
+        GitCommit selectedCommit = listOfCommits.get(index);
+        String activeMessage = selectedCommit.getMessage();
+        GitAuthor author = selectedCommit.getAuthor();
+        String name = author.getName();
+        String eMail = author.getEmail();
+        Date date = selectedCommit.getDate();
+        commitMessage.setText("Autor: " + name + ", E-Mail: " + eMail + ", Datum: " + date + ": " + activeMessage);
         DefaultListModel fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //
-        String s = dummyListe1.get(index);
         int width = commitMessage.getWidth();
         commitMessage.setVisible(true);
         // Margin not working
@@ -124,10 +160,9 @@ public class HistoryView extends JPanel implements IView {
         commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         commitMessage.setLineWrap(true);
         commitMessage.setWrapStyleWord(true);
-        commitMessage.setText(s);
-        for(int i = 0; i < 5; i++) {
+        /*for(int i = 0; i < 5; i++) {
           fileListModel.addElement(dummyListe2.get(i));
-        }
+        }*/
       }
     });
     fileList.addMouseListener(new MouseAdapter() {

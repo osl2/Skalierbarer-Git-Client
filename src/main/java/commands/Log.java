@@ -36,10 +36,16 @@ public class Log implements ICommand {
    * @return a list of commit messages.
    */
   public List<GitCommit> getCommits(GitBranch branch) {
+    GitBranch gitBranch;
+    if(branch != null) {
+      gitBranch = branch;
+    } else {
+      gitBranch = activeBranch;
+    }
     commits = new ArrayList<GitCommit>();
-    GitCommit latestCommit = activeBranch.getCommit();
+    GitCommit latestCommit = gitBranch.getCommit();
     commits.add(latestCommit);
-    while(latestCommit.getParents()[0] != null) {
+    while(latestCommit.getParents().length != 0) {
       latestCommit = latestCommit.getParents()[0];
       commits.add(latestCommit);
     }
@@ -53,7 +59,7 @@ public class Log implements ICommand {
    */
   public boolean execute() {
     gitData = new GitData();
-    commits = gitData.getCommits();
+    //commits = gitData.getCommits();
     try {
       activeBranch = gitData.getSelectedBranch();
     } catch (IOException e) {
