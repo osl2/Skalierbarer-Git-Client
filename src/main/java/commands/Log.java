@@ -36,6 +36,7 @@ public class Log implements ICommand {
    * @return a list of commit messages.
    */
   public List<GitCommit> getCommits(GitBranch branch) {
+    //TODO: Muss vielleicht nochmal überarbeitet werden.
     GitBranch gitBranch;
     if(branch != null) {
       gitBranch = branch;

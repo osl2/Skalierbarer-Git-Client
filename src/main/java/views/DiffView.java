@@ -1,12 +1,21 @@
 package views;
 
+import commands.Diff;
 import git.GitCommit;
 import git.GitFile;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class DiffView implements IDiffView {
-  private JPanel panel = new JPanel();
+  private Diff diff;
+  private JTextArea textArea = new JTextArea();
+
+  public DiffView() {
+    textArea.setVisible(false);
+    textArea.setEnabled(false);
+    textArea.setLineWrap(true);
+  }
   /**
    * Opens the difference between the given file and and the previous version of the file.
    *
@@ -16,8 +25,8 @@ public class DiffView implements IDiffView {
   }
 
 
-  public JPanel openDiffView() {
-    return panel;
+  public JTextArea openDiffView() {
+    return textArea;
   }
 
   /**
@@ -27,6 +36,15 @@ public class DiffView implements IDiffView {
    * @param file
    */
   public void setDiff(GitCommit activeCommit, GitFile file) {
-
+    diff = new Diff();
+    diff.setDiffCommit(activeCommit, file);
+    diff.execute();
+    String output = diff.diffGit();
+    textArea.setText(output);
+    textArea.setVisible(true);
+    int width = textArea.getWidth();
+    if(width > 0) {
+      textArea.setSize(width, Short.MAX_VALUE);
+    }
   }
 }

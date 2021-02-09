@@ -23,7 +23,7 @@ public class Diff implements ICommand {
       return false;
     }
     validDiff = true;
-    return false;
+    return true;
   }
 
   public String getErrorMessage() {

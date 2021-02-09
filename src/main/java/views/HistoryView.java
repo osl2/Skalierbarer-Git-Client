@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
-  private IDiffView diffView;
+  private DiffView diffView;
   private JList commitList;
   private JScrollPane commitScrollPane;
   private JList fileList;
@@ -26,6 +26,8 @@ public class HistoryView extends JPanel implements IView {
   private JScrollPane fileScrollPane;
   private JPanel historyView;
   private JScrollPane diffPane;
+  private JPanel diffPanel;
+  private JTextArea diffText;
   private Log log;
   private List<GitCommit> listOfCommits;
   private List<GitFile> listOfFiles;
@@ -45,7 +47,8 @@ public class HistoryView extends JPanel implements IView {
     commitList.setModel(listModel);
     commitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     diffView = new DiffView();
-    diffPane.add(diffView.openDiffView());
+    diffText = diffView.openDiffView();
+    diffPanel.add(diffText);
     applyCellRenderer();
     log = new Log();
     log.execute();
@@ -129,6 +132,7 @@ public class HistoryView extends JPanel implements IView {
         GitFile file = listOfFiles.get(fileIndex);
         GitCommit commit = listOfCommits.get(commitIndex);
         diffView.setDiff(commit, file);
+        diffText.setCaretPosition(0);
       }
     });
   }
