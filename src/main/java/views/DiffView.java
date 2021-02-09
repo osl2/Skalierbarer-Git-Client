@@ -41,6 +41,7 @@ public class DiffView implements IDiffView {
     diff.execute();
     String output = diff.diffGit();
     textArea.setText(output);
+    textArea.setDisabledTextColor(Color.BLACK);
     textArea.setVisible(true);
     int width = textArea.getWidth();
     if(width > 0) {

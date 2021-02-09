@@ -32,12 +32,38 @@ public class HistoryView extends JPanel implements IView {
   private List<GitCommit> listOfCommits;
   private List<GitFile> listOfFiles;
 
+  //-------------------------------Lokaler test-----------------------------------//
+  private File path = new File("D:\\Eclipse_Workplace_5\\.git");
+  private File file = new File("D:\\Eclipse_Workplace_5");
+  GitData gitData;
+  Git git;
+  Repository repository;
+
+  private void initRepo() {
+    try {
+      git = Git.open(path);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Settings.getInstance().setActiveRepositoryPath(file);
+    gitData = new GitData();
+    gitData.reinitialize();
+    String branchName = "";
+    try {
+      branchName = git.getRepository().getFullBranch();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.println(branchName);
+  }
+//---------------------------------------------------------------------//
 
   /**
    * Creates the content of the commit list. This is located at
    * the left side of the JPanel.
    */
   public HistoryView() {
+    initRepo();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     fileScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);

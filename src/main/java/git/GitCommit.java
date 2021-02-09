@@ -8,14 +8,19 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
+import org.eclipse.jgit.util.io.NullOutputStream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
@@ -105,12 +110,24 @@ public class GitCommit {
     }
 
     /**
-     * Generates the difference to the working directory
-     *
+     * (Generates the difference to the working directory)
+     * Actually it is used now to get the difference between this commit
+     * and the parent commit.
      * @return String representation to the working directory
      */
-    public String getDiff() {
-        throw new AssertionError("not implemented yet");
+    public String getDiff() throws IOException {
+        Git git = GitData.getJGit();
+        RevCommit oldCommit = revCommit.getParent(0);
+        AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
+        OutputStream out = new ByteArrayOutputStream();
+        try {
+            git.diff().setOldTree(oldTreeIterator).setNewTree(newTreeIterator).setOutputStream(out).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+        String output = out.toString();
+        return output;
     }
 
 
