@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class GitDataTest extends AbstractGitTest {
 
 
     @Test
-    public void getBranchesTest() throws GitAPIException {
+    public void getBranchesTest() throws GitAPIException, GitException {
         List<GitBranch> branchesGitData = gitData.getBranches();
         List<Ref> branchesJGit = git.branchList().call();
         assertEquals(branchesGitData.size(), branchesJGit.size());
@@ -36,7 +37,7 @@ public class GitDataTest extends AbstractGitTest {
     }
 
     @Test
-    public void commitsAreSortedFromNewestToOldestTest() {
+    public void commitsAreSortedFromNewestToOldestTest() throws IOException, GitException {
         int size = 0;
         Iterator<GitCommit> it = gitData.getCommits();
         while (it.hasNext()) {
@@ -54,7 +55,7 @@ public class GitDataTest extends AbstractGitTest {
     }
 
     @Test
-    public void commitsHaveCorrectCommitMessageTest() {
+    public void commitsHaveCorrectCommitMessageTest() throws IOException, GitException {
         int i = COMMIT_DATA.length - 1;
         Iterator<GitCommit> it = gitData.getCommits();
         while (it.hasNext()) {
@@ -64,7 +65,7 @@ public class GitDataTest extends AbstractGitTest {
     }
 
     @Test
-    public void findsAllBranches() throws GitAPIException {
+    public void findsAllBranches() throws GitAPIException, GitException {
         git.branchCreate().setName("Test1").call();
         git.branchCreate().setName("Test2").call();
         git.branchCreate().setName("Test3").call();
@@ -74,7 +75,7 @@ public class GitDataTest extends AbstractGitTest {
     }
 
     @Test
-    public void selectedBranchIsUpdated() throws GitAPIException, IOException {
+    public void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
         git.branchCreate().setName("Test1").call();
         git.branchCreate().setName("Test2").call();
         git.branchCreate().setName("Test3").call();

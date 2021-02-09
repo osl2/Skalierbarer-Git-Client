@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class GitBranchTest extends AbstractGitTest {
 
     @Test
-    public void branchRefIsUpdated() throws GitAPIException {
+    public void branchRefIsUpdated() throws GitAPIException, GitException {
         git.branchCreate().setName("Test1").call();
         git.branchCreate().setName("Test2").call();
         git.branchCreate().setName("Test3").call();
@@ -27,7 +28,7 @@ public class GitBranchTest extends AbstractGitTest {
     }
 
     @Test
-    public void branchNameIsCorrectSpecialCharacters() throws GitAPIException {
+    public void branchNameIsCorrectSpecialCharacters() throws GitAPIException, GitException {
         String[] expectedBranches = new String[]{"Test2", "Test3", "wip/test1"};
         for (String b : expectedBranches) {
             git.branchCreate().setName(b).call();

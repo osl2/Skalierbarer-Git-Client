@@ -1,8 +1,13 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.errors.AmbiguousObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -28,7 +33,7 @@ public class GitData {
     private static org.eclipse.jgit.api.Git git;
     private static Repository repository;
 
-    public GitData() {
+    public GitData() throws GitException {
         if (git == null || repository == null) {
             initializeRepository();
         }
@@ -42,11 +47,11 @@ public class GitData {
         return git;
     }
 
-    public void reinitialize() {
+    public void reinitialize() throws GitException {
         initializeRepository();
     }
 
-    private void initializeRepository() {
+    private void initializeRepository() throws GitException {
         Settings settings = Settings.getInstance();
         File path = settings.getActiveRepositoryPath();
         try {
@@ -60,8 +65,8 @@ public class GitData {
             repository = builder.build();
             git = Git.open(path);
         } catch (IOException e) {
-            System.out.println(e);
-            //TODO: Fehlerbehandlung machen
+            throw new GitException("Beim Öffnen des Git-Repositorrys ist etwas schief gelaufen " +
+                "Fehlermeldung: " + e.getMessage());
         }
     }
 
@@ -75,17 +80,18 @@ public class GitData {
      *
      * @return Array of all commits without stashes
      */
-    public Iterator<GitCommit> getCommits() {
+    public Iterator<GitCommit> getCommits() throws IOException, GitException {
         try {
             Iterable<RevCommit> allCommits;
             allCommits = git.log().all().call();
             return new CommitIterator(allCommits);
-        } catch (GitAPIException | IOException e) {
-            //TODO: Fehlerbehandlung
-            e.printStackTrace();
+        }catch (NoHeadException e) {
+            throw new GitException("Der Head wurde nicht gefunden" +
+                "\n Fehlermeldung: " + e.getMessage());
+        } catch (GitAPIException e) {
+            throw new GitException("Eine nicht genauer spezifizierte Fehlermeldung in Git ist aufgetreten \n" +
+                "Fehlermeldung: " + e.getMessage());
         }
-
-        return null;
     }
 
     /**
@@ -94,17 +100,28 @@ public class GitData {
      * @param branch the Branch to get commits for
      * @return Array of all commits without stashes
      */
-    Iterator<GitCommit> getCommits(GitBranch branch) {
+    Iterator<GitCommit> getCommits(GitBranch branch) throws GitException, IOException {
         try {
             Iterable<RevCommit> allCommits;
             allCommits = git.log().add(repository.resolve(branch.getFullName()))
                     .call();
             return new CommitIterator(allCommits);
-        } catch (GitAPIException | IOException e) {
-            //TODO: Fehlerbehandlung
-            e.printStackTrace();
-    }
-        return null;
+        } catch (NoHeadException e) {
+            throw new GitException("Der Head wurde nicht gefunden \n" +
+                "Fehlermeldung: " + e.getMessage());
+        } catch (IncorrectObjectTypeException e) {
+            throw new GitException("Mit Git ist etwas Schiefgelaufen \n" +
+                "Fehlermeldung: " + e.getMessage());
+        } catch (AmbiguousObjectException e) {
+            throw new GitException("Mit den internen Objekten ist etwas schief gelaufen \n" +
+                "Fehlermeldung: " + e.getMessage());
+        } catch (MissingObjectException e) {
+            throw new GitException("Mit den internen Objekten ist etwas schief gelaufen \n" +
+                "Fehlermeldung: " + e.getMessage());
+        } catch (GitAPIException e) {
+            throw new GitException("Mit Git ist etwasnicht genauer spezifiziertes schief gelaufen \n" +
+                "Fehlermeldung: " + e.getMessage());
+        }
     }
 
 
@@ -169,7 +186,7 @@ public class GitData {
      *
      * @return A list of branches in the repository
      */
-    public List<GitBranch> getBranches() {
+    public List<GitBranch> getBranches() throws GitException {
         try {
             List<Ref> branches = git.branchList().call();
             List<GitBranch> gitBranches = new ArrayList<>();
@@ -178,11 +195,9 @@ public class GitData {
             }
             return gitBranches;
         } catch (GitAPIException e) {
-            //TODO: Fehlerbehandlung
-            e.printStackTrace();
+            throw new GitException("Mit Git ist etwas schief gelaufen" +
+                "Fehlermeldung: " + e.getMessage());
         }
-
-        return null;
     }
 
     /**
@@ -203,7 +218,7 @@ public class GitData {
 
             }
         } catch (GitAPIException e) {
-            //TODO: Exception fangen
+
         }
         return toReturn;
     }
