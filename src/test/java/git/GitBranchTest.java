@@ -3,8 +3,10 @@ package git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class GitBranchTest extends AbstractGitTest {
@@ -22,5 +24,24 @@ public class GitBranchTest extends AbstractGitTest {
         git.checkout().setName(selected.getFullName()).call();
         git.commit().setCommitter("Test2", "e@example.com").setSign(false).setMessage("msg").call();
         assertNotEquals(oldHead.getHash(), selected.getCommit().getHash());
+    }
+
+    @Test
+    public void branchNameIsCorrectSpecialCharacters() throws GitAPIException {
+        String[] expectedBranches = new String[]{"Test2", "Test3", "wip/test1"};
+        for (String b : expectedBranches) {
+            git.branchCreate().setName(b).call();
+        }
+
+        String[] branchNames = gitData.getBranches().stream()
+                .map(GitBranch::getName)
+                .filter(b -> !b.equals("master")) // dont include master
+                .toArray(String[]::new);
+
+        Arrays.sort(expectedBranches);
+        Arrays.sort(branchNames);
+
+        assertArrayEquals(expectedBranches, branchNames);
+
     }
 }
