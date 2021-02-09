@@ -49,7 +49,7 @@ public class Clone implements ICommand, ICommandGUI {
       return false;
     }
     GitFacade facade = new GitFacade();
-    boolean success = facade.cloneRepository(gitURL, path.getAbsolutePath());
+    boolean success = facade.cloneRepository(gitURL, path);
     if(!success) {
       errorMessage = "Beim klonen ist ein Fehler aufgetreten.";
       return false;

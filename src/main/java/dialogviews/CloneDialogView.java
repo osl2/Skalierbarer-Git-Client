@@ -18,6 +18,7 @@ public class CloneDialogView implements IDialogView {
   private JButton cloneButton;
   private Clone clone;
   private File path;
+  private JFileChooser chooser;
 
   public CloneDialogView() {
     addActionlistener();
@@ -28,6 +29,12 @@ public class CloneDialogView implements IDialogView {
       @Override
       public void actionPerformed(ActionEvent e) {
         //TODO: Wait for filechooser in GUIController
+        chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+          path = chooser.getSelectedFile();
+        }
       }
     });
     cloneButton.addActionListener(new ActionListener() {
