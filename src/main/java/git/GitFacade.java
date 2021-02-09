@@ -124,11 +124,11 @@ public class GitFacade {
       Git git = Git.cloneRepository()
               .setURI(gitUrl)
               .setDirectory(dest)
+              .setCloneAllBranches(true)
               .call();
     } catch (GitAPIException e) {
       e.printStackTrace();
     }
-
     return true;
   }
 

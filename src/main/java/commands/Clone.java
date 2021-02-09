@@ -3,6 +3,7 @@ package commands;
 import controller.GUIController;
 import dialogviews.CloneDialogView;
 import git.GitFacade;
+import settings.Settings;
 
 import java.io.File;
 
@@ -54,7 +55,9 @@ public class Clone implements ICommand, ICommandGUI {
       errorMessage = "Beim klonen ist ein Fehler aufgetreten.";
       return false;
     }
+    Settings.getInstance().setActiveRepositoryPath(path);
     commandLine = commandLine + gitURL + ", " + path.getAbsolutePath();
+    Settings.getInstance().settingsChanged();
     return true;
   }
 
