@@ -8,13 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DiffView implements IDiffView {
-  private Diff diff;
+  private Diff diff = new Diff();
   private JTextArea textArea = new JTextArea();
 
   public DiffView() {
     textArea.setVisible(false);
     textArea.setEnabled(false);
     textArea.setLineWrap(true);
+    textArea.setBackground(Color.WHITE);
   }
   /**
    * Opens the difference between the given file and and the previous version of the file.
@@ -36,7 +37,6 @@ public class DiffView implements IDiffView {
    * @param file
    */
   public void setDiff(GitCommit activeCommit, GitFile file) {
-    diff = new Diff();
     diff.setDiffCommit(activeCommit, file);
     diff.execute();
     String output = diff.diffGit();
@@ -47,5 +47,10 @@ public class DiffView implements IDiffView {
     if(width > 0) {
       textArea.setSize(width, Short.MAX_VALUE);
     }
+  }
+
+  public void setNotVisible() {
+    textArea.setVisible(false);
+    textArea.setDisabledTextColor(Color.WHITE);
   }
 }

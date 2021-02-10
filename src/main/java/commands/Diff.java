@@ -5,6 +5,7 @@ import git.GitFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 public class Diff implements ICommand {
@@ -12,6 +13,8 @@ public class Diff implements ICommand {
   private GitFile activeFile;
   private String errorMessage;
   private String activeDiff;
+  private ArrayList<String> lines = new ArrayList<String>();
+  private int[] fileStartCount;
   private boolean validDiff = false;
 
   /**
@@ -24,11 +27,15 @@ public class Diff implements ICommand {
       errorMessage = "Es muss ein GitCommit und ein GitFile übergeben werden um den Diff Befehl auszuführen.";
       return false;
     }
+    if(validDiff) {
+      return true;
+    }
     try {
       activeDiff = activeCommit.getDiff();
     } catch (IOException e) {
       e.printStackTrace();
     }
+    fileStartCount = getAllFileStarts();
     validDiff = true;
     return true;
   }
@@ -44,9 +51,11 @@ public class Diff implements ICommand {
    * @param file the file to compare to his previous version.
    */
   public void setDiffCommit(GitCommit activeCommit, GitFile file) {
-    this.activeCommit = activeCommit;
+    if(!validDiff == true || this.activeCommit.getHash().compareTo(activeCommit.getHash()) != 0) {
+      this.activeCommit = activeCommit;
+      validDiff = false;
+    }
     this.activeFile = file;
-    validDiff = false;
   }
 
   /**
@@ -62,38 +71,56 @@ public class Diff implements ICommand {
     String activeFilePath = activeFile.getPath().getPath();
     String separator = Pattern.quote(System.getProperty("file.separator"));
     String[] relativePath = activeFilePath.split(separator);
-    ArrayList<String> lines = new ArrayList<String>();
-    activeDiff.lines().forEach(lines::add);
     String[] firstDirectory = lines.get(0).split("/");
     int index = 0;
+    // Find the start of the relative path used in git.
     for(int i = 0; i < relativePath.length; i++) {
       if(relativePath[i].compareTo(firstDirectory[1]) == 0) {
         index = i;
         break;
       }
     }
+    // Build the relative path used in git an store it in activeFilePath.
     activeFilePath = "diff --git a";
     for(int i = index; i < relativePath.length; i++) {
       activeFilePath += "/" + relativePath[i];
     }
     int compareLength = activeFilePath.length();
-    boolean match = false;
-    for(int i = 0; i < lines.size(); i++) {
-      if(lines.get(i).length() < 10) {
+    // Find the diff entry of the given file.
+    for(int i = 0; i < fileStartCount.length; i++) {
+      if(lines.get(fileStartCount[i]).length() < compareLength) {
         continue;
-      } else if(lines.get(i).substring(0, 10).compareTo("diff --git") == 0 && lines.get(i).length() >= compareLength) {
-        if(lines.get(i).substring(0, compareLength).compareTo(activeFilePath) == 0) {
-          startLine = i;
-          match = true;
-        } else if(match == true && lines.get(i).substring(0, 10).compareTo("diff --git") == 0) {
-          finishLine = i;
-          break;
+      }
+      if(lines.get(fileStartCount[i]).substring(0, compareLength).compareTo(activeFilePath) == 0) {
+        startLine = fileStartCount[i];
+        if(i + 1 == fileStartCount.length) {
+          finishLine = lines.size();
+        } else {
+          finishLine = fileStartCount[i + 1];
         }
       }
     }
     String output = "";
     for(int i = startLine + 5; i < finishLine; i++) {
       output += lines.get(i) + System.lineSeparator();
+    }
+    return output;
+  }
+
+  private int[] getAllFileStarts() {
+    ArrayList<Integer> startLine = new ArrayList<Integer>();
+    activeDiff.lines().forEach(lines::add);
+    for(int i = 0; i < lines.size(); i++) {
+      if(lines.get(i).length() < 10) {
+        continue;
+      } else if(lines.get(i).substring(0, 10).compareTo("diff --git") == 0) {
+        startLine.add(i);
+      }
+    }
+    Collections.sort(startLine);
+    int[] output = new int[startLine.size()];
+    for(int i = 0; i < startLine.size(); i++) {
+      output[i] = startLine.get(i);
     }
     return output;
   }

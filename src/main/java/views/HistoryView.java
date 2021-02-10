@@ -9,10 +9,13 @@ import settings.Settings;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +57,6 @@ public class HistoryView extends JPanel implements IView {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.println(branchName);
   }
 //---------------------------------------------------------------------//
 
@@ -65,7 +67,6 @@ public class HistoryView extends JPanel implements IView {
   public HistoryView() {
     initRepo();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-    fileScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
@@ -114,6 +115,7 @@ public class HistoryView extends JPanel implements IView {
       @Override
       public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
+        diffView.setNotVisible();
         int index = commitList.getSelectedIndex();
         GitCommit selectedCommit = listOfCommits.get(index);
         String activeMessage = selectedCommit.getMessage();
@@ -121,7 +123,9 @@ public class HistoryView extends JPanel implements IView {
         String name = author.getName();
         String eMail = author.getEmail();
         Date date = selectedCommit.getDate();
-        commitMessage.setText("Autor: " + name + ", E-Mail: " + eMail + ", Datum: " + date + ": " + activeMessage);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy, hh:mm:ss");
+        String commitDate = format.format(date);
+        commitMessage.setText("Autor: " + name + ", E-Mail: " + eMail + ", Datum: " + commitDate + " Uhr: " + activeMessage);
         DefaultListModel fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

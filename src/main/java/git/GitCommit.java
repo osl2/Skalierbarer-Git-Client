@@ -13,6 +13,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.eclipse.jgit.util.io.NullOutputStream;
 
@@ -117,8 +118,12 @@ public class GitCommit {
      */
     public String getDiff() throws IOException {
         Git git = GitData.getJGit();
-        RevCommit oldCommit = revCommit.getParent(0);
-        AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+        // if this commit is the first commit of the tree.
+        if(revCommit.getParents().length != 0) {
+          RevCommit oldCommit = revCommit.getParent(0);
+          oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        }
         AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
         OutputStream out = new ByteArrayOutputStream();
         try {
