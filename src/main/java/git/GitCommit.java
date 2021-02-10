@@ -1,6 +1,8 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
@@ -80,16 +82,24 @@ public class GitCommit {
     }
 
 
-    public boolean revert() {
-        throw new AssertionError("not implemented yet");
+
+    public boolean revert() throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.revert().include(revCommit).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException("Beim Rückgängig machen des Commits ist ein Fehler aufgetreten" +
+                "Fehlermeldung: " + e.getMessage());
+        }
     }
 
-    /**
-     * Generates the difference between this commit and the one passed
-     *
-     * @param other the other commit
-     * @return String representation of the diff
-     */
+            /**
+             * Generates the difference between this commit and the one passed
+             *
+             * @param other the other commit
+             * @return String representation of the diff
+             */
     public String getDiff(GitCommit other) {
         throw new AssertionError("not implemented yet");
     }
