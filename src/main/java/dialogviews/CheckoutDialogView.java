@@ -68,12 +68,7 @@ public class CheckoutDialogView implements IDialogView {
     private void OkButtonHandler(ActionEvent e) {
         TreePath selected = tree1.getSelectionPath();
         if (selected == null) {
-            //todo: localize? GuiController?
-            JOptionPane.showMessageDialog(null,
-                    "Es muss ein Zweig / eine Einbuchung ausgewählt werden",
-                    "Fehler",
-                    JOptionPane.ERROR_MESSAGE);
-
+            GUIController.getInstance().errorHandler("Es muss ein Zweig / eine Einbuchung ausgewählt werden");
             return;
         }
         RefTreeNode node = (RefTreeNode) tree1.getSelectionPath().getLastPathComponent();
@@ -84,15 +79,10 @@ public class CheckoutDialogView implements IDialogView {
             if (command.execute()) {
                 GUIController.getInstance().closeDialogView();
             } else {
-                // todo let controller handle that
-                JOptionPane.showMessageDialog(null,
-                        "Es ist ein unerwarteter Fehler aufgetreten",
-                        "Fehler",
-                        JOptionPane.ERROR_MESSAGE);
+                GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler aufgetreten");
             }
         } catch (GitException gitException) {
-            // todo let controller handle that
-            gitException.printStackTrace();
+            GUIController.getInstance().errorHandler(gitException);
         }
     }
 
