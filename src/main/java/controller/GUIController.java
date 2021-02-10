@@ -38,7 +38,7 @@ public class GUIController {
     }
 
     public void errorHandler(String msg) {
-        JOptionPane.showMessageDialog(null,
+        JOptionPane.showMessageDialog(this.currentDialog,
                 msg,
                 "Fehler",
                 JOptionPane.ERROR_MESSAGE);
