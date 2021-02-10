@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -27,7 +28,7 @@ public abstract class AbstractGitTest {
     Settings settings;
 
     @BeforeEach
-    protected void beforeEach() throws GitAPIException, IOException {
+    protected void beforeEach() throws GitAPIException, IOException, GitException {
         FileUtils.deleteDirectory(repo);
         FileUtils.forceMkdir(repo);
         setupRepo();
@@ -56,7 +57,7 @@ public abstract class AbstractGitTest {
         git.close();
     }
 
-    public void init() throws IOException, GitAPIException {
+    public void init() throws IOException, GitAPIException, GitException {
         settings = Settings.getInstance();
         settings.setActiveRepositoryPath(repo);
         gitData = new GitData();

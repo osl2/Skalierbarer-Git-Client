@@ -44,7 +44,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Override
-  public void init() throws IOException, GitAPIException {
+  public void init() throws IOException, GitAPIException, GitException {
     super.init();
     settings.setUser(new GitAuthor("Author", "authoremail@example.com"));
   }

@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ public class GitCommitTest extends AbstractGitTest {
   }
 
   @Test
-  public void getChangedFilesTest() throws IOException {
+  public void getChangedFilesTest() throws IOException, GitException {
     Iterator<GitCommit> commits = gitData.getCommits();
     GitCommit commit;
     while (commits.hasNext()) {

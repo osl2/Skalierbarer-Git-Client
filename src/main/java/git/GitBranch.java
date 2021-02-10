@@ -1,5 +1,6 @@
 package git;
 
+import git.exception.GitException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -19,7 +20,7 @@ public class GitBranch {
         this.ref = branch;
     }
 
-    public Iterator<GitCommit> getCommits() {
+    public Iterator<GitCommit> getCommits() throws GitException, IOException {
         return new GitData().getCommits(this);
     }
 
