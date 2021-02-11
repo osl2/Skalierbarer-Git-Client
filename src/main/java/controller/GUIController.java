@@ -33,6 +33,30 @@ public class GUIController {
     }
 
     /**
+     * Default handler for any Exception which could not be handled by the program, but does not force
+     * us to exit.
+     *
+     * @param e The unhandled exception
+     */
+    public void errorHandler(Exception e) {
+        this.errorHandler(e.getMessage());
+    }
+
+
+    /**
+     * See {@link #errorHandler(Exception)}. Also used to show an error dialog with a custom text to the user
+     *
+     * @param msg Text of the error dialog
+     */
+    public void errorHandler(String msg) {
+        JOptionPane.showMessageDialog(this.currentDialog,
+                msg,
+                "Fehler",
+                JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    /**
      * This method can be used to unload a {@link IView} which was loaded with {@link #openView(IView)}.
      * Currently this method restores an instance of {@link HistoryView}
      */
