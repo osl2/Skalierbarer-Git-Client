@@ -10,6 +10,7 @@ import shaded.org.apache.commons.lang3.RandomStringUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +45,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Override
-  public void init() throws IOException, GitAPIException, GitException {
+  public void init() throws IOException, GitAPIException, GitException, URISyntaxException {
     super.init();
     settings.setUser(new GitAuthor("Author", "authoremail@example.com"));
   }
