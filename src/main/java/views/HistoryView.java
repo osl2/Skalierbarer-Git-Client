@@ -1,15 +1,13 @@
 package views;
 
-import commands.Log;
 import git.*;
+import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import settings.Settings;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -18,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
@@ -31,13 +30,17 @@ public class HistoryView extends JPanel implements IView {
   private JScrollPane diffPane;
   private JPanel diffPanel;
   private JTextArea diffText;
-  private Log log;
-  private List<GitCommit> listOfCommits;
+  private GitData data;
+  private Iterator<GitCommit> iteratorOfCommits;
+  private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
+  private int maxCommits = 20;
+  private int loadedCommits = 0;
+  private DefaultListModel listModel;
 
   //-------------------------------Lokaler test-----------------------------------//
-  private File path = new File("D:\\Eclipse_Workplace_5\\.git");
-  private File file = new File("D:\\Eclipse_Workplace_5");
+  private File path = new File("D:\\CloneTestOrdener\\.git");
+  private File file = new File("D:\\CloneTestOrdener");
   GitData gitData;
   Git git;
   Repository repository;
@@ -49,14 +52,6 @@ public class HistoryView extends JPanel implements IView {
       e.printStackTrace();
     }
     Settings.getInstance().setActiveRepositoryPath(file);
-    gitData = new GitData();
-    gitData.reinitialize();
-    String branchName = "";
-    try {
-      branchName = git.getRepository().getFullBranch();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 //---------------------------------------------------------------------//
 
@@ -70,22 +65,28 @@ public class HistoryView extends JPanel implements IView {
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
-    DefaultListModel listModel = new DefaultListModel();
+    listModel = new DefaultListModel();
     commitList.setModel(listModel);
     commitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     diffView = new DiffView();
     diffText = diffView.openDiffView();
     diffPanel.add(diffText);
     applyCellRenderer();
-    log = new Log();
-    log.execute();
-    listOfCommits = log.getCommits(null);
-    int entries = listOfCommits.size();
-    for(int i = 0; i < entries; i++) {
-      GitCommit current = listOfCommits.get(i);
-      String message = current.getMessage();
-      listModel.addElement(message);
+    try {
+      data = new GitData();
+    } catch (GitException e) {
+      e.printStackTrace();
     }
+    try {
+      GitBranch branch = data.getSelectedBranch();
+      iteratorOfCommits = data.getCommits(branch);
+    } catch (GitException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    addCommits();
+    addScrollbarListener();
     addMouseListeners();
   }
 
@@ -165,6 +166,30 @@ public class HistoryView extends JPanel implements IView {
         diffText.setCaretPosition(0);
       }
     });
+  }
+
+  private void addScrollbarListener() {
+    commitScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+      @Override
+      public void adjustmentValueChanged(AdjustmentEvent ae) {
+        int extent = commitScrollPane.getVerticalScrollBar().getModel().getExtent();
+        int max = commitScrollPane.getVerticalScrollBar().getMaximum();
+        if(max == extent + commitScrollPane.getVerticalScrollBar().getModel().getValue()) {
+          maxCommits += 20;
+          addCommits();
+        }
+      }
+    });
+  }
+
+  private void addCommits() {
+    while(iteratorOfCommits.hasNext() && loadedCommits < maxCommits) {
+      GitCommit current = iteratorOfCommits.next();
+      String message = current.getMessage();
+      listOfCommits.add(loadedCommits, current);
+      listModel.addElement(message);
+      loadedCommits++;
+    }
   }
 
   private static class HistoryViewRenderer extends JTextArea implements ListCellRenderer {
