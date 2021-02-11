@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -129,12 +130,14 @@ public class GitFacade {
               .setCloneAllBranches(true)
               .setCloneSubmodules(recursive)
               .call();
-    } catch (TransportException e) {
+    } catch (JGitInternalException e) {
+      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+    }catch (TransportException e) {
       throw new GitException("");
     } catch (InvalidRemoteException e) {
       throw new GitException("Es wurde keine korrekte git url angegeben: " + e.getMessage());
     } catch (GitAPIException e) {
-      throw new GitException("Folegender Fehler ist aufgetreten: " + e.getMessage());
+      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
     }
     return true;
   }

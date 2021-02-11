@@ -46,8 +46,7 @@ public class CloneDialogView implements IDialogView {
         boolean success = clone.execute();
         if(!success) {
           String errorMessage = clone.getErrorMessage();
-          //GUIController.getInstance().
-          //TODO: ErrorDialogView
+          GUIController.getInstance().errorHandler(errorMessage);
           return;
         }
         GUIController.getInstance().setCommandLine(clone.getCommandLine(""));
