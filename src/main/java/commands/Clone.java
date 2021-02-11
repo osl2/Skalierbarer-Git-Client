@@ -3,6 +3,7 @@ package commands;
 import controller.GUIController;
 import dialogviews.CloneDialogView;
 import git.GitFacade;
+import git.exception.GitException;
 import settings.Settings;
 
 import java.io.File;
@@ -14,7 +15,7 @@ public class Clone implements ICommand, ICommandGUI {
   private String commandDescription = "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
   private String gitURL;
   private File path;
-  private boolean recursive;
+  private boolean recursive = false;
 
   /**
    * Sets a git URL to a remote repository. The input is only valid if
@@ -50,13 +51,17 @@ public class Clone implements ICommand, ICommandGUI {
       return false;
     }
     GitFacade facade = new GitFacade();
-    boolean success = facade.cloneRepository(gitURL, path);
-    if(!success) {
-      errorMessage = "Beim klonen ist ein Fehler aufgetreten.";
+    try {
+      facade.cloneRepository(gitURL, path, recursive);
+    } catch (GitException e) {
+      errorMessage = e.getMessage();
       return false;
     }
     Settings.getInstance().setActiveRepositoryPath(path);
-    commandLine = commandLine + gitURL + ", " + path.getAbsolutePath();
+    commandLine = path.getAbsolutePath() + " " + commandLine + gitURL;
+    if(recursive) {
+      commandLine = commandLine + " --recurse";
+    }
     Settings.getInstance().settingsChanged();
     return true;
   }

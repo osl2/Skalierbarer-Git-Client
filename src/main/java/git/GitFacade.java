@@ -4,6 +4,8 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -119,15 +121,20 @@ public class GitFacade {
     return true;
   }
 
-  public boolean cloneRepository(String gitUrl, File dest) {
+  public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
     try {
       Git git = Git.cloneRepository()
               .setURI(gitUrl)
               .setDirectory(dest)
               .setCloneAllBranches(true)
+              .setCloneSubmodules(recursive)
               .call();
+    } catch (TransportException e) {
+      throw new GitException("");
+    } catch (InvalidRemoteException e) {
+      throw new GitException("Es wurde keine korrekte git url angegeben: " + e.getMessage());
     } catch (GitAPIException e) {
-      e.printStackTrace();
+      throw new GitException("Folegender Fehler ist aufgetreten: " + e.getMessage());
     }
     return true;
   }
