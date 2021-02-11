@@ -1,6 +1,7 @@
 package settings;
 
 import git.AbstractGitTest;
+import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -20,7 +21,7 @@ public class PersistencyTest extends AbstractGitTest {
     Data data;
 
     @Override
-    public void init() throws IOException, GitAPIException, URISyntaxException {
+    public void init() throws IOException, GitAPIException, URISyntaxException, GitException {
         super.init();
         data = Data.getInstance();
         settings.setLevel(data.getLevels().get(0));
