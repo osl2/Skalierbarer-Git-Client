@@ -9,6 +9,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -19,7 +20,7 @@ public class PersistencyTest extends AbstractGitTest {
     Data data;
 
     @Override
-    public void init() throws IOException, GitAPIException {
+    public void init() throws IOException, GitAPIException, URISyntaxException {
         super.init();
         data = Data.getInstance();
         settings.setLevel(data.getLevels().get(0));
@@ -32,7 +33,7 @@ public class PersistencyTest extends AbstractGitTest {
     }
 
     @Test
-    public void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, IOException {
+    public void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, IOException, URISyntaxException {
         // The Instance fields are private, so we should not be able to set them. We use reflection to still do that.
         // This should create new instances when we try to get another Settings or Data instance.
         FieldUtils.writeField(settings, "INSTANCE", null, true);

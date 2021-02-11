@@ -12,6 +12,7 @@ import settings.Settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public abstract class AbstractGitTest {
     private static final String[][] COMMIT_DATA = {
@@ -28,7 +29,7 @@ public abstract class AbstractGitTest {
     protected Settings settings;
 
     @BeforeEach
-    protected void beforeEach() throws GitAPIException, IOException, GitException {
+    protected void beforeEach() throws GitAPIException, IOException, GitException, URISyntaxException {
         FileUtils.deleteDirectory(repo);
         FileUtils.forceMkdir(repo);
         setupRepo();
@@ -57,7 +58,7 @@ public abstract class AbstractGitTest {
         git.close();
     }
 
-    public void init() throws IOException, GitAPIException, GitException {
+    public void init() throws IOException, GitAPIException, GitException, URISyntaxException {
         settings = Settings.getInstance();
         settings.setActiveRepositoryPath(repo);
         gitData = new GitData();
