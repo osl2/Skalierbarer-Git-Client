@@ -7,6 +7,17 @@ import java.awt.*;
  * This View is used to help the user resolve any conflicts during a Merge (or rebase for that matter)
  */
 public class MergeConflictDialogView implements IDialogView {
+    private JPanel contentPane;
+    private JTextPane leftTextPane;
+    private JTextArea centerTextArea;
+    private JTextPane rightTextPane;
+    private JLabel leftLabel;
+    private JLabel centerLabel;
+    private JLabel rightLabel;
+    private JScrollPane leftSrollbar;
+    private JScrollPane centerScrollbar;
+    private JScrollPane rightScrollbar;
+
     /**
      * DialogWindow Title
      *

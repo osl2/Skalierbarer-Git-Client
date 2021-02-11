@@ -2,33 +2,40 @@ package commands;
 
 import git.GitBranch;
 import git.GitChangeConflict;
+import git.exception.GitException;
+import org.eclipse.jgit.annotations.NonNull;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Merge implements ICommand, ICommandGUI {
-    private GitBranch branchA;
-    private GitBranch branchB;
+    private String errorMessage = "";
+    private List<GitChangeConflict> conflicts;
+    private @NonNull
+    GitBranch srcBranch;
+    private @NonNull
+    GitBranch destBranch;
     private boolean fastForward = true;
 
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
-    public Merge(GitBranch src, GitBranch dest) {
-        this.branchA = src;
-        this.branchB = dest;
+    public Merge(@NonNull GitBranch src, @NonNull GitBranch dest) {
+        this.srcBranch = src;
+        this.destBranch = dest;
     }
 
     public Merge() {
 
     }
 
-    public void setSourceBranch(GitBranch branchA) {
-        this.branchA = branchA;
+    public void setSourceBranch(@NonNull GitBranch srcBranch) {
+        this.srcBranch = srcBranch;
     }
 
-    public void setDestinationBranch(GitBranch branchB) {
-        this.branchB = branchB;
+    public void setDestinationBranch(@NonNull GitBranch destBranch) {
+        this.destBranch = destBranch;
     }
 
     /**
@@ -56,12 +63,24 @@ public class Merge implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
-    public boolean execute() {
-        return false;
+    public boolean execute() throws GitException, IOException {
+        if (this.srcBranch == this.destBranch) {
+            // We cannot merge a branch into itself.
+            this.errorMessage = "Quell- und Zielzweig können nicht der selbe sein";
+            return false;
+        }
+
+        this.conflicts = this.srcBranch.merge(this.fastForward);
+        if (conflicts.size() > 0) {
+            // todo: Call a MergeConflictView here and return its results.
+            return false;
+        }
+
+        return true;
     }
 
     public String getErrorMessage() {
-        return null;
+        return this.errorMessage;
     }
 
     /**
