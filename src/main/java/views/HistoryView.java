@@ -38,29 +38,12 @@ public class HistoryView extends JPanel implements IView {
   private int loadedCommits = 0;
   private DefaultListModel listModel;
 
-  //-------------------------------Lokaler test-----------------------------------//
-  private File path = new File("D:\\CloneTestOrdener\\.git");
-  private File file = new File("D:\\CloneTestOrdener");
-  GitData gitData;
-  Git git;
-  Repository repository;
-
-  private void initRepo() {
-    try {
-      git = Git.open(path);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    Settings.getInstance().setActiveRepositoryPath(file);
-  }
-//---------------------------------------------------------------------//
 
   /**
    * Creates the content of the commit list. This is located at
    * the left side of the JPanel.
    */
   public HistoryView() {
-    initRepo();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
