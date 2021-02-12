@@ -62,9 +62,9 @@ public class Diff implements ICommand {
    * Can only be called after setDiffCommit was called.
    * @return the git diff of the given commit and the given file.
    */
-  public String diffGit() {
+  public String[] diffGit() {
     if(!validDiff) {
-      return "";
+      return null;
     }
     int startLine = 0;
     int finishLine = 0;
@@ -100,9 +100,9 @@ public class Diff implements ICommand {
         }
       }
     }
-    String output = "";
+    String[] output = new String[finishLine-startLine-5];
     for(int i = startLine + 5; i < finishLine; i++) {
-      output += lines.get(i) + System.lineSeparator();
+      output[i - 5 - startLine] = lines.get(i);
     }
     return output;
   }

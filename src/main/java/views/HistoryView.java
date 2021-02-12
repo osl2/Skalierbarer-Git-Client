@@ -29,7 +29,7 @@ public class HistoryView extends JPanel implements IView {
   private JPanel historyView;
   private JScrollPane diffPane;
   private JPanel diffPanel;
-  private JTextArea diffText;
+  private JTextPane diffText;
   private GitData data;
   private Iterator<GitCommit> iteratorOfCommits;
   private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
