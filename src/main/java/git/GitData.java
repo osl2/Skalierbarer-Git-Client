@@ -4,7 +4,9 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -14,6 +16,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
 import java.io.File;
@@ -205,21 +208,31 @@ public class GitData {
      * @return List of branches in the repository
      */
     public List<GitBranch> getBranches(GitRemote remote) {
-//TODO: Überarbeiten
-        List<Ref> branches; //creates a new list of branches from JGit
-        List<GitBranch> toReturn = new ArrayList<>(); //List of Branches from Git Client
+        Collection<Ref> refs;
+        List<GitBranch> branches = new ArrayList<GitBranch>();
         try {
-            branches = git.branchList().call();
-            GitBranch branchToAdd;
-            for (Ref branch : branches) {
-                toReturn.add(new GitBranch(branch));
+            refs = Git.lsRemoteRepository()
+                    .setHeads(true)
+                    .setRemote(remote.getUrl().toString())
+                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider("Username", "Passwort"))
+                    .call();
+            for (Ref ref : refs) {
 
+                branches.add(new GitBranch(ref));
             }
+            //Collections.sort(branches);
+        } catch (InvalidRemoteException e) {
+            e.printStackTrace();
+        } catch (TransportException e) {
+            //TODO add PasswortDialogView things
+            e.printStackTrace();
         } catch (GitAPIException e) {
-
+            e.printStackTrace();
         }
-        return toReturn;
+        return branches;
     }
 
 }
+
+
 

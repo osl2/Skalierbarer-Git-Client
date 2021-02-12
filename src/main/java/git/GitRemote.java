@@ -21,6 +21,10 @@ public class GitRemote {
         this.url = url;
     }
 
+    public URL getUrl() {
+        return url;
+    }
+
     public void setGitUser(String gitUser) {
         this.gitUser = gitUser;
     }
