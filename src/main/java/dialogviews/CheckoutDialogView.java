@@ -14,6 +14,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.Iterator;
 
 public class CheckoutDialogView implements IDialogView {
@@ -24,13 +25,19 @@ public class CheckoutDialogView implements IDialogView {
     private JPanel contentPane;
     private JTree tree1;
     private JButton abortButton;
-    private final GitData git;
+    private GitData git;
     private JButton okButton;
     private JPanel bottomPanel;
     private DefaultTreeModel model;
 
     public CheckoutDialogView() {
-        git = new GitData();
+        try {
+            git = new GitData();
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            // this is fatal for our view
+            GUIController.getInstance().closeDialogView();
+        }
         // Todo: localize
         this.abortButton.setText("Abbrechen");
         this.okButton.setText("Ok");
@@ -41,7 +48,13 @@ public class CheckoutDialogView implements IDialogView {
         this.model = (DefaultTreeModel) this.tree1.getModel();
 
         // Build branch-tree
-        git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
+        try {
+            git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            // this is fatal for our view
+            GUIController.getInstance().closeDialogView();
+        }
 
         this.tree1.setRootVisible(false);
         model.setRoot(root);
@@ -49,7 +62,15 @@ public class CheckoutDialogView implements IDialogView {
 
     private BranchTreeNode buildBranchTree(GitBranch b) {
         BranchTreeNode root = new BranchTreeNode(b);
-        Iterator<GitCommit> iter = b.getCommits();
+        Iterator<GitCommit> iter;
+        try {
+            iter = b.getCommits();
+        } catch (GitException | IOException e) {
+            GUIController.getInstance().errorHandler(e);
+            // this is fatal for our view
+            GUIController.getInstance().closeDialogView();
+            return null;
+        }
         int i = 0;
         while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
             CommitTreeNode node = new CommitTreeNode(iter.next());
