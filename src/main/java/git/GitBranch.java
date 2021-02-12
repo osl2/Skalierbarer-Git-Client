@@ -11,7 +11,10 @@ import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a git-branch in this program.
@@ -82,7 +85,7 @@ public class GitBranch {
      * @return A list of conflicting pieces of code. This list can be empty if the merge
      * is completable without user interaction
      */
-    public List<GitChangeConflict> merge(boolean fastForward) throws GitException, IOException {
+    public Map<GitFile, List<GitChangeConflict>> merge(boolean fastForward) throws GitException, IOException {
         MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;
 
         try {
@@ -94,40 +97,23 @@ public class GitBranch {
 
             Map<String, int[][]> conflicts = mr.getConflicts();
             // todo: [0,0,0] means file has been deleted in either branch. what am i supposed to do?
-            List<GitChangeConflict> conflictList = new ArrayList<>();
-
-            Map<String, int[][]> allConflicts = mr.getConflicts();
-            for (String path : allConflicts.keySet()) {
-                int[][] c = allConflicts.get(path);
-                System.out.println("Conflicts in file " + path);
-                for (int i = 0; i < c.length; ++i) {
-                    System.out.println("  Conflict #" + i);
-                    for (int j = 0; j < (c[i].length) - 1; ++j) {
-                        if (c[i][j] >= 0)
-                            System.out.println("    Chunk for "
-                                    + mr.getMergedCommits()[j] + " starts on line #"
-                                    + c[i][j]);
-                    }
-                }
-            }
+            // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing
+            // As the getConflicts method seems to be bugged. (2021-02-12)
+            Map<GitFile, List<GitChangeConflict>> conflictMap = new HashMap<>();
 
             for (String key : conflicts.keySet()) {
                 File f = new File(GitData.getRepository().getWorkTree(), key);
-                GitFile file = new GitFile(f.getTotalSpace(), f);
-                Arrays.stream(conflicts.get(key)).map(i -> parseConflict(file, i)).forEach(conflictList::add);
+                GitFile gitFile = new GitFile(f.getTotalSpace(), f);
+                conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile));
 
             }
-            return conflictList;
+            return conflictMap;
 
         } catch (GitAPIException e) {
             throw new GitException(e.getMessage());
         }
 
         //return null;
-    }
-
-    private GitChangeConflict parseConflict(GitFile f, int[] intArray) {
-        return new GitChangeConflict(f, Integer.max(intArray[0], intArray[1]), intArray[2]);
     }
 
     @Override
