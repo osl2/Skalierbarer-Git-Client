@@ -21,7 +21,6 @@ public class CheckoutDialogView implements IDialogView {
 
     private static final int MAX_BRANCH_DEPTH = 25;
     private static final int LOAD_MORE_DEPTH = 50;
-    private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     private JPanel contentPane;
     private JTree tree1;
     private JButton abortButton;
@@ -46,8 +45,13 @@ public class CheckoutDialogView implements IDialogView {
         this.okButton.addActionListener(this::OkButtonHandler);
 
         this.model = (DefaultTreeModel) this.tree1.getModel();
+        this.tree1.setRootVisible(false);
 
-        // Build branch-tree
+        model.setRoot(this.generateTree());
+    }
+
+    private DefaultMutableTreeNode generateTree() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         try {
             git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
         } catch (GitException e) {
@@ -55,9 +59,7 @@ public class CheckoutDialogView implements IDialogView {
             // this is fatal for our view
             GUIController.getInstance().closeDialogView();
         }
-
-        this.tree1.setRootVisible(false);
-        model.setRoot(root);
+        return root;
     }
 
     private BranchTreeNode buildBranchTree(GitBranch b) {
@@ -84,7 +86,6 @@ public class CheckoutDialogView implements IDialogView {
 
         return root;
     }
-
 
     private void OkButtonHandler(ActionEvent e) {
         TreePath selected = tree1.getSelectionPath();
@@ -138,10 +139,10 @@ public class CheckoutDialogView implements IDialogView {
     }
 
     /**
-     * method that is called to update the dialog view.
+     * This method updates the Dialog, in this case it will reload the Branches and commits.
      */
     public void update() {
-
+        this.model.setRoot(generateTree());
     }
 
     private TreeSelectionListener loadMoreListener() {
@@ -157,7 +158,7 @@ public class CheckoutDialogView implements IDialogView {
     }
 
     private void createUIComponents() {
-        this.tree1 = new JTree(this.root);
+        this.tree1 = new JTree();
         this.tree1.addTreeSelectionListener(loadMoreListener());
     }
 
