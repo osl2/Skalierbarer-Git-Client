@@ -33,18 +33,6 @@ public class GUIController {
         return INSTANCE;
     }
 
-    public void errorHandler(Exception e) {
-        this.errorHandler(e.getMessage());
-    }
-
-    public void errorHandler(String msg) {
-        JOptionPane.showMessageDialog(this.currentDialog,
-                msg,
-                "Fehler",
-                JOptionPane.ERROR_MESSAGE);
-
-    }
-
     /**
      * Default handler for any Exception which could not be handled by the program, but does not force
      * us to exit.
