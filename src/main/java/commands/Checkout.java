@@ -1,5 +1,7 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.CheckoutDialogView;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitFacade;
@@ -71,7 +73,7 @@ public class Checkout implements ICommand, ICommandGUI {
     }
 
     public void onButtonClicked() {
-
+        GUIController.getInstance().openDialog(new CheckoutDialogView());
     }
 
     /**
