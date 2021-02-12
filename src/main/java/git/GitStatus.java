@@ -17,7 +17,6 @@ import java.util.Set;
  * This class holds the current status of the git repo and acts as an adapter class
  * for the JGit Status class.
  * To ensure there is only one status element, this class implements the Singleton pattern
- * TODO: identify methods (below) that are not necessary
  */
 public class GitStatus {
   private static GitStatus gitStatus = null;
@@ -46,7 +45,6 @@ public class GitStatus {
    *
    * @return a list of files added to the index, not in HEAD
    * @see GitFile
-   *     TODO: JGit returns a Set of Strings instead. Modify?
    */
   public List<GitFile> getAddedFiles() throws GitException, IOException {
     try {
@@ -158,6 +156,7 @@ public class GitStatus {
    * Jgit: getConflictingStageState():Map(String,IndexDiff.StageState)
    * A map from conflicting path to its IndexDiff.StageState.
    */
+  //TODO: Rückgabetyp
   public void getConflictingStageState() throws GitException {
     try {
       Git git = GitData.getJGit();
@@ -169,7 +168,6 @@ public class GitStatus {
           + "Fehlermeldung: " + e.getMessage());
     }
     return;
-    //TODO: raus?
   }
 
   /**
