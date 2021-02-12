@@ -42,9 +42,9 @@ public class SettingsDialogView implements IDialogView {
         eMailField.setText(author.getEmail());
         nameField.setText(author.getName());
         levels = Data.getInstance().getLevels();
-        String activeLevelName = Settings.getInstance().getLevel().getLevelName();
+        String activeLevelName = Settings.getInstance().getLevel().getName();
         for(int i = 0; i < levels.size(); i++) {
-            String level = levels.get(i).getLevelName();
+            String level = levels.get(i).getName();
             levelComboBox.addItem(level);
             if(level.compareTo(activeLevelName) == 0) {
                 levelComboBox.setSelectedIndex(i);
