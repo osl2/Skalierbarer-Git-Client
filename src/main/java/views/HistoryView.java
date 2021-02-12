@@ -1,5 +1,6 @@
 package views;
 
+import controller.GUIController;
 import git.*;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
@@ -58,15 +59,15 @@ public class HistoryView extends JPanel implements IView {
     try {
       data = new GitData();
     } catch (GitException e) {
-      e.printStackTrace();
+      GUIController.getInstance().errorHandler(e.getMessage());
     }
     try {
       GitBranch branch = data.getSelectedBranch();
       iteratorOfCommits = data.getCommits(branch);
     } catch (GitException e) {
-      e.printStackTrace();
+      GUIController.getInstance().errorHandler(e.getMessage());
     } catch (IOException e) {
-      e.printStackTrace();
+      GUIController.getInstance().errorHandler(e.getMessage());
     }
     addCommits();
     addScrollbarListener();
@@ -113,12 +114,8 @@ public class HistoryView extends JPanel implements IView {
         DefaultListModel fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        //
         int width = commitMessage.getWidth();
         commitMessage.setVisible(true);
-        // Margin not working
-        Insets inset = new Insets(10, 10, 10, 10);
-        commitMessage.setMargin(inset);
         if(width > 0) {
           commitMessage.setSize(width, Short.MAX_VALUE);
         }
