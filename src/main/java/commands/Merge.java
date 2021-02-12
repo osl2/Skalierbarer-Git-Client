@@ -2,15 +2,17 @@ package commands;
 
 import git.GitBranch;
 import git.GitChangeConflict;
+import git.GitFile;
 import git.exception.GitException;
 import org.eclipse.jgit.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class Merge implements ICommand, ICommandGUI {
     private String errorMessage = "";
-    private List<GitChangeConflict> conflicts;
+    private Map<GitFile, List<GitChangeConflict>> conflicts;
     private @NonNull
     GitBranch srcBranch;
     private @NonNull
