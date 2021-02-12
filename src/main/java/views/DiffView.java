@@ -13,7 +13,6 @@ import java.awt.*;
 
 public class DiffView implements IDiffView {
   private Diff diff = new Diff();
-  private JTextArea textArea = new JTextArea();
   private JTextPane pane = new JTextPane();
   private SimpleAttributeSet addLine = new SimpleAttributeSet();
   private SimpleAttributeSet removeLine = new SimpleAttributeSet();
@@ -24,10 +23,6 @@ public class DiffView implements IDiffView {
     StyleConstants.setForeground(addLine, Color.GREEN);
     StyleConstants.setForeground(removeLine, Color.RED);
     StyleConstants.setForeground(normalLine, Color.BLACK);
-    textArea.setVisible(false);
-    textArea.setEnabled(false);
-    textArea.setLineWrap(true);
-    textArea.setBackground(Color.WHITE);
   }
   /**
    * Opens the difference between the given file and and the previous version of the file.
@@ -78,7 +73,6 @@ public class DiffView implements IDiffView {
   }
 
   public void setNotVisible() {
-    textArea.setVisible(false);
-    textArea.setDisabledTextColor(Color.WHITE);
+    pane.setText("");
   }
 }
