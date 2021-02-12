@@ -30,7 +30,7 @@ public class GitChangeConflict {
 
     static List<GitChangeConflict> getConflictsForFile(GitFile file) {
         // File exists? -> Search for conflict markers -> Generate objects -> return list/array
-        List<GitChangeConflict> returnList = new ArrayList<>();
+        List<GitChangeConflict> returnMap = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
             String line;
@@ -56,7 +56,7 @@ public class GitChangeConflict {
                     }
                     // skip end marker
                     lineNo++;
-                    returnList.add(new GitChangeConflict(file,
+                    returnMap.add(new GitChangeConflict(file,
                             conflictStart,
                             lineNo - conflictStart - 1,
                             conflictA.toString(),
@@ -70,7 +70,12 @@ public class GitChangeConflict {
             e.printStackTrace();
         }
 
-        return returnList;
+        if (returnMap.size() == 0) {
+            // No Conflictmarkers -> Whole file must be a conflict. So from which branch is that file?
+            // todo: implement -> Needs a way to access the filetree of an arbitrary commit
+        }
+
+        return returnMap;
 
     }
 
@@ -92,5 +97,9 @@ public class GitChangeConflict {
 
     public String getOptionB() {
         return optionB;
+    }
+
+    public String getResult() {
+        throw new AssertionError("Not implemented");
     }
 }
