@@ -7,6 +7,7 @@ import views.IView;
 import views.MainWindow;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 
 public class GUIController {
@@ -49,8 +50,17 @@ public class GUIController {
      * @param msg Text of the error dialog
      */
     public void errorHandler(String msg) {
+        JTextArea jTextArea = new JTextArea(msg);
+        JPanel bufferPanel = new JPanel(new BorderLayout());
+        bufferPanel.add(new JScrollPane(jTextArea));
+        jTextArea.setEditable(false);
+        if (jTextArea.getPreferredSize().height > 600)
+            bufferPanel.setPreferredSize(new Dimension(800, 600));
+        else
+            bufferPanel.setPreferredSize(jTextArea.getPreferredSize());
+        bufferPanel.revalidate();
         JOptionPane.showMessageDialog(this.currentDialog,
-                msg,
+                bufferPanel,
                 "Fehler",
                 JOptionPane.ERROR_MESSAGE);
 
