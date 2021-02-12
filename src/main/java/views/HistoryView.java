@@ -3,15 +3,11 @@ package views;
 import controller.GUIController;
 import git.*;
 import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.Repository;
-import settings.Settings;
 import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,6 +31,7 @@ public class HistoryView extends JPanel implements IView {
   private Iterator<GitCommit> iteratorOfCommits;
   private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
+  private GitBranch branch;
   private int maxCommits = 20;
   private int loadedCommits = 0;
   private DefaultListModel listModel;
@@ -62,8 +59,8 @@ public class HistoryView extends JPanel implements IView {
       GUIController.getInstance().errorHandler(e.getMessage());
     }
     try {
-      GitBranch branch = data.getSelectedBranch();
-      iteratorOfCommits = data.getCommits(branch);
+      branch = data.getSelectedBranch();
+      iteratorOfCommits = branch.getCommits();
     } catch (GitException e) {
       GUIController.getInstance().errorHandler(e.getMessage());
     } catch (IOException e) {
