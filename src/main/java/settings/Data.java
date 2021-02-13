@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * This class holds general purpose data which needs to be persisted.
  */
-public class Data {
+public class Data extends DataObservable {
     private static Data INSTANCE;
 
     // Modify settings.PersistencyTest if you add or remove a field!
     private LinkedList<Level> levels = new LinkedList<Level>();
-    private LinkedList<File> repoList = new LinkedList<File>();
+    private final LinkedList<File> repoList = new LinkedList<File>();
 
     // This layout is necessary so that Jackson can create a correctly instantiated class.
     private Data() {

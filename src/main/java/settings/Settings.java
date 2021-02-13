@@ -6,7 +6,7 @@ import levels.Level;
 
 import java.io.File;
 
-public class Settings {
+public class Settings extends DataObservable {
 
     // Modify settings.PersistencyTest if you add or remove a field!
     private static Settings INSTANCE = null;
