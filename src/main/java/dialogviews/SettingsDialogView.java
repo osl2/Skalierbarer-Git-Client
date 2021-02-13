@@ -8,13 +8,11 @@ import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 
 public class SettingsDialogView implements IDialogView {
     private JPanel settingsPanel;
-    private JComboBox levelComboBox;
+    private JComboBox<String> levelComboBox;
     private JTextField nameField;
     private JTextField eMailField;
     private JCheckBox tooltipsCheckbox;
@@ -25,11 +23,11 @@ public class SettingsDialogView implements IDialogView {
     private JButton cancelButton;
 
     /**
-     * Creates the DialogView and the needed Actionlisteners.
+     * Creates the DialogView and the needed ActionListeners.
      */
     public SettingsDialogView() {
         initDialogView();
-        addActionlisteners();
+        addActionListeners();
     }
 
     /**
@@ -43,37 +41,29 @@ public class SettingsDialogView implements IDialogView {
         nameField.setText(author.getName());
         levels = Data.getInstance().getLevels();
         String activeLevelName = Settings.getInstance().getLevel().getName();
-        for(int i = 0; i < levels.size(); i++) {
+        for (int i = 0; i < levels.size(); i++) {
             String level = levels.get(i).getName();
             levelComboBox.addItem(level);
-            if(level.compareTo(activeLevelName) == 0) {
+            if (level.compareTo(activeLevelName) == 0) {
                 levelComboBox.setSelectedIndex(i);
             }
         }
     }
 
-    private void addActionlisteners() {
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Settings.getInstance().setUseTooltips(tooltipsCheckbox.isSelected());
-                Settings.getInstance().setShowTreeView(treeViewCheckbox.isSelected());
-                author.setEmail(eMailField.getText());
-                author.setName(nameField.getText());
-                Settings.getInstance().setUser(author);
-                int index = levelComboBox.getSelectedIndex();
-                Settings.getInstance().setLevel(levels.get(index));
-                //This is used to apply the Settings changes;
-                Settings.getInstance().settingsChanged();
-                GUIController.getInstance().closeDialogView();
-            }
+    private void addActionListeners() {
+        saveButton.addActionListener(e -> {
+            Settings.getInstance().setUseTooltips(tooltipsCheckbox.isSelected());
+            Settings.getInstance().setShowTreeView(treeViewCheckbox.isSelected());
+            author.setEmail(eMailField.getText());
+            author.setName(nameField.getText());
+            Settings.getInstance().setUser(author);
+            int index = levelComboBox.getSelectedIndex();
+            Settings.getInstance().setLevel(levels.get(index));
+            //This is used to apply the Settings changes;
+            Settings.getInstance().settingsChanged();
+            GUIController.getInstance().closeDialogView();
         });
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUIController.getInstance().closeDialogView();
-            }
-        });
+        cancelButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
     }
 
     /**
@@ -93,8 +83,7 @@ public class SettingsDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(550, 400);
-        return dim;
+        return new Dimension(550, 400);
     }
 
     /**
