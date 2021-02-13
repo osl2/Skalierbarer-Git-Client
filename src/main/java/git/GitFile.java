@@ -7,7 +7,6 @@ import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -16,9 +15,9 @@ public class GitFile {
     private File path;
     /* TODO: SOME WAY TO TRACK CHANGES */
 
-    GitFile(long size, File path) throws IOException {
+    GitFile(long size, File path) {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
-            throw new IOException("File is not located in the repository directory!");
+            throw new AssertionError("File is not located in the repository directory!");
         }
         this.size = size;
         this.path = path;
