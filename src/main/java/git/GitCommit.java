@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -119,7 +120,7 @@ public class GitCommit {
     public String getDiff() throws IOException {
         Git git = GitData.getJGit();
         AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
-        // if this commit is the first commit of the tree.
+        // if this commit is not the first commit of the tree.
         if(revCommit.getParents().length != 0) {
           RevCommit oldCommit = revCommit.getParent(0);
           oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
@@ -165,9 +166,12 @@ public class GitCommit {
         Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
         RevWalk walk = new RevWalk(repository);
-        RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
+        AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+        if(revCommit.getParents().length!= 0) {
+            RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
+            oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        }
 
-        AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
         AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
 
         DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);

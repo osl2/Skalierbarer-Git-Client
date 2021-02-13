@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,11 +20,16 @@ public class GitCommitTest extends AbstractGitTest {
   protected void setupRepo() throws GitAPIException, IOException {
     Git.init().setDirectory(repo).setBare(false).call();
     Git git = Git.open(repo);
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 1").call();
     File textFile = new File(repo.getPath() + "/textFile.txt");
     FileWriter fr = new FileWriter(textFile, true);
-    fr.write("data");
+    fr.write("data 1");
+    fr.flush();
+
+    git.add().addFilepattern(textFile.getName()).call();
+    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
+            .setMessage("Commit 1").call();
+
+    fr.write("data 2");
     fr.flush();
 
     git.add().addFilepattern(textFile.getName()).call();
@@ -59,5 +65,21 @@ public class GitCommitTest extends AbstractGitTest {
 
   }
 
+  @Test
+  public void getChangedFilesFirstCommitTest() throws IOException, GitException {
+    Iterator<GitCommit> commits = gitData.getCommits();
+    GitCommit commit;
+    while (commits.hasNext()) {
+      GitCommit commitselect = commits.next();
+      if(commitselect.getMessage().equals("Commit 1")) {
+        commit = commitselect;
+        List<GitFile> changedFiles = commit.getChangedFiles();
+        assertEquals(changedFiles.size(), 1);
+        GitFile file = changedFiles.get(0);
+        assertEquals(new File(repo, "textFile.txt"), file.getPath());
+      }
+    }
+  }
+  
 
 }
