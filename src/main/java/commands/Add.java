@@ -2,6 +2,7 @@ package commands;
 
 
 import git.GitFile;
+
 import java.util.List;
 
 public class Add implements ICommand, ICommandGUI {
@@ -48,12 +49,12 @@ public class Add implements ICommand, ICommandGUI {
 
   /**
    * Method to get the Commandline input that would be
-   *     necessarry to execute the command.
+   * necessarry to execute the command.
    *
    * @return Returns a String representation of the corresponding
-   *     git command to display on the command line
+   * git command to display on the command line
    */
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return null;
   }
 

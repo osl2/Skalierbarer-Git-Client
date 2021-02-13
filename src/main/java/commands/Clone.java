@@ -26,7 +26,7 @@ public class Clone implements ICommand, ICommandGUI {
     return null;
   }
 
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return null;
   }
 

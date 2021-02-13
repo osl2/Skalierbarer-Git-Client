@@ -1,7 +1,5 @@
 package commands;
 
-import commands.ICommand;
-import commands.ICommandGUI;
 import git.GitRemote;
 
 import java.net.URL;
@@ -36,10 +34,11 @@ public class Remote implements ICommand, ICommandGUI {
   /**
    * Creates with the input the command of the commandline.
    *
-   * @param userInput Input off the user
    * @return Returns command for Commandline
    */
-  public String getCommandLine(String userInput){return null;}
+  public String getCommandLine() {
+    return null;
+  }
 
   /**
    * Method to get the name of the command.

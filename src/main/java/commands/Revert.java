@@ -23,10 +23,9 @@ public class Revert implements ICommand, ICommandGUI {
   /**
    * Creates with the input the command of the commandline.
    *
-   * @param userInput Input off the user
    * @return Returns command for Commandline
    */
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return null;
   }
 
