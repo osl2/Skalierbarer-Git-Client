@@ -96,5 +96,4 @@ public class MainWindow extends JFrame {
         bar.add(m2);
         this.setJMenuBar(bar);
     }
-
 }

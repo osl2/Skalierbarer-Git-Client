@@ -32,8 +32,13 @@ public class GitFacade {
    * @param branch branch that should be checked out
    * @return true if it is successfully checked out, false if something went wrong
    */
-  public boolean checkout(GitBranch branch) {
-    throw new AssertionError("not implemented");
+  public boolean checkout(GitBranch branch) throws GitException {
+    try {
+      GitData.getJGit().checkout().setCreateBranch(false).setName(branch.getFullName()).call();
+      return true;
+    } catch (GitAPIException e) {
+      throw new GitException(e.getMessage());
+    }
   }
 
   /**
@@ -42,8 +47,13 @@ public class GitFacade {
    * @param commit commit that should be checked out
    * @return true if it is performed successfully, false if something went wrong
    */
-  public boolean checkout(GitCommit commit) {
-    throw new AssertionError("not implemented");
+  public boolean checkout(GitCommit commit) throws GitException {
+    try {
+      GitData.getJGit().checkout().setCreateBranch(false).setName(commit.getHash()).call();
+      return true;
+    } catch (GitAPIException e) {
+      throw new GitException(e.getMessage());
+    }
   }
 
   /**

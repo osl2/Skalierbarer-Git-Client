@@ -15,6 +15,7 @@ public class GUIController {
     private static GUIController INSTANCE;
     private MainWindow window;
     private JDialog currentDialog;
+    private IDialogView currentDialogAnchor;
 
     private GUIController() {
         /* This class is a singleton */
@@ -80,6 +81,7 @@ public class GUIController {
      */
     public void closeDialogView() {
         this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
+        this.currentDialogAnchor = null;
     }
 
     /**
@@ -108,6 +110,7 @@ public class GUIController {
      */
     public void openDialog(IDialogView dialog) {
         this.currentDialog = createDialog(dialog);
+        this.currentDialogAnchor = dialog;
         currentDialog.setVisible(true);
     }
 
@@ -134,7 +137,9 @@ public class GUIController {
 
 
     public void update() {
-        throw new AssertionError("not implemented");
+        if (this.currentDialogAnchor != null) {
+            this.currentDialogAnchor.update();
+        }
     }
 
     /**

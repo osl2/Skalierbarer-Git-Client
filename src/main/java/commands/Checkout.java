@@ -1,70 +1,100 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.CheckoutDialogView;
 import git.GitBranch;
 import git.GitCommit;
-import java.util.List;
+import git.GitFacade;
+import git.exception.GitException;
 
 public class Checkout implements ICommand, ICommandGUI {
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
-  private GitBranch branch;
-  private GitCommit commit;
+    private String errorMessage;
+    private GitBranch branch;
+    private GitCommit commit;
 
-  /**
-   * Method to execute the command.
-   *
-   * @return true, if the command has been executed successfully
-   */
-  public boolean execute() {
-    return false;
-  }
+    /**
+     * Method to execute the command.
+     *
+     * @return true, if the command has been executed successfully
+     */
+    public boolean execute() throws GitException {
+        GitFacade facade = new GitFacade();
+        if (branch != null) {
+            this.errorMessage = "";
+            return facade.checkout(branch);
+        } else if (commit != null) {
+            this.errorMessage = "";
+            return facade.checkout(commit);
+        }
+        //todo: lokalisierung
+        this.errorMessage = "Weder Zweig noch Einbuchung ausgewählt.";
+        return false;
+    }
 
 
-  public String getErrorMessage() {
-    return null;
-  }
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
 
-  /**
-   * Method to get the Commandline input that would be necessarry to execute the command.
-   *
-   * @param userInput Input wich the user has to make individually for executing the command
-   * @return Returns a String representation of the corresponding git command to
-   *     display on the command line
-   */
-  public String getCommandLine(String userInput) {
-    return null;
-  }
+    /**
+     * Method to get the Commandline input that would be necessary to execute the command.
+     *
+     * @param userInput Input which the user has to make individually for executing the command
+     * @return Returns a String representation of the corresponding git command to
+     * display on the command line
+     */
+    public String getCommandLine(String userInput) {
+        if (branch != null)
+            return "git checkout -b " + branch.getName();
+        else if (commit != null)
+            return "git checkout " + commit.getHashAbbrev();
 
-  /**
-   * Method to get the name of the command, that could be displaied in the GUI.
-   *
-   * @return The name of the command
-   */
-  public String getName() {
-    return null;
-  }
+        return null;
+    }
 
-  /**
-   * Method to get a description of the Command to describe for the user, what the command does.
-   *
-   * @return description as a String
-   */
-  public String getDescription() {
-    return null;
-  }
+    /**
+     * Method to get the name of the command, that could be displayed in the GUI.
+     *
+     * @return The name of the command
+     */
+    public String getName() {
+        // TODO: lokalisierung
+        return "Checkout";
+    }
 
-  public void onButtonClicked() {
+    /**
+     * Method to get a description of the Command to describe for the user, what the command does.
+     *
+     * @return description as a String
+     */
+    public String getDescription() {
+        // TODO: lokalisierung
+        return "Wechselt auf einen anderen Zweig / eine andere Einbuchung";
+    }
 
-  }
-  
-  public void setDestination(GitCommit commit) {
-    throw new AssertionError("not implemented");
-  }
+    public void onButtonClicked() {
+        GUIController.getInstance().openDialog(new CheckoutDialogView());
+    }
 
-  public void setDestination(GitBranch branch) {
-    throw new AssertionError("not implemented");
-  }
+    /**
+     * Defines the target of the executed checkout command.
+     * The last setDestination which is called defines the final target.
+     *
+     * @param commit the commit to check out
+     */
+    public void setDestination(GitCommit commit) {
+        this.branch = null;
+        this.commit = commit;
+    }
+
+    /**
+     * See {@link #setDestination(GitCommit)}
+     *
+     * @param branch the branch to check out
+     */
+    public void setDestination(GitBranch branch) {
+        this.commit = null;
+        this.branch = branch;
+    }
 
 }
