@@ -14,8 +14,8 @@ public class Data extends DataObservable {
     private static Data INSTANCE;
 
     // Modify settings.PersistencyTest if you add or remove a field!
-    private LinkedList<Level> levels = new LinkedList<Level>();
-    private final LinkedList<File> repoList = new LinkedList<File>();
+    private LinkedList<Level> levels = new LinkedList<>();
+    private LinkedList<File> repoList = new LinkedList<>();
 
     // This layout is necessary so that Jackson can create a correctly instantiated class.
     private Data() {
