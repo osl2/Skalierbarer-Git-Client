@@ -98,7 +98,9 @@ public class Settings extends DataObservable {
     }
 
     /**
-     * Check if the settings have been changed since loading from disk
+     * Check if the settings have been changed since loading from disk.
+     * This is useful to determine if {@link #fireDataChangedEvent()}
+     * should be called after making potential changes to the data.
      *
      * @return true if values have been changed and not saved yet
      */
