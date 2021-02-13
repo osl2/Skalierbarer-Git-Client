@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Provides a central point to obtain and create a number of git objects.
@@ -33,7 +34,7 @@ public class GitData {
     private static org.eclipse.jgit.api.Git git;
     private static Repository repository;
 
-    public GitData() throws GitException {
+    public GitData() {
         if (git == null || repository == null) {
             initializeRepository();
         }
@@ -47,11 +48,11 @@ public class GitData {
         return git;
     }
 
-    public void reinitialize() throws GitException {
+    public void reinitialize() {
         initializeRepository();
     }
 
-    private void initializeRepository() throws GitException {
+    private void initializeRepository() {
         Settings settings = Settings.getInstance();
         File path = settings.getActiveRepositoryPath();
         try {
@@ -65,8 +66,8 @@ public class GitData {
             repository = builder.build();
             git = Git.open(path);
         } catch (IOException e) {
-            throw new GitException("Beim Öffnen des Git-Repositorrys ist etwas schief gelaufen " +
-                "Fehlermeldung: " + e.getMessage());
+            Logger.getGlobal().warning("Beim Öffnen des Git-Repositorys ist etwas schief gelaufen " +
+                    "Fehlermeldung: " + e.getMessage());
         }
     }
 
@@ -108,19 +109,16 @@ public class GitData {
             return new CommitIterator(allCommits);
         } catch (NoHeadException e) {
             throw new GitException("Der Head wurde nicht gefunden \n" +
-                "Fehlermeldung: " + e.getMessage());
+                    "Fehlermeldung: " + e.getMessage());
         } catch (IncorrectObjectTypeException e) {
             throw new GitException("Mit Git ist etwas Schiefgelaufen \n" +
-                "Fehlermeldung: " + e.getMessage());
-        } catch (AmbiguousObjectException e) {
+                    "Fehlermeldung: " + e.getMessage());
+        } catch (AmbiguousObjectException | MissingObjectException e) {
             throw new GitException("Mit den internen Objekten ist etwas schief gelaufen \n" +
-                "Fehlermeldung: " + e.getMessage());
-        } catch (MissingObjectException e) {
-            throw new GitException("Mit den internen Objekten ist etwas schief gelaufen \n" +
-                "Fehlermeldung: " + e.getMessage());
+                    "Fehlermeldung: " + e.getMessage());
         } catch (GitAPIException e) {
-            throw new GitException("Mit Git ist etwasnicht genauer spezifiziertes schief gelaufen \n" +
-                "Fehlermeldung: " + e.getMessage());
+            throw new GitException("Mit Git ist etwas nicht genauer spezifiziertes schief gelaufen \n" +
+                    "Fehlermeldung: " + e.getMessage());
         }
     }
 
