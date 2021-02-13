@@ -26,11 +26,11 @@ public class Branch implements ICommand, ICommandGUI {
     /**
      * Creates with the input the command of the commandline.
      *
-     * @param userInput Input off the user
      * @return Returns command for Commandline
      */
-    public String getCommandLine(String userInput) {
-        return "git branch " + userInput;
+    public String getCommandLine() {
+        return "git branch ";
+        // todo: fix
     }
 
     /**

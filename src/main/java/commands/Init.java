@@ -56,7 +56,7 @@ public class Init implements ICommand, ICommandGUI {
     return errorMessage;
   }
 
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return commandLine;
   }
 

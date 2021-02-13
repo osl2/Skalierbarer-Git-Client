@@ -54,7 +54,7 @@ public class Pull implements ICommand, ICommandGUI {
    */
   public void startRebasing(){}
 
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return "git pull";
   }
 

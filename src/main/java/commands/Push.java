@@ -24,12 +24,10 @@ public class Push implements ICommand, ICommandGUI {
   /**
    * Method to get the Commandline input that would be necessarry to execute the command.
    *
-   * @param userInput The input that the user needs to make additionally to
-   *                  the standard output of git commit
    * @return Returns a String representation of the corresponding git command to display
-   *     on the command line
+   * on the command line
    */
-  public String getCommandLine(String userInput) {
+  public String getCommandLine() {
     return null;
   }
 

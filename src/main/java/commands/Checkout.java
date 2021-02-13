@@ -39,11 +39,10 @@ public class Checkout implements ICommand, ICommandGUI {
     /**
      * Method to get the Commandline input that would be necessary to execute the command.
      *
-     * @param userInput Input which the user has to make individually for executing the command
      * @return Returns a String representation of the corresponding git command to
      * display on the command line
      */
-    public String getCommandLine(String userInput) {
+    public String getCommandLine() {
         if (branch != null)
             return "git checkout -b " + branch.getName();
         else if (commit != null)
