@@ -163,7 +163,7 @@ public class GitCommit {
                     .setPathFilter(filter)
                     .setOutputStream(out)
                     .call();
-        } catch (GitAPIException | GitException e) {
+        } catch (GitAPIException e) {
             e.printStackTrace();
         }
         String output = out.toString();
