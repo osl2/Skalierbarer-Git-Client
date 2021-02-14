@@ -1,7 +1,11 @@
 package dialogviews;
 
+import settings.Settings;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UsernamePasswordDialogView implements IDialogView{
 
@@ -12,6 +16,25 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel userNameLabel;
     private JButton okButton;
     private JLabel pwLabel;
+
+    public UsernamePasswordDialogView() {
+        okButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = textField1.getText();
+                char[] password = passwordField.getPassword();
+                String pw = "";
+                for (int i = 0; i < password.length; i++){
+                    pw += password[i];
+                }
+            }
+        });
+    }
 
     /**
      * DialogWindow Title
