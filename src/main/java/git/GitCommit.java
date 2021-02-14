@@ -109,10 +109,11 @@ public class GitCommit {
     }
 
             /**
-             * Generates the difference between this commit and the one passed
+             * Generates the difference between the given file this commit and the one passed.
              *
-             * @param other the other commit
-             * @return String representation of the diff
+             * @param other the other commit, if you want to compare to the empty git repository set null.
+             * @param file the you want to get the git diff.
+             * @return String representation of the diff.
              */
     public String getDiff(GitCommit other, GitFile file) throws IOException {
         Git git = GitData.getJGit();
@@ -140,7 +141,7 @@ public class GitCommit {
     }
 
     /**
-     * (Generates the difference to the working directory)
+     * Generates the difference to the working directory
      *
      * @return String representation to the working directory
      */
