@@ -1,6 +1,7 @@
 package commands;
 
 import git.GitBranch;
+import git.GitFacade;
 import git.GitRemote;
 
 
@@ -77,7 +78,8 @@ public class Pull implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() {
-    //not implemented yet
-    return false;
+    GitFacade facade = new GitFacade();
+    boolean success = facade.pullOperation(remote, remoteBranch);
+    return success;
   }
 }
