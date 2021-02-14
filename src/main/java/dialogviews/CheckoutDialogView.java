@@ -30,13 +30,7 @@ public class CheckoutDialogView implements IDialogView {
     private DefaultTreeModel model;
 
     public CheckoutDialogView() {
-        try {
-            git = new GitData();
-        } catch (GitException e) {
-            GUIController.getInstance().errorHandler(e);
-            // this is fatal for our view
-            GUIController.getInstance().closeDialogView();
-        }
+        git = new GitData();
         // Todo: localize
         this.abortButton.setText("Abbrechen");
         this.okButton.setText("Ok");
