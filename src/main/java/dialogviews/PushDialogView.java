@@ -5,6 +5,15 @@ import java.awt.*;
 
 public class PushDialogView implements IDialogView {
 
+  private JPanel contentPane;
+  private JComboBox remoteComboBox;
+  private JComboBox remoteBranchComboBox;
+  private JComboBox localBranchComboBox;
+  private JCheckBox setUpstreamCheckbox;
+  private JButton aktualisierenButton;
+  private JButton pushButton;
+  private JPanel remotePanel;
+
   /**
    * DialogWindow Title
    *
@@ -12,7 +21,7 @@ public class PushDialogView implements IDialogView {
    */
   @Override
   public String getTitle() {
-    return null;
+    return "Push";
   }
 
   /**
@@ -22,7 +31,7 @@ public class PushDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    return null;
+    return this.contentPane.getPreferredSize();
   }
 
   /**
@@ -38,4 +47,5 @@ public class PushDialogView implements IDialogView {
   public void update() {
 
   }
+
 }

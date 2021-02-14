@@ -1,20 +1,28 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.PushDialogView;
 import git.GitBranch;
+import git.GitFacade;
 import git.GitRemote;
+import git.exception.GitException;
 
 public class Push implements ICommand, ICommandGUI {
   private GitBranch branch;
   private GitRemote remote;
-  private boolean following;
+  private boolean setUpstream;
 
   /**
    * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
    */
-  public boolean execute() {
-    return false;
+  public boolean execute() throws GitException{
+    if (branch == null || remote == null){
+      throw  new GitException("Kein Branch oder Remote ausgewählt");
+    }
+    GitFacade facade = new GitFacade();
+    return facade.pushOperation(remote, branch, setUpstream);
   }
 
   /**
@@ -24,7 +32,7 @@ public class Push implements ICommand, ICommandGUI {
    * on the command line
    */
   public String getCommandLine() {
-    return null;
+    return "git push " + remote + " " + branch;
   }
 
   /**
@@ -33,7 +41,7 @@ public class Push implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return null;
+    return "Push";
   }
 
   /**
@@ -42,28 +50,35 @@ public class Push implements ICommand, ICommandGUI {
    * @return description as a Sting
    */
   public String getDescription() {
-    return null;
+    return "Lädt die lokalen Einbuchungen aus dem aktuellen Branch in das Online-Verzeichnis hoch";
   }
 
   public void onButtonClicked() {
-
+    GUIController c = GUIController.getInstance();
+    c.openDialog(new PushDialogView());
   }
 
   /**
    * Sets the local branch that should be pushed to the online repo
    * @param branch The local branch whose commits should be pushed
    */
-  public void setBranch(GitBranch branch){}
+  public void setBranch(GitBranch branch){
+    this.branch = branch;
+  }
 
   /**
    * Sets the remote repo the local commits should be pushed to
    * @param remote The online repo (must have been configured before)
    */
-  public void setRemote(GitRemote remote){}
+  public void setRemote(GitRemote remote){
+    this.remote = remote;
+  }
 
   /**
    * Chooses if the local repo should follow the remote repo that was configured in setRemote()
-   * @param following True if the local repo should follow the remote repo after the push was executed
+   * @param setUpstream True if the local repo should follow the remote repo after the push was executed
    */
-  public void setFollowing(boolean following){}
+  public void setSetUpstream(boolean setUpstream){
+    this.setUpstream = setUpstream;
+  }
 }
