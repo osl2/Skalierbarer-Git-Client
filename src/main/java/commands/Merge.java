@@ -13,10 +13,10 @@ import java.util.Map;
 public class Merge implements ICommand, ICommandGUI {
     private String errorMessage = "";
     private Map<GitFile, List<GitChangeConflict>> conflicts;
-    private @NonNull
-    GitBranch srcBranch;
-    private @NonNull
-    GitBranch destBranch;
+    @NonNull
+    private GitBranch srcBranch;
+    @NonNull
+    private GitBranch destBranch;
     private boolean fastForward = true;
 
     public void setFastForward(boolean fastForward) {
@@ -77,6 +77,7 @@ public class Merge implements ICommand, ICommandGUI {
         this.conflicts = this.srcBranch.merge(this.fastForward);
         if (conflicts.size() > 0) {
             // todo: Call a MergeConflictView here and return its results.
+            // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
             return false;
         }
 
