@@ -37,4 +37,8 @@ public class GitRemote {
     public boolean remove() {
         return false;
     }
+
+    public String getName(){
+        return name;
+    }
 }
