@@ -183,7 +183,7 @@ public class PushDialogView implements IDialogView {
     List<GitRemote> remotes = gitData.getRemotes();
     for (GitRemote remote : remotes){
       model.addElement(remote);
-      if (remote.equals(gitData.getOrigin())){
+      if (remote.getName().equals("origin")){
         model.setSelectedItem(remote);
       }
     }
@@ -216,7 +216,16 @@ public class PushDialogView implements IDialogView {
     Push push = new Push();
     push.setLocalBranch(localBranch);
     push.setRemote(remote);
-    push.setRemoteBranch(remoteBranch);
+    /*if remote branch equals local branch, the remote upstream branch does not yet exist. The selected item from
+    remoteBranchComboBox was only a dummy for the to-be-created upstream branch. So, in case they are equal, set remote
+    branch to null 
+     */
+    if (remoteBranch.equals(localBranch)){
+      push.setRemoteBranch(null);
+    }
+    else{
+      push.setRemoteBranch(remoteBranch);
+    }
     push.setSetUpstream(setUpstream);
     boolean success = false;
     try {

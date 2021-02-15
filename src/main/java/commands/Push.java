@@ -19,11 +19,19 @@ public class Push implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() throws GitException{
-    if (localBranch == null || remote == null){
-      throw  new GitException("Kein Branch oder Remote ausgewählt");
-    }
+    boolean success = false;
     GitFacade facade = new GitFacade();
-    return facade.pushOperation(remote, localBranch, setUpstream);
+    if (localBranch == null || remote == null){
+      throw  new GitException("Kein lokaler Branch oder Remote ausgewählt");
+    }
+    //remote branch does not yet exist,
+    if (remoteBranch == null){
+      success = facade.pushOperation(remote, localBranch, setUpstream);
+    }
+    else{
+      //TODO:
+    }
+    return success;
   }
 
   /**
