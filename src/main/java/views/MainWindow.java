@@ -15,6 +15,8 @@ public class MainWindow extends JFrame {
     private JPanel buttonPanel;
     // Replacable panel
     private JPanel viewPanel;
+    private JPanel headPanel;
+    private JTextField commandLineTextField;
 
     /**
      * Replace the lower view of the window.
@@ -28,6 +30,10 @@ public class MainWindow extends JFrame {
         // New Data -> Refresh view
         this.update();
         return true;
+    }
+
+    public void setCommandLineText(String text) {
+        this.commandLineTextField.setText(text);
     }
 
 
