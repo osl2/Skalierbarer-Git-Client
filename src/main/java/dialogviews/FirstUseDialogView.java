@@ -2,6 +2,7 @@ package dialogviews;
 
 import commands.Config;
 import commands.Init;
+import controller.GUIController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,13 +11,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class FirstUseDialogView implements IDialogView {
-  private JFrame frame = new JFrame("FirstUseDialogView");
   private JTextField nameField;
   private JTextField eMailField;
   private JButton chooseButton;
   private JButton finishButton;
-  private JPanel FirstUseDialog;
-  private JLabel errorLabel;
+  private JPanel firstUseDialog;
   private String name = null;
   private String eMail = null;
   private File path = null;
@@ -40,7 +39,6 @@ public class FirstUseDialogView implements IDialogView {
         TODO: Wird nicht benötigt, da execute() selbst den error handler vom GUI Controller aufruft, oder?
 
         if(!successConfig) {
-          errorLabel.setText(config.getErrorMessage());
           return;
         }
 
@@ -49,10 +47,9 @@ public class FirstUseDialogView implements IDialogView {
         init.setPathToRepository(path);
         boolean successInit = init.execute();
         if(!successInit) {
-          errorLabel.setText(init.getErrorMessage());
           return;
         }
-        frame.setVisible(false);
+        GUIController.getInstance().closeDialogView();
       }
     });
     // Opens a new JFileChooser to set a path to a directory.
@@ -61,22 +58,13 @@ public class FirstUseDialogView implements IDialogView {
       public void actionPerformed(ActionEvent e) {
         chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnVal = chooser.showOpenDialog(FirstUseDialog);
+        int returnVal = chooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
           path = chooser.getSelectedFile();
         }
       }
     });
   }
-
-/*  public void show() {
-    frame.setContentPane(new FirstUseDialogView().FirstUseDialog);
-    JPanel panel = new JPanel();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.pack();
-    frame.setSize(700, 300);
-    frame.setVisible(true);
-  }*/
 
   /**
    * DialogWindow Title
@@ -85,7 +73,7 @@ public class FirstUseDialogView implements IDialogView {
    */
   @Override
   public String getTitle() {
-    return null;
+    return "Erstbenutzung";
   }
 
   /**
@@ -95,7 +83,8 @@ public class FirstUseDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    return null;
+    Dimension dim = new Dimension(700, 300);
+    return dim;
   }
 
   /**
@@ -105,7 +94,7 @@ public class FirstUseDialogView implements IDialogView {
    */
   @Override
   public JPanel getPanel() {
-    return null;
+    return firstUseDialog;
   }
 
   public void update() {
