@@ -9,7 +9,6 @@ import settings.Settings;
 import java.io.File;
 
 public class Clone implements ICommand, ICommandGUI {
-  private String errorMessage = "";
   private String commandLine = "git$ clone ";
   private String commandName = "Clone";
   private String commandDescription = "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
@@ -47,14 +46,14 @@ public class Clone implements ICommand, ICommandGUI {
 
   public boolean execute() {
     if(path == null || gitURL == null) {
-      errorMessage = "Es muss eine url angegeben und ein lokaler Pfad ausgewählt werden.";
+      GUIController.getInstance().errorHandler("Es muss eine url angegeben und ein lokaler Pfad ausgewählt werden.");
       return false;
     }
     GitFacade facade = new GitFacade();
     try {
       facade.cloneRepository(gitURL, path, recursive);
     } catch (GitException e) {
-      errorMessage = e.getMessage();
+      GUIController.getInstance().errorHandler(e);
       return false;
     }
     Settings.getInstance().setActiveRepositoryPath(path);
@@ -67,11 +66,11 @@ public class Clone implements ICommand, ICommandGUI {
   }
 
   public String getErrorMessage() {
-    return errorMessage;
+    return null;
   }
 
   public String getCommandLine() {
-    return null;
+    return commandLine;
   }
 
   public String getName() {

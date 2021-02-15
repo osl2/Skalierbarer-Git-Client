@@ -49,7 +49,7 @@ public class CloneDialogView implements IDialogView {
           GUIController.getInstance().errorHandler(errorMessage);
           return;
         }
-        GUIController.getInstance().setCommandLine(clone.getCommandLine(""));
+        GUIController.getInstance().setCommandLine(clone.getCommandLine());
         GUIController.getInstance().closeDialogView();
       }
     });
