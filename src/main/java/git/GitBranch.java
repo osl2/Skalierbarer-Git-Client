@@ -4,6 +4,7 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -95,18 +96,18 @@ public class GitBranch {
                     .setFastForward(ffm)
                     .call();
 
-            Map<String, int[][]> conflicts = mr.getConflicts();
-            // todo: [0,0,0] means file has been deleted in either branch. what am i supposed to do?
             // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing
             // As the getConflicts method seems to be bugged. (2021-02-12)
             Map<GitFile, List<GitChangeConflict>> conflictMap = new HashMap<>();
 
-            for (String key : conflicts.keySet()) {
-                File f = new File(GitData.getRepository().getWorkTree(), key);
-                GitFile gitFile = new GitFile(f.getTotalSpace(), f);
-                conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile));
+            Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
 
+            for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
+                File f = new File(entry.getKey());
+                GitFile gitFile = new GitFile(f.getTotalSpace(), f);
+                conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile, entry.getValue()));
             }
+
             return conflictMap;
 
         } catch (GitAPIException e) {

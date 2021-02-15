@@ -1,10 +1,14 @@
 package git;
 
+import org.eclipse.jgit.lib.IndexDiff;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a single Change Conflict which may happen during a merge.
@@ -16,67 +20,97 @@ public class GitChangeConflict {
     private String optionA;
     private String optionB;
     private GitFile gitFile;
+    private IndexDiff.StageState state;
     private int startLine;
     private int length;
 
     /* Is only instantiated inside the git Package */
-    GitChangeConflict(GitFile gitFile, int startLine, int length, String optionA, String optionB) {
+    GitChangeConflict(GitFile gitFile, IndexDiff.StageState state) {
         this.gitFile = gitFile;
-        this.startLine = startLine;
-        this.length = length;
-        this.optionA = optionA;
-        this.optionB = optionB;
+        this.state = state;
     }
 
-    static List<GitChangeConflict> getConflictsForFile(GitFile file) {
-        // File exists? -> Search for conflict markers -> Generate objects -> return list/array
-        List<GitChangeConflict> returnMap = new ArrayList<>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-            String line;
-            int lineNo = 0; // 0-index to match jgit
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith(CONFLICT_MARKER_BEGIN)) {
-                    int conflictStart = lineNo;
-                    String conflictStartLine = line;
-                    // parse conflict
-                    StringBuilder conflictA = new StringBuilder();
-                    StringBuilder conflictB = new StringBuilder();
-                    lineNo++;
-                    // TODO: Parse which branch owns this segment
-                    while ((line = br.readLine()) != null && !line.startsWith(CONFLICT_MARKER_SEPARATOR)) {
-                        conflictA.append(line).append(System.lineSeparator());
-                        lineNo++;
+    GitChangeConflict(GitFile gitFile, IndexDiff.StageState state, int startLine) {
+        this(gitFile, state);
+        this.startLine = startLine;
+        populateOptions(startLine);
+
+    }
+
+    public static List<GitChangeConflict> getConflictsForFile(GitFile gitFile, IndexDiff.StageState state) {
+        ArrayList<GitChangeConflict> returnList = new ArrayList<>();
+        switch (state) {
+            case BOTH_ADDED:
+                // Fall through
+            case DELETED_BY_THEM:
+                // Fall through
+            case DELETED_BY_US:
+                // There is at most one conflict for that file.
+                returnList.add(new GitChangeConflict(gitFile, state));
+                break;
+            case BOTH_MODIFIED:
+                // Multiple Conflicts possible. We need to parse in file conflict markers.
+                File f = gitFile.getPath();
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(f));
+                    int i = 0;
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.startsWith(CONFLICT_MARKER_BEGIN))
+                            returnList.add(new GitChangeConflict(gitFile, state, i));
+                        ++i;
                     }
-                    // skip separator
-                    lineNo++;
-                    while ((line = br.readLine()) != null && !line.startsWith(CONFLICT_MARKER_END)) {
-                        conflictB.append(line).append(System.lineSeparator());
-                        lineNo++;
-                    }
-                    // skip end marker
-                    lineNo++;
-                    returnMap.add(new GitChangeConflict(file,
-                            conflictStart,
-                            lineNo - conflictStart - 1,
-                            conflictA.toString(),
-                            conflictB.toString()
-                    ));
+                    break;
+                } catch (IOException e) {
+                    throw new AssertionError("File in GitFile did not exist");
                 }
-                lineNo++;
+            default:
+                throw new AssertionError("Unexpected Change type: " + state.toString());
+        }
+
+        return returnList;
+    }
+
+    private void populateOptions(int startIndex) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(gitFile.getPath()));
+            int i = 0;
+            while (i < startIndex) {
+                br.readLine();
+                ++i;
             }
+            // Start of Conflict
+            if (!br.readLine().startsWith(CONFLICT_MARKER_BEGIN)) {
+                // There was no conflict here
+                throw new AssertionError("There was no change marker in File "
+                        + gitFile.getPath().toString() + " at line " + startIndex);
+            }
+            ++i;
+
+            String line;
+            StringBuilder optionA = new StringBuilder();
+            StringBuilder optionB = new StringBuilder();
+            while (!Objects.equals(line = br.readLine(), CONFLICT_MARKER_SEPARATOR)) {
+                optionA.append(line);
+                optionA.append(System.lineSeparator());
+                ++i;
+            }
+            ++i;
+            // After separator
+            while ((line = br.readLine()).startsWith(CONFLICT_MARKER_END)) {
+                optionB.append(line);
+                optionB.append(System.lineSeparator());
+                ++i;
+            }
+
+            this.optionA = optionA.toString();
+            this.optionB = optionB.toString();
+            this.length = i - startIndex - 1;
+
+
         } catch (IOException e) {
-            // todo error handling -> crash ._.
             e.printStackTrace();
         }
-
-        if (returnMap.size() == 0) {
-            // No Conflictmarkers -> Whole file must be a conflict. So from which branch is that file?
-            // todo: implement -> Needs a way to access the filetree of an arbitrary commit
-        }
-
-        return returnMap;
-
     }
 
     /**
@@ -92,14 +126,29 @@ public class GitChangeConflict {
     }
 
     public String getOptionA() {
+        if (this.state == IndexDiff.StageState.DELETED_BY_US)
+            return "DELETED";
         return optionA;
     }
 
     public String getOptionB() {
+        if (this.state == IndexDiff.StageState.DELETED_BY_THEM)
+            return "DELETED";
         return optionB;
+    }
+
+    public int getConflictStartLine() {
+        if (this.state != IndexDiff.StageState.BOTH_MODIFIED)
+            return 0;
+        return this.startLine;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public String getResult() {
         throw new AssertionError("Not implemented");
     }
+
 }
