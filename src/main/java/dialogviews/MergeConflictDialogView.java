@@ -25,7 +25,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public String getTitle() {
-        return null;
+        return "Resolve Merge Conflicts";
     }
 
     /**
@@ -35,7 +35,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return null;
+        return contentPane.getPreferredSize();
     }
 
     /**
@@ -45,7 +45,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public JPanel getPanel() {
-        return null;
+        return contentPane;
     }
 
     /**
@@ -54,6 +54,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public void update() {
-
+        // Intentional NOOP.
+        // todo: re-evaluate
     }
 }
