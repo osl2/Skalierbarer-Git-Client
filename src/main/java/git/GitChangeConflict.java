@@ -97,12 +97,16 @@ public class GitChangeConflict {
             }
             ++i;
             // After separator
-            while ((line = br.readLine()).startsWith(CONFLICT_MARKER_END)) {
+            while (!(line = br.readLine()).startsWith(CONFLICT_MARKER_END)) {
                 optionB.append(line);
                 optionB.append(System.lineSeparator());
                 ++i;
             }
-
+            // todo : Crashes if string is empty.
+            if (optionA.length() > 0)
+                optionA.deleteCharAt(optionA.lastIndexOf(System.lineSeparator()));
+            if (optionB.length() > 0)
+                optionB.deleteCharAt(optionB.lastIndexOf(System.lineSeparator()));
             this.optionA = optionA.toString();
             this.optionB = optionB.toString();
             this.length = i - startIndex - 1;

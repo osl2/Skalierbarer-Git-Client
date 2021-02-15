@@ -86,7 +86,7 @@ public class GitBranch {
      * @return A list of conflicting pieces of code. This list can be empty if the merge
      * is completable without user interaction
      */
-    public Map<GitFile, List<GitChangeConflict>> merge(boolean fastForward) throws GitException, IOException {
+    public Map<GitFile, List<GitChangeConflict>> merge(boolean fastForward) throws GitException {
         MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;
 
         try {
@@ -95,15 +95,13 @@ public class GitBranch {
                     .include(ref)
                     .setFastForward(ffm)
                     .call();
-
             // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing
             // As the getConflicts method seems to be bugged. (2021-02-12)
             Map<GitFile, List<GitChangeConflict>> conflictMap = new HashMap<>();
-
             Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
 
             for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
-                File f = new File(entry.getKey());
+                File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
                 GitFile gitFile = new GitFile(f.getTotalSpace(), f);
                 conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile, entry.getValue()));
             }
