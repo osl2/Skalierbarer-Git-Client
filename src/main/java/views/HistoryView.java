@@ -53,11 +53,7 @@ public class HistoryView extends JPanel implements IView {
     diffText = diffView.openDiffView();
     diffPanel.add(diffText);
     applyCellRenderer();
-    try {
-      data = new GitData();
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e.getMessage());
-    }
+    data = new GitData();
     try {
       branch = data.getSelectedBranch();
       iteratorOfCommits = branch.getCommits();
