@@ -4,9 +4,11 @@ import controller.GUIController;
 import dialogviews.BranchDialogView;
 import git.GitBranch;
 import git.GitCommit;
+import git.GitFacade;
+
+import java.io.IOException;
 
 public class Branch implements ICommand, ICommandGUI {
-    private GitBranch pointOfBranching;
     private GitCommit commitPointOfBranching;
     private String branchName;
 
@@ -17,7 +19,14 @@ public class Branch implements ICommand, ICommandGUI {
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
-        return false;
+        GitFacade jgit = new GitFacade();
+        boolean suc = false;
+       // try {
+           suc = jgit.branchOperation(commitPointOfBranching, branchName);
+        //} catch (IOException ioException){
+
+       // }
+        return suc;
     }
 
 
@@ -40,7 +49,7 @@ public class Branch implements ICommand, ICommandGUI {
      * @return Returns the name of the command
      */
     public String getName() {
-        return "branch";
+        return "Branch";
     }
 
     /**

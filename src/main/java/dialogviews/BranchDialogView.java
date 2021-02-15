@@ -72,7 +72,7 @@ public class BranchDialogView implements IDialogView {
           count++;
         }
         for (int i = 0; i < commits.size(); i++){
-          commitComboBox.addItem( commits.get(i).getHashAbbrev() + commits.get(i).getMessage());
+          commitComboBox.addItem( commits.get(i).getHashAbbrev() + " - " + commits.get(i).getMessage());
         }
       }
     });
@@ -98,9 +98,10 @@ public class BranchDialogView implements IDialogView {
         Branch branch = new Branch();
         branch.setBranchPoint(commitForOp);
         branch.setBranchName(nameOfBranch);
-        branch.execute();
-        GUIController.getInstance().setCommandLine(branch.getCommandLine());
-        GUIController.getInstance().closeDialogView();
+        if (branch.execute()) {
+          GUIController.getInstance().setCommandLine(branch.getCommandLine());
+          GUIController.getInstance().closeDialogView();
+        }
       }
     });
   }
