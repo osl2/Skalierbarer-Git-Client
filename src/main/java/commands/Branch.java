@@ -31,8 +31,7 @@ public class Branch implements ICommand, ICommandGUI {
      * @return Returns command for Commandline
      */
     public String getCommandLine() {
-        return "git branch ";
-        // todo: fix
+        return "git branch " + branchName + " " + commitPointOfBranching.getHashAbbrev();
     }
 
     /**
@@ -58,15 +57,6 @@ public class Branch implements ICommand, ICommandGUI {
      */
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new BranchDialogView());
-    }
-
-    /**
-     * Method to get the actual commit on witch it is branched.
-     *
-     * @return Returns the actual Commit on which is branched
-     */
-    public GitCommit getActualBranch() {
-        return commitPointOfBranching;
     }
 
     /**

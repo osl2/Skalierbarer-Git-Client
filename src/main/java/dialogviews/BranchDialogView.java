@@ -62,9 +62,9 @@ public class BranchDialogView implements IDialogView {
         try {
           it = actualBranch.getCommits();
         } catch (GitException gitException) {
-          gitException.printStackTrace();
+          GUIController.getInstance().errorHandler(gitException);
         } catch (IOException ioException) {
-          ioException.printStackTrace();
+          GUIController.getInstance().errorHandler(ioException);
         }
         int count = 0;
         while (it.hasNext()){
@@ -72,7 +72,7 @@ public class BranchDialogView implements IDialogView {
           count++;
         }
         for (int i = 0; i < commits.size(); i++){
-          commitComboBox.addItem(commits.get(i).getMessage());
+          commitComboBox.addItem( commits.get(i).getHashAbbrev() + commits.get(i).getMessage());
         }
       }
     });
@@ -99,6 +99,7 @@ public class BranchDialogView implements IDialogView {
         branch.setBranchPoint(commitForOp);
         branch.setBranchName(nameOfBranch);
         branch.execute();
+        GUIController.getInstance().setCommandLine(branch.getCommandLine());
         GUIController.getInstance().closeDialogView();
       }
     });
