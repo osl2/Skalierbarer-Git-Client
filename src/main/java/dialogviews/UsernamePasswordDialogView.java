@@ -1,5 +1,8 @@
 package dialogviews;
 
+import controller.GUIController;
+import git.remoteProvider.CredentialProviderHolder;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
 import javax.swing.*;
@@ -32,6 +35,8 @@ public class UsernamePasswordDialogView implements IDialogView{
                 for (int i = 0; i < password.length; i++){
                     pw += password[i];
                 }
+                CredentialProviderHolder.getInstance().setProvider(new UsernamePasswordCredentialsProvider(username, pw));
+                GUIController.getInstance().closeDialogView();
             }
         });
     }
