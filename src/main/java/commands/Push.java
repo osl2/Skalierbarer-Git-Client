@@ -8,8 +8,9 @@ import git.GitRemote;
 import git.exception.GitException;
 
 public class Push implements ICommand, ICommandGUI {
-  private GitBranch branch;
+  private GitBranch localBranch;
   private GitRemote remote;
+  private GitBranch remoteBranch;
   private boolean setUpstream;
 
   /**
@@ -18,11 +19,11 @@ public class Push implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() throws GitException{
-    if (branch == null || remote == null){
+    if (localBranch == null || remote == null){
       throw  new GitException("Kein Branch oder Remote ausgewählt");
     }
     GitFacade facade = new GitFacade();
-    return facade.pushOperation(remote, branch, setUpstream);
+    return facade.pushOperation(remote, localBranch, setUpstream);
   }
 
   /**
@@ -32,7 +33,7 @@ public class Push implements ICommand, ICommandGUI {
    * on the command line
    */
   public String getCommandLine() {
-    return "git push " + remote + " " + branch;
+    return "git push " + remote + " " + localBranch;
   }
 
   /**
@@ -60,10 +61,10 @@ public class Push implements ICommand, ICommandGUI {
 
   /**
    * Sets the local branch that should be pushed to the online repo
-   * @param branch The local branch whose commits should be pushed
+   * @param localBranch The local branch whose commits should be pushed
    */
-  public void setBranch(GitBranch branch){
-    this.branch = branch;
+  public void setLocalBranch(GitBranch localBranch){
+    this.localBranch = localBranch;
   }
 
   /**
@@ -72,6 +73,15 @@ public class Push implements ICommand, ICommandGUI {
    */
   public void setRemote(GitRemote remote){
     this.remote = remote;
+  }
+
+  /**
+   * Sets the remote branch the local commits should be pushed to. If the remote branch does not exist,
+   * a new upstream branch will be created
+   * @param remoteBranch
+   */
+  public void setRemoteBranch(GitBranch remoteBranch){
+    this.remoteBranch = remoteBranch;
   }
 
   /**
