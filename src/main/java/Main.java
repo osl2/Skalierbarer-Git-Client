@@ -6,7 +6,6 @@ public class Main {
   public static void main(String[] args) {
     GUIController c = GUIController.getInstance();
     c.openMainWindow();
-    c.openDialog(new UsernamePasswordDialogView());
     // Load Data -> Persistency
     // Todo: Load Plugins -> ???
     // Apply Plugin changes
