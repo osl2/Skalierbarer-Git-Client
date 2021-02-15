@@ -76,12 +76,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- AWT UI Helpers -->
-        <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit.ui</artifactId>
-            <version>5.10.0.202012080955-r</version>
-        </dependency>
 
     </dependencies>
 
