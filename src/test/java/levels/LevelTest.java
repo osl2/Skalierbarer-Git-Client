@@ -4,7 +4,7 @@ package levels;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commands.Branch;
 import commands.Checkout;
-import commands.ICommand;
+import commands.ICommandGUI;
 import commands.Init;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class LevelTest {
     @TempDir
     static File tempDir;
-    private static LinkedList<ICommand> aCommands = new LinkedList<>();
+    private static LinkedList<ICommandGUI> aCommands = new LinkedList<>();
     /* Different Objects then aCommands */
-    private static LinkedList<ICommand> bCommands = new LinkedList<>();
-    private static LinkedList<ICommand> cCommands = new LinkedList<>();
+    private static LinkedList<ICommandGUI> bCommands = new LinkedList<>();
+    private static LinkedList<ICommandGUI> cCommands = new LinkedList<>();
     private static Level a;
     private static Level b;
     private static Level c;

@@ -1,8 +1,16 @@
 package commands;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import settings.ICommandDeserializer;
+import settings.ICommandSerializer;
+
 /**
  * Represents the Command in a Command in the Main window.
  */
+
+@JsonDeserialize(using = ICommandDeserializer.class)
+@JsonSerialize(using = ICommandSerializer.class)
 public interface ICommandGUI {
 
 

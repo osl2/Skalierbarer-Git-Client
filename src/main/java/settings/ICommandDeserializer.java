@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import commands.ICommand;
+import commands.ICommandGUI;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-public class ICommandDeserializer extends StdDeserializer<ICommand> {
+public class ICommandDeserializer extends StdDeserializer<ICommandGUI> {
     protected ICommandDeserializer(Class<?> vc) {
         super(vc);
     }
@@ -20,7 +21,7 @@ public class ICommandDeserializer extends StdDeserializer<ICommand> {
     }
 
     @Override
-    public ICommand deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public ICommandGUI deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         String classPath = node.get("classPath").asText();
         try {
@@ -28,7 +29,7 @@ public class ICommandDeserializer extends StdDeserializer<ICommand> {
 
             // Class implements ICommand?
             if (ICommand.class.isAssignableFrom(cl)) {
-                return (ICommand) cl.getConstructor().newInstance();
+                return (ICommandGUI) cl.getConstructor().newInstance();
             } else {
                 throw new IOException("Could not create instance of " + classPath);
             }
