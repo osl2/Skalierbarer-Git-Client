@@ -1,12 +1,12 @@
-package git.remoteProvider;
+package git;
 
 import controller.GUIController;
 import dialogviews.UsernamePasswordDialogView;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 public class CredentialProviderHolder {
-private static CredentialProviderHolder INSTANCE = null;
-private UsernamePasswordCredentialsProvider provider;
+    private static CredentialProviderHolder INSTANCE = null;
+    private UsernamePasswordCredentialsProvider provider;
     private CredentialProviderHolder(){
         provider = new UsernamePasswordCredentialsProvider("", "");
     }
@@ -34,3 +34,4 @@ private UsernamePasswordCredentialsProvider provider;
     }
 
 }
+

@@ -1,7 +1,7 @@
 package dialogviews;
 
 import controller.GUIController;
-import git.remoteProvider.CredentialProviderHolder;
+import git.CredentialProviderHolder;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
