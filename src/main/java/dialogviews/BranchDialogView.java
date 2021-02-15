@@ -2,68 +2,77 @@ package dialogviews;
 
 import git.GitBranch;
 import git.GitCommit;
+import git.GitData;
+import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class BranchDialogView implements IDialogView {
-  private LinkedList<GitBranch> branches = new LinkedList<GitBranch>();
+  private List<GitBranch> branches ;
   private LinkedList<GitCommit> commits = new LinkedList<GitCommit>();
   private String nameOfNew;
+  private JPanel panel1;
+  private JPanel BranchPanel;
+  private JComboBox branchComboBox;
+  private JComboBox commitComboBox;
+  private JTextField nameField;
+  private JButton branchButton;
+  private GitData gitData = new GitData();
 
-  /**
-   * Method to get a list of the existing branches.
-   *
-   * @return Returns the list of the existing branches
-   */
-  public LinkedList<GitBranch> getBranches() {
-    return branches;
-  }
 
-  /**
-   * Method to set the existing branches.
-   *
-   * @param branches Input is a new list of branches
-   */
-  public void setBranches(LinkedList<GitBranch> branches) {
-    this.branches = branches;
-  }
+  public BranchDialogView(){
+    commitComboBox.setRenderer(new BranchDialogRenderer());
+    commitComboBox.setMaximumRowCount(6);
+    try {
+      branches = gitData.getBranches();
+    } catch (GitException e) {
+      e.printStackTrace();
+    }
+    for (int i = 0; i < branches.size(); i++){
+      branchComboBox.addItem(branches.get(i).getName());
+    }
 
-  /**
-   * Method to get a list of the current commits.
-   *
-   * @return Returns list of current commits
-   */
-  public LinkedList<GitCommit> getCommits() {
-    return commits;
-  }
 
-  /**
-   * Method to set the list of the commits that are displayed.
-   *
-   * @param commits Input is new List of commits
-   */
-  public void setCommits(LinkedList<GitCommit> commits) {
-    this.commits = commits;
-  }
-
-  /**
-   * Method to get the name of the new branch.
-   *
-   * @return Retruns name of the new branch
-   */
-  public String getNameOfNew() {
-    return nameOfNew;
-  }
-
-  /**
-   * Method to set the name of a new branch.
-   *
-   * @param nameOfNew Input is a new name of the next branch (Excetion if "?")
-   */
-  public void setNameOfNew(String nameOfNew) {
-    this.nameOfNew = nameOfNew;
+    branchComboBox.addActionListener(new ActionListener() {
+      /**
+       * Invoked when an action occurs.
+       *
+       * @param e the event to be processed
+       */
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        int index = branchComboBox.getSelectedIndex();
+        Iterator<GitCommit> it = null;
+        GitBranch actualBranch = branches.get(index);
+        commits.clear();
+        commitComboBox.removeAllItems();
+        try {
+          it = actualBranch.getCommits();
+        } catch (GitException gitException) {
+          gitException.printStackTrace();
+        } catch (IOException ioException) {
+          ioException.printStackTrace();
+        }
+        int count = 0;
+        while (it.hasNext()){
+          commits.add(count, it.next());
+          count++;
+        }
+        for (int i = 0; i < commits.size(); i++){
+          commitComboBox.addItem(commits.get(i).getMessage());
+        }
+      }
+    });
+    commitComboBox.addComponentListener(new ComponentAdapter() {
+    });
   }
 
 
@@ -74,7 +83,7 @@ public class BranchDialogView implements IDialogView {
    */
   @Override
   public String getTitle() {
-    return null;
+    return "Branch";
   }
 
   /**
@@ -84,7 +93,7 @@ public class BranchDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    return null;
+    return new Dimension(800,500);
   }
 
   /**
@@ -94,10 +103,41 @@ public class BranchDialogView implements IDialogView {
    */
   @Override
   public JPanel getPanel() {
-    return null;
+    return BranchPanel;
   }
 
   public void update() {
 
+  }
+  private static class BranchDialogRenderer extends JTextArea implements ListCellRenderer {
+    private int minRows;
+
+    public BranchDialogRenderer() {
+      this.setLineWrap(true);
+      this.setWrapStyleWord(true);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+                                                  final Object value, final int index, final boolean isSelected,
+                                                  final boolean hasFocus) {
+      Color background = Color.WHITE;
+      this.setText((String) value);
+      // Only the first 6 lines of the commit message should be shown;
+      this.setRows(minRows);
+      int width = list.getWidth();
+      if(isSelected) {
+        // This color is light blue.
+        background = new Color(0xAAD8E6);
+      }
+      this.setBackground(background);
+      // this is just to activate the JTextAreas internal sizing mechanism
+      if (width > 0) {
+        this.setSize(width, Short.MAX_VALUE);
+      }
+      this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+      return this;
+
+    }
   }
 }
