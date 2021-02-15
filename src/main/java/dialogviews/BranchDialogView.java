@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -71,8 +72,6 @@ public class BranchDialogView implements IDialogView {
         }
       }
     });
-    commitComboBox.addComponentListener(new ComponentAdapter() {
-    });
   }
 
 
@@ -93,7 +92,7 @@ public class BranchDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    return new Dimension(800,500);
+    return new Dimension(800,300);
   }
 
   /**
@@ -124,7 +123,7 @@ public class BranchDialogView implements IDialogView {
       Color background = Color.WHITE;
       this.setText((String) value);
       // Only the first 6 lines of the commit message should be shown;
-      this.setRows(minRows);
+      //this.setRows(minRows);
       int width = list.getWidth();
       if(isSelected) {
         // This color is light blue.
@@ -132,9 +131,9 @@ public class BranchDialogView implements IDialogView {
       }
       this.setBackground(background);
       // this is just to activate the JTextAreas internal sizing mechanism
-      if (width > 0) {
+      //if (width > 0) {
         this.setSize(width, Short.MAX_VALUE);
-      }
+      //}
       this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
       return this;
 
