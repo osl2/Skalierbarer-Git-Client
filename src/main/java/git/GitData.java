@@ -226,6 +226,14 @@ public class GitData {
         return branches;
     }
 
+    /**
+     *
+     * @return The default origin remote repo (if existing)
+     */
+    public GitRemote getOrigin(){
+        return null;
+    }
+
 }
 
 
