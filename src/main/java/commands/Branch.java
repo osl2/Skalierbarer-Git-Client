@@ -1,5 +1,7 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.BranchDialogView;
 import git.GitBranch;
 import git.GitCommit;
 
@@ -55,6 +57,7 @@ public class Branch implements ICommand, ICommandGUI {
      * OnClick handler for the GUI button representation.
      */
     public void onButtonClicked() {
+        GUIController.getInstance().openDialog(new BranchDialogView());
     }
 
     /**

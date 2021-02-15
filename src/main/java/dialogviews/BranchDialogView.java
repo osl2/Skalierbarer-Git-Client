@@ -1,5 +1,7 @@
 package dialogviews;
 
+import commands.Branch;
+import controller.GUIController;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitData;
@@ -19,13 +21,15 @@ import java.util.List;
 public class BranchDialogView implements IDialogView {
   private List<GitBranch> branches ;
   private LinkedList<GitCommit> commits = new LinkedList<GitCommit>();
-  private String nameOfNew;
   private JPanel panel1;
   private JPanel BranchPanel;
   private JComboBox branchComboBox;
   private JComboBox commitComboBox;
   private JTextField nameField;
   private JButton branchButton;
+  private JLabel branchLabel;
+  private JLabel commitLabel;
+  private JLabel nameLabel;
   private GitData gitData = new GitData();
 
 
@@ -70,6 +74,32 @@ public class BranchDialogView implements IDialogView {
         for (int i = 0; i < commits.size(); i++){
           commitComboBox.addItem(commits.get(i).getMessage());
         }
+      }
+    });
+    branchButton.addActionListener(new ActionListener() {
+      /**
+       * Invoked when an action occurs.
+       *
+       * @param e the event to be processed
+       */
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (commitComboBox.getSelectedItem() == null){
+          GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt werden. Beim Auswählen eines" +
+                  "Branches wird standartmäßig der letzte Commit ausgewählt");
+          return;
+        }
+        GitCommit commitForOp = commits.get(commitComboBox.getSelectedIndex());
+        String nameOfBranch = nameField.getText();
+        if (nameOfBranch.compareTo("") == 0){
+          GUIController.getInstance().errorHandler("Es muss ein Name eingegeben werden");
+          return;
+        }
+        Branch branch = new Branch();
+        branch.setBranchPoint(commitForOp);
+        branch.setBranchName(nameOfBranch);
+        branch.execute();
+        GUIController.getInstance().closeDialogView();
       }
     });
   }
