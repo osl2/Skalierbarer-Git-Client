@@ -62,6 +62,8 @@ public class Merge implements ICommand, ICommandGUI {
 
     /**
      * Method to execute the command.
+     * Different to the definition in {@link ICommand} this function may be called again after resolving conflicts
+     * iff the last execution ended in conflicts. To continue the "failed" merge.
      *
      * @return true, if the command has been executed successfully
      */
