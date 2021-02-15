@@ -1,8 +1,16 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.PullConflictDialogView;
 import git.GitBranch;
+import git.GitData;
 import git.GitFacade;
 import git.GitRemote;
+import git.exception.GitException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Pull implements ICommand, ICommandGUI {
@@ -48,7 +56,7 @@ public class Pull implements ICommand, ICommandGUI {
   /**
    * Starts mergeprogress for conflict
    */
-  public void startMerging(){}
+  public void startMerging() {}
 
   /**
    * Starts rebaseprogress for conflict
@@ -78,8 +86,36 @@ public class Pull implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() {
+    if(remote == null || remoteBranch == null) {
+      GUIController.getInstance().errorHandler("Es muss ein remote und ein branch auf dem remote übergeben werden.");
+      return false;
+    }
     GitFacade facade = new GitFacade();
-    boolean success = facade.pullOperation(remote, remoteBranch);
-    return success;
+    ArrayList<GitRemote> remoteList = new ArrayList<GitRemote>();
+    remoteList.add(remote);
+    boolean success = facade.fetchRemotes(remoteList);
+    if(!success) {
+      GUIController.getInstance().errorHandler("Es konnte kein remote gefunden werden.");
+      return false;
+    }
+    GitData data = new GitData();
+    GitBranch dest;
+    List<GitBranch> allBranches;
+    try {
+      dest = data.getSelectedBranch();
+      allBranches = data.getBranches();
+    } catch (IOException | GitException e) {
+      GUIController.getInstance().errorHandler(e);
+      return false;
+    }
+    GitBranch src = null;
+    for(int i = 0; i < allBranches.size(); i++) {
+      if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
+        src = allBranches.get(i);
+        break;
+      }
+    }
+    GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest));
+    return true;
   }
 }
