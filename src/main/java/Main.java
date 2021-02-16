@@ -1,4 +1,5 @@
 import controller.GUIController;
+import dialogviews.UsernamePasswordDialogView;
 
 public class Main {
 
