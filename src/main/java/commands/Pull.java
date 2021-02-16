@@ -2,6 +2,7 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.PullConflictDialogView;
+import dialogviews.PullDialogView;
 import git.GitBranch;
 import git.GitData;
 import git.GitFacade;
@@ -77,7 +78,7 @@ public class Pull implements ICommand, ICommandGUI {
 
   @Override
   public void onButtonClicked() {
-
+    GUIController.getInstance().openDialog(new PullDialogView());
   }
 
   /**
@@ -99,22 +100,41 @@ public class Pull implements ICommand, ICommandGUI {
       return false;
     }
     GitData data = new GitData();
-    GitBranch dest;
+    GitBranch dest = null;
     List<GitBranch> allBranches;
     try {
-      dest = data.getSelectedBranch();
       allBranches = data.getBranches();
-    } catch (IOException | GitException e) {
+    } catch (GitException e) {
       GUIController.getInstance().errorHandler(e);
       return false;
     }
+    GitBranch master = null;
     GitBranch src = null;
     for(int i = 0; i < allBranches.size(); i++) {
-      if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
+      // Find fetched branch.
+      if(allBranches.get(i).getName().compareTo("remotes/" + remote.getName() + "/" + remoteBranch.getName()) == 0) {
         src = allBranches.get(i);
-        break;
+      }
+      // Checks if the fetched branch exists locally.
+      if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
+        dest = allBranches.get(i);
+      }
+      // Find master branch if this branch was fetched the first time.
+      if(allBranches.get(i).getName().compareTo("master") == 0) {
+        master = allBranches.get(i);
       }
     }
+    // If fetched branch do not exist locally create new local branch.
+    // The new created branch is based on the head commit of the master branch.
+    if(dest == null) {
+      try {
+        facade.branchOperation(master.getCommit(), remoteBranch.getName());
+      } catch (GitException e) {
+        GUIController.getInstance().errorHandler(e);
+        return false;
+      }
+    }
+    GUIController.getInstance().closeDialogView();
     GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest));
     return true;
   }

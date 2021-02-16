@@ -1,7 +1,6 @@
 package dialogviews;
 
 
-import commands.ICommand;
 import commands.ICommandGUI;
 import commands.Merge;
 import commands.Rebase;
@@ -13,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PullConflictDialogView implements IDialogView {
@@ -43,7 +41,7 @@ public class PullConflictDialogView implements IDialogView {
     if(width > 0) {
       conflictMessage.setSize(width, Short.MAX_VALUE);
     }
-    List<ICommand> commandList = Settings.getInstance().getLevel().getCommands();
+    List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
     boolean merge = false;
     for(int i = 0; i < commandList.size(); i++) {
       if(commandList.get(i).getName().compareTo("Merge") == 0) {
