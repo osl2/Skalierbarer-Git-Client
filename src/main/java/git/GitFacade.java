@@ -57,7 +57,7 @@ public class GitFacade {
   }
 
   /**
-   * Creates a new branch with the specific name at the commit in JGit.
+   * Creates a new branch with the specific name at the commit in JGit. The new branch is checked out afterward
    *
    * @param commit commit where the new branch begins
    * @param name   name of the branch
@@ -65,12 +65,12 @@ public class GitFacade {
    */
   public boolean branchOperation(GitCommit commit, String name) throws GitException {
     try {
-    Git git = GitData.getJGit();
+      Git git = GitData.getJGit();
       git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
       return true;
     } catch (GitAPIException e) {
-      throw new GitException("Fehler beim Erstellen des neuen Branches \n" +
-          "Fehlermeldung: " + e.getMessage());
+      throw new GitException("Fehler beim Erstellen des neuen Branches \n"
+          + "Fehlermeldung: " + e.getMessage());
     }
   }
 
@@ -140,7 +140,8 @@ public class GitFacade {
       Settings settings = Settings.getInstance();
       GitAuthor author = settings.getUser();
       Git jgit = GitData.getJGit();
-      jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail()).setAmend(amend).call();
+      jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail())
+          .setAmend(amend).call();
       return true;
     } catch (GitAPIException e) {
       throw new GitException("Mit dem Commit ist etwas schief gelaufen: \n Fehlermeldung: "
