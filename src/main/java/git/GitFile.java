@@ -9,6 +9,7 @@ import settings.Settings;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class GitFile {
     private long size;
@@ -156,5 +157,16 @@ public class GitFile {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GitFile gitFile = (GitFile) o;
+        return size == gitFile.size && Objects.equals(path, gitFile.path);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(size, path);
+    }
 }
