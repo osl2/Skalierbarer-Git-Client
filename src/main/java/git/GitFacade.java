@@ -142,14 +142,31 @@ public class GitFacade {
   }
 
   /**
-   * Pushes the local commit history to the online repo.
+   * Pushes the local commit history from the selected branch to the selected online repo and creates a new branch
+   * with the same name as the local branch. Sets up the local branch to track the remote branch if 'setUpstream' is true
    *
    * @param remote The name of the online repo (must have been preconfigured before)
-   * @param branch The name of the branch whose commits shoul be pushed
+   * @param localBranch The name of the local branch whose commits should be pushed
+   * @param setUpstream Whether the --upstream flag should be set, i.e. whether a direct connection should be created
+   *                    between the local tracking branch and the remote upstream branch
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch branch, boolean follow) {
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) {
+    throw new AssertionError("not implemented");
+  }
+
+  /**
+   * Pushes the local commit history from the selected branch to the selected online repo in the selected branch. Sets up
+   * the local branch to track the remote branch if 'setUpstream' is true
+   * @param remote The remote repo the local changes should be pushed to
+   * @param localBranch The local branch whose changes should be pushed
+   * @param remoteBranch The remote branch the changes should be pushed to (already existing)
+   * @param follow Whether the --set-upstream flag should be set, i.e. whether a direct connection should be created
+   *               between the local tracking branch and the remote upstream branch
+   * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed 
+   */
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow){
     throw new AssertionError("not implemented");
   }
 
