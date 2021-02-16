@@ -79,7 +79,6 @@ public class RevertDialogView implements IDialogView {
     }
 
     private BranchTreeNode buildBranchTree(GitBranch b) {
-        // TODO Evtl müssen Exceptions hier behandelt werden
         BranchTreeNode root = new BranchTreeNode(b);
         Iterator<GitCommit> iter = null;
         try {
