@@ -1,4 +1,4 @@
-package views.addCommitView;
+package views;
 
 import commands.Add;
 import commands.Commit;
@@ -10,6 +10,7 @@ import git.exception.GitException;
 import settings.Settings;
 import views.IView;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -200,6 +201,86 @@ public class AddCommitView extends JPanel implements IView {
 
 
 
+
+  }
+
+  /*
+   * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
+   * panel of AddCommitView.
+   */
+  class FileListRenderer implements ListCellRenderer<FileListItem> {
+    /**
+     * Method that returns a Component that defines the appearance of the list entries
+     * @param list The corresponding list the renderer is set for
+     * @param value The value of the list entry, held by the list model
+     * @param index The index of the list entry in the list
+     * @param isSelected Whether the entry has been selected.
+     * @param cellHasFocus Whether the specific cell has focus
+     * @return Component - in this case, a JCheckbox element
+     */
+    @Override
+    public Component getListCellRendererComponent(JList<? extends FileListItem> list, FileListItem value, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
+      JCheckBox checkBox = new JCheckBox();
+      checkBox.setEnabled(list.isEnabled());
+      checkBox.setSelected(value.isSelected());
+      checkBox.setFont(list.getFont());
+      checkBox.setBackground(list.getBackground());
+      checkBox.setForeground(list.getForeground());
+      //TODO: consider another text
+      checkBox.setText(value.getGitFile().getPath().getName());
+      //TODO: focus does not appear. How to make focus visible?
+      checkBox.setFocusPainted(cellHasFocus);
+      return checkBox;
+    }
+
+
+  }
+
+  /*
+   * This class represents a list item that holds a GitFile instance. This class is needed to build the list
+   * of files with uncommitted changes that is located in the middle panel of AddCommitView.
+   * @see AddCommitView
+   */
+  class FileListItem {
+    private GitFile gitFile;
+    private boolean isSelected;
+    private int i;
+
+    /*
+     * Creates a list item that holds a GitFile instance. When the file is already in the staging area,
+     * the list item is initialized to be selected.
+     * @param gitFile
+     */
+    FileListItem(GitFile gitFile){
+      this.gitFile = gitFile;
+      this.i = i;
+      this.isSelected = gitFile.isStaged();
+    }
+
+    /*
+     *
+     * @return The selection state of the item
+     */
+    boolean isSelected(){
+      return isSelected;
+    }
+
+    /*
+     * Setter for the selection state. When the user clicks on a list entry, its selection state will change
+     * @param isSelected True, if the item should be selected (i.e., the nested GitFile should be marked for git add)
+     */
+    void setSelected(boolean isSelected){
+      this.isSelected = isSelected;
+    }
+
+    /*
+     * Method to retrieve the GitFile instance from the list item
+     * @return GitFile - the instance that is encapsulated in the list item
+     */
+    GitFile getGitFile(){
+      return gitFile;
+    }
 
   }
 }

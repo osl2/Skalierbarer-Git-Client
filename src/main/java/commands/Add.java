@@ -6,8 +6,7 @@ import git.GitData;
 import git.GitFile;
 import git.GitStatus;
 import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
-import views.addCommitView.AddCommitView;
+import views.AddCommitView;
 
 import java.io.IOException;
 import java.util.LinkedList;
