@@ -111,15 +111,6 @@ public class GitFile {
     }
 
     /**
-     * Removes file from the staging-area, thereby performing git restore --staged <file>
-     *
-     * @return True if the file was removed from the staging area successfully
-     */
-    public boolean addUndo() {
-        return false;
-    }
-
-    /**
      * Adds or removes the file from the .gitignore
      *
      * @param ignored Whether the file should be added to the .gitignore or be removed from it
