@@ -22,18 +22,8 @@ public interface ICommand {
    *
    * @return true if the command has been executed successfully \
    *    *     false otherwise
-   * @throws GitException If the command could not be performed in JGit internally or if execute() identified missing or
-   * misconfigured parameters
    */
-  boolean execute() throws GitException;
-
-  /**
-   * Returns the error message of commands when there execution was not successful.
-   *
-   * @return error message, if the command execution was not successful
-   * @see #execute()
-   */
-  String getErrorMessage();
+  boolean execute();
 
 
 }
