@@ -23,6 +23,12 @@ public class CloneDialogView implements IDialogView {
   private JFileChooser chooser;
   private boolean needNew = false;
 
+  public CloneDialogView(String gitUrl, File file, boolean recursive) {
+    remoteField.setText(gitUrl);
+    path = file;
+    recursiveCheckBox.setSelected(recursive);
+    addActionlistener();
+  }
   public CloneDialogView() {
     addActionlistener();
   }
