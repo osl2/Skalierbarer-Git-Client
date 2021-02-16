@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,9 +33,11 @@ public class AddCommitView extends JPanel implements IView {
   private JButton commitButton;
   private JButton amendButton;
   private JPanel statusPanel;
-  private JList<FileListItem> addedFilesList;
+  private JList<FileListItem> stagedFilesList;
   private JPanel diffPanel;
-  private JScrollPane addedFilesScrollPane;
+  private JScrollPane stagedFilesScrollPane;
+  private JScrollPane unstagedFilesScrollPane;
+  private JList unstagedFilesList;
   private JTextField testTextField;
   private FileListRenderer renderer;
   private GUIController c;
@@ -97,7 +100,22 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
-    setUpFileList();
+    //set up the list for staged files and unstaged files by retrieving the data from GitStatus
+    List<GitFile> unstagedFiles;
+    List<GitFile> stagedFiles;
+    try {
+      stagedFiles = gitStatus.getStagedFiles();
+      unstagedFiles = gitStatus.getUnstagedFiles();
+    }
+    catch (GitException | IOException e){
+      //in case of an exeption, create empty list
+      //TODO: rework in case GitFile and GitStatus continue throwing GitExceptions or IOExeptions
+      unstagedFiles = new LinkedList<>();
+      stagedFiles = new LinkedList<>();
+      c.errorHandler(e);
+    }
+    setUpFileList(stagedFilesList, stagedFiles);
+    setUpFileList(unstagedFilesList, unstagedFiles);
 
   }
 
@@ -111,9 +129,8 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   private void createUIComponents() {
-    renderer = new FileListRenderer();
-    addedFilesList = new JList<FileListItem>();
-    addedFilesList.setCellRenderer(renderer);
+    stagedFilesList = new JList<FileListItem>();
+    unstagedFilesList = new JList<FileListItem>();
     //TODO: diff area
   }
 
@@ -123,7 +140,7 @@ public class AddCommitView extends JPanel implements IView {
     //pass all selected FileListItems to add
     List<GitFile> filesToBeAdded = new LinkedList<>();
 
-    for (FileListItem item : addedFilesList.getSelectedValuesList()){
+    for (FileListItem item : stagedFilesList.getSelectedValuesList()){
       filesToBeAdded.add(item.getGitFile());
     }
 
@@ -148,32 +165,24 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   //creates the list in the middle panel that presents all files with uncommitted changes
-  private void setUpFileList(){
-
+  private void setUpFileList(JList<FileListItem> list, List<GitFile> files){
+    renderer = new FileListRenderer();
+    list.setCellRenderer(renderer);
     DefaultListModel<FileListItem> defaultListModel = new DefaultListModel();
 
-    List<GitFile> uncommittedChanges;
+
     List<FileListItem> fileListItems = new LinkedList<>();
-    try {
-      uncommittedChanges = gitStatus.getUncommittedChanges();
-    }
-    catch (GitException | IOException e){
-      //in case of an exeption, create empty list
-      //TODO: rework in case GitFile and GitStatus continue throwing GitExceptions or IOExeptions
-      uncommittedChanges = new LinkedList<>();
-      c.errorHandler(e);
-    }
-    for (GitFile file : uncommittedChanges){
+    for (GitFile file : files){
       FileListItem item = new FileListItem(file);
       fileListItems.add(item);
     }
 
     defaultListModel.addAll(fileListItems);
-    addedFilesList.setModel(defaultListModel);
+    list.setModel(defaultListModel);
 
 
     //Mouse Listener for Checkboxes. Selected files are being marked for git add
-    addedFilesList.addMouseListener(new MouseAdapter() {
+    list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
         JList list = (JList) event.getSource();
@@ -189,7 +198,7 @@ public class AddCommitView extends JPanel implements IView {
     });
 
     //List selection listener for a single item. Call git diff on the selected item
-    addedFilesList.addListSelectionListener(new ListSelectionListener() {
+    list.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent e) {
         JList<FileListItem> list = (JList<FileListItem>) e.getSource();
@@ -198,6 +207,8 @@ public class AddCommitView extends JPanel implements IView {
         }
       }
     });
+
+
 
 
 
