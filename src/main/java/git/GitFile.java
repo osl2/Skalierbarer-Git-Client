@@ -19,8 +19,6 @@ public class GitFile {
     private boolean untracked;
     private boolean ignored;
 
-    /* TODO: SOME WAY TO TRACK CHANGES */
-
     GitFile(long size, File path) {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
             throw new AssertionError("File is not located in the repository directory!");
@@ -127,7 +125,7 @@ public class GitFile {
 
     /**
      *
-     * @return True if the file is in the staging-area, false otherwise 
+     * @return True if the file is in the staging-area, false otherwise
      */
     public boolean isStaged(){
         return isAdded() || isChanged();
