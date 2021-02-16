@@ -1,6 +1,9 @@
 package commands;
 
+import controller.GUIController;
 import git.GitFacade;
+import settings.Data;
+import settings.Settings;
 
 import javax.swing.*;
 import java.io.File;
@@ -39,21 +42,24 @@ public class Init implements ICommand, ICommandGUI {
 
   public boolean execute() {
     if(path == null) {
-      errorMessage = "Es wurde kein Pfad zu einem Ordner übergeben.";
+      GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
       return false;
-    } // Was machen wir wenn in dem übergebenen Ordner bereits ein repo existiert?
+    }
     facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
     if(!success) {
-      errorMessage = "Es konnte am übergebenen Pfad kein git Repository initialisiertw werden.";
+      GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiertw werden.");
+      return false;
     }
     // Create the git commandLine input to execute this command.
     commandLine = path.getAbsolutePath() + " git init";
-    return success;
+    Data.getInstance().storeNewRepositoryPath(path);
+    Settings.getInstance().setActiveRepositoryPath(path);
+    return true;
   }
 
   public String getErrorMessage() {
-    return errorMessage;
+    return null;
   }
 
   public String getCommandLine() {
