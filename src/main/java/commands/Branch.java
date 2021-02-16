@@ -5,6 +5,7 @@ import dialogviews.BranchDialogView;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitFacade;
+import git.exception.GitException;
 
 import java.io.IOException;
 
@@ -21,11 +22,13 @@ public class Branch implements ICommand, ICommandGUI {
     public boolean execute() {
         GitFacade jgit = new GitFacade();
         boolean suc = false;
-       // try {
-           suc = jgit.branchOperation(commitPointOfBranching, branchName);
-        //} catch (IOException ioException){
 
-       // }
+        try {
+            suc = jgit.branchOperation(commitPointOfBranching, branchName);
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
+
         return suc;
     }
 
