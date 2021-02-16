@@ -4,6 +4,7 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.IndexDiff;
+import org.eclipse.jgit.util.IO;
 
 import java.io.File;
 import java.io.IOException;
