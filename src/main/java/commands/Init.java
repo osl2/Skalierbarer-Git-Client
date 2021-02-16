@@ -44,7 +44,7 @@ public class Init implements ICommand, ICommandGUI {
     if(path == null) {
       GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
       return false;
-    } // Was machen wir wenn in dem übergebenen Ordner bereits ein repo existiert?
+    }
     facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
     if(!success) {
