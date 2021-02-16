@@ -13,6 +13,12 @@ import java.nio.file.Paths;
 public class GitFile {
     private long size;
     private File path;
+    private boolean added;
+    private boolean changed;
+    private boolean modified;
+    private boolean untracked;
+    private boolean ignored;
+
     /* TODO: SOME WAY TO TRACK CHANGES */
 
     GitFile(long size, File path) {
@@ -37,28 +43,47 @@ public class GitFile {
     }
 
     /**
-     * Method to get, if this file is added to the git repository.
+     * Adds or removes the file from the .gitignore
      *
+     * @param ignored Whether the file should be added to the .gitignore or be removed from it
+     */
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
+
+    /**
      * @return true if file has not been added to the index and file
      * path matches a pattern in the .gitignore file
      */
     public boolean isIgnoredNotInIndex() {
-        return false;
+        return ignored;
     }
 
     /**
-     * This command returns only files that have been newly
-     * created and of whom there is no former version in the index.
      *
+     * @param untracked Whether there is no former version of the file in the index
+     */
+    public void setUntracked(boolean untracked){
+        this.untracked = untracked;
+    }
+
+    /**
      * @return true if file is not being tracked, i.e. git add has never been called on this file
      */
     public boolean isUntracked() {
-        return false;
+        return untracked;
     }
 
     /**
-     * This command returns only files that have been newly created and of whom
-     * there is no former version in the index.
+     *
+     * @param added Wether there is no former version of the file in the index and the file has been
+     *              added to the staging-area
+     */
+    public void setAdded(boolean added){
+        this.added = added;
+    }
+
+    /**
      *
      * @return true if file has been newly created and has been added to the staging-area
      */
@@ -67,22 +92,45 @@ public class GitFile {
     }
 
     /**
-     * This command returns only files of whom an older version is already in the index.
+     *
+     * @param modified Whether there is a former version of the file and the file has been changed since
+     */
+    public void setModified(boolean modified){
+        this.modified = modified;
+    }
+
+    /**
      *
      * @return true if file is being tracked and there is a modified version in the
      * working directory which has not been added to the staging-area
      */
     public boolean isModified() {
-        return false;
+        return modified;
     }
 
     /**
-     * This command returns only files of whom an older version is already in the index.
+     *
+     * @param changed Whether there is a former version of the file and a new version of the file has
+     *                been added to the staging area
+     */
+    public void setChanged(boolean changed){
+        this.changed = changed;
+    }
+
+    /**
      *
      * @return true if file has been modified and has been added to the staging-area
      */
     public boolean isChanged() {
         return false;
+    }
+
+    /**
+     *
+     * @return True if the file is in the staging-area, false otherwise 
+     */
+    public boolean isStaged(){
+        return isAdded() || isChanged();
     }
 
     /**
@@ -110,22 +158,5 @@ public class GitFile {
         }
     }
 
-    /**
-     * Adds or removes the file from the .gitignore
-     *
-     * @param ignored Whether the file should be added to the .gitignore or be removed from it
-     * @return True if command has been executed successfully
-     */
-    public boolean setIgnored(boolean ignored) {
-        return false;
-    }
-
-    /**
-     *
-     * @return True if the file is added or changed, false otherwise 
-     */
-    public boolean isStaged(){
-        return isAdded() || isChanged();
-    }
 
 }
