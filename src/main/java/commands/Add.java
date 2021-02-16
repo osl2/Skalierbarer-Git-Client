@@ -22,14 +22,6 @@ public class Add implements ICommand, ICommandGUI {
   }
 
 
-  /**
-   * The method returns the error message in case the command has not been executed successfully.
-   *
-   * @return empty String if the command was executed successfully, the error String otherwise
-   */
-  public String getErrorMessage() {
-    return null;
-  }
 
   /**
    * This method adds the given file to the internal list of files that will be added to the staging-area when execute()

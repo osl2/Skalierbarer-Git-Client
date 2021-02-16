@@ -34,10 +34,6 @@ public class Commit implements ICommand, ICommandGUI {
     return false;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
-
   /**
    * Method to get the Commandline input that would be necessarry to execute the command.
    *

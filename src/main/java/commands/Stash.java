@@ -16,9 +16,6 @@ public class Stash implements ICommand, ICommandGUI {
         this.stashMessage = stashMessage;
     }
 
-    public String getErrorMessage() {
-        return null;
-    }
 
     public String getCommandLine() {
         return null;

@@ -13,10 +13,6 @@ public class GitignoreRemove implements ICommand {
     return false;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
-
   /**
    * This method specifies the file that should be removed from the .gitignore file.
    * This should only be possible if the given file has been added to the .gitignore before.

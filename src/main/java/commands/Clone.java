@@ -73,9 +73,6 @@ public class Clone implements ICommand, ICommandGUI {
     return true;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
 
   public String getCommandLine() {
     return commandLine;

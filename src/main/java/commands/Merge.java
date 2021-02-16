@@ -1,5 +1,7 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.MergeConflictDialogView;
 import git.GitBranch;
 import git.GitChangeConflict;
 import git.GitFile;
@@ -11,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Merge implements ICommand, ICommandGUI {
-    private String errorMessage = "";
     private Map<GitFile, List<GitChangeConflict>> conflicts;
     @NonNull
     private GitBranch srcBranch;
@@ -70,7 +71,7 @@ public class Merge implements ICommand, ICommandGUI {
     public boolean execute() throws GitException, IOException {
         if (this.srcBranch == this.destBranch) {
             // We cannot merge a branch into itself.
-            this.errorMessage = "Quell- und Zielzweig können nicht der selbe sein";
+            GUIController.getInstance().errorHandler("Quell- und Zielzweig können nicht der selbe sein");
             return false;
         }
 
@@ -78,14 +79,12 @@ public class Merge implements ICommand, ICommandGUI {
         if (conflicts.size() > 0) {
             // todo: Call a MergeConflictView here and return its results.
             // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
+            for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
+                GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts));
             return false;
         }
 
         return true;
-    }
-
-    public String getErrorMessage() {
-        return this.errorMessage;
     }
 
     /**
