@@ -32,6 +32,10 @@ public class GitBranch {
     public String getName() {
         if (ref.getName().startsWith("refs/heads/"))
             return ref.getName().substring("refs/heads/".length());
+        else if (ref.getName().startsWith("refs/remotes/")){
+            String[] refParts = ref.getName().split("/");
+            return ref.getName().substring("refs/remotes/".length() + refParts[2].length() + 1);
+        }
         else
             return ref.getName();
     }
