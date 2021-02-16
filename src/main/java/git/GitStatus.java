@@ -18,6 +18,8 @@ import java.util.Set;
  * To ensure there is only one status element, this class implements the Singleton pattern
  */
 public class GitStatus {
+    //TODO: delete methods that are not used?
+
     private static GitStatus gitStatus = null;
 
     /*
@@ -50,7 +52,11 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> filesAddedJgit;
             filesAddedJgit = git.status().call().getAdded();
-            return toGitFile(filesAddedJgit);
+            List<GitFile> addedGitFiles = toGitFile(filesAddedJgit);
+            for (GitFile gitFile : addedGitFiles){
+                gitFile.setAdded(true);
+            }
+            return addedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Git Status konnte nicht erfolgreich ausgeführt werden,"
                     + "\n Fehlernachricht: " + e.getMessage());
@@ -70,7 +76,11 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> jgitFiles;
             jgitFiles = git.status().call().getChanged();
-            return toGitFile(jgitFiles);
+            List<GitFile> changedGitFiles = toGitFile(jgitFiles);
+            for (GitFile gitFile : changedGitFiles){
+                gitFile.setChanged(true);
+            }
+            return changedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
@@ -90,7 +100,11 @@ public class GitStatus {
         try {
             Git git = GitData.getJGit();
             Set<String> modifiedJgit = git.status().call().getModified();
-            return toGitFile(modifiedJgit);
+            List<GitFile> modifiedGitFiles = toGitFile(modifiedJgit);
+            for (GitFile gitFile : modifiedGitFiles){
+                gitFile.setModified(true);
+            }
+            return modifiedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
@@ -106,7 +120,11 @@ public class GitStatus {
         try {
             Git git = GitData.getJGit();
             Set<String> untracked = git.status().call().getUntracked();
-            return toGitFile(untracked);
+            List<GitFile> untrackedGitFiles = toGitFile(untracked);
+            for (GitFile gitFile : untrackedGitFiles){
+                gitFile.setUntracked(true);
+            }
+            return untrackedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
@@ -176,29 +194,15 @@ public class GitStatus {
         try {
             Git git = GitData.getJGit();
             Set<String> ignored = git.status().call().getIgnoredNotInIndex();
-            return toGitFile(ignored);
+            List<GitFile> ignoredGitFiles = toGitFile(ignored);
+            for (GitFile gitFile : ignoredGitFiles){
+                gitFile.setIgnored(true);
+            }
+            return ignoredGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
         }
-    }
-
-    /**
-     * Obtain a List of all files changed in the index or working tree
-     *
-     * @return List of files and directories that are known to the repo and have changed
-     * either in the index or in the working tree
-     */
-    public List<GitFile> getUncommittedChanges() throws IOException, GitException {
-        try {
-            Git git = GitData.getJGit();
-            Set<String> changes = git.status().call().getUncommittedChanges();
-            return toGitFile(changes);
-        } catch (GitAPIException e) {
-            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-                    + "Fehlermeldung: " + e.getMessage());
-        }
-
     }
 
     /**
