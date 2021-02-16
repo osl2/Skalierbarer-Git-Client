@@ -17,14 +17,22 @@ public class Checkout implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
-    public boolean execute() throws GitException {
+    public boolean execute() {
         GitFacade facade = new GitFacade();
         if (branch != null) {
             this.errorMessage = "";
-            return facade.checkout(branch);
+            try {
+                return facade.checkout(branch);
+            } catch (GitException e) {
+                GUIController.getInstance().errorHandler(e);
+            }
         } else if (commit != null) {
             this.errorMessage = "";
-            return facade.checkout(commit);
+            try {
+                return facade.checkout(commit);
+            } catch (GitException e) {
+                GUIController.getInstance().errorHandler(e);
+            }
         }
         //todo: lokalisierung
         this.errorMessage = "Weder Zweig noch Einbuchung ausgewählt.";

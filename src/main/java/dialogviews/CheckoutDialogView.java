@@ -91,14 +91,10 @@ public class CheckoutDialogView implements IDialogView {
         Checkout command = new Checkout();
         node.configureCheckout(command);
 
-        try {
-            if (command.execute()) {
-                GUIController.getInstance().closeDialogView();
-            } else {
-                GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler aufgetreten");
-            }
-        } catch (GitException gitException) {
-            GUIController.getInstance().errorHandler(gitException);
+        if (command.execute()) {
+            GUIController.getInstance().closeDialogView();
+        } else {
+            GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler aufgetreten");
         }
     }
 

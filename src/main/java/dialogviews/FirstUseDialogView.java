@@ -36,10 +36,15 @@ public class FirstUseDialogView implements IDialogView {
         config.setName(name);
         config.setEMail(eMail);
         boolean successConfig = config.execute();
+        /*
+        TODO: Wird nicht benötigt, da execute() selbst den error handler vom GUI Controller aufruft, oder?
+
         if(!successConfig) {
           errorLabel.setText(config.getErrorMessage());
           return;
         }
+
+         */
         init = new Init();
         init.setPathToRepository(path);
         boolean successInit = init.execute();
