@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Represents a single Change Conflict which may happen during a merge.
@@ -17,21 +18,23 @@ public class GitChangeConflict {
     private static final String CONFLICT_MARKER_BEGIN = "<<<<<<< ";
     private static final String CONFLICT_MARKER_SEPARATOR = "=======";
     private static final String CONFLICT_MARKER_END = ">>>>>>> ";
-    private String optionA;
-    private String optionB;
+    private final IndexDiff.StageState state;
+    private String optionOurs;
     private GitFile gitFile;
-    private IndexDiff.StageState state;
+    private String optionTheirs;
     private int startLine;
+    private boolean resolved = false;
+    private String result;
     private int length;
 
     /* Is only instantiated inside the git Package */
     GitChangeConflict(GitFile gitFile, IndexDiff.StageState state) {
-        this.gitFile = gitFile;
-        this.state = state;
+        this(gitFile, state, 0);
     }
 
     GitChangeConflict(GitFile gitFile, IndexDiff.StageState state, int startLine) {
-        this(gitFile, state);
+        this.gitFile = gitFile;
+        this.state = state;
         this.startLine = startLine;
         populateOptions(startLine);
 
@@ -74,6 +77,18 @@ public class GitChangeConflict {
     private void populateOptions(int startIndex) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(gitFile.getPath()));
+
+            if (state == IndexDiff.StageState.DELETED_BY_THEM) {
+                this.optionOurs = br.lines().collect(Collectors.joining(System.lineSeparator()));
+                this.optionTheirs = "DELETED";
+                this.length = -1;
+                return;
+            } else if (state == IndexDiff.StageState.DELETED_BY_US) {
+                this.optionTheirs = br.lines().collect(Collectors.joining(System.lineSeparator()));
+                this.optionOurs = "DELETED";
+                this.length = -1;
+                return;
+            }
             int i = 0;
             while (i < startIndex) {
                 br.readLine();
@@ -88,27 +103,27 @@ public class GitChangeConflict {
             ++i;
 
             String line;
-            StringBuilder optionA = new StringBuilder();
-            StringBuilder optionB = new StringBuilder();
+            StringBuilder optionOursBuilder = new StringBuilder();
+            StringBuilder optionTheirsBuilder = new StringBuilder();
             while (!Objects.equals(line = br.readLine(), CONFLICT_MARKER_SEPARATOR)) {
-                optionA.append(line);
-                optionA.append(System.lineSeparator());
+                optionOursBuilder.append(line);
+                optionOursBuilder.append(System.lineSeparator());
                 ++i;
             }
             ++i;
             // After separator
             while (!(line = br.readLine()).startsWith(CONFLICT_MARKER_END)) {
-                optionB.append(line);
-                optionB.append(System.lineSeparator());
+                optionTheirsBuilder.append(line);
+                optionTheirsBuilder.append(System.lineSeparator());
                 ++i;
             }
             // todo : Crashes if string is empty.
-            if (optionA.length() > 0)
-                optionA.deleteCharAt(optionA.lastIndexOf(System.lineSeparator()));
-            if (optionB.length() > 0)
-                optionB.deleteCharAt(optionB.lastIndexOf(System.lineSeparator()));
-            this.optionA = optionA.toString();
-            this.optionB = optionB.toString();
+            if (optionOursBuilder.length() > 0)
+                optionOursBuilder.deleteCharAt(optionOursBuilder.lastIndexOf(System.lineSeparator()));
+            if (optionTheirsBuilder.length() > 0)
+                optionTheirsBuilder.deleteCharAt(optionTheirsBuilder.lastIndexOf(System.lineSeparator()));
+            this.optionOurs = optionOursBuilder.toString();
+            this.optionTheirs = optionTheirsBuilder.toString();
             this.length = i - startIndex - 1;
 
 
@@ -120,25 +135,28 @@ public class GitChangeConflict {
     /**
      * accepts the first option
      */
-    public void acceptA() {
+    public void accecptOurs() {
+        if (resolved) return;
+        if (result == null) result = "";
+        this.result += getOptionOurs() + System.lineSeparator();
     }
 
     /**
      * accepts the second option
      */
-    public void acceptB() {
+    public void acceptTheirs() {
+        if (resolved) return;
+        if (result == null) result = "";
+        this.result += getOptionTheirs() + System.lineSeparator();
+
     }
 
-    public String getOptionA() {
-        if (this.state == IndexDiff.StageState.DELETED_BY_US)
-            return "DELETED";
-        return optionA;
+    public String getOptionOurs() {
+        return optionOurs;
     }
 
-    public String getOptionB() {
-        if (this.state == IndexDiff.StageState.DELETED_BY_THEM)
-            return "DELETED";
-        return optionB;
+    public String getOptionTheirs() {
+        return optionTheirs;
     }
 
     public int getConflictStartLine() {
@@ -147,12 +165,32 @@ public class GitChangeConflict {
         return this.startLine;
     }
 
+    /**
+     * Get the length of the conflict. May return -1 if the whole file was deleted in one of the conflicting commits.
+     *
+     * @return length of the conflict in the file
+     */
     public int getLength() {
         return length;
     }
 
+    /**
+     * may return null if {@link #isResolved()} returns false
+     *
+     * @return String representation of the current solution
+     */
     public String getResult() {
-        throw new AssertionError("Not implemented");
+        if (resolved && result == null)
+            return "" + System.lineSeparator();
+
+        return result;
     }
 
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void resolve() {
+        this.resolved = true;
+    }
 }

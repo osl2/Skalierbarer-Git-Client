@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <scrollpane id="b4b7" binding="leftSrollbar">
+      <scrollpane id="b4b7" binding="leftScrollbar">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -28,7 +28,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="46830" class="javax.swing.JTextArea" binding="centerTextArea">
+          <component id="1a8be" class="javax.swing.JTextPane" binding="centerTextArea">
             <constraints/>
             <properties/>
           </component>

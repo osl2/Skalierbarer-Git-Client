@@ -4,9 +4,7 @@ import git.GitChangeConflict;
 import git.GitFile;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -21,12 +19,12 @@ import java.util.Map;
 public class MergeConflictDialogView implements IDialogView {
     private JPanel contentPane;
     private JTextPane leftTextPane;
-    private JTextArea centerTextArea;
+    private JTextPane centerTextArea;
     private JTextPane rightTextPane;
     private JLabel leftLabel;
     private JLabel centerLabel;
     private JLabel rightLabel;
-    private JScrollPane leftSrollbar;
+    private JScrollPane leftScrollbar;
     private JScrollPane centerScrollbar;
     private JScrollPane rightScrollbar;
     private String[] baseVersion;
@@ -37,30 +35,62 @@ public class MergeConflictDialogView implements IDialogView {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
             baseVersion = br.lines().toArray(String[]::new);
-            leftTextPane.setDocument(getLeftText(baseVersion));
+            populatePanels(baseVersion);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private StyledDocument getLeftText(String[] base) {
-        DefaultStyledDocument doc = new DefaultStyledDocument();
+    private StyleContext getStyleContext() {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        Style conflictStyle = sc.addStyle("conflict", StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
+        StyleConstants.setBackground(conflictStyle, Color.lightGray);
+        return sc;
+    }
+
+    private void populatePanels(String[] base) {
+        StyleContext style = getStyleContext();
+        Style conflictStyle = style.getStyle("conflict");
+        DefaultStyledDocument leftText = new DefaultStyledDocument(style);
+        DefaultStyledDocument rightText = new DefaultStyledDocument(style);
+        DefaultStyledDocument centerText = new DefaultStyledDocument(style);
+
+
         Map<Integer, GitChangeConflict> changeIndex = new HashMap<>();
         conflicts.forEach(c -> changeIndex.put(c.getConflictStartLine(), c));
 
         for (int i = 0; i < base.length; i++) {
-            if (changeIndex.containsKey(i)) {
-                // Do replacement
-            } else {
-                // Append line normally.
-                try {
-                    doc.insertString(doc.getLength(), base[i], null);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
+            try {
+                if (changeIndex.containsKey(i)) {
+
+                    leftText.insertString(leftText.getLength(), changeIndex.get(i).getOptionA(), conflictStyle);
+                    leftText.insertString(leftText.getLength(), System.lineSeparator(), null);
+                    rightText.insertString(rightText.getLength(), changeIndex.get(i).getOptionB(), conflictStyle);
+                    rightText.insertString(rightText.getLength(), System.lineSeparator(), null);
+                    centerText.insertString(centerText.getLength(), "----------------", conflictStyle);
+                    centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
+
+                    // Skip conflict markers in file
+                    i += changeIndex.get(i).getLength() + 1;
+
+                } else {
+                    // Append line normally.
+                    leftText.insertString(leftText.getLength(), base[i], null);
+                    leftText.insertString(leftText.getLength(), System.lineSeparator(), null);
+                    rightText.insertString(rightText.getLength(), base[i], null);
+                    rightText.insertString(rightText.getLength(), System.lineSeparator(), null);
+                    centerText.insertString(centerText.getLength(), base[i], null);
+                    centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
                 }
+            } catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
-        return doc;
+
+        this.leftTextPane.setDocument(leftText);
+        this.rightTextPane.setDocument(rightText);
+        this.centerTextArea.setDocument(centerText);
+
     }
 
     /**
@@ -80,7 +110,8 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return contentPane.getPreferredSize();
+        return new Dimension(1200, 900);
+        //return contentPane.getPreferredSize();
     }
 
     /**
