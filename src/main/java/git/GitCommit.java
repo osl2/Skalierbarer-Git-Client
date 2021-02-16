@@ -111,7 +111,7 @@ public class GitCommit {
             /**
              * Generates the difference between the given file this commit and the one passed.
              *
-             * @param other the other commit, if you want to compare to the empty git repository set null.
+             * @param other the other commit, if you want to compare to the empty git repository set other to null.
              * @param file the you want to get the git diff.
              * @return String representation of the diff.
              */

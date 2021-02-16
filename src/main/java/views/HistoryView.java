@@ -118,7 +118,7 @@ public class HistoryView extends JPanel implements IView {
         try {
           listOfFiles = selectedCommit.getChangedFiles();
         } catch (IOException ioException) {
-          ioException.printStackTrace();
+          GUIController.getInstance().errorHandler(ioException);
         }
         int size = listOfFiles.size();
         for(int i = 0; i < size; i++) {

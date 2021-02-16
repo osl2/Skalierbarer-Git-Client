@@ -38,10 +38,11 @@ public class DiffView implements IDiffView {
   }
 
   /**
-   * Opens the difference between the given file and and the previous version of the file.
+   * Opens the difference between the given commit and the previous one.
+   * Only the git diff of the given File will be displayed.
    *
-   * @param activeCommit
-   * @param file
+   * @param activeCommit is the commit to compare to its previous version.
+   * @param file is a the File of the given commit.
    */
   public void setDiff(GitCommit activeCommit, GitFile file) {
     diff.setDiffCommit(activeCommit, file);
@@ -72,6 +73,9 @@ public class DiffView implements IDiffView {
     }
   }
 
+  /**
+   * Remove the text displayed.
+   */
   public void setNotVisible() {
     pane.setText("");
   }

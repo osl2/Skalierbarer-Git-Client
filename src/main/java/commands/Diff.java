@@ -1,5 +1,6 @@
 package commands;
 
+import controller.GUIController;
 import git.GitCommit;
 import git.GitFile;
 
@@ -22,7 +23,8 @@ public class Diff implements ICommand {
    */
   public boolean execute() {
     if(activeCommit == null || activeFile == null) {
-      errorMessage = "Es muss ein GitCommit und ein GitFile übergeben werden um den Diff Befehl auszuführen.";
+      GUIController.getInstance().errorHandler( "Es muss ein GitCommit und ein GitFile " +
+              "übergeben werden um den Diff Befehl auszuführen.");
       return false;
     }
     try {
@@ -32,14 +34,15 @@ public class Diff implements ICommand {
         activeDiff = activeCommit.getDiff(null, activeFile);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      GUIController.getInstance().errorHandler(e);
+      return false;
     }
     validDiff = true;
     return true;
   }
 
   public String getErrorMessage() {
-    return errorMessage;
+    return null;
   }
 
   /**
