@@ -129,4 +129,12 @@ public class GitFile {
         return false;
     }
 
+    /**
+     *
+     * @return True if the file is added or changed, false otherwise 
+     */
+    public boolean isStaged(){
+        return isAdded() || isChanged();
+    }
+
 }
