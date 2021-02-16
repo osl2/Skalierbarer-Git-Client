@@ -2,6 +2,7 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.CloneDialogView;
+import git.CredentialProviderHolder;
 import git.GitFacade;
 import git.exception.GitException;
 import settings.Settings;
@@ -15,6 +16,7 @@ public class Clone implements ICommand, ICommandGUI {
   private String gitURL;
   private File path;
   private boolean recursive = false;
+  private boolean needNew = false;
 
   /**
    * Sets a git URL to a remote repository. The input is only valid if
@@ -53,8 +55,13 @@ public class Clone implements ICommand, ICommandGUI {
     try {
       facade.cloneRepository(gitURL, path, recursive);
     } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
-      return false;
+      if(e.getMessage().compareTo("") == 0) {
+        CredentialProviderHolder.getInstance().changeProvider(true);
+        return false;
+      } else {
+        GUIController.getInstance().errorHandler(e);
+        return false;
+      }
     }
     Settings.getInstance().setActiveRepositoryPath(path);
     commandLine = path.getAbsolutePath() + " " + commandLine + gitURL;
@@ -79,6 +86,10 @@ public class Clone implements ICommand, ICommandGUI {
 
   public String getDescription() {
     return commandDescription;
+  }
+
+  public boolean getNeedNew() {
+    return needNew;
   }
 
   public void onButtonClicked() {

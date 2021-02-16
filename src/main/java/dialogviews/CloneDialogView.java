@@ -2,6 +2,8 @@ package dialogviews;
 
 import commands.Clone;
 import controller.GUIController;
+import git.CredentialProviderHolder;
+import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,7 @@ public class CloneDialogView implements IDialogView {
   private Clone clone;
   private File path;
   private JFileChooser chooser;
+  private boolean needNew = false;
 
   public CloneDialogView() {
     addActionlistener();
@@ -30,7 +33,7 @@ public class CloneDialogView implements IDialogView {
       public void actionPerformed(ActionEvent e) {
         chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnVal = chooser.showOpenDialog(null);
+        int returnVal = chooser.showOpenDialog(cloneDialog);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
           path = chooser.getSelectedFile();
         }
@@ -43,14 +46,12 @@ public class CloneDialogView implements IDialogView {
         clone.setGitURL(remoteField.getText());
         clone.cloneRecursive(recursiveCheckBox.isSelected());
         clone.setDestination(path);
-        boolean success = clone.execute();
-        if(!success) {
-          String errorMessage = clone.getErrorMessage();
-          GUIController.getInstance().errorHandler(errorMessage);
-          return;
+        boolean success = false;
+        success = clone.execute();
+        if(success) {
+          GUIController.getInstance().setCommandLine(clone.getCommandLine());
+          GUIController.getInstance().closeDialogView();
         }
-        GUIController.getInstance().setCommandLine(clone.getCommandLine());
-        GUIController.getInstance().closeDialogView();
       }
     });
     cancelButton.addActionListener(new ActionListener() {
@@ -94,5 +95,9 @@ public class CloneDialogView implements IDialogView {
 
   public void update() {
 
+  }
+
+  public boolean getNeedNew() {
+    return needNew;
   }
 }

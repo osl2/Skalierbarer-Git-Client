@@ -128,6 +128,7 @@ public class GitFacade {
               .setURI(gitUrl)
               .setDirectory(dest)
               .setCloneAllBranches(true)
+              .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
               .setCloneSubmodules(recursive)
               .call();
     } catch (JGitInternalException e) {
