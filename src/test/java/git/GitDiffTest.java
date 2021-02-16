@@ -36,7 +36,7 @@ public class GitDiffTest extends AbstractGitTest {
             .setMessage("Commit 2").call();
 
     fr.write("Neuer Inhalt des Files");
-    fr.close();
+    fr.flush();
 
     git.add().addFilepattern(textFile.getName()).call();
     git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
@@ -44,6 +44,8 @@ public class GitDiffTest extends AbstractGitTest {
     git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
             .setMessage("Commit 4").call();
 
+    fr.write("Nicht gestaged");
+    fr.close();
     git.close();
   }
 
@@ -79,5 +81,14 @@ public class GitDiffTest extends AbstractGitTest {
         assertEquals("+data 1data 2Neuer Inhalt des Files", lines.get(7));
       }
     }
+  }
+
+  @Test
+  public void getDiffWorkingDirectory() throws IOException {
+    String out = GitCommit.getDiff(new GitFile(20, new File(repo, "/textFile.txt")));
+    ArrayList<String> lines = new ArrayList<String>();
+    out.lines().forEach(lines::add);
+    assertEquals("-data 1data 2Neuer Inhalt des Files", lines.get(5));
+    assertEquals("+data 1data 2Neuer Inhalt des FilesNicht gestaged", lines.get(7));
   }
 }
