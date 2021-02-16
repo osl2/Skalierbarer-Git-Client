@@ -16,7 +16,6 @@ public class Clone implements ICommand, ICommandGUI {
   private String gitURL;
   private File path;
   private boolean recursive = false;
-  private boolean needNew = false;
 
   /**
    * Sets a git URL to a remote repository. The input is only valid if
@@ -88,10 +87,6 @@ public class Clone implements ICommand, ICommandGUI {
 
   public String getDescription() {
     return commandDescription;
-  }
-
-  public boolean getNeedNew() {
-    return needNew;
   }
 
   public void onButtonClicked() {

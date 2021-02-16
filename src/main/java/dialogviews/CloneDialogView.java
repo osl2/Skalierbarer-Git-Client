@@ -2,8 +2,6 @@ package dialogviews;
 
 import commands.Clone;
 import controller.GUIController;
-import git.CredentialProviderHolder;
-import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +19,6 @@ public class CloneDialogView implements IDialogView {
   private Clone clone;
   private File path;
   private JFileChooser chooser;
-  private boolean needNew = false;
 
   public CloneDialogView(String gitUrl, File file, boolean recursive) {
     remoteField.setText(gitUrl);
@@ -101,9 +98,5 @@ public class CloneDialogView implements IDialogView {
 
   public void update() {
 
-  }
-
-  public boolean getNeedNew() {
-    return needNew;
   }
 }
