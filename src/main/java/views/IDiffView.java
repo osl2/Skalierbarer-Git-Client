@@ -15,9 +15,17 @@ public interface IDiffView {
   JTextPane openDiffView();
 
   /**
-   * Opens the difference between the given file and and the previous version of the file.
+   * Opens the difference between the given commit and the previous one.
+   * Only the git diff of the given File will be displayed.
    *
-   * @param fileName the name of the given file.
+   * @param activeCommit is the commit to compare to its previous version.
+   * @param file is a the File of the given commit.
    */
   void setDiff(GitCommit activeCommit, GitFile file);
+
+  /**
+   * Opens the difference between the given File and the working directory.
+   * @param file a File which changed since the latest commit.
+   */
+  void setDiff(GitFile file);
 }

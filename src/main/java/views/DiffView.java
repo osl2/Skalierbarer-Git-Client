@@ -47,6 +47,27 @@ public class DiffView implements IDiffView {
   public void setDiff(GitCommit activeCommit, GitFile file) {
     diff.setDiffCommit(activeCommit, file);
     diff.execute();
+    writeDiff();
+  }
+
+  public void setDiff(GitFile file) {
+
+
+    writeDiff();
+  }
+
+  /**
+   * Remove the text displayed.
+   */
+  public void setNotVisible() {
+    pane.setText("");
+  }
+
+  /**
+   * Writes the output of diff.diffGit() in the JTextPane. Lines leading with + will be displayed
+   * green and lines leading with - will be displayed red.
+   */
+  private void writeDiff() {
     String[] output = diff.diffGit();
     pane.setText("");
     for(int i = 0; i < output.length; i++) {
@@ -71,12 +92,5 @@ public class DiffView implements IDiffView {
         }
       }
     }
-  }
-
-  /**
-   * Remove the text displayed.
-   */
-  public void setNotVisible() {
-    pane.setText("");
   }
 }
