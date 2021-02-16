@@ -66,6 +66,7 @@ public class FirstUseDialogView implements IDialogView {
     });
   }
 
+
   /**
    * DialogWindow Title
    *

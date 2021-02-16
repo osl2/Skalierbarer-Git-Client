@@ -5,6 +5,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -12,12 +14,20 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.EmptyTreeIterator;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
+import settings.Settings;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Instant;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class GitCommit {
     private final RevCommit revCommit;
@@ -94,14 +104,40 @@ public class GitCommit {
         }
     }
 
+    RevCommit getRevCommit() {
+        return this.revCommit;
+    }
+
             /**
-             * Generates the difference between this commit and the one passed
+             * Generates the difference between the given file this commit and the one passed.
              *
-             * @param other the other commit
-             * @return String representation of the diff
+             * @param other the other commit, if you want to compare to the empty git repository set other to null.
+             * @param file the you want to get the git diff.
+             * @return String representation of the diff.
              */
-    public String getDiff(GitCommit other) {
-        throw new AssertionError("not implemented yet");
+    public String getDiff(GitCommit other, GitFile file) throws IOException {
+        Git git = GitData.getJGit();
+        AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+        TreeFilter filter = pathFilter(file);
+        // if this commit is not the first commit of the tree.
+        if(other != null) {
+            RevCommit oldCommit = other.getRevCommit();
+            oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        }
+        AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
+        OutputStream out = new ByteArrayOutputStream();
+        try {
+            git.diff()
+                    .setOldTree(oldTreeIterator)
+                    .setNewTree(newTreeIterator)
+                    .setPathFilter(filter)
+                    .setOutputStream(out)
+                    .call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+        String output = out.toString();
+        return output;
     }
 
     /**
@@ -109,8 +145,42 @@ public class GitCommit {
      *
      * @return String representation to the working directory
      */
-    public String getDiff() {
-        throw new AssertionError("not implemented yet");
+    public String getDiff(GitFile file) throws IOException {
+        Git git = GitData.getJGit();
+        AbstractTreeIterator newTreeIterator;
+        TreeFilter filter = pathFilter(file);
+        if (file.isAdded()) {
+            newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
+        } else {
+            newTreeIterator = new FileTreeIterator(git.getRepository());
+        }
+        OutputStream out = new ByteArrayOutputStream();
+        try {
+            GitData data = new GitData();
+            AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
+            git.diff()
+                    .setOldTree(oldTreeIterator)
+                    .setNewTree(newTreeIterator)
+                    .setPathFilter(filter)
+                    .setOutputStream(out)
+                    .call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+        String output = out.toString();
+        return output;
+    }
+
+    private TreeFilter pathFilter(GitFile file) {
+        String separator = Pattern.quote(System.getProperty("file.separator"));
+        String[] relativePath = file.getPath().getPath().split(separator);
+        String output = relativePath[0];
+        for(int i = 1; i < relativePath.length; i++) {
+            output += "/" + relativePath[i];
+        }
+        output = output.substring(Settings.getInstance().getActiveRepositoryPath().getPath().length() + 1);
+        TreeFilter filter = PathFilter.create(output);
+        return filter;
     }
 
 
@@ -143,9 +213,12 @@ public class GitCommit {
         Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
         RevWalk walk = new RevWalk(repository);
-        RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
+        AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+        if(revCommit.getParents().length!= 0) {
+            RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
+            oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
+        }
 
-        AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(oldCommit, git);
         AbstractTreeIterator newTreeIterator = getCanonicalTreeParser(revCommit, git);
 
         DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
