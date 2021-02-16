@@ -22,10 +22,6 @@ public class Config implements ICommand {
         return false;
     }
 
-    @Override
-    public String getErrorMessage() {
-        return null;
-    }
 
     public void setName(String name) {
         this.name = name;
