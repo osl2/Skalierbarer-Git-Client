@@ -29,7 +29,7 @@ public class Data extends DataObservable {
         return INSTANCE;
     }
 
-    private static LinkedList<ICommand> getCommandList(int id) {
+    private static LinkedList<ICommandGUI> getCommandList(int id) {
         Add add = new Add();
         Commit commit = new Commit();
         Revert revert = new Revert();
@@ -49,7 +49,7 @@ public class Data extends DataObservable {
         Remote remote = new Remote();
         Stash stash = new Stash();
 
-        LinkedList<ICommand> commands = new LinkedList<ICommand>();
+        LinkedList<ICommandGUI> commands = new LinkedList<>();
 
         switch (id) {
             case 1:
@@ -57,8 +57,6 @@ public class Data extends DataObservable {
                 commands.add(commit);
                 commands.add(init);
                 commands.add(revert);
-                commands.add(gitignoreRemove);
-                commands.add(gitignoreAdd);
                 break;
             case 2:
                 commands.add(add);
@@ -130,11 +128,11 @@ public class Data extends DataObservable {
      * @return immutable ordered List of all possible levels in the current configuration
      */
     public LinkedList<Level> getLevels() {
-        LinkedList<Level> levelLinkedList = new LinkedList<Level>();
-        LinkedList<ICommand> commands1 = getCommandList(1);
-        LinkedList<ICommand> commands2 = getCommandList(2);
-        LinkedList<ICommand> commands3 = getCommandList(3);
-        LinkedList<ICommand> commands4 = getCommandList(4);
+        LinkedList<Level> levelLinkedList = new LinkedList<>();
+        LinkedList<ICommandGUI> commands1 = getCommandList(1);
+        LinkedList<ICommandGUI> commands2 = getCommandList(2);
+        LinkedList<ICommandGUI> commands3 = getCommandList(3);
+        LinkedList<ICommandGUI> commands4 = getCommandList(4);
         Level levelOne = new Level("Level 1", commands1, 1);
         Level levelTwo = new Level("Level 2", commands2, 2);
         Level levelThree = new Level("Level 3", commands3, 3);

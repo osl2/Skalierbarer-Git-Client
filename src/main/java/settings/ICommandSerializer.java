@@ -3,12 +3,12 @@ package settings;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import commands.ICommand;
+import commands.ICommandGUI;
 
 import java.io.IOException;
 
-public class ICommandSerializer extends StdSerializer<ICommand> {
-    protected ICommandSerializer(Class<ICommand> t) {
+public class ICommandSerializer extends StdSerializer<ICommandGUI> {
+    protected ICommandSerializer(Class<ICommandGUI> t) {
         super(t);
     }
 
@@ -18,7 +18,7 @@ public class ICommandSerializer extends StdSerializer<ICommand> {
     }
 
     @Override
-    public void serialize(ICommand iCommand, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+    public void serialize(ICommandGUI iCommand, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("classPath", iCommand.getClass().getCanonicalName());

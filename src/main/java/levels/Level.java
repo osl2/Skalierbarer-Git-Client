@@ -2,7 +2,7 @@ package levels;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import commands.ICommand;
+import commands.ICommandGUI;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,11 +12,11 @@ public class Level {
     @JsonProperty("name")
     private final String name; //name as a unique identifier
     private final int id; //For comparing
-    private List<ICommand> commands;
+    private List<ICommandGUI> commands;
 
     @JsonCreator
     public Level(@JsonProperty("name") String name,
-                 @JsonProperty("commands") List<ICommand> commands,
+                 @JsonProperty("commands") List<ICommandGUI> commands,
                  @JsonProperty("id") int id) {
         this.commands = commands;
         this.name = name;
@@ -37,7 +37,7 @@ public class Level {
      *
      * @return List of callable commands
      */
-    public List<ICommand> getCommands() {
+    public List<ICommandGUI> getCommands() {
         return commands;
     }
 
@@ -58,10 +58,10 @@ public class Level {
 
         // Check if commands contains instances of the same classes
 
-        return id == level.id && name.equals(level.name) && iCommandListEquals(commands, level.commands);
+        return id == level.id && name.equals(level.name) && iCommandGUIEquals(commands, level.commands);
     }
 
-    private boolean iCommandListEquals(List<ICommand> a, List<ICommand> b) {
+    private boolean iCommandGUIEquals(List<ICommandGUI> a, List<ICommandGUI> b) {
         return a.stream()
                 .allMatch( // for all Commands in a
                         e -> b.stream()
