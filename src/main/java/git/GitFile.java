@@ -162,11 +162,11 @@ public class GitFile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GitFile gitFile = (GitFile) o;
-        return size == gitFile.size && Objects.equals(path, gitFile.path);
+        return Objects.equals(path, gitFile.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(size, path);
+        return Objects.hash(path);
     }
 }
