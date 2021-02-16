@@ -63,8 +63,15 @@ public class GitFacade {
    * @param name   name of the branch
    * @return true if it is performed successfully, false if something went wrong
    */
-  public boolean branchOperation(GitCommit commit, String name) {
-    throw new AssertionError("not implemented");
+  public boolean branchOperation(GitCommit commit, String name) throws GitException {
+    try {
+    Git git = GitData.getJGit();
+      git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
+      return true;
+    } catch (GitAPIException e) {
+      throw new GitException("Fehler beim Erstellen des neuen Branches \n" +
+          "Fehlermeldung: " + e.getMessage());
+    }
   }
 
   /**
