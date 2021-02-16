@@ -208,8 +208,11 @@ public class GitFacade {
     throw new AssertionError("not implemented");
   }
 
-  public boolean revert(GitCommit commit) {
-    throw new AssertionError("not implemented");
+  public boolean revert(GitCommit commit) throws GitException {
+    boolean suc = false;
+
+    suc = commit.revert();
+    return suc;
   }
 
   public String getDiff(GitCommit activeCommit) {
