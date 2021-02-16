@@ -207,28 +207,25 @@ public class GitData {
      * @param remote Online repository, where the branches come from
      * @return List of branches in the repository
      */
-    public List<GitBranch> getBranches(GitRemote remote) {
+    public List<GitBranch> getBranches(GitRemote remote) throws GitException {
         Collection<Ref> refs;
         List<GitBranch> branches = new ArrayList<GitBranch>();
+
         try {
             refs = Git.lsRemoteRepository()
                     .setHeads(true)
                     .setRemote(remote.getUrl().toString())
-                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider("Username", "Passwort"))
+                    .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
                     .call();
             for (Ref ref : refs) {
-
                 branches.add(new GitBranch(ref));
             }
-            //Collections.sort(branches);
-        } catch (InvalidRemoteException e) {
-            e.printStackTrace();
-        } catch (TransportException e) {
-            //TODO add PasswortDialogView things
-            e.printStackTrace();
         } catch (GitAPIException e) {
-            e.printStackTrace();
+            throw new GitException();
         }
+
+            //Collections.sort(branches);
+
         return branches;
     }
 
