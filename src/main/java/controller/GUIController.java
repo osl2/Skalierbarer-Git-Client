@@ -55,7 +55,7 @@ public class GUIController {
         JPanel bufferPanel = new JPanel(new BorderLayout());
         bufferPanel.add(new JScrollPane(jTextArea));
         jTextArea.setEditable(false);
-        if (jTextArea.getPreferredSize().height > 600)
+        if (jTextArea.getPreferredSize().height > 600 || jTextArea.getPreferredSize().width > 600)
             bufferPanel.setPreferredSize(new Dimension(800, 600));
         else
             bufferPanel.setPreferredSize(jTextArea.getPreferredSize());
@@ -90,7 +90,8 @@ public class GUIController {
      * @param commandLine the new text to be shown
      */
     public void setCommandLine(String commandLine) {
-
+        if (commandLine != null)
+            this.window.setCommandLineText(commandLine);
     }
 
     private void initializeMainWindow() {
@@ -131,7 +132,6 @@ public class GUIController {
      * @param view the View to be opened
      */
     public void openView(IView view) {
-        // TODO: Resolve: This should not always be possible. What logic do we need to add here?
         this.window.setView(view);
     }
 

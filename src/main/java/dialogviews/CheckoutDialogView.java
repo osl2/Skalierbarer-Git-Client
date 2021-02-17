@@ -48,7 +48,7 @@ public class CheckoutDialogView implements IDialogView {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         try {
             git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
-        } catch (GitException e) {
+        } catch (GitException | NullPointerException e) {
             GUIController.getInstance().errorHandler(e);
             // this is fatal for our view
             GUIController.getInstance().closeDialogView();
@@ -92,6 +92,7 @@ public class CheckoutDialogView implements IDialogView {
         node.configureCheckout(command);
 
         if (command.execute()) {
+            GUIController.getInstance().setCommandLine(command.getCommandLine());
             GUIController.getInstance().closeDialogView();
         } else {
             GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler aufgetreten");
