@@ -23,7 +23,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @return True, if it is successfully executed false if not
    */
-  public boolean execute() throws GitException {
+  public boolean execute()  {
     GitFacade facade = new GitFacade();
     boolean suc = facade.fetchRemotes(remotes);
     return suc;

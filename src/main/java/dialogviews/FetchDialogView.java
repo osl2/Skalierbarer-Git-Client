@@ -73,21 +73,17 @@ public class FetchDialogView implements IDialogView {
           RefTreeNode node = (RefTreeNode) selected[i].getLastPathComponent();
           node.configureFetch(command);
         }
-
-        try {
           if (command.execute()) {
             GUIController.getInstance().closeDialogView();
-          } else {
+          }
+          else {
             // todo let controller handle that
             JOptionPane.showMessageDialog(null,
                     "Es ist ein unerwarteter Fehler aufgetreten",
                     "Fehler",
                     JOptionPane.ERROR_MESSAGE);
           }
-        } catch (GitException gitException) {
-          // todo let controller handle that
-          gitException.printStackTrace();
-        }
+
       }
     });
   }
