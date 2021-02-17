@@ -10,7 +10,7 @@ import settings.Settings;
 import java.io.File;
 
 public class Clone implements ICommand, ICommandGUI {
-  private String commandLine = "git$ clone ";
+  private String commandLine = "git clone ";
   private String commandName = "Clone";
   private String commandDescription = "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
   private String gitURL;
@@ -67,7 +67,7 @@ public class Clone implements ICommand, ICommandGUI {
     Settings.getInstance().setActiveRepositoryPath(path);
     commandLine = path.getAbsolutePath() + " " + commandLine + gitURL;
     if(recursive) {
-      commandLine = commandLine + " --recurse";
+      commandLine = commandLine + " --recursive";
     }
     Settings.getInstance().settingsChanged();
     return true;
