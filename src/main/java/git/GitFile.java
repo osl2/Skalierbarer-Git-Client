@@ -3,12 +3,9 @@ package git;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class GitFile {
@@ -35,8 +32,12 @@ public class GitFile {
         return this.size;
     }
 
-    public File getPath(){
+    public File getPath() {
         return this.path;
+    }
+
+    private String getRelativePath() {
+        return GitData.getRepository().getWorkTree().toPath().relativize(path.toPath()).toString();
     }
 
     /**
@@ -80,18 +81,9 @@ public class GitFile {
      * @return True if the file was added to the staging area successfully
      */
     public boolean add() throws GitException {
-        Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
-        Path repoPath = Paths.get(repository.getDirectory().toURI());
-        Path filePath = Paths.get(this.path.toURI());
-        String relative = repoPath.relativize(filePath).toString();
-        if (relative.substring(0, 3).equals((".." + File.separatorChar).substring(0, 3))) {
-            relative = relative.substring(3);
-        } else {
-            throw new GitException("something with the Filepath went wrong");
-        }
         try {
-            git.add().addFilepattern(relative).call();
+            git.add().addFilepattern(this.getRelativePath()).call();
             return true;
         } catch (GitAPIException e) {
             throw new GitException("File not found in Git");
@@ -105,18 +97,9 @@ public class GitFile {
      * @return True if the file was removed from the staging area successfully
      */
     public boolean addUndo() throws GitException {
-        Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
-        Path repoPath = Paths.get(repository.getDirectory().toURI());
-        Path filePath = Paths.get(this.path.toURI());
-        String relative = repoPath.relativize(filePath).toString();
-        if (relative.substring(0, 3).equals((".." + File.separatorChar).substring(0, 3))) {
-            relative = relative.substring(3);
-        } else {
-            throw new GitException("something with the Filepath went wrong");
-        }
         try {
-            git.reset().addPath(relative).call();
+            git.reset().addPath(this.getRelativePath()).call();
             return true;
         } catch (GitAPIException e) {
             throw new GitException("File not found in Git");
