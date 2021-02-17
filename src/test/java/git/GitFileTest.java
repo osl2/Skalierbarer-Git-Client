@@ -51,6 +51,7 @@ public class GitFileTest extends AbstractGitTest {
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
     String jGitFile = git.status().call().getAdded().iterator().next();
     assertEquals(gitDataFile, jGitFile);
+    assertTrue(GitStatus.getGitStatus().getAddedFiles().contains(gitFile));
   }
 
   @Test
