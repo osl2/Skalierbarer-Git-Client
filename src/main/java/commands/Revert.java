@@ -25,9 +25,6 @@ public class Revert implements ICommand, ICommandGUI {
     return suc;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
 
   /**
    * Creates with the input the command of the commandline.
