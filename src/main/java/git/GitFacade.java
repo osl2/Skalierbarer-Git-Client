@@ -144,7 +144,43 @@ public class GitFacade {
   }
 
   public boolean fetchRemotes(List<GitRemote> remotes) {
-    throw new AssertionError("not implemented");
+    try {
+      Git jgit = GitData.getJGit();
+      for (int i = 0; i < remotes.size(); i++){
+        if (remotes.get(i).getFetchBranches().size() == 0){
+          jgit.fetch()
+                  .setRemote(remotes.get(i).getName())
+                  .setRefSpecs("refs/heads/master:refs/heads/"
+                          + remotes.get(i).getName())
+                  //TODO Entsprechenden Provider angeben
+                  .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+                  .call();
+        }
+        else {
+          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++){
+            GitRemote actualRemote = remotes.get(i);
+            GitBranch actualBranch = actualRemote.getFetchBranches().get(j);
+            jgit.fetch()
+                    .setRemote(actualRemote.getName())
+                    .setRefSpecs("refs/heads/" + actualBranch.getName()  + ":refs/heads/remotes/" + actualRemote.getName() + "/"
+                            + actualBranch.getName())
+                    //TODO Universell angeben
+                    .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+                    .call();
+          }
+        }
+      }
+
+    } catch (InvalidRemoteException e) {
+      e.printStackTrace();
+      return false;
+    } catch (TransportException e) {
+      e.printStackTrace();
+      return false;
+    } catch (GitAPIException e) {
+      return false;
+    }
+    return true;
   }
 
   public boolean setRepositoryPath(File path) {
