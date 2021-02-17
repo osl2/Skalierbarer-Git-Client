@@ -141,9 +141,9 @@ public class GitCommit {
     }
 
     /**
-     * Generates the difference to the working directory
+     * Generates the difference between the index (current HEAD position) and the working directory.
      *
-     * @return String representation to the working directory
+     * @return String representation of the difference between index and working directory
      */
     public static String getDiff(GitFile file) throws IOException {
         Git git = GitData.getJGit();
