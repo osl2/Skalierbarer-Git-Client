@@ -94,12 +94,7 @@ public class Fetch implements ICommand, ICommandGUI {
   }
 
   public void onButtonClicked() {
-    FetchDialogView fetch = new FetchDialogView();
-    while (fetch.isNeedNew()){
-      CredentialProviderHolder.getInstance().changeProvider(true);
-      fetch = new FetchDialogView();
-    }
-    GUIController.getInstance().openDialog(fetch);
+    GUIController.getInstance().openDialog(new FetchDialogView());
   }
 }
 

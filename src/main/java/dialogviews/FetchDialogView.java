@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class FetchDialogView implements IDialogView {
 
@@ -37,12 +38,7 @@ public class FetchDialogView implements IDialogView {
     for (GitRemote gitRemote : git.getRemotes()) {
       RemoteTreeNode remoteTreeNode = null;
 
-      try {
         remoteTreeNode = buildRemoteTree(gitRemote);
-      } catch (GitException e) {
-        needNew = true;
-        return;
-      }
       root.add(remoteTreeNode);
 
     }
@@ -79,16 +75,14 @@ public class FetchDialogView implements IDialogView {
       }
     });
   }
-
-
-  private RemoteTreeNode buildRemoteTree(GitRemote r) throws GitException {
+  private RemoteTreeNode buildRemoteTree(GitRemote r)  {
     GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
 
     git = new GitData();
 
     GitBranch[] branches;
-    branches = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    branches = loadRemoteBranches(r);
     for (int i = 0; i < branches.length; i++) {
       BranchTreeNode node = new BranchTreeNode(branches[i], r);
       root.add(node);
@@ -191,5 +185,22 @@ public class FetchDialogView implements IDialogView {
 
   public boolean isNeedNew() {
     return needNew;
+  }
+
+  private GitBranch[] loadRemoteBranches(GitRemote r){
+
+    return reloadBranches(r);
+
+  }
+  private GitBranch[] reloadBranches(GitRemote r){
+    GitData git = new GitData();
+    GitBranch[] ret = null;
+    try {
+      ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true);
+      return  loadRemoteBranches(r);
+    }
+    return ret;
   }
 }
