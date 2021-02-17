@@ -32,7 +32,7 @@ public class Revert implements ICommand, ICommandGUI {
    * @return Returns command for Commandline
    */
   public String getCommandLine() {
-    return "revert " + chosenCommit.getHashAbbrev();
+    return " git revert " + chosenCommit.getHashAbbrev();
   }
 
   /**
