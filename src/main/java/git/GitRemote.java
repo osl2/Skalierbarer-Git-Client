@@ -47,7 +47,7 @@ public class GitRemote {
     }
 
     public List<GitBranch> getFetchBranches() {
-        return fetchBranches;
+        return (List<GitBranch>) fetchBranches.clone();
     }
 
     /**
