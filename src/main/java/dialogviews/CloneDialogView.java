@@ -1,9 +1,70 @@
 package dialogviews;
 
+import commands.Clone;
+import controller.GUIController;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class CloneDialogView implements IDialogView {
+  private JPanel cloneDialog;
+  private JTextField remoteField;
+  private JButton chooseButton;
+  private JCheckBox recursiveCheckBox;
+  private JButton cancelButton;
+  private JButton cloneButton;
+  private Clone clone;
+  private File path;
+  private JFileChooser chooser;
+
+  public CloneDialogView(String gitUrl, File file, boolean recursive) {
+    remoteField.setText(gitUrl);
+    path = file;
+    recursiveCheckBox.setSelected(recursive);
+    addActionlistener();
+  }
+  public CloneDialogView() {
+    addActionlistener();
+  }
+
+  private void addActionlistener() {
+    chooseButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(cloneDialog);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+          path = chooser.getSelectedFile();
+        }
+      }
+    });
+    cloneButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        clone = new Clone();
+        clone.setGitURL(remoteField.getText());
+        clone.cloneRecursive(recursiveCheckBox.isSelected());
+        clone.setDestination(path);
+        boolean success = false;
+        success = clone.execute();
+        if(success) {
+          GUIController.getInstance().setCommandLine(clone.getCommandLine());
+          GUIController.getInstance().closeDialogView();
+        }
+      }
+    });
+    cancelButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        GUIController.getInstance().closeDialogView();
+      }
+    });
+  }
+
   /**
    * DialogWindow Title
    *
@@ -11,7 +72,7 @@ public class CloneDialogView implements IDialogView {
    */
   @Override
   public String getTitle() {
-    return null;
+    return "Clone";
   }
 
   /**
@@ -21,7 +82,8 @@ public class CloneDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    return null;
+    Dimension dim = new Dimension(500, 400);
+    return dim;
   }
 
   /**
@@ -31,7 +93,7 @@ public class CloneDialogView implements IDialogView {
    */
   @Override
   public JPanel getPanel() {
-    return null;
+    return cloneDialog;
   }
 
   public void update() {

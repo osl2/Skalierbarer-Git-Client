@@ -1,7 +1,14 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.FetchDialogView;
+import git.CredentialProviderHolder;
+import git.GitBranch;
+import git.GitFacade;
 import git.GitRemote;
+import git.exception.GitException;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Fetch implements ICommand, ICommandGUI {
@@ -9,46 +16,62 @@ public class Fetch implements ICommand, ICommandGUI {
   private String commandLine;
   private String commandName;
   private String commandDescription;
+  private LinkedList<GitRemote> remotes = new LinkedList<GitRemote>();
 
   /**
    * Executes the "git fetch" command. Can only be used after setRemotes was called once.
    *
    * @return True, if it is successfully executed false if not
    */
-  public boolean execute() {
-    //not implemented yet
-    return false;
+  public boolean execute()  {
+    GitFacade facade = new GitFacade();
+    boolean suc = false;
+    try {
+      suc = facade.fetchRemotes(remotes);
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return suc;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
 
   /**
    * Returns a list containing all remote names.
    *
    * @return a list with with remote names.
    */
-  public List<GitRemote> getRemotes() {
-    return null;
+
+  public void addRemote(GitRemote remote){
+    if(remotes.contains(remote) == false) {
+      remotes.add(remote);
+    }
   }
 
-  /**
-   * Sets the selected remotes to execute the "git fetch" command.
-   *
-   * @param names the names of the selected remotes.
-   */
-  public void setRemotes(List<GitRemote> names) {
+  public void addBranch(GitRemote remote, GitBranch branch) {
+    if (remotes.contains(remote) == false){
+      remotes.add(remote);
+    }
+    remote.addBranch(branch);
   }
-
   /**
    * Method to get the Commandline input that would be necessarry to execute the command.
    *
    * @return Returns a String representation of the corresponding
-   * git command to display on the command line
+   *     git command to display on the command line
    */
   public String getCommandLine() {
-    return null;
+      String out = "";
+      for (int i = 0; i < remotes.size(); i++){
+        if (remotes.get(i).getFetchBranches() == null){
+          out = out + "git fetch " + remotes.get(i).getName() + System.lineSeparator();
+        }
+        else {
+          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++) {
+            out = out + "git fetch " + remotes.get(i).getName() + " " + remotes.get(i).getFetchBranches().get(j).getName() + System.lineSeparator();
+          }
+        }
+      }
+      return out;
   }
 
   /**
@@ -57,7 +80,7 @@ public class Fetch implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return null;
+    return "Fetch";
   }
 
   /**
@@ -66,10 +89,17 @@ public class Fetch implements ICommand, ICommandGUI {
    * @return description as a Sting
    */
   public String getDescription() {
-    return null;
+    return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories" +
+            "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
   }
 
   public void onButtonClicked() {
-
+    FetchDialogView fetch = new FetchDialogView();
+    while (fetch.isNeedNew()){
+      CredentialProviderHolder.getInstance().changeProvider(true);
+      fetch = new FetchDialogView();
+    }
+    GUIController.getInstance().openDialog(fetch);
   }
 }
+

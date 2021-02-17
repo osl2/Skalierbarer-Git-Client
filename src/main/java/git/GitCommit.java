@@ -145,7 +145,7 @@ public class GitCommit {
      *
      * @return String representation to the working directory
      */
-    public String getDiff(GitFile file) throws IOException {
+    public static String getDiff(GitFile file) throws IOException {
         Git git = GitData.getJGit();
         AbstractTreeIterator newTreeIterator;
         TreeFilter filter = pathFilter(file);
@@ -171,7 +171,7 @@ public class GitCommit {
         return output;
     }
 
-    private TreeFilter pathFilter(GitFile file) {
+    private static TreeFilter pathFilter(GitFile file) {
         String separator = Pattern.quote(System.getProperty("file.separator"));
         String[] relativePath = file.getPath().getPath().split(separator);
         String output = relativePath[0];

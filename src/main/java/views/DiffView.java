@@ -51,8 +51,8 @@ public class DiffView implements IDiffView {
   }
 
   public void setDiff(GitFile file) {
-
-
+    diff.setDiffFile(file);
+    diff.execute();
     writeDiff();
   }
 

@@ -1,11 +1,19 @@
 package git;
 
 import git.exception.GitException;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -114,12 +122,61 @@ public class GitFacade {
     return true;
   }
 
-  public boolean cloneRepository(String gitUrl, String dest) {
-    throw new AssertionError("not implemented");
+  public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
+    try {
+      Git git = Git.cloneRepository()
+              .setURI(gitUrl)
+              .setDirectory(dest)
+              .setCloneAllBranches(true)
+              .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+              .setCloneSubmodules(recursive)
+              .call();
+    } catch (JGitInternalException e) {
+      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+    }catch (TransportException e) {
+      throw new GitException("");
+    } catch (InvalidRemoteException e) {
+      throw new GitException("Es wurde keine korrekte git url angegeben: " + e.getMessage());
+    } catch (GitAPIException e) {
+      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+    }
+    return true;
   }
 
-  public boolean fetchRemotes(List<GitRemote> remotes) {
-    throw new AssertionError("not implemented");
+  public boolean fetchRemotes(List<GitRemote> remotes) throws GitException {
+    try {
+      Git jgit = GitData.getJGit();
+      for (int i = 0; i < remotes.size(); i++){
+        if (remotes.get(i).getFetchBranches().size() == 0){
+          jgit.fetch()
+                  .setRemote(remotes.get(i).getName())
+                  .setRefSpecs("refs/heads/*:refs/heads/"
+                          + remotes.get(i).getName() + "/*")
+                  .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+                  .call();
+        }
+        else {
+          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++){
+            GitRemote actualRemote = remotes.get(i);
+            GitBranch actualBranch = actualRemote.getFetchBranches().get(j);
+            jgit.fetch()
+                    .setRemote(actualRemote.getName())
+                    .setRefSpecs("refs/heads/" + actualBranch.getName()  + ":refs/heads/" + actualRemote.getName() + "/"
+                            + actualBranch.getName())
+                    .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+                    .call();
+          }
+        }
+      }
+
+    } catch (InvalidRemoteException e) {
+      throw new GitException(e.getMessage());
+    } catch (TransportException e) {
+      throw new GitException(e.getMessage());
+    } catch (GitAPIException e) {
+      throw new GitException(e.getMessage());
+    }
+    return true;
   }
 
   public boolean setRepositoryPath(File path) {
@@ -183,8 +240,11 @@ public class GitFacade {
     throw new AssertionError("not implemented");
   }
 
-  public boolean revert(GitCommit commit) {
-    throw new AssertionError("not implemented");
+  public boolean revert(GitCommit commit) throws GitException {
+    boolean suc = false;
+
+    suc = commit.revert();
+    return suc;
   }
 
   public String getDiff(GitCommit activeCommit) {

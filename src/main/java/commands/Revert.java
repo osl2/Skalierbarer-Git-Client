@@ -1,24 +1,30 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.RevertDialogView;
 import git.GitBranch;
 import git.GitCommit;
+import git.GitFacade;
+import git.exception.GitException;
 
 public class Revert implements ICommand, ICommandGUI {
-  private GitBranch chosenBranch;
   private GitCommit chosenCommit;
-
   /**
    * Method to revert back to a chosen commit.
    *
    * @return true, if the command has been executed successfully
    */
   public boolean execute() {
-    return false;
+    boolean suc = false;
+    GitFacade gitFac = new GitFacade();
+    try {
+      suc = gitFac.revert(chosenCommit);
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return suc;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
 
   /**
    * Creates with the input the command of the commandline.
@@ -26,7 +32,7 @@ public class Revert implements ICommand, ICommandGUI {
    * @return Returns command for Commandline
    */
   public String getCommandLine() {
-    return null;
+    return " git revert " + chosenCommit.getHashAbbrev();
   }
 
   /**
@@ -35,7 +41,7 @@ public class Revert implements ICommand, ICommandGUI {
    * @return Returns the name of the command
    */
   public String getName() {
-    return null;
+    return "Revert";
   }
 
   /**
@@ -44,29 +50,11 @@ public class Revert implements ICommand, ICommandGUI {
    * @return Returns a Description of what the command is doing
    */
   public String getDescription() {
-    return null;
+    return "Macht Änderungen eines ausgewählten Commits rückgängig";
   }
 
   public void onButtonClicked() {
-
-  }
-
-  /**
-   * Method to get the currently chosen branch.
-   *
-   * @return Returns the current chosen branch
-   */
-  public GitBranch getChosenBranch() {
-    return chosenBranch;
-  }
-
-  /**
-   * Sets the variable chosen branch to the new branch.
-   *
-   * @param chosenBranch new value of the variable chosenBranch
-   */
-  public void setChosenBranch(GitBranch chosenBranch) {
-    this.chosenBranch = chosenBranch;
+    GUIController.getInstance().openDialog(new RevertDialogView());
   }
 
   /**
