@@ -6,6 +6,7 @@ import git.GitFacade;
 import git.GitStatus;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
+import views.AddCommitView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -63,9 +64,11 @@ public class Commit implements ICommand, ICommandGUI {
     } catch (IOException e) {
       GUIController.getInstance().errorHandler(e);
     }
-    if (commitMessage == null){
+    if (commitMessage == null
+            || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
+            || commitMessage.equals("")){
       //TODO: Fehlermeldung ändern?
-      GUIController.getInstance().errorHandler("Keine Commit-Nachricht eingegeben");
+      GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
     }
     boolean success = false;
     try {

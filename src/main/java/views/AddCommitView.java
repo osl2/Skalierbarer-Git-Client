@@ -11,10 +11,7 @@ import settings.Settings;
 import views.IView;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -38,6 +35,8 @@ public class AddCommitView extends JPanel implements IView {
   private JScrollPane stagedFilesScrollPane;
   private JScrollPane unstagedFilesScrollPane;
   private JList unstagedFilesList;
+  private JTextField stagedFilesTextField;
+  private JTextField unstagedFilesTextField;
   private JTextField testTextField;
   private FileListRenderer renderer;
   private GUIController c;
@@ -46,6 +45,8 @@ public class AddCommitView extends JPanel implements IView {
   private GitStatus gitStatus;
   private GitData gitData;
   private Settings settings;
+  private static final String DEFAULT_COMMIT_MESSAGE = "Hier die Commit-Nachricht eingeben";
+
 
   /**
    * At the time of its instantiation, an instance of AddCommitView creates instances of all supported commands.
@@ -114,9 +115,39 @@ public class AddCommitView extends JPanel implements IView {
       stagedFiles = new LinkedList<>();
       c.errorHandler(e);
     }
+
+    //set up renderer and data model for both lists
     setUpFileList(stagedFilesList, stagedFiles);
     setUpFileList(unstagedFilesList, unstagedFiles);
 
+    //make all files appear green or red, depending on their current stage
+    stagedFilesList.setForeground(Color.GREEN);
+    unstagedFilesList.setForeground(Color.RED);
+
+
+    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+    commitMessageTextArea.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        //TODO: geht das noch besser?
+        JTextArea source = (JTextArea) e.getSource();
+        String newText = "";
+        if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)){
+          newText = source.getText();
+        }
+        source.setText(newText);
+      }
+
+      @Override
+      public void focusLost(FocusEvent e){
+        JTextArea source = (JTextArea) e.getSource();
+        String newText = DEFAULT_COMMIT_MESSAGE;
+        if (!source.getText().isEmpty()){
+          newText = source.getText();
+        }
+        source.setText(newText);
+      }
+    });
   }
 
   public JPanel getView() {
@@ -131,6 +162,7 @@ public class AddCommitView extends JPanel implements IView {
   private void createUIComponents() {
     stagedFilesList = new JList<FileListItem>();
     unstagedFilesList = new JList<FileListItem>();
+    commitMessageTextArea = new JTextArea();
     //TODO: diff area
   }
 
@@ -293,5 +325,9 @@ public class AddCommitView extends JPanel implements IView {
       return gitFile;
     }
 
+  }
+
+  public static String getDEFAULT_COMMIT_MESSAGE(){
+    return DEFAULT_COMMIT_MESSAGE;
   }
 }
