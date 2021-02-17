@@ -143,16 +143,15 @@ public class GitFacade {
     return true;
   }
 
-  public boolean fetchRemotes(List<GitRemote> remotes) {
+  public boolean fetchRemotes(List<GitRemote> remotes) throws GitException {
     try {
       Git jgit = GitData.getJGit();
       for (int i = 0; i < remotes.size(); i++){
         if (remotes.get(i).getFetchBranches().size() == 0){
           jgit.fetch()
                   .setRemote(remotes.get(i).getName())
-                  .setRefSpecs("refs/heads/master:refs/heads/"
-                          + remotes.get(i).getName())
-                  //TODO Entsprechenden Provider angeben
+                  .setRefSpecs("refs/heads/*:refs/heads/"
+                          + remotes.get(i).getName() + "/*")
                   .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
                   .call();
         }
@@ -162,9 +161,8 @@ public class GitFacade {
             GitBranch actualBranch = actualRemote.getFetchBranches().get(j);
             jgit.fetch()
                     .setRemote(actualRemote.getName())
-                    .setRefSpecs("refs/heads/" + actualBranch.getName()  + ":refs/heads/remotes/" + actualRemote.getName() + "/"
+                    .setRefSpecs("refs/heads/" + actualBranch.getName()  + ":refs/heads/" + actualRemote.getName() + "/"
                             + actualBranch.getName())
-                    //TODO Universell angeben
                     .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
                     .call();
           }
@@ -172,13 +170,11 @@ public class GitFacade {
       }
 
     } catch (InvalidRemoteException e) {
-      e.printStackTrace();
-      return false;
+      throw new GitException(e.getMessage());
     } catch (TransportException e) {
-      e.printStackTrace();
-      return false;
+      throw new GitException(e.getMessage());
     } catch (GitAPIException e) {
-      return false;
+      throw new GitException(e.getMessage());
     }
     return true;
   }

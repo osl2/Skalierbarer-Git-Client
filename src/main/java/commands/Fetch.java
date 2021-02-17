@@ -25,13 +25,15 @@ public class Fetch implements ICommand, ICommandGUI {
    */
   public boolean execute()  {
     GitFacade facade = new GitFacade();
-    boolean suc = facade.fetchRemotes(remotes);
+    boolean suc = false;
+    try {
+      suc = facade.fetchRemotes(remotes);
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
     return suc;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
 
   /**
    * Returns a list containing all remote names.
@@ -58,25 +60,18 @@ public class Fetch implements ICommand, ICommandGUI {
    *     git command to display on the command line
    */
   public String getCommandLine() {
-    //TODO Maybe other commandLine than this
-    if (remotes.size() == 1){
-      return "git fetch " + remotes.getFirst().getName();
-    }
-    else if (remotes.size() > 1){
-      String out = null;
+      String out = "";
       for (int i = 0; i < remotes.size(); i++){
         if (remotes.get(i).getFetchBranches() == null){
           out = out + "git fetch " + remotes.get(i).getName() + System.lineSeparator();
         }
-        for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++){
-          out = out + "git fetch " + remotes.get(i).getName() + " " + remotes.get(i).getFetchBranches().get(j).getName() + System.lineSeparator();
+        else {
+          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++) {
+            out = out + "git fetch " + remotes.get(i).getName() + " " + remotes.get(i).getFetchBranches().get(j).getName() + System.lineSeparator();
+          }
         }
       }
       return out;
-    }
-    else {
-      return "";
-    }
   }
 
   /**
