@@ -3,17 +3,16 @@ package git;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
 import settings.Settings;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Objects;
 
 public class GitFile {
     private long size;
     private File path;
-    /* TODO: SOME WAY TO TRACK CHANGES */
+    private boolean ignored;
+    private boolean staged = false;
 
     GitFile(long size, File path) {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
@@ -21,6 +20,7 @@ public class GitFile {
         }
         this.size = size;
         this.path = path;
+        this.staged = false;
     }
 
     /**
@@ -32,57 +32,47 @@ public class GitFile {
         return this.size;
     }
 
-    public File getPath(){
+    public File getPath() {
         return this.path;
     }
 
+    private String getRelativePath() {
+        return GitData.getRepository().getWorkTree().toPath().relativize(path.toPath()).toString();
+    }
+
     /**
-     * Method to get, if this file is added to the git repository.
+     * Adds or removes the file from the .gitignore
      *
+     * @param ignored Whether the file should be added to the .gitignore or be removed from it
+     */
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
+
+    /**
      * @return true if file has not been added to the index and file
      * path matches a pattern in the .gitignore file
      */
     public boolean isIgnoredNotInIndex() {
-        return false;
+        return ignored;
     }
 
     /**
-     * This command returns only files that have been newly
-     * created and of whom there is no former version in the index.
-     *
-     * @return true if file is not being tracked, i.e. git add has never been called on this file
+     * Sets the internal state 'staged' to true if the file is in the staging area (added or changed),
+     * false otherwise. Called by GitStatus when GitFile is created. This method is necessary for git diff
+     * @param staged Whether the file is in the staging-area
+     * @see GitCommit#getDiff(GitFile)
      */
-    public boolean isUntracked() {
-        return false;
+    public void setStaged(boolean staged){
+        this.staged = staged;
     }
 
     /**
-     * This command returns only files that have been newly created and of whom
-     * there is no former version in the index.
      *
-     * @return true if file has been newly created and has been added to the staging-area
+     * @return True if the file is in the staging-area, false otherwise
      */
-    public boolean isAdded() {
-        return false;
-    }
-
-    /**
-     * This command returns only files of whom an older version is already in the index.
-     *
-     * @return true if file is being tracked and there is a modified version in the
-     * working directory which has not been added to the staging-area
-     */
-    public boolean isModified() {
-        return false;
-    }
-
-    /**
-     * This command returns only files of whom an older version is already in the index.
-     *
-     * @return true if file has been modified and has been added to the staging-area
-     */
-    public boolean isChanged() {
-        return false;
+    public boolean isStaged(){
+        return staged;
     }
 
     /**
@@ -91,18 +81,9 @@ public class GitFile {
      * @return True if the file was added to the staging area successfully
      */
     public boolean add() throws GitException {
-        Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
-        Path repoPath = Paths.get(repository.getDirectory().toURI());
-        Path filePath = Paths.get(this.path.toURI());
-        String relative = repoPath.relativize(filePath).toString();
-        if (relative.substring(0, 3).equals((".." + File.separatorChar).substring(0, 3))) {
-            relative = relative.substring(3);
-        } else {
-            throw new GitException("something with the Filepath went wrong");
-        }
         try {
-            git.add().addFilepattern(relative).call();
+            git.add().addFilepattern(this.getRelativePath()).call();
             return true;
         } catch (GitAPIException e) {
             throw new GitException("File not found in Git");
@@ -115,18 +96,28 @@ public class GitFile {
      *
      * @return True if the file was removed from the staging area successfully
      */
-    public boolean addUndo() {
-        return false;
+    public boolean addUndo() throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.reset().addPath(this.getRelativePath()).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException("File not found in Git");
+
+        }
     }
 
-    /**
-     * Adds or removes the file from the .gitignore
-     *
-     * @param ignored Whether the file should be added to the .gitignore or be removed from it
-     * @return True if command has been executed successfully
-     */
-    public boolean setIgnored(boolean ignored) {
-        return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GitFile gitFile = (GitFile) o;
+        return Objects.equals(path, gitFile.path);
     }
 
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path);
+    }
 }

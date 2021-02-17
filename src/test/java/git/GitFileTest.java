@@ -2,14 +2,17 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GitFileTest extends AbstractGitTest {
 
@@ -50,5 +53,20 @@ public class GitFileTest extends AbstractGitTest {
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
     String jGitFile = git.status().call().getAdded().iterator().next();
     assertEquals(gitDataFile, jGitFile);
+    assertTrue(GitStatus.getGitStatus().getAddedFiles().contains(gitFile));
+  }
+
+  @Test
+  public void addUndoTest() throws GitException, IOException, GitAPIException {
+    GitFile gitFile = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
+    git.add().addFilepattern(repo.toPath().relativize(fileNotStaged.toPath()).toString()).call();
+    Status status = git.status().call();
+    Set<String> addedFiles = status.getAdded();
+    assertTrue(addedFiles.contains(fileNotStaged.getName()));
+    gitFile.addUndo();
+    status = git.status().call();
+    addedFiles = status.getAdded();
+    assertFalse(addedFiles.contains(fileNotStaged.getPath()));
+    assertTrue(addedFiles.isEmpty());
   }
 }
