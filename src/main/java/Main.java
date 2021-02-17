@@ -1,5 +1,9 @@
 import controller.GUIController;
+import dialogviews.BranchDialogView;
 import dialogviews.UsernamePasswordDialogView;
+import settings.Settings;
+
+import java.io.File;
 
 public class Main {
 

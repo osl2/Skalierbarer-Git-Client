@@ -1,10 +1,15 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.BranchDialogView;
 import git.GitBranch;
 import git.GitCommit;
+import git.GitFacade;
+import git.exception.GitException;
+
+import java.io.IOException;
 
 public class Branch implements ICommand, ICommandGUI {
-    private GitBranch pointOfBranching;
     private GitCommit commitPointOfBranching;
     private String branchName;
 
@@ -15,13 +20,19 @@ public class Branch implements ICommand, ICommandGUI {
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
-        return false;
+        GitFacade jgit = new GitFacade();
+        boolean suc = false;
+
+        try {
+            suc = jgit.branchOperation(commitPointOfBranching, branchName);
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
+
+        return suc;
     }
 
 
-    public String getErrorMessage() {
-        return null;
-    }
 
     /**
      * Creates with the input the command of the commandline.
@@ -29,8 +40,7 @@ public class Branch implements ICommand, ICommandGUI {
      * @return Returns command for Commandline
      */
     public String getCommandLine() {
-        return "git branch ";
-        // todo: fix
+        return "git branch " + branchName + " " + commitPointOfBranching.getHashAbbrev();
     }
 
     /**
@@ -39,7 +49,7 @@ public class Branch implements ICommand, ICommandGUI {
      * @return Returns the name of the command
      */
     public String getName() {
-        return "branch";
+        return "Branch";
     }
 
     /**
@@ -55,15 +65,7 @@ public class Branch implements ICommand, ICommandGUI {
      * OnClick handler for the GUI button representation.
      */
     public void onButtonClicked() {
-    }
-
-    /**
-     * Method to get the actual commit on witch it is branched.
-     *
-     * @return Returns the actual Commit on which is branched
-     */
-    public GitCommit getActualBranch() {
-        return commitPointOfBranching;
+        GUIController.getInstance().openDialog(new BranchDialogView());
     }
 
     /**
