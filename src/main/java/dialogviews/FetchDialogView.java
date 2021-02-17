@@ -70,7 +70,6 @@ public class FetchDialogView implements IDialogView {
         }
           if (command.execute()) {
             GUIController.getInstance().setCommandLine(command.getCommandLine());
-            System.out.println(command.getCommandLine());
             GUIController.getInstance().closeDialogView();
           }
           else {
