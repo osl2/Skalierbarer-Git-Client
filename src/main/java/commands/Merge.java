@@ -20,10 +20,6 @@ public class Merge implements ICommand, ICommandGUI {
     private GitBranch destBranch;
     private boolean fastForward = true;
 
-    public void setFastForward(boolean fastForward) {
-        this.fastForward = fastForward;
-    }
-
     public Merge(@NonNull GitBranch src, @NonNull GitBranch dest) {
         this.srcBranch = src;
         this.destBranch = dest;
@@ -31,6 +27,10 @@ public class Merge implements ICommand, ICommandGUI {
 
     public Merge() {
 
+    }
+
+    public void setFastForward(boolean fastForward) {
+        this.fastForward = fastForward;
     }
 
     public void setSourceBranch(@NonNull GitBranch srcBranch) {
@@ -80,7 +80,8 @@ public class Merge implements ICommand, ICommandGUI {
             // todo: Call a MergeConflictView here and return its results.
             // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
             for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
-                GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts));
+                GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
+                        this.destBranch.getName(), this.srcBranch.getName()));
             return false;
         }
 

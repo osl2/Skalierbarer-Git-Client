@@ -1,14 +1,13 @@
 package dialogviews;
 
+import controller.GUIController;
 import git.GitChangeConflict;
 import git.GitFile;
 
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,51 +26,181 @@ public class MergeConflictDialogView implements IDialogView {
     private JScrollPane leftScrollbar;
     private JScrollPane centerScrollbar;
     private JScrollPane rightScrollbar;
+    private JButton buttonLeftAccept;
+    private JButton buttonLeftDecline;
+    private JButton buttonRightAccept;
+    private JButton buttonRightDecline;
+    private JButton okButton;
+    private GitFile file;
     private String[] baseVersion;
     private List<GitChangeConflict> conflicts;
+    private Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
+    private int activeConflictIndex = -1;
+    private int sidesHandled = 0;
 
-    public MergeConflictDialogView(GitFile file, Map<GitFile, List<GitChangeConflict>> conflictMap) {
+    public MergeConflictDialogView(GitFile file, Map<GitFile, List<GitChangeConflict>> conflictMap,
+                                   String titleOurs, String titleTheirs) {
         this.conflicts = conflictMap.get(file);
+        this.file = file;
+        this.buttonLeftAccept.setText(">");
+        this.buttonRightAccept.setText("<");
+        this.buttonLeftDecline.setText("X");
+        this.buttonRightDecline.setText("X");
+        this.okButton.setText("Merge");
+        this.okButton.setEnabled(false);
+        this.leftLabel.setText(titleOurs);
+        this.rightLabel.setText(titleTheirs);
+        this.centerLabel.setText("Result");
+        this.okButton.addActionListener(e -> okButtonListener());
+        conflicts.forEach(c -> localConflictMap.put(c.getConflictStartLine(), c));
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
             baseVersion = br.lines().toArray(String[]::new);
+            handleNextConflict();
             populatePanels(baseVersion);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    private GitChangeConflict getActiveConflict() {
+        return localConflictMap.get(activeConflictIndex);
+    }
+
     private StyleContext getStyleContext() {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         Style conflictStyle = sc.addStyle("conflict", StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
+        Style activeConflictStyle = sc.addStyle("activeConflict", StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
+        Style resolvedConflictStyle = sc.addStyle("resolvedConflict", StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
         StyleConstants.setBackground(conflictStyle, Color.lightGray);
+        StyleConstants.setBackground(resolvedConflictStyle, Color.green);
+        StyleConstants.setBackground(activeConflictStyle, Color.yellow);
+
         return sc;
+    }
+
+    private void okButtonListener() {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file.getPath(), false));
+            for (int i = 0; i < baseVersion.length; i++) {
+                if (localConflictMap.containsKey(i)) {
+                    // Apply changes
+                    bw.write(localConflictMap.get(i).getResult());
+                } else {
+                    bw.write(baseVersion[i]);
+                    bw.write(System.lineSeparator());
+                }
+                bw.flush();
+                bw.close();
+                // sänk you for trävelying wizz deutsche bahn
+            }
+
+        } catch (IOException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
+    }
+
+    private void buttonListener(GitChangeConflict c, ButtonAction btnAction) {
+        switch (btnAction) {
+            case ACCEPT_OURS:
+                c.accecptOurs();
+                buttonLeftAccept.setEnabled(false);
+                // fall through
+            case DECLINE_OURS:
+                buttonLeftAccept.setEnabled(false);
+                buttonLeftDecline.setEnabled(false);
+                break;
+            case ACCEPT_THEIRS:
+                c.acceptTheirs();
+                // fall through
+            case DECLINED_THEIRS:
+                buttonRightAccept.setEnabled(false);
+                buttonRightDecline.setEnabled(false);
+                break;
+        }
+        sidesHandled++;
+        if (sidesHandled == 2) {
+            handleNextConflict();
+            sidesHandled = 0;
+        }
+        populatePanels(baseVersion);
+
+    }
+
+    private void handleNextConflict() {
+        if (getActiveConflict() != null)
+            this.getActiveConflict().resolve();
+
+        int newIndex = -1;
+        for (Integer possibleKey : this.localConflictMap.keySet()) {
+            if (possibleKey <= this.activeConflictIndex) continue;
+            newIndex = possibleKey;
+            break;
+        }
+
+        if (newIndex == -1) {
+            // todo: unlock ok button
+            System.out.println("Conflicts resolved");
+            this.okButton.setEnabled(true);
+        } else {
+            this.activeConflictIndex = newIndex;
+            buttonRightAccept.setEnabled(true);
+            buttonLeftAccept.setEnabled(true);
+            buttonLeftDecline.setEnabled(true);
+            buttonRightDecline.setEnabled(true);
+            okButton.setEnabled(false);
+
+            this.buttonLeftAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_OURS));
+            this.buttonLeftDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINE_OURS));
+            this.buttonRightAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_THEIRS));
+            this.buttonRightDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINED_THEIRS));
+
+            // todo : Scroll to next conflict
+        }
     }
 
     private void populatePanels(String[] base) {
         StyleContext style = getStyleContext();
         Style conflictStyle = style.getStyle("conflict");
+        Style activeConflictStyle = style.getStyle("activeConflict");
+        Style resolvedConflictStyle = style.getStyle("resolvedConflict");
         DefaultStyledDocument leftText = new DefaultStyledDocument(style);
         DefaultStyledDocument rightText = new DefaultStyledDocument(style);
         DefaultStyledDocument centerText = new DefaultStyledDocument(style);
 
 
-        Map<Integer, GitChangeConflict> changeIndex = new HashMap<>();
-        conflicts.forEach(c -> changeIndex.put(c.getConflictStartLine(), c));
-
         for (int i = 0; i < base.length; i++) {
             try {
-                if (changeIndex.containsKey(i)) {
+                if (localConflictMap.containsKey(i)) {
+                    GitChangeConflict conflict = localConflictMap.get(i);
+                    Style applicableStyle = (conflict.equals(getActiveConflict())) ? activeConflictStyle : conflictStyle;
 
-                    leftText.insertString(leftText.getLength(), changeIndex.get(i).getOptionA(), conflictStyle);
+                    if (conflict.isResolved()) {
+                        // Insert resolution in center
+                        applicableStyle = resolvedConflictStyle;
+                        centerText.insertString(centerText.getLength(), conflict.getResult(), applicableStyle);
+                    } else {
+                        if (conflict.getResult() != null)
+                            centerText.insertString(centerText.getLength(), conflict.getResult(), applicableStyle);
+                        else
+                            centerText.insertString(centerText.getLength(), "----------------", applicableStyle);
+                        centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
+
+                    }
+                    leftText.insertString(leftText.getLength(), conflict.getOptionOurs(), applicableStyle);
                     leftText.insertString(leftText.getLength(), System.lineSeparator(), null);
-                    rightText.insertString(rightText.getLength(), changeIndex.get(i).getOptionB(), conflictStyle);
+
+                    rightText.insertString(rightText.getLength(), conflict.getOptionTheirs(), applicableStyle);
                     rightText.insertString(rightText.getLength(), System.lineSeparator(), null);
-                    centerText.insertString(centerText.getLength(), "----------------", conflictStyle);
-                    centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
+
+
+                    // This file has been deleted in one of two branches
+                    if (i == 0 && conflict.getLength() == -1)
+                        break;
 
                     // Skip conflict markers in file
-                    i += changeIndex.get(i).getLength() + 1;
+                    i += localConflictMap.get(i).getLength() + 1;
 
                 } else {
                     // Append line normally.
@@ -90,8 +219,12 @@ public class MergeConflictDialogView implements IDialogView {
         this.leftTextPane.setDocument(leftText);
         this.rightTextPane.setDocument(rightText);
         this.centerTextArea.setDocument(centerText);
+        this.leftTextPane.revalidate();
+        this.rightTextPane.revalidate();
+        this.centerTextArea.revalidate();
 
     }
+
 
     /**
      * DialogWindow Title
@@ -100,7 +233,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public String getTitle() {
-        return "Resolve Merge Conflicts";
+        return "Resolve Merge Conflicts (" + this.file.getPath().toString() + ")";
     }
 
     /**
@@ -110,7 +243,7 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return new Dimension(1200, 900);
+        return new Dimension(1400, 900);
         //return contentPane.getPreferredSize();
     }
 
@@ -130,7 +263,12 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public void update() {
+        populatePanels(baseVersion);
         // Intentional NOOP.
         // todo: re-evaluate
     }
+
+    private enum ButtonAction {ACCEPT_OURS, ACCEPT_THEIRS, DECLINE_OURS, DECLINED_THEIRS}
+
+    ;
 }
