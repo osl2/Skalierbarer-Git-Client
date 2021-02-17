@@ -14,10 +14,6 @@ import java.util.Objects;
 public class GitFile {
     private long size;
     private File path;
-    private boolean added;
-    private boolean changed;
-    private boolean modified;
-    private boolean untracked;
     private boolean ignored;
     private boolean staged = false;
 
@@ -58,72 +54,6 @@ public class GitFile {
      */
     public boolean isIgnoredNotInIndex() {
         return ignored;
-    }
-
-    /**
-     *
-     * @param untracked Whether there is no former version of the file in the index
-     */
-    public void setUntracked(boolean untracked){
-        this.untracked = untracked;
-    }
-
-    /**
-     * @return true if file is not being tracked, i.e. git add has never been called on this file
-     */
-    public boolean isUntracked() {
-        return untracked;
-    }
-
-    /**
-     *
-     * @param added Wether there is no former version of the file in the index and the file has been
-     *              added to the staging-area
-     */
-    public void setAdded(boolean added){
-        this.added = added;
-    }
-
-    /**
-     *
-     * @return true if file has been newly created and has been added to the staging-area
-     */
-    public boolean isAdded() {
-        return added;
-    }
-
-    /**
-     *
-     * @param modified Whether there is a former version of the file and the file has been changed since
-     */
-    public void setModified(boolean modified){
-        this.modified = modified;
-    }
-
-    /**
-     *
-     * @return true if file is being tracked and there is a modified version in the
-     * working directory which has not been added to the staging-area
-     */
-    public boolean isModified() {
-        return modified;
-    }
-
-    /**
-     *
-     * @param changed Whether there is a former version of the file and a new version of the file has
-     *                been added to the staging area
-     */
-    public void setChanged(boolean changed){
-        this.changed = changed;
-    }
-
-    /**
-     *
-     * @return true if file has been modified and has been added to the staging-area
-     */
-    public boolean isChanged() {
-        return changed;
     }
 
     /**
