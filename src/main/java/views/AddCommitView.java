@@ -32,6 +32,7 @@ public class AddCommitView extends JPanel implements IView {
   private JPanel statusPanel;
   private JList<FileListItem> stagedFilesList;
   private JPanel diffPanel;
+  private DiffView diffView;
   private JScrollPane stagedFilesScrollPane;
   private JScrollPane unstagedFilesScrollPane;
   private JList unstagedFilesList;
@@ -109,8 +110,6 @@ public class AddCommitView extends JPanel implements IView {
       unstagedFiles = gitStatus.getUnstagedFiles();
     }
     catch (GitException | IOException e){
-      //in case of an exeption, create empty list
-      //TODO: rework in case GitFile and GitStatus continue throwing GitExceptions or IOExeptions
       unstagedFiles = new LinkedList<>();
       stagedFiles = new LinkedList<>();
       c.errorHandler(e);
@@ -123,7 +122,6 @@ public class AddCommitView extends JPanel implements IView {
     //make all files appear green or red, depending on their current stage
     stagedFilesList.setForeground(Color.GREEN);
     unstagedFilesList.setForeground(Color.RED);
-
 
     commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
@@ -148,6 +146,11 @@ public class AddCommitView extends JPanel implements IView {
         source.setText(newText);
       }
     });
+
+    //set up diff view
+    diffView = new DiffView();
+    diffPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    diffPanel.add(diffView.openDiffView());
   }
 
   public JPanel getView() {
@@ -163,7 +166,9 @@ public class AddCommitView extends JPanel implements IView {
     stagedFilesList = new JList<FileListItem>();
     unstagedFilesList = new JList<FileListItem>();
     commitMessageTextArea = new JTextArea();
+
     //TODO: diff area
+    diffPanel = new JPanel();
   }
 
   private boolean executeAdd(){
@@ -211,6 +216,7 @@ public class AddCommitView extends JPanel implements IView {
 
     defaultListModel.addAll(fileListItems);
     list.setModel(defaultListModel);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
     //Mouse Listener for Checkboxes. Selected files are being marked for git add
@@ -221,6 +227,11 @@ public class AddCommitView extends JPanel implements IView {
         //get the item index that was clicked
         int index = list.locationToIndex(event.getPoint());
         FileListItem item = (FileListItem) list.getModel().getElementAt(index);
+
+        //set index in list to be selected
+        list.setSelectedIndex(index);
+        //call diff on selected file
+        diffView.setDiff(item.getGitFile());
         //if item was not selected before, select; otherwise, deselect
         item.setSelected(!item.isSelected());
         //repaint cell
@@ -229,17 +240,21 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+    /*
     //List selection listener for a single item. Call git diff on the selected item
     list.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent e) {
         JList<FileListItem> list = (JList<FileListItem>) e.getSource();
-        for (FileListItem item : list.getSelectedValuesList()) {
-          //TODO: call git diff
+        List<FileListItem> selectedValuesList = list.getSelectedValuesList();
+        assert selectedValuesList.size() <= 1;
+        for (FileListItem item : selectedValuesList) {
+          diffView.setDiff(item.gitFile);
         }
       }
     });
 
+     */
 
 
 
@@ -270,10 +285,11 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setFont(list.getFont());
       checkBox.setBackground(list.getBackground());
       checkBox.setForeground(list.getForeground());
-      //TODO: consider another text
       checkBox.setText(value.getGitFile().getPath().getName());
-      //TODO: focus does not appear. How to make focus visible?
-      checkBox.setFocusPainted(cellHasFocus);
+      //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
+      if (cellHasFocus){
+        checkBox.setBackground(Color.LIGHT_GRAY);
+      }
       return checkBox;
     }
 
