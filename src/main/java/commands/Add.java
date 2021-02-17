@@ -54,7 +54,11 @@ public class Add implements ICommand, ICommandGUI {
     //remove files that were added to the staging-area earlier but were marked by the user to restage them
     for (GitFile stagedFile : stagedFiles){
       if (!files.contains(stagedFile)){
-        success = stagedFile.addUndo();
+        try {
+          success = stagedFile.addUndo();
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+        }
       }
     }
 
