@@ -56,7 +56,7 @@ public class Clone implements ICommand, ICommandGUI {
     } catch (GitException e) {
       if(e.getMessage().compareTo("") == 0) {
         GUIController.getInstance().closeDialogView();
-        CredentialProviderHolder.getInstance().changeProvider(true);
+        CredentialProviderHolder.getInstance().changeProvider(true,"");
         GUIController.getInstance().openDialog(new CloneDialogView(gitURL, path, recursive));
         return false;
       } else {

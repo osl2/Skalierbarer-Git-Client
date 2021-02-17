@@ -26,11 +26,7 @@ public class Fetch implements ICommand, ICommandGUI {
   public boolean execute()  {
     GitFacade facade = new GitFacade();
     boolean suc = false;
-    try {
-      suc = facade.fetchRemotes(remotes);
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
-    }
+      suc = tryFetch();
     return suc;
   }
 
@@ -95,6 +91,19 @@ public class Fetch implements ICommand, ICommandGUI {
 
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new FetchDialogView());
+  }
+  private boolean tryFetch(){
+    return retryFetch();
+  }
+  private boolean retryFetch(){
+    GitFacade gitFacade = new GitFacade();
+    try {
+      gitFacade.fetchRemotes(remotes);
+      return true;
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true, "");
+      return tryFetch();
+    }
   }
 }
 
