@@ -33,7 +33,7 @@ public class Add implements ICommand, ICommandGUI {
   public boolean execute() {
     //TODO: Ist hier mehr Fehlerbehandlung notwendig? Was passiert, wenn mehrere Dateien fehlschlagen?
     boolean success = false;
-    List<GitFile> stagedFiles = null;
+    List<GitFile> stagedFiles = new LinkedList<>();
     try {
       stagedFiles = gitStatus.getStagedFiles();
     } catch (GitException e) {

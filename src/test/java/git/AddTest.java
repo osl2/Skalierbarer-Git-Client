@@ -34,20 +34,23 @@ public class AddTest extends AbstractGitTest{
         files.add(gitFile3);
         add.addFiles(files);
 
-        //add file2 manually
+        //add file1 and file2 manually
         git.add()
+                .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
+        List<GitFile> addedFiles = GitStatus.getGitStatus().getAddedFiles();
+        assertTrue(addedFiles.contains(gitFile2));
 
         //execute add
         add.execute();
 
-        //file2 should now be added, file3 should have been removed from the
-        // staging area, list of added files should contain only 1 element
-        List<GitFile> addedFiles = GitStatus.getGitStatus().getAddedFiles();
-        assertFalse(addedFiles.contains(file1));
-        assertTrue(addedFiles.contains(file2));
-        assertFalse(addedFiles.contains(file3));
+        //file2 and file3 should now be added, file1 should have been removed from the
+        // staging area, list of added files should contain 2 elements
+        addedFiles = GitStatus.getGitStatus().getAddedFiles();
+        assertFalse(addedFiles.contains(gitFile1));
+        assertTrue(addedFiles.contains(gitFile2));
+        assertTrue(addedFiles.contains(gitFile3));
         assertEquals(2, addedFiles.size());
 
 
