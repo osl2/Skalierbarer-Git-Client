@@ -19,6 +19,7 @@ public class GitFile {
     private boolean modified;
     private boolean untracked;
     private boolean ignored;
+    private boolean staged = false;
 
     GitFile(long size, File path) {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
@@ -26,6 +27,7 @@ public class GitFile {
         }
         this.size = size;
         this.path = path;
+        this.staged = false;
     }
 
     /**
@@ -87,7 +89,7 @@ public class GitFile {
      * @return true if file has been newly created and has been added to the staging-area
      */
     public boolean isAdded() {
-        return false;
+        return added;
     }
 
     /**
@@ -121,7 +123,17 @@ public class GitFile {
      * @return true if file has been modified and has been added to the staging-area
      */
     public boolean isChanged() {
-        return false;
+        return changed;
+    }
+
+    /**
+     * Sets the internal state 'staged' to true if the file is in the staging area (added or changed),
+     * false otherwise. Called by GitStatus when GitFile is created. This method is necessary for git diff
+     * @param staged Whether the file is in the staging-area
+     * @see GitCommit#getDiff(GitFile)
+     */
+    public void setStaged(boolean staged){
+        this.staged = staged;
     }
 
     /**
@@ -129,7 +141,7 @@ public class GitFile {
      * @return True if the file is in the staging-area, false otherwise
      */
     public boolean isStaged(){
-        return isAdded() || isChanged();
+        return staged;
     }
 
     /**
