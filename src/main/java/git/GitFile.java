@@ -124,6 +124,16 @@ public class GitFile {
         }
     }
 
+    /**
+     * Removes file from the staging-area, thereby performing git restore --staged <file>
+     *
+     * @return True if the file was removed from the staging area successfully
+     */
+    public boolean addUndo() {
+        //TODO: implementieren!
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
