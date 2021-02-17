@@ -1,12 +1,8 @@
 package dialogviews;
 
-import commands.Checkout;
 import commands.Fetch;
 import controller.GUIController;
-import git.GitBranch;
-import git.GitCommit;
-import git.GitData;
-import git.GitRemote;
+import git.*;
 import git.exception.GitException;
 
 import javax.swing.*;
@@ -28,22 +24,31 @@ public class FetchDialogView implements IDialogView {
   private JPanel bottomPanel;
   private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
   private DefaultTreeModel model;
+  private boolean needNew = false;
 
   public FetchDialogView() {
-    try {
-      final GitData git ;
-      git = new GitData();
-      fetchTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-      this.model = (DefaultTreeModel) this.fetchTree.getModel();
 
-      // Build branch-tree
-      git.getRemotes().stream().map(this::buildRemoteTree).forEach(root::add);
+    final GitData git ;
+    git = new GitData();
+    fetchTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+    this.model = (DefaultTreeModel) this.fetchTree.getModel();
+    // Build branch-tree
 
-      this.fetchTree.setRootVisible(false);
-      model.setRoot(root);
-    } catch (GitException e) {
-      e.printStackTrace();
+    for (GitRemote gitRemote : git.getRemotes()) {
+      RemoteTreeNode remoteTreeNode = null;
+
+      try {
+        remoteTreeNode = buildRemoteTree(gitRemote);
+      } catch (GitException e) {
+        needNew = true;
+        return;
+      }
+      root.add(remoteTreeNode);
+
     }
+
+    this.fetchTree.setRootVisible(false);
+    model.setRoot(root);
     // Todo: localize
     fetchButton.addActionListener(new ActionListener() {
       /**
@@ -88,21 +93,19 @@ public class FetchDialogView implements IDialogView {
   }
 
 
-  private RemoteTreeNode buildRemoteTree(GitRemote r) {
+  private RemoteTreeNode buildRemoteTree(GitRemote r) throws GitException {
     GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
-    try {
-      git = new GitData();
 
-      GitBranch[] branches = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
-      for (int i = 0; i < git.getBranches(r).size(); i++){
+    git = new GitData();
 
-        BranchTreeNode node = new BranchTreeNode(branches[i], r);
-        root.add(node);
-      }
-    } catch (GitException e) {
-      e.printStackTrace();
+    GitBranch[] branches = new GitBranch[0];
+    branches = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    for (int i = 0; i < branches.length; i++) {
+      BranchTreeNode node = new BranchTreeNode(branches[i], r);
+      root.add(node);
     }
+
     return root;
   }
   /**
@@ -196,5 +199,9 @@ public class FetchDialogView implements IDialogView {
 
   public void update() {
 
+  }
+
+  public boolean isNeedNew() {
+    return needNew;
   }
 }
