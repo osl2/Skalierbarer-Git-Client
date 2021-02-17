@@ -19,6 +19,7 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel userNameLabel;
     private JButton okButton;
     private JLabel pwLabel;
+    private JButton breakButton;
     private String name;
 
     public UsernamePasswordDialogView(String name) {
@@ -38,6 +39,18 @@ public class UsernamePasswordDialogView implements IDialogView{
                     pw += password[i];
                 }
                 CredentialProviderHolder.getInstance().setProvider(new UsernamePasswordCredentialsProvider(username, pw));
+                GUIController.getInstance().closeDialogView();
+            }
+        });
+        breakButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CredentialProviderHolder.getInstance().setActive(false);
                 GUIController.getInstance().closeDialogView();
             }
         });

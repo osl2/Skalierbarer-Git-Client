@@ -25,7 +25,7 @@ public class FetchDialogView implements IDialogView {
   private JPanel bottomPanel;
   private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
   private DefaultTreeModel model;
-  private boolean needNew = false;
+  private boolean isOpen = true;
 
   public FetchDialogView() {
 
@@ -38,7 +38,11 @@ public class FetchDialogView implements IDialogView {
     for (GitRemote gitRemote : git.getRemotes()) {
       RemoteTreeNode remoteTreeNode = null;
 
+      try {
         remoteTreeNode = buildRemoteTree(gitRemote);
+      } catch (Exception e) {
+        return;
+      }
       root.add(remoteTreeNode);
 
     }
@@ -75,7 +79,7 @@ public class FetchDialogView implements IDialogView {
       }
     });
   }
-  private RemoteTreeNode buildRemoteTree(GitRemote r)  {
+  private RemoteTreeNode buildRemoteTree(GitRemote r) throws Exception {
     GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
 
@@ -83,6 +87,9 @@ public class FetchDialogView implements IDialogView {
 
     GitBranch[] branches;
     branches = loadRemoteBranches(r);
+    if (branches == null){
+      throw new Exception();
+    }
     for (int i = 0; i < branches.length; i++) {
       BranchTreeNode node = new BranchTreeNode(branches[i], r);
       root.add(node);
@@ -183,8 +190,8 @@ public class FetchDialogView implements IDialogView {
 
   }
 
-  public boolean isNeedNew() {
-    return needNew;
+  public boolean isOpen() {
+    return isOpen;
   }
 
   private GitBranch[] loadRemoteBranches(GitRemote r){
@@ -199,7 +206,13 @@ public class FetchDialogView implements IDialogView {
       ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
-      return  loadRemoteBranches(r);
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return  loadRemoteBranches(r);
+      }
+      else {
+        isOpen = false;
+      }
+
     }
     return ret;
   }

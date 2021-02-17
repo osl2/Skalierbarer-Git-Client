@@ -7,6 +7,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 public class CredentialProviderHolder {
     private static CredentialProviderHolder INSTANCE = null;
     private UsernamePasswordCredentialsProvider provider;
+    private boolean isActive = true;
     private CredentialProviderHolder(){
         provider = new UsernamePasswordCredentialsProvider("", "");
     }
@@ -33,5 +34,12 @@ public class CredentialProviderHolder {
         }
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
 

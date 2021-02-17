@@ -90,7 +90,11 @@ public class Fetch implements ICommand, ICommandGUI {
   }
 
   public void onButtonClicked() {
-    GUIController.getInstance().openDialog(new FetchDialogView());
+    FetchDialogView dialogView = new FetchDialogView();
+    if (dialogView.isOpen()){
+      GUIController.getInstance().openDialog(dialogView);
+    }
+
   }
   private boolean tryFetch(){
     return retryFetch();
@@ -102,7 +106,13 @@ public class Fetch implements ICommand, ICommandGUI {
       return true;
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, "");
-      return tryFetch();
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return tryFetch();
+      }
+      else{
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
+      }
     }
   }
 }
