@@ -24,9 +24,9 @@ public class CredentialProviderHolder {
     UsernamePasswordCredentialsProvider getProvider(){
         return provider;
     }
-    public void changeProvider(boolean needProv){
+    public void changeProvider(boolean needProv, String nameForProof){
         if (needProv) {
-            GUIController.getInstance().openDialog(new UsernamePasswordDialogView());
+            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof));
         }
         else {
             provider.clear();

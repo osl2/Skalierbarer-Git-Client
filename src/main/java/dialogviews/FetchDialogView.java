@@ -198,7 +198,7 @@ public class FetchDialogView implements IDialogView {
     try {
       ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
     } catch (GitException e) {
-      CredentialProviderHolder.getInstance().changeProvider(true);
+      CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
       return  loadRemoteBranches(r);
     }
     return ret;

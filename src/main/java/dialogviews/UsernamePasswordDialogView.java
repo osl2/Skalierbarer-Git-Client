@@ -19,8 +19,10 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel userNameLabel;
     private JButton okButton;
     private JLabel pwLabel;
+    private String name;
 
-    public UsernamePasswordDialogView() {
+    public UsernamePasswordDialogView(String name) {
+        this.name = name;
         okButton.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -48,7 +50,7 @@ public class UsernamePasswordDialogView implements IDialogView{
      */
     @Override
     public String getTitle() {
-        return "Benutzername";
+        return "Benutzername - " + name;
     }
 
     /**
