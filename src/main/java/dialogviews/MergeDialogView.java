@@ -67,7 +67,7 @@ public class MergeDialogView implements IDialogView {
             if (!merge.execute()) {
                 // todo GUIController.getInstance().errorHandler(merge.getErrorMessage());
             }
-        } catch (IOException | GitException e) {
+        } catch (IOException e) {
             GUIController.getInstance().errorHandler(e);
         }
     }

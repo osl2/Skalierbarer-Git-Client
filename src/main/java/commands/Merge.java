@@ -69,14 +69,19 @@ public class Merge implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
-    public boolean execute() throws GitException, IOException {
+    public boolean execute() {
         if (this.srcBranch == this.destBranch) {
             // We cannot merge a branch into itself.
             GUIController.getInstance().errorHandler("Quell- und Zielzweig können nicht der selbe sein");
             return false;
         }
 
-        Map<GitFile, List<GitChangeConflict>> conflicts = this.srcBranch.merge(this.fastForward);
+        Map<GitFile, List<GitChangeConflict>> conflicts = null;
+        try {
+            conflicts = this.srcBranch.merge(this.fastForward);
+        } catch (GitException e) {
+            e.printStackTrace();
+        }
         if (conflicts.size() > 0) {
             // todo: Call a MergeConflictView here and return its results.
             // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
