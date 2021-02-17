@@ -33,9 +33,6 @@ public class Branch implements ICommand, ICommandGUI {
     }
 
 
-    public String getErrorMessage() {
-        return null;
-    }
 
     /**
      * Creates with the input the command of the commandline.
