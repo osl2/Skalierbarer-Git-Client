@@ -41,9 +41,9 @@ public class GitRemote {
         return url;
     }
     public void addBranch(GitBranch branch){
-        if (!(fetchBranches.contains(branch))) {
+       // if (!(fetchBranches.contains(branch))) {
             fetchBranches.add(branch);
-        }
+       // }
     }
 
     public List<GitBranch> getFetchBranches() {

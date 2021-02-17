@@ -61,12 +61,7 @@ public class FetchDialogView implements IDialogView {
         TreePath[] selected = fetchTree.getSelectionPaths();
         Fetch command = new Fetch();
         if (selected == null) {
-          //todo: localize? GuiController?
-          JOptionPane.showMessageDialog(null,
-                  "Es muss ein Repo / ein Zweig ausgewählt werden",
-                  "Fehler",
-                  JOptionPane.ERROR_MESSAGE);
-
+          GUIController.getInstance().errorHandler("Es muss ein branch oder remote ausgewählt werden");
           return;
         }
         for (int i = 0; i < selected.length; i++){
@@ -74,14 +69,12 @@ public class FetchDialogView implements IDialogView {
           node.configureFetch(command);
         }
           if (command.execute()) {
+            GUIController.getInstance().setCommandLine(command.getCommandLine());
+            System.out.println(command.getCommandLine());
             GUIController.getInstance().closeDialogView();
           }
           else {
-            // todo let controller handle that
-            JOptionPane.showMessageDialog(null,
-                    "Es ist ein unerwarteter Fehler aufgetreten",
-                    "Fehler",
-                    JOptionPane.ERROR_MESSAGE);
+            GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler Aufgetreten");
           }
 
       }
@@ -95,7 +88,7 @@ public class FetchDialogView implements IDialogView {
 
     git = new GitData();
 
-    GitBranch[] branches = new GitBranch[0];
+    GitBranch[] branches;
     branches = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
     for (int i = 0; i < branches.length; i++) {
       BranchTreeNode node = new BranchTreeNode(branches[i], r);
