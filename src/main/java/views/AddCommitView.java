@@ -157,6 +157,11 @@ public class AddCommitView extends JPanel implements IView {
     return addCommitView;
   }
 
+  public JPanel getView(String commitMessage){
+    commitMessageTextArea.setText(commitMessage);
+    return addCommitView;
+  }
+
 
   public void update() {
     //TODO: wird die überhaupt benötigt?
