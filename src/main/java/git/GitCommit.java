@@ -149,7 +149,7 @@ public class GitCommit {
         Git git = GitData.getJGit();
         AbstractTreeIterator newTreeIterator;
         TreeFilter filter = pathFilter(file);
-        if (file.isAdded()) {
+        if (file.isStaged()) {
             newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
         } else {
             newTreeIterator = new FileTreeIterator(git.getRepository());

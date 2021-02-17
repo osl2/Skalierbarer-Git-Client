@@ -54,7 +54,7 @@ public class GitStatus {
             filesAddedJgit = git.status().call().getAdded();
             List<GitFile> addedGitFiles = toGitFile(filesAddedJgit);
             for (GitFile gitFile : addedGitFiles){
-                gitFile.setAdded(true);
+                gitFile.setStaged(true);
             }
             return addedGitFiles;
         } catch (GitAPIException e) {
@@ -78,7 +78,7 @@ public class GitStatus {
             jgitFiles = git.status().call().getChanged();
             List<GitFile> changedGitFiles = toGitFile(jgitFiles);
             for (GitFile gitFile : changedGitFiles){
-                gitFile.setChanged(true);
+                gitFile.setStaged(true);
             }
             return changedGitFiles;
         } catch (GitAPIException e) {
