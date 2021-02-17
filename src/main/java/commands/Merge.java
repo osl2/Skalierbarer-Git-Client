@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Merge implements ICommand, ICommandGUI {
-    private Map<GitFile, List<GitChangeConflict>> conflicts;
     @NonNull
     private GitBranch srcBranch;
     @NonNull
@@ -47,6 +46,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return List of the conflicts that happen
      */
     public List<GitChangeConflict> getConflicts() {
+     // todo kann weg?
         return null;
     }
 
@@ -57,6 +57,7 @@ public class Merge implements ICommand, ICommandGUI {
      * If necessary a MergeDialogView will be opened to interact with the user.
      */
     public void resolveConflicts() {
+        // todo: das wurde auch anders gelöst -> kann weg?
         // Open GUI or another way to make sure all conflicts are resolved.
         // Probably a good point for dependency injection in the future.
     }
@@ -75,7 +76,7 @@ public class Merge implements ICommand, ICommandGUI {
             return false;
         }
 
-        this.conflicts = this.srcBranch.merge(this.fastForward);
+        Map<GitFile, List<GitChangeConflict>> conflicts = this.srcBranch.merge(this.fastForward);
         if (conflicts.size() > 0) {
             // todo: Call a MergeConflictView here and return its results.
             // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.

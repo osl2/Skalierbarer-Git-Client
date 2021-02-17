@@ -23,24 +23,27 @@ public class MergeConflictDialogView implements IDialogView {
     private JLabel leftLabel;
     private JLabel centerLabel;
     private JLabel rightLabel;
+
+    private final GitFile file;
+    private final Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
+    @SuppressWarnings("unused")
     private JScrollPane leftScrollbar;
-    private JScrollPane centerScrollbar;
-    private JScrollPane rightScrollbar;
     private JButton buttonLeftAccept;
     private JButton buttonLeftDecline;
     private JButton buttonRightAccept;
     private JButton buttonRightDecline;
     private JButton okButton;
-    private GitFile file;
+    @SuppressWarnings("unused")
+    private JScrollPane centerScrollbar;
     private String[] baseVersion;
-    private List<GitChangeConflict> conflicts;
-    private Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
+    @SuppressWarnings("unused")
+    private JScrollPane rightScrollbar;
     private int activeConflictIndex = -1;
     private int sidesHandled = 0;
 
     public MergeConflictDialogView(GitFile file, Map<GitFile, List<GitChangeConflict>> conflictMap,
                                    String titleOurs, String titleTheirs) {
-        this.conflicts = conflictMap.get(file);
+        List<GitChangeConflict> conflicts = conflictMap.get(file);
         this.file = file;
         this.buttonLeftAccept.setText(">");
         this.buttonRightAccept.setText("<");
@@ -93,7 +96,6 @@ public class MergeConflictDialogView implements IDialogView {
                 }
                 bw.flush();
                 bw.close();
-                // sänk you for trävelying wizz deutsche bahn
             }
 
         } catch (IOException e) {
@@ -270,5 +272,4 @@ public class MergeConflictDialogView implements IDialogView {
 
     private enum ButtonAction {ACCEPT_OURS, ACCEPT_THEIRS, DECLINE_OURS, DECLINED_THEIRS}
 
-    ;
 }
