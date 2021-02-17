@@ -53,6 +53,9 @@ public class GitStatus {
             Set<String> filesAddedJgit;
             filesAddedJgit = git.status().call().getAdded();
             List<GitFile> addedGitFiles = toGitFile(filesAddedJgit);
+            for (GitFile gitFile : addedGitFiles){
+                gitFile.setAdded(true);
+            }
             return addedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Git Status konnte nicht erfolgreich ausgeführt werden,"
@@ -74,6 +77,9 @@ public class GitStatus {
             Set<String> jgitFiles;
             jgitFiles = git.status().call().getChanged();
             List<GitFile> changedGitFiles = toGitFile(jgitFiles);
+            for (GitFile gitFile : changedGitFiles){
+                gitFile.setChanged(true);
+            }
             return changedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
@@ -95,6 +101,9 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> modifiedJgit = git.status().call().getModified();
             List<GitFile> modifiedGitFiles = toGitFile(modifiedJgit);
+            for (GitFile gitFile : modifiedGitFiles){
+                gitFile.setModified(true);
+            }
             return modifiedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
@@ -112,6 +121,9 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> untracked = git.status().call().getUntracked();
             List<GitFile> untrackedGitFiles = toGitFile(untracked);
+            for (GitFile gitFile : untrackedGitFiles){
+                gitFile.setUntracked(true);
+            }
             return untrackedGitFiles;
         } catch (GitAPIException e) {
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
