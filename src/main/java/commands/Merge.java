@@ -8,7 +8,6 @@ import git.GitFile;
 import git.exception.GitException;
 import org.eclipse.jgit.annotations.NonNull;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -82,12 +81,17 @@ public class Merge implements ICommand, ICommandGUI {
         } catch (GitException e) {
             e.printStackTrace();
         }
-        if (conflicts.size() > 0) {
+        while (conflicts.size() > 0) {
             // todo: Call a MergeConflictView here and return its results.
             // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
             for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
                 GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
                         this.destBranch.getName(), this.srcBranch.getName()));
+
+            // Everything has been resolved. Create Merge-Commit
+            // todo : Load AddCommitView with preloaded Message
+
+            // todo : call merge again and reset conflicts. Should succeed and finish the ongoing merge
             return false;
         }
 

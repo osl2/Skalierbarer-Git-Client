@@ -25,6 +25,7 @@ public class GitChangeConflict {
     private int startLine;
     private boolean resolved = false;
     private String result;
+    private boolean deleted;
     private int length;
 
     /* Is only instantiated inside the git Package */
@@ -137,6 +138,9 @@ public class GitChangeConflict {
      */
     public void accecptOurs() {
         if (resolved) return;
+        if (state == IndexDiff.StageState.DELETED_BY_US) {
+            deleted = true;
+        }
         if (result == null) result = "";
         this.result += getOptionOurs() + System.lineSeparator();
     }
@@ -146,6 +150,9 @@ public class GitChangeConflict {
      */
     public void acceptTheirs() {
         if (resolved) return;
+        if (state == IndexDiff.StageState.DELETED_BY_THEM) {
+            deleted = true;
+        }
         if (result == null) result = "";
         this.result += getOptionTheirs() + System.lineSeparator();
 
@@ -188,6 +195,11 @@ public class GitChangeConflict {
 
     public boolean isResolved() {
         return resolved;
+    }
+
+    public boolean isDeleted() {
+        if (!resolved) return false;
+        else return deleted;
     }
 
     public void resolve() {

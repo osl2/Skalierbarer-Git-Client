@@ -65,7 +65,7 @@ public class MergeDialogView implements IDialogView {
         try {
             this.merge = new Merge((GitBranch) fromComboBox.getSelectedItem(), data.getSelectedBranch());
             if (!merge.execute()) {
-                // todo GUIController.getInstance().errorHandler(merge.getErrorMessage());
+                GUIController.getInstance().errorHandler("Merge fehlgeschlagen");
             }
         } catch (IOException e) {
             GUIController.getInstance().errorHandler(e);

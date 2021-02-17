@@ -3,6 +3,7 @@ package dialogviews;
 import controller.GUIController;
 import git.GitChangeConflict;
 import git.GitFile;
+import git.exception.GitException;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -23,7 +24,6 @@ public class MergeConflictDialogView implements IDialogView {
     private JLabel leftLabel;
     private JLabel centerLabel;
     private JLabel rightLabel;
-    // todo: gelöschte datei löschen.
     private final GitFile file;
     private final Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
     @SuppressWarnings("unused")
@@ -84,6 +84,22 @@ public class MergeConflictDialogView implements IDialogView {
     }
 
     private void okButtonListener() {
+        if (localConflictMap.values().stream().anyMatch(GitChangeConflict::isDeleted)) {
+            // This file needs to be deleted.
+            if (!file.getPath().delete()) {
+                GUIController.getInstance().errorHandler(file.getPath().getPath() + " konnte nicht gelöscht werden!");
+                GUIController.getInstance().closeDialogView();
+            }
+
+            try {
+                file.add(); // Add file to the merge commit
+            } catch (GitException e) {
+                GUIController.getInstance().errorHandler(e);
+            }
+            return;
+
+        }
+
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(file.getPath(), false));
             for (int i = 0; i < baseVersion.length; i++) {
@@ -122,7 +138,7 @@ public class MergeConflictDialogView implements IDialogView {
                 break;
         }
         sidesHandled++;
-        if (sidesHandled == 2) {
+        if (sidesHandled == 2 || c.isResolved() || c.isDeleted()) {
             handleNextConflict();
             sidesHandled = 0;
         }
