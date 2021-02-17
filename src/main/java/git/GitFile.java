@@ -157,6 +157,15 @@ public class GitFile {
         }
     }
 
+    /**
+     * Removes file from the staging-area, thereby performing git restore --staged <file>
+     *
+     * @return True if the file was removed from the staging area successfully
+     */
+    public boolean addUndo() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -165,6 +174,7 @@ public class GitFile {
         return Objects.equals(path, gitFile.path);
     }
 
+    
     @Override
     public int hashCode() {
         return Objects.hash(path);
