@@ -42,11 +42,12 @@ public class AddTest extends AbstractGitTest{
         //execute add
         add.execute();
 
-        //file2 and file3 should now be added, list of added files should contain only 2 elements (not 3)
+        //file2 should now be added, file3 should have been removed from the
+        // staging area, list of added files should contain only 1 element
         List<GitFile> addedFiles = GitStatus.getGitStatus().getAddedFiles();
         assertFalse(addedFiles.contains(file1));
         assertTrue(addedFiles.contains(file2));
-        assertTrue(addedFiles.contains(file3));
+        assertFalse(addedFiles.contains(file3));
         assertEquals(2, addedFiles.size());
 
 
