@@ -1,6 +1,7 @@
 package git;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GitRemote {
@@ -8,6 +9,8 @@ public class GitRemote {
     private String gitUser;
     private String name;
     private List<GitBranch> branches;
+    private LinkedList<GitBranch> fetchBranches = new LinkedList<GitBranch>();
+
 
 
     /* Is only instantiated inside the git Package */
@@ -21,9 +24,6 @@ public class GitRemote {
         this.url = url;
     }
 
-    public URL getUrl() {
-        return url;
-    }
 
     public void setGitUser(String gitUser) {
         this.gitUser = gitUser;
@@ -31,6 +31,23 @@ public class GitRemote {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+    public void addBranch(GitBranch branch){
+        if (!(fetchBranches.contains(branch))) {
+            fetchBranches.add(branch);
+        }
+    }
+
+    public List<GitBranch> getFetchBranches() {
+        return fetchBranches;
     }
 
     /**
@@ -42,7 +59,5 @@ public class GitRemote {
         return false;
     }
 
-    public String getName(){
-        return name;
-    }
 }
+
