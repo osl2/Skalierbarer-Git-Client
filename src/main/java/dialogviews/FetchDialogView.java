@@ -5,6 +5,12 @@ import java.awt.*;
 
 public class FetchDialogView implements IDialogView {
 
+  private JPanel FetchPanel;
+  private JScrollPane treeScrollPanel;
+  private JTree fetchTree;
+  private JPanel bottomPanel;
+  private JButton fetchButton;
+
   /**
    * DialogWindow Title
    *
