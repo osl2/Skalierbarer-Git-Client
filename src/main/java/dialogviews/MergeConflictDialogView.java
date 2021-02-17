@@ -23,7 +23,7 @@ public class MergeConflictDialogView implements IDialogView {
     private JLabel leftLabel;
     private JLabel centerLabel;
     private JLabel rightLabel;
-
+    // todo: gelöschte datei löschen.
     private final GitFile file;
     private final Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
     @SuppressWarnings("unused")
