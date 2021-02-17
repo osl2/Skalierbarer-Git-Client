@@ -116,7 +116,6 @@ public class GitFile {
             throw new GitException("something with the Filepath went wrong");
         }
         try {
-            //git.add().addFilepattern(relative).call();
             git.reset().addPath(relative).call();
             return true;
         } catch (GitAPIException e) {
