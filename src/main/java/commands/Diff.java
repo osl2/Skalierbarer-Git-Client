@@ -6,15 +6,14 @@ import git.GitFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Pattern;
 
 public class Diff implements ICommand {
   private GitCommit activeCommit;
   private GitFile activeFile;
-  private String errorMessage;
   private String activeDiff;
-  private boolean validDiff = false;
+  private boolean validDiffCommit = false;
+  private boolean validDiffFile = false;
+  private boolean commit = false;
 
   /**
    * Executes the "git diff" command. Can only be used after @setDiffCommit was called once.
@@ -22,27 +21,32 @@ public class Diff implements ICommand {
    * @return true, if the command has been executed successfully
    */
   public boolean execute() {
-    if(activeCommit == null || activeFile == null) {
+    if((commit && activeCommit == null) || activeFile == null) {
       GUIController.getInstance().errorHandler( "Es muss ein GitCommit und ein GitFile " +
               "übergeben werden um den Diff Befehl auszuführen.");
       return false;
     }
-    try {
-      if(activeCommit.getParents().length != 0) {
-        activeDiff = activeCommit.getDiff(activeCommit.getParents()[0], activeFile);
-      } else {
-        activeDiff = activeCommit.getDiff(null, activeFile);
+    if(!commit) {
+      try {
+        activeDiff = GitCommit.getDiff(activeFile);
+      } catch (IOException e) {
+        GUIController.getInstance().errorHandler(e);
+        return false;
       }
-    } catch (IOException e) {
-      GUIController.getInstance().errorHandler(e);
-      return false;
+    } else {
+      try {
+        if (activeCommit.getParents().length != 0) {
+          activeDiff = activeCommit.getDiff(activeCommit.getParents()[0], activeFile);
+        } else {
+          activeDiff = activeCommit.getDiff(null, activeFile);
+        }
+      } catch (IOException e) {
+        GUIController.getInstance().errorHandler(e);
+        return false;
+      }
     }
-    validDiff = true;
+    validDiffCommit = true;
     return true;
-  }
-
-  public String getErrorMessage() {
-    return null;
   }
 
   /**
@@ -53,8 +57,22 @@ public class Diff implements ICommand {
    */
   public void setDiffCommit(GitCommit activeCommit, GitFile file) {
     this.activeCommit = activeCommit;
-    validDiff = false;
     this.activeFile = file;
+    validDiffCommit = false;
+    validDiffFile = false;
+    commit = true;
+  }
+
+  /**
+   * Sets the Diff command to return the deference between the given file and the
+   * working directory.
+   * @param file the File to compare to the working directory.
+   */
+  public void setDiffFile(GitFile file) {
+    this.activeFile = file;
+    validDiffFile = false;
+    validDiffCommit = false;
+    commit = false;
   }
 
   /**
@@ -62,7 +80,7 @@ public class Diff implements ICommand {
    * @return the git diff of the given commit and the given file.
    */
   public String[] diffGit() {
-    if(!validDiff) {
+    if(!validDiffCommit && !validDiffFile) {
       String[] out = new String[]{""};
       return out;
     }
