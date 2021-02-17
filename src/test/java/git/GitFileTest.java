@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GitFileTest extends AbstractGitTest {
 
@@ -50,5 +51,17 @@ public class GitFileTest extends AbstractGitTest {
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
     String jGitFile = git.status().call().getAdded().iterator().next();
     assertEquals(gitDataFile, jGitFile);
+  }
+
+  @Test
+  public void addUndoTest() throws GitException, IOException {
+    GitFile gitFile = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
+    gitFile.add();
+    List<GitFile> addedFiles = GitStatus.getGitStatus().getAddedFiles();
+    assertTrue(addedFiles.contains(gitFile));
+    gitFile.addUndo();
+    addedFiles = GitStatus.getGitStatus().getAddedFiles();
+    assertFalse(addedFiles.contains(gitFile));
+    assertTrue(addedFiles.isEmpty());
   }
 }
