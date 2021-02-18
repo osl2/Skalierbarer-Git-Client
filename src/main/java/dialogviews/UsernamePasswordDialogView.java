@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class UsernamePasswordDialogView implements IDialogView{
 
@@ -21,7 +23,6 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel pwLabel;
     private JButton breakButton;
     private String name;
-
     public UsernamePasswordDialogView(String name) {
         this.name = name;
         okButton.addActionListener(new ActionListener() {
