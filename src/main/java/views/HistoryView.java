@@ -52,10 +52,14 @@ public class HistoryView extends JPanel implements IView {
     diffView = new DiffView();
     diffText = diffView.openDiffView();
     diffPanel.add(diffText);
+    diffText.setEditable(false);
     applyCellRenderer();
     data = new GitData();
     try {
       branch = data.getSelectedBranch();
+      if(data.getBranches().size() == 0) {
+        return;
+      }
       iteratorOfCommits = branch.getCommits();
     } catch (GitException e) {
       GUIController.getInstance().errorHandler(e.getMessage());
