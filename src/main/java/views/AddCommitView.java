@@ -29,9 +29,9 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> stagedFilesList;
   private JPanel diffPanel;
   private DiffView diffView;
-  private JScrollPane modifiedFilesScrollPane;
-  private JList modifiedFilesList;
-  private JTextField modifiedFilesTextField;
+  private JScrollPane modifiedChangedFilesScrollPane;
+  private JList modifiedChangedFilesList;
+  private JTextField modifiedChangedFilesTextField;
   private JScrollPane newFilesScrollPane;
   private JList newFilesList;
   private JTextField newFilesTextField;
@@ -103,18 +103,16 @@ public class AddCommitView extends JPanel implements IView {
     });
 
     //set up the list for staged files and unstaged files by retrieving the data from GitStatus
-    List<GitFile> modifiedFiles;
+    List<GitFile> modifiedChangedFiles;
     List<GitFile> newFiles;
     List<GitFile> deletedFiles;
     try {
-      modifiedFiles = gitStatus.getModifiedFiles();
-      modifiedFiles.addAll(gitStatus.getChangedFiles());
-      newFiles = gitStatus.getAddedFiles();
-      newFiles.addAll(gitStatus.getUntrackedFiles());
+      modifiedChangedFiles = gitStatus.getModifiedChangedFiles();
+      newFiles = gitStatus.getNewFiles();
       deletedFiles = gitStatus.getDeletedFiles();
     }
     catch (GitException | IOException e){
-      modifiedFiles = new LinkedList<>();
+      modifiedChangedFiles = new LinkedList<>();
       newFiles = new LinkedList<>();
       deletedFiles = new LinkedList<>();
       c.errorHandler(e);
@@ -122,7 +120,7 @@ public class AddCommitView extends JPanel implements IView {
 
     //set up renderer and data model for both lists
     setUpFileList(newFilesList, newFiles);
-    setUpFileList(modifiedFilesList, modifiedFiles);
+    setUpFileList(modifiedChangedFilesList, modifiedChangedFiles);
     setUpFileList(deletedFilesList, deletedFiles);
 
     //make all files appear green or red, depending on their current stage

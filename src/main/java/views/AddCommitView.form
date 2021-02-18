@@ -84,20 +84,20 @@
         </properties>
         <border type="none"/>
         <children>
-          <scrollpane id="d6b35" binding="modifiedFilesScrollPane">
+          <scrollpane id="d6b35" binding="modifiedChangedFilesScrollPane">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="5b6a8" class="javax.swing.JList" binding="modifiedFilesList">
+              <component id="5b6a8" class="javax.swing.JList" binding="modifiedChangedFilesList">
                 <constraints/>
                 <properties/>
               </component>
             </children>
           </scrollpane>
-          <component id="8a7d7" class="javax.swing.JTextField" binding="modifiedFilesTextField">
+          <component id="8a7d7" class="javax.swing.JTextField" binding="modifiedChangedFilesTextField">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
