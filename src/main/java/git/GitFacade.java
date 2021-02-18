@@ -115,25 +115,21 @@ public class GitFacade {
     }
   }
 
-  /**
-   * Method to initialize a new git Repositorry on a given path.
-   *
-   * @param path path, that is needed
-   * @return true, if it is done successfully false else
-   */
-  public boolean initializeRepository(File path) {
-    Git git;
-    try {
-      git = Git.init().setDirectory(path).call();
-      Settings settings = Settings.getInstance();
-      settings.setActiveRepositoryPath(path);
-      GitData data = new GitData();
-      data.reinitialize();
-    } catch (GitAPIException e) {
-      return false;
+    /**
+     * Method to initialize a new git Repositorry on a given path.
+     *
+     * @param path path, that is needed
+     * @return true, if it is done successfully false else
+     */
+    public boolean initializeRepository(File path) {
+        Git git;
+        try {
+            git = Git.init().setDirectory(path).setBare(false).call();
+        } catch (GitAPIException e) {
+            return false;
+        }
+        return true;
     }
-    return true;
-  }
 
     public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
         try {
