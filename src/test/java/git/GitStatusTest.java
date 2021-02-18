@@ -146,28 +146,7 @@ public class GitStatusTest extends AbstractGitTest {
                 gitStatus.getRemovedFiles().size() + gitStatus.getMissingFiles().size());
     }
 
-    @Test
-    @JsonIgnore
-    public void deleteFileShouldNotAppearInTheIndexAnymore() throws IOException, GitAPIException {
-        //TODO: bug???
-        //create new file, add and commit it
-        File file = new File(repo, "file");
-        new FileOutputStream(file).close();
-        GitFile gitFile = new GitFile(file.getTotalSpace(), file);
-        git.add().addFilepattern(repo.toPath().relativize(file.toPath()).toString()).call();
-        git.commit().setMessage("Test").call();
-
-        //delete the file. File should now be missing and deleted, but not removed
-        assertTrue(file.delete());
-
-        //delete the file, then add and commit the file. File should no neither be missing nor removed
-        git.add().addFilepattern(repo.toPath().relativize(file.toPath()).toString()).call();
-        git.commit().setMessage("Test2").call();
-        Status status = git.status().call();
-        assertFalse(status.getMissing().contains(file.getName()));
-        assertFalse(status.getRemoved().contains(file.getName()));
-        assertFalse(status.getUncommittedChanges().contains(file.getName()));
-    }
+   
 
     @Test
     public void deletedFilesTest() throws IOException, GitAPIException, GitException {
