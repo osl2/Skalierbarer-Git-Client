@@ -153,7 +153,9 @@ public class RemoteView extends JPanel implements IView {
         GitRemote act = remotes.get(index);
         nameField.setText(act.getName());
         urlField.setText(act.getUrl().toString());
-        tryBranches(act);
+        if(tryBranches(act) == false){
+          return;
+        }
         String set = "";
         for (int i = 0; i < branches.size(); i++){
           set = set + branches.get(i).getName()+ System.lineSeparator();
@@ -264,15 +266,23 @@ public class RemoteView extends JPanel implements IView {
       branches = git.getBranches(r);
       return true;
     } catch (GitException e) {
-      CredentialProviderHolder.getInstance().changeProvider(true);
-      return tryBranches(r);
+      CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
+      if(CredentialProviderHolder.getInstance().isActive()){
+        return tryBranches(r);
+      }
+      else {
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
+      }
     }
   }
   private void reloadBranches(){
     GitRemote act = remotes.get(remoteList.getSelectedIndex());
     nameField.setText(act.getName());
     urlField.setText(act.getUrl().toString());
-    tryBranches(act);
+    if (tryBranches(act) == false){
+      GUIController.getInstance().openView(new RemoteView());
+    }
     String set = "";
     for (int i = 0; i < branches.size(); i++){
       set = set + branches.get(i).getName()+ System.lineSeparator();
