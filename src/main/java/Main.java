@@ -24,6 +24,7 @@ public class Main {
         }
 
         c.initializeMainWindow();
+        c.restoreDefaultView();
         c.openMainWindow();
         // Load Data -> Persistency
         // Todo: Load Plugins -> ???

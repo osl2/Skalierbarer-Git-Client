@@ -3,6 +3,7 @@ package dialogviews;
 import commands.Config;
 import commands.Init;
 import controller.GUIController;
+import git.GitData;
 import settings.Data;
 import settings.Settings;
 
@@ -31,17 +32,19 @@ public class FirstUseDialogView implements IDialogView {
       config = new Config();
       config.setName(name);
       config.setEMail(eMail);
-      boolean successConfig = config.execute();
-
-      init = new Init();
-      init.setPathToRepository(path);
-      boolean successInit = init.execute();
-      if (!successInit) {
-        return;
-      }
       // Set active repository
       Settings.getInstance().setActiveRepositoryPath(path);
       Data.getInstance().storeNewRepositoryPath(path);
+      init = new Init();
+      init.setPathToRepository(path);
+      boolean successInit = init.execute();
+      // make sure it is initialized.
+      GitData data = new GitData();
+      data.reinitialize();
+      boolean successConfig = config.execute();
+      if (!successInit) {
+        return;
+      }
       GUIController.getInstance().closeDialogView();
     });
     // Opens a new JFileChooser to set a path to a directory.

@@ -1,11 +1,15 @@
 package views;
 
+import controller.GUIController;
+import dialogviews.SettingsDialogView;
 import git.GitData;
+import settings.Data;
 import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -106,8 +110,22 @@ public class MainWindow extends JFrame {
 
     private void createMenubar() {
         JMenuBar bar = new JMenuBar();
-        JMenu m1 = new JMenu("Menu 1");
-        JMenu m2 = new JMenu("Menu 2");
+        JMenu m1 = new JMenu("Repository");
+        JMenu m2 = new JMenu("Über");
+        JMenu recentlyUsed = new JMenu("Kürzlich Verwendet");
+
+        for (File f : Data.getInstance().getRecentlyOpenedRepositories()) {
+            recentlyUsed.add(new JMenuItem(f.getPath()));
+        }
+
+        m1.add(new JMenuItem("Öffnen"));
+        m1.add(new JMenuItem("Initialisieren"));
+        m1.add(new JMenuItem("Klonen"));
+        m1.add(recentlyUsed);
+
+        JMenuItem settingsItem = new JMenuItem("Einstellungen");
+        settingsItem.addActionListener(e -> GUIController.getInstance().openDialog(new SettingsDialogView()));
+        m1.add(settingsItem);
 
         bar.add(m1);
         bar.add(m2);

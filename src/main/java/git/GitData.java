@@ -10,6 +10,7 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -46,6 +47,13 @@ public class GitData {
 
     static Git getJGit() {
         return git;
+    }
+
+    public GitAuthor getUser() {
+        StoredConfig config = getJGit().getRepository().getConfig();
+        return new GitAuthor(config.getString("user", null, "name"),
+                config.getString("user", null, "email")
+        );
     }
 
     public void reinitialize() {
@@ -86,12 +94,12 @@ public class GitData {
             Iterable<RevCommit> allCommits;
             allCommits = git.log().all().call();
             return new CommitIterator(allCommits);
-        }catch (NoHeadException e) {
+        } catch (NoHeadException e) {
             throw new GitException("Der Head wurde nicht gefunden" +
-                "\n Fehlermeldung: " + e.getMessage());
+                    "\n Fehlermeldung: " + e.getMessage());
         } catch (GitAPIException e) {
             throw new GitException("Eine nicht genauer spezifizierte Fehlermeldung in Git ist aufgetreten \n" +
-                "Fehlermeldung: " + e.getMessage());
+                    "Fehlermeldung: " + e.getMessage());
         }
     }
 
@@ -119,6 +127,9 @@ public class GitData {
         } catch (GitAPIException e) {
             throw new GitException("Mit Git ist etwas nicht genauer spezifiziertes schief gelaufen \n" +
                     "Fehlermeldung: " + e.getMessage());
+        } catch (NullPointerException e) {
+            // Apparently JGIT throws a NPE if a branch does not have a commit to reference. e.g. after initializing a repository.
+            return new CommitIterator(null);
         }
     }
 
@@ -194,7 +205,7 @@ public class GitData {
             return gitBranches;
         } catch (GitAPIException e) {
             throw new GitException("Mit Git ist etwas schief gelaufen" +
-                "Fehlermeldung: " + e.getMessage());
+                    "Fehlermeldung: " + e.getMessage());
         }
     }
 
@@ -221,7 +232,7 @@ public class GitData {
             throw new GitException();
         }
 
-            //Collections.sort(branches);
+        //Collections.sort(branches);
 
         return branches;
     }

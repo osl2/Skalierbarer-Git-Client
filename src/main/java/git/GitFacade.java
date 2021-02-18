@@ -13,9 +13,11 @@ import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
+import org.eclipse.jgit.lib.StoredConfig;
 import settings.Settings;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -25,15 +27,17 @@ import java.util.Set;
  */
 public class GitFacade {
 
-  /**
-   * Create a new Stash.
-   * TODO: Klassendiagramm - Parameter neu
-   *
-   * @return true iff stash was created successfully
-   */
-  public boolean createStash(String msg) {
-    throw new AssertionError("not implemented");
-  }
+    private GitData gitData;
+
+    /**
+     * Create a new Stash.
+     * TODO: Klassendiagramm - Parameter neu
+     *
+     * @return true iff stash was created successfully
+     */
+    public boolean createStash(String msg) {
+        throw new AssertionError("not implemented");
+    }
 
     /**
      * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
@@ -289,6 +293,19 @@ public class GitFacade {
 
         suc = commit.revert();
         return suc;
+    }
+
+    public boolean setConfigValue(String configOption, String configValue) {
+        String[] option = configOption.split("\\.");
+        StoredConfig config = GitData.getRepository().getConfig();
+        // todo: handle options which are not 2 layers deep
+        config.setString(option[0], null, option[1], configValue);
+        try {
+            config.save();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     public String getDiff(GitCommit activeCommit) {
