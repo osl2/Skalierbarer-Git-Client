@@ -84,6 +84,7 @@ public class GUIController {
     public void closeDialogView() {
         this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
         this.currentDialogAnchor = null;
+        this.update();
     }
 
     /**
@@ -148,6 +149,7 @@ public class GUIController {
      */
     public void openView(IView view) {
         this.window.setView(view);
+        this.update();
     }
 
 
@@ -155,6 +157,7 @@ public class GUIController {
         if (this.currentDialogAnchor != null) {
             this.currentDialogAnchor.update();
         }
+        this.window.update();
     }
 
     /**
