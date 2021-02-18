@@ -25,7 +25,8 @@
               </grid>
             </constraints>
             <properties>
-              <verticalScrollBarPolicy value="21"/>
+              <horizontalScrollBarPolicy value="31"/>
+              <verticalScrollBarPolicy value="20"/>
             </properties>
             <border type="none"/>
             <children>
@@ -70,7 +71,9 @@
             <children>
               <component id="823fd" class="javax.swing.JTextArea" binding="branchArea">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
