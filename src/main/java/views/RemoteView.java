@@ -102,7 +102,12 @@ public class RemoteView extends JPanel implements IView {
           URL url = new URL(urlField.getText());
           rem2.setUrl(url);
           if (rem2.execute()){
-
+            remotes = git.getRemotes();
+            DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
+            for (int i = 0; i < remotes.size(); i++){
+              newModel.add(i, remotes.get(i));
+            }
+            remoteList.setModel(newModel);
           }
         } catch (MalformedURLException malformedURLException) {
           GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");

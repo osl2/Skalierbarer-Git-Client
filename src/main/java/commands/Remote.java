@@ -31,7 +31,9 @@ public class Remote implements ICommand, ICommandGUI {
    * @param remote The remote repository on which the command should be executed
    *               (getName, getURL, setName, setURL, remove)
    */
-  public void setRemote(GitRemote remote){}
+  public void setRemote(GitRemote remote){
+    this.remote = remote;
+  }
 
   /**
    * Creates with the input the command of the commandline.
