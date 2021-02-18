@@ -38,12 +38,10 @@ public class RemoteView extends JPanel implements IView {
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
   private Remote remForSetURL = new Remote();
-  private Remote remForSetName = new Remote();
 
 
   public RemoteView(){
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
-    remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
     remotes = git.getRemotes();
     DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
@@ -73,20 +71,8 @@ public class RemoteView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         int index = remoteList.getSelectedIndex();
-        if (index < 0){
+        if (index < 0) {
           GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
-          return;
-        }
-        remForSetName.setRemote(remotes.get(index));
-        if (nameField.getText().compareTo("") == 0){
-          GUIController.getInstance().errorHandler("Kein name eingegeben");
-          return;
-        }
-        remForSetName.setRemoteName(nameField.getText());
-        try {
-          remForSetName.setUrl(new URL(urlField.getText()));
-        } catch (MalformedURLException malformedURLException) {
-          GUIController.getInstance().errorHandler("Keine gültige Url");
           return;
         }
         remForSetURL.setRemote(remotes.get(index));
@@ -97,37 +83,21 @@ public class RemoteView extends JPanel implements IView {
           GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");
           return;
         }
-          if (remForSetURL.execute()){
-            remotes = git.getRemotes();
-            DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
-            for (int i = 0; i < remotes.size(); i++){
-              newModel.add(i, remotes.get(i));
-
-            }
-            remoteList.setModel(newModel);
-            remoteList.setSelectedIndex(index);
-            reloadBranches();
-
-          }
-          remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
-
-        if (remForSetName.execute()){
+        if (remForSetURL.execute()) {
+          GUIController.getInstance().setCommandLine(remForSetURL.getCommandLine());
           remotes = git.getRemotes();
           DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
-          for (int i = 0; i < remotes.size(); i++){
+          for (int i = 0; i < remotes.size(); i++) {
             newModel.add(i, remotes.get(i));
+
           }
           remoteList.setModel(newModel);
-          int newIndex = 0;
-          for (int i = 0; i < remotes.size(); i++){
-            if (remotes.get(i).getName().compareTo(nameField.getText()) == 0){
-              newIndex = i;
-            }
-          }
-          remoteList.setSelectedIndex(newIndex);
+          remoteList.setSelectedIndex(index);
           reloadBranches();
+
         }
-        remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+        remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+
       }
     });
     hinzufügenButton.addActionListener(new ActionListener() {
@@ -154,6 +124,7 @@ public class RemoteView extends JPanel implements IView {
         nameField.setText(act.getName());
         urlField.setText(act.getUrl().toString());
         if(tryBranches(act) == false){
+          GUIController.getInstance().openView(new RemoteView());
           return;
         }
         String set = "";
@@ -172,21 +143,7 @@ public class RemoteView extends JPanel implements IView {
        */
       @Override
       public void focusGained(FocusEvent e) {
-        if (remForSetName.getRemoteSubcommand() == Remote.RemoteSubcommand.INACTIVE){
           remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
-        }
-      }
-    });
-    nameField.addFocusListener(new FocusAdapter() {
-      /**
-       * Invoked when a component gains the keyboard focus.
-       *
-       * @param e
-       */
-      @Override
-      public void focusGained(FocusEvent e) {
-        remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.SET_NAME);
-        remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
       }
     });
     deleteButton.addActionListener(new ActionListener() {
@@ -206,6 +163,7 @@ public class RemoteView extends JPanel implements IView {
         retRemote.setRemoteSubcommand(Remote.RemoteSubcommand.REMOVE);
         retRemote.setRemote(remotes.get(index));
         if (retRemote.execute()){
+          GUIController.getInstance().setCommandLine(retRemote.getCommandLine());
           remotes = git.getRemotes();
           DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
           for (int i = 0; i < remotes.size(); i++){
@@ -282,6 +240,7 @@ public class RemoteView extends JPanel implements IView {
     urlField.setText(act.getUrl().toString());
     if (tryBranches(act) == false){
       GUIController.getInstance().openView(new RemoteView());
+      return;
     }
     String set = "";
     for (int i = 0; i < branches.size(); i++){

@@ -35,7 +35,16 @@ public class Remote implements ICommand, ICommandGUI {
    * @return Returns command for Commandline
    */
   public String getCommandLine() {
-    return null;
+    String ret = "";
+    switch (remoteSubcommand){
+      case ADD: ret =  "git remote add " + remoteName + " " + url.toString();
+      break;
+      case SET_URL: ret = "git remote set-url " + remote.getName() + " " + url.toString();
+      break;
+      case REMOVE: ret = "git remote rm " + remote.getName();
+      break;
+    }
+    return ret;
   }
 
   /**
@@ -61,18 +70,6 @@ public class Remote implements ICommand, ICommandGUI {
           GUIController.getInstance().errorHandler(e);
           return false;
         }
-      case SET_NAME:
-        try {
-          GitFacade gitFacade = new GitFacade();
-          boolean sucRem = remote.remove();
-          boolean sucAdd = gitFacade.remoteAddOperation(remoteName,url);
-
-          return sucRem && sucAdd;
-        } catch (GitException e) {
-          GUIController.getInstance().errorHandler(e);
-          return false;
-        }
-
       case ADD:
         GitFacade gitFacade = new GitFacade();
         try {
@@ -119,6 +116,6 @@ public class Remote implements ICommand, ICommandGUI {
   /**
    * TBD
    */
-  public enum RemoteSubcommand{ADD, REMOVE, SET_NAME, SET_URL, INACTIVE}
+  public enum RemoteSubcommand{ADD, REMOVE, SET_URL, INACTIVE}
 
 }
