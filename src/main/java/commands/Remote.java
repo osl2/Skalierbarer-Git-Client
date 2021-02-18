@@ -1,6 +1,8 @@
 package commands;
 
+import controller.GUIController;
 import git.GitRemote;
+import git.exception.GitException;
 
 import java.net.URL;
 
@@ -55,7 +57,22 @@ public class Remote implements ICommand, ICommandGUI {
   public String getDescription(){return null;}
 
   public boolean execute() {
-    return false;
+    switch (remoteSubcommand) {
+      case SET_URL:
+        try {
+          return remote.setUrlGit(url);
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
+      case SET_NAME: return false;
+
+      case ADD:return false;
+
+      case REMOVE:return false;
+
+      default: return false;
+    }
   }
 
 
