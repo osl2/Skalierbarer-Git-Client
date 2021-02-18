@@ -127,8 +127,8 @@ public class GitStatus {
     }
 
     /**
-     * TODO: staged oder unstaged??
-     * @return A list of files that are known to the index but have been removed
+     * @return A list of files that are known to the index but have been removed and added to the staging area (what you get
+     * if you call git rm on an existing file or if you delete the file manually and call git add afterwards=
      * @throws IOException Thrown by toGitFile
      * @throws GitException If the status could not be obtained from JGit
      */
@@ -138,6 +138,26 @@ public class GitStatus {
             Set<String> removed = git.status().call().getRemoved();
             List<GitFile> removedFiles = toGitFile(removed);
             return removedFiles;
+        }
+        catch (GitAPIException e){
+            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
+                    + "Fehlermeldung: " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @return A list of files that have been deleted manually, therefore do not appear in the working directory anymore
+     * (but are still present in the index)
+     * @throws IOException
+     * @throws GitException
+     */
+    public List<GitFile> getMissingFiles() throws IOException, GitException {
+        try{
+            Git git = GitData.getJGit();
+            Set<String> missing = git.status().call().getMissing();
+            List<GitFile> missingFiles = toGitFile(missing);
+            return missingFiles;
         }
         catch (GitAPIException e){
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
@@ -257,5 +277,36 @@ public class GitStatus {
             gitFiles.add(new GitFile(toGitFile.getTotalSpace(), toGitFile));
         }
         return gitFiles;
+    }
+
+
+    /**
+     * Returns all staged files, i.e. added and modified files
+     * @return A list of all files in the staging-area
+     * @throws GitException Thrown by getAddedFiles(), getChangedFiles()
+     * @throws IOException Thrown by getAddedFiles(), getChangedFiles()
+     */
+    public List<GitFile> getStagedFiles() throws GitException, IOException {
+        List<GitFile> stagedFiles = getAddedFiles();
+        stagedFiles.addAll(getChangedFiles());
+        return stagedFiles;
+    }
+
+    public List<GitFile> getDeletedFiles() throws IOException, GitException {
+        List<GitFile> deletedFiles = getMissingFiles();
+        deletedFiles.addAll(getRemovedFiles());
+        return deletedFiles;
+    }
+
+    /**
+     * Returns all unstaged files, i.e. untracked and modified files
+     * @return A list of all files that are not in the staging-area
+     * @throws GitException thrown by getUntrackedFiles() and getModifiedFiles()
+     * @throws IOException thrown by getUntrackedFiles(), getModifiedFiles()
+     */
+    public List<GitFile> getUnstagedFiles() throws IOException, GitException {
+        List<GitFile> unstagedFiles = getUntrackedFiles();
+        unstagedFiles.addAll(getModifiedFiles());
+        return unstagedFiles;
     }
 }
