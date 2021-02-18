@@ -29,14 +29,12 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> stagedFilesList;
   private JPanel diffPanel;
   private DiffView diffView;
-  private JScrollPane stagedFilesScrollPane;
   private JScrollPane modifiedFilesScrollPane;
   private JList modifiedFilesList;
-  private JTextField stagedFilesTextField;
   private JTextField modifiedFilesTextField;
-  private JScrollPane untrackedFilesScrollPane;
-  private JList untrackedFilesList;
-  private JTextField untrackedFilesTextField;
+  private JScrollPane newFilesScrollPane;
+  private JList newFilesList;
+  private JTextField newFilesTextField;
   private JTextField deletedFilesTextField;
   private JList deletedFilesList;
   private JScrollPane deletedFilesScrollPane;
@@ -105,34 +103,30 @@ public class AddCommitView extends JPanel implements IView {
     });
 
     //set up the list for staged files and unstaged files by retrieving the data from GitStatus
-    List<GitFile> untrackedFiles;
-    List<GitFile> stagedFiles;
     List<GitFile> modifiedFiles;
+    List<GitFile> newFiles;
     List<GitFile> deletedFiles;
     try {
-      stagedFiles = gitStatus.getStagedFiles();
       modifiedFiles = gitStatus.getModifiedFiles();
-      untrackedFiles = gitStatus.getUntrackedFiles();
+      modifiedFiles.addAll(gitStatus.getChangedFiles());
+      newFiles = gitStatus.getAddedFiles();
+      newFiles.addAll(gitStatus.getUntrackedFiles());
       deletedFiles = gitStatus.getDeletedFiles();
     }
     catch (GitException | IOException e){
-      untrackedFiles = new LinkedList<>();
       modifiedFiles = new LinkedList<>();
-      stagedFiles = new LinkedList<>();
+      newFiles = new LinkedList<>();
       deletedFiles = new LinkedList<>();
       c.errorHandler(e);
     }
 
     //set up renderer and data model for both lists
-    setUpFileList(stagedFilesList, stagedFiles);
+    setUpFileList(newFilesList, newFiles);
     setUpFileList(modifiedFilesList, modifiedFiles);
-    setUpFileList(untrackedFilesList, untrackedFiles);
     setUpFileList(deletedFilesList, deletedFiles);
 
     //make all files appear green or red, depending on their current stage
-    stagedFilesList.setForeground(Color.GREEN);
-    modifiedFilesList.setForeground(Color.RED);
-    untrackedFilesList.setForeground(Color.RED);
+    //TODO: if staged, green, if not, red --> setUpFileList
 
     commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
@@ -303,6 +297,15 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setBackground(list.getBackground());
       checkBox.setForeground(list.getForeground());
       checkBox.setText(value.getGitFile().getPath().getName());
+
+      //color staged files in green, unstaged files in red
+      if(value.getGitFile().isStaged()){
+        checkBox.setForeground(Color.GREEN);
+      }
+      else{
+        checkBox.setForeground(Color.RED);
+      }
+
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
       if (cellHasFocus){
         checkBox.setBackground(Color.LIGHT_GRAY);
