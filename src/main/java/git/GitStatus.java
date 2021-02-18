@@ -205,15 +205,4 @@ public class GitStatus {
         return stagedFiles;
     }
 
-    /**
-     * Returns all unstaged files, i.e. untracked and modified files
-     * @return A list of all files that are not in the staging-area
-     * @throws GitException thrown by getUntrackedFiles() and getModifiedFiles()
-     * @throws IOException thrown by getUntrackedFiles(), getModifiedFiles()
-     */
-    public List<GitFile> getUnstagedFiles() throws IOException, GitException {
-        List<GitFile> unstagedFiles = getUntrackedFiles();
-        unstagedFiles.addAll(getModifiedFiles());
-        return unstagedFiles;
-    }
 }
