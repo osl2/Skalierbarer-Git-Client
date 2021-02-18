@@ -102,8 +102,14 @@ public class GitFacade {
    * @param url  Url of the repository
    * @return true if it is performed successfully, false if something went wrong
    */
-  public boolean remoteAddOperation(String name, URL url) {
-    throw new AssertionError("not implemented");
+  public boolean remoteAddOperation(String name, URL url) throws GitException {
+    Git git = GitData.getJGit();
+    try {
+      git.remoteAdd().setName(name).setUri(new URIish(url)).call();
+      return true;
+    } catch (GitAPIException e) {
+      throw new GitException(e.getMessage());
+    }
   }
 
   /**

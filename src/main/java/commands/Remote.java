@@ -1,6 +1,7 @@
 package commands;
 
 import controller.GUIController;
+import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 
@@ -18,13 +19,6 @@ public class Remote implements ICommand, ICommandGUI {
 
 
   private RemoteSubcommand remoteSubcommand;
-  /**
-   * Method to get the current remote repository.
-   *
-   * @return The current remote repository
-   */
-  public GitRemote getRemote(){ return null;}
-
   /**
    * Method to set tue current remote repository.
    *
@@ -74,7 +68,14 @@ public class Remote implements ICommand, ICommandGUI {
           GUIController.getInstance().errorHandler(e);
         }
 
-      case ADD:return false;
+      case ADD:
+        GitFacade gitFacade = new GitFacade();
+        try {
+          return gitFacade.remoteAddOperation(remoteName, url);
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
 
       case REMOVE:return false;
 
