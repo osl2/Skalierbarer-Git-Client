@@ -8,17 +8,13 @@ import git.GitFile;
 import git.GitStatus;
 import git.exception.GitException;
 import settings.Settings;
-import views.IView;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class AddCommitView extends JPanel implements IView {
 
@@ -34,10 +30,16 @@ public class AddCommitView extends JPanel implements IView {
   private JPanel diffPanel;
   private DiffView diffView;
   private JScrollPane stagedFilesScrollPane;
-  private JScrollPane unstagedFilesScrollPane;
-  private JList unstagedFilesList;
+  private JScrollPane modifiedFilesScrollPane;
+  private JList modifiedFilesList;
   private JTextField stagedFilesTextField;
-  private JTextField unstagedFilesTextField;
+  private JTextField modifiedFilesTextField;
+  private JScrollPane untrackedFilesScrollPane;
+  private JList untrackedFilesList;
+  private JTextField untrackedFilesTextField;
+  private JTextField removedFilesTextField;
+  private JList removedFilesList;
+  private JScrollPane removedFilesScrollPane;
   private JTextField testTextField;
   private FileListRenderer renderer;
   private GUIController c;
@@ -103,25 +105,38 @@ public class AddCommitView extends JPanel implements IView {
     });
 
     //set up the list for staged files and unstaged files by retrieving the data from GitStatus
-    List<GitFile> unstagedFiles;
+    List<GitFile> untrackedFiles;
     List<GitFile> stagedFiles;
+    List<GitFile> modifiedFiles;
+    List<GitFile> removedFiles;
     try {
       stagedFiles = gitStatus.getStagedFiles();
-      unstagedFiles = gitStatus.getUnstagedFiles();
+      modifiedFiles = gitStatus.getModifiedFiles();
+      untrackedFiles = gitStatus.getUntrackedFiles();
+      removedFiles = gitStatus.getRemovedFiles();
     }
     catch (GitException | IOException e){
-      unstagedFiles = new LinkedList<>();
+      untrackedFiles = new LinkedList<>();
+      modifiedFiles = new LinkedList<>();
       stagedFiles = new LinkedList<>();
+      removedFiles = new LinkedList<>();
       c.errorHandler(e);
     }
 
     //set up renderer and data model for both lists
     setUpFileList(stagedFilesList, stagedFiles);
-    setUpFileList(unstagedFilesList, unstagedFiles);
+    setUpFileList(modifiedFilesList, modifiedFiles);
+    setUpFileList(untrackedFilesList, untrackedFiles);
+    setUpFileList(removedFilesList, removedFiles);
+
+    setDiffListener(stagedFilesList);
+    setDiffListener(modifiedFilesList);
+    setDiffListener(untrackedFilesList);
 
     //make all files appear green or red, depending on their current stage
     stagedFilesList.setForeground(Color.GREEN);
-    unstagedFilesList.setForeground(Color.RED);
+    modifiedFilesList.setForeground(Color.RED);
+    untrackedFilesList.setForeground(Color.RED);
 
     commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
@@ -168,8 +183,8 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   private void createUIComponents() {
-    stagedFilesList = new JList<FileListItem>();
-    unstagedFilesList = new JList<FileListItem>();
+    //stagedFilesList = new JList<FileListItem>();
+    //modifiedFilesList = new JList<FileListItem>();
     commitMessageTextArea = new JTextArea();
 
     //TODO: diff area
@@ -221,8 +236,6 @@ public class AddCommitView extends JPanel implements IView {
 
     defaultListModel.addAll(fileListItems);
     list.setModel(defaultListModel);
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 
     //Mouse Listener for Checkboxes. Selected files are being marked for git add
     list.addMouseListener(new MouseAdapter() {
@@ -233,10 +246,6 @@ public class AddCommitView extends JPanel implements IView {
         int index = list.locationToIndex(event.getPoint());
         FileListItem item = (FileListItem) list.getModel().getElementAt(index);
 
-        //set index in list to be selected
-        list.setSelectedIndex(index);
-        //call diff on selected file
-        diffView.setDiff(item.getGitFile());
         //if item was not selected before, select; otherwise, deselect
         item.setSelected(!item.isSelected());
         //repaint cell
@@ -266,6 +275,24 @@ public class AddCommitView extends JPanel implements IView {
 
 
   }
+
+  private void setDiffListener(JList<FileListItem> list){
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    list.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        JList list = (JList) e.getSource();
+        //get the item index that was clicked
+        int index = list.locationToIndex(e.getPoint());
+        FileListItem item = (FileListItem) list.getModel().getElementAt(index);
+        //set index in list to be selected
+        list.setSelectedIndex(index);
+        //call diff on selected file
+        diffView.setDiff(item.getGitFile());
+      }
+    });
+    }
+
 
   /*
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
