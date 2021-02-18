@@ -67,6 +67,14 @@ public class Remote implements ICommand, ICommandGUI {
 
   }
 
+  public void setRemoteName(String remoteName) {
+    this.remoteName = remoteName;
+  }
+
+  public void setUrl(URL url) {
+    this.url = url;
+  }
+
   /**
    * TBD
    */
