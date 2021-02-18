@@ -8,8 +8,10 @@ import git.GitFile;
 import git.exception.GitException;
 import org.eclipse.jgit.annotations.NonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Merge implements ICommand, ICommandGUI {
     @NonNull
@@ -82,8 +84,6 @@ public class Merge implements ICommand, ICommandGUI {
             e.printStackTrace();
         }
         while (conflicts.size() > 0) {
-            // todo: Call a MergeConflictView here and return its results.
-            // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
             for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
                 GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
                         this.destBranch.getName(), this.srcBranch.getName()));
@@ -91,8 +91,13 @@ public class Merge implements ICommand, ICommandGUI {
             // Everything has been resolved. Create Merge-Commit
             // todo : Load AddCommitView with preloaded Message
 
-            // todo : call merge again and reset conflicts. Should succeed and finish the ongoing merge
-            return false;
+            try {
+                conflicts = this.srcBranch.merge(this.fastForward);
+            } catch (GitException e) {
+                Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
+                return false;
+            }
+            // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
         }
 
         return true;

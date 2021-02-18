@@ -92,7 +92,7 @@ public class MergeConflictDialogView implements IDialogView {
             }
 
             try {
-                file.add(); // Add file to the merge commit
+                file.rm(); // Add remove to the merge commit
                 GUIController.getInstance().closeDialogView();
 
             } catch (GitException e) {

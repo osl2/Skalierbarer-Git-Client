@@ -91,6 +91,23 @@ public class GitFile {
         }
     }
 
+
+    /**
+     * Adds a remove operation for that file to the staging area.
+     *
+     * @return True if the file was successfully marked as removed.
+     * @throws GitException
+     */
+    public boolean rm() throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.rm().addFilepattern(this.getRelativePath()).call();
+        } catch (GitAPIException e) {
+            throw new GitException("File could not be removed in Git");
+        }
+        return true;
+    }
+
     /**
      * Removes file from the staging-area, thereby performing git restore --staged <file>
      *
