@@ -94,6 +94,7 @@ public class Pull implements ICommand, ICommandGUI {
     }
     GitFacade facade = new GitFacade();
     ArrayList<GitRemote> remoteList = new ArrayList<GitRemote>();
+    remote.addBranch(remoteBranch);
     remoteList.add(remote);
     try {
       facade.fetchRemotes(remoteList);
