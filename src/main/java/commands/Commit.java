@@ -1,12 +1,31 @@
 package commands;
 
+import controller.GUIController;
+import git.GitData;
+import git.GitFacade;
+import git.GitStatus;
+import git.exception.GitException;
+import org.eclipse.jgit.api.Git;
+import views.AddCommitView;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 public class Commit implements ICommand, ICommandGUI {
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
   private String commitMessage;
   private boolean amend;
+  private GitFacade gitFacade;
+  private GitStatus gitStatus;
+  private GitData gitData;
+
+  /**
+   * Constructor of the commit command. The amend option must be set explicitly in order to amend the last commit
+   */
+  public Commit() {
+    this.amend = false;
+    gitData = new GitData();
+    this.gitStatus = gitData.getStatus();
+  }
 
   /**
    * This method determines whether the commit should amend the last commit.
@@ -22,26 +41,50 @@ public class Commit implements ICommand, ICommandGUI {
    * @param commitMessage the message of the next commit.
    */
   public void setCommitMessage(String commitMessage) {
-
+    this.commitMessage = commitMessage;
   }
 
   /**
    * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
+   * @throws GitException if the staging-area is empty, if the commit message is missing or if the internal
+   * execution of the command in JGit throws an exception
    */
   public boolean execute() {
-    return false;
+    gitFacade = new GitFacade();
+    //check if staging-area is empty
+    try {
+      if (gitStatus.getStagedFiles().isEmpty()){
+        GUIController.getInstance().errorHandler("Staging-Area ist leer. Leerer Commit nicht erlaubt!");
+      }
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    } catch (IOException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    if (commitMessage == null
+            || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
+            || commitMessage.equals("")){
+      GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
+    }
+    boolean success = false;
+    try {
+      success = gitFacade.commitOperation(commitMessage, amend);
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return success;
   }
 
   /**
    * Method to get the Commandline input that would be necessarry to execute the command.
    *
    * @return Returns a String representation of the corresponding git command
-   * to display on the command line
+   *     to display on the command line
    */
   public String getCommandLine() {
-    return null;
+    return "git commit " + (amend ? "--amend " : "") + "-m\" ";
   }
 
   /**
@@ -50,7 +93,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return null;
+    return "Commit";
   }
 
   /**
@@ -59,10 +102,11 @@ public class Commit implements ICommand, ICommandGUI {
    * @return description as a String
    */
   public String getDescription() {
-    return null;
+    return "Erstellt eine neue Einbuchungen mit den Änderungen aus der " +
+            "Staging-Area und der angegebenen Commit-Nachricht";
   }
 
   public void onButtonClicked() {
-
+    //do nothing, since there is no commit button
   }
 }

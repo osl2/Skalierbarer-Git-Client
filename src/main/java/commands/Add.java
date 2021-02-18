@@ -1,62 +1,104 @@
 package commands;
 
 
+import controller.GUIController;
+import git.GitData;
 import git.GitFile;
+import git.GitStatus;
+import git.exception.GitException;
+import views.AddCommitView;
 
+import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Add implements ICommand, ICommandGUI {
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
   private List<GitFile> files;
+  private GitStatus gitStatus;
+  private GitData gitData;
+
+  public Add(){
+    gitData = new GitData();
+    gitStatus = gitData.getStatus();
+    files = new LinkedList<>();
+  }
+
 
   /**
-   * Performs git add.
+   * Performs git add on each GitFile instance separately.
    *
-   * @return true, if the command has been executed successfully
+   * @return true, if the command has been executed successfully on every file in the list, false otherwise
+   * @throws GitException if command execution in JGit throws an exception
    */
   public boolean execute() {
-    return false;
+    //TODO: Ist hier mehr Fehlerbehandlung notwendig? Was passiert, wenn mehrere Dateien fehlschlagen?
+    boolean success = false;
+    List<GitFile> stagedFiles = new LinkedList<>();
+    try {
+      stagedFiles = gitStatus.getStagedFiles();
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    } catch (IOException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    //add files that are not in the staging-area yet
+    for (GitFile unstagedFile : files){
+      if (!stagedFiles.contains(unstagedFile)){
+        try {
+          success = unstagedFile.add();
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+        }
+      }
+    }
+    //remove files that were added to the staging-area earlier but were marked by the user to restage them
+    for (GitFile stagedFile : stagedFiles){
+      if (!files.contains(stagedFile)){
+        try {
+          success = stagedFile.addUndo();
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+        }
+      }
+    }
+
+    return success;
   }
 
 
 
-  /**
-   * This method adds the given file to the internal list of files that will be added to the staging-area when execute()
-   * is called the next time.
-   *
-   * @param file A file that should be added to the staging-area.
-   */
-  public void addFile(GitFile file) {
-  }
 
   /**
-   * This method removes the given file from the internal list of files that will be added to the staging-area
-   * @param file A file that has been added to the list earlier and should be removed from it
+   * Takes a list of files that should be added to the staging area
+   * @param files
    */
-  public void removeFile(GitFile file){}
+  public void addFiles(List<GitFile> files){
+    this.files.addAll(files);
+  }
 
 
   /**
    * Method to get the Commandline input that would be
-   * necessarry to execute the command.
+   *     necessarry to execute the command.
    *
    * @return Returns a String representation of the corresponding
-   * git command to display on the command line
+   *     git command to display on the command line
    */
   public String getCommandLine() {
-    return null;
+    StringBuffer cl = new StringBuffer("git add ");
+    for (GitFile file : files){
+      cl.append(file.getPath().getPath() + " ");
+    }
+    return cl.toString();
   }
 
   /**
-   * Method to get the name of the command, that could be displaied in the GUI.
+   * Method to get the name of the command, that could be displayed in the GUI.
    *
    * @return The name of the command
    */
   public String getName() {
-    return null;
+    return "Add";
   }
 
   /**
@@ -65,11 +107,12 @@ public class Add implements ICommand, ICommandGUI {
    * @return description as a String
    */
   public String getDescription() {
-    return null;
+    return "Fügt Dateien zur Staging-Area hinzu";
   }
 
   public void onButtonClicked() {
-
+    GUIController controller = GUIController.getInstance();
+    controller.openView(new AddCommitView());
   }
 
 }

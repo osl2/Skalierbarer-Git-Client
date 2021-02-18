@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="views.AddCommitView">
+  <grid id="27dc6" binding="addCommitView" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1280" height="720"/>
+    </constraints>
+    <properties>
+      <background color="-12828863"/>
+      <enabled value="true"/>
+      <minimumSize width="1280" height="720"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="e3df5" binding="commitMessagePanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="West"/>
+        <properties>
+          <background color="-12828863"/>
+          <focusable value="true"/>
+          <minimumSize width="427" height="-1"/>
+          <preferredSize width="427" height="-1"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="ac581" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <minimumSize width="422" height="240"/>
+              <preferredSize width="422" height="240"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="106cd" class="javax.swing.JButton" binding="cancelButton">
+                <constraints/>
+                <properties>
+                  <text value="Zurück"/>
+                </properties>
+              </component>
+              <component id="e715d" class="javax.swing.JButton" binding="commitButton">
+                <constraints/>
+                <properties>
+                  <text value="Commit"/>
+                </properties>
+              </component>
+              <component id="3a75b" class="javax.swing.JButton" binding="amendButton">
+                <constraints/>
+                <properties>
+                  <text value="Amend"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <scrollpane id="25786">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="7d92b" class="javax.swing.JTextArea" binding="commitMessageTextArea">
+                <constraints/>
+                <properties>
+                  <enabled value="true"/>
+                  <minimumSize width="10" height="170"/>
+                  <opaque value="true"/>
+                  <preferredSize width="400" height="500"/>
+                  <text value=""/>
+                  <toolTipText value="Hier die Commit-Nachricht eingeben "/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
+      <grid id="c5cc6" binding="statusPanel" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="Center"/>
+        <properties>
+          <background color="-12828863"/>
+          <minimumSize width="427" height="-1"/>
+          <preferredSize width="427" height="-1"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <scrollpane id="d6b35" binding="modifiedChangedFilesScrollPane">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="5b6a8" class="javax.swing.JList" binding="modifiedChangedFilesList">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+          <component id="8a7d7" class="javax.swing.JTextField" binding="modifiedChangedFilesTextField">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="Dateien, von denen schon eine ältere Version existiert"/>
+              <toolTipText value="Aktiviere das Kontrollkästchen, um die Datei der Staging-Area hinzuzufügen"/>
+            </properties>
+          </component>
+          <scrollpane id="3cc4d" binding="newFilesScrollPane">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="88c4d" class="javax.swing.JList" binding="newFilesList">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+          <component id="bc320" class="javax.swing.JTextField" binding="newFilesTextField">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="Dateien, die neu erstellt wurden"/>
+              <toolTipText value="Aktiviere das Kontrollkästchen, um die Datei der Staging-Area hinzuzufügen"/>
+            </properties>
+          </component>
+          <scrollpane id="b0020" binding="deletedFilesScrollPane">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="f3a42" class="javax.swing.JList" binding="deletedFilesList">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+          <component id="8475f" class="javax.swing.JTextField" binding="deletedFilesTextField">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="Gelöschte Dateien"/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="9eb4c" binding="diffPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="East"/>
+        <properties>
+          <background color="-1"/>
+          <focusable value="false"/>
+          <minimumSize width="427" height="-1"/>
+          <preferredSize width="427" height="-1"/>
+        </properties>
+        <border type="line"/>
+        <children/>
+      </grid>
+    </children>
+  </grid>
+</form>
