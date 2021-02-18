@@ -37,9 +37,9 @@ public class AddCommitView extends JPanel implements IView {
   private JScrollPane untrackedFilesScrollPane;
   private JList untrackedFilesList;
   private JTextField untrackedFilesTextField;
-  private JTextField removedFilesTextField;
-  private JList removedFilesList;
-  private JScrollPane removedFilesScrollPane;
+  private JTextField deletedFilesTextField;
+  private JList deletedFilesList;
+  private JScrollPane deletedFilesScrollPane;
   private JTextField testTextField;
   private FileListRenderer renderer;
   private GUIController c;
@@ -108,18 +108,18 @@ public class AddCommitView extends JPanel implements IView {
     List<GitFile> untrackedFiles;
     List<GitFile> stagedFiles;
     List<GitFile> modifiedFiles;
-    List<GitFile> removedFiles;
+    List<GitFile> deletedFiles;
     try {
       stagedFiles = gitStatus.getStagedFiles();
       modifiedFiles = gitStatus.getModifiedFiles();
       untrackedFiles = gitStatus.getUntrackedFiles();
-      removedFiles = gitStatus.getRemovedFiles();
+      deletedFiles = gitStatus.getDeletedFiles();
     }
     catch (GitException | IOException e){
       untrackedFiles = new LinkedList<>();
       modifiedFiles = new LinkedList<>();
       stagedFiles = new LinkedList<>();
-      removedFiles = new LinkedList<>();
+      deletedFiles = new LinkedList<>();
       c.errorHandler(e);
     }
 
@@ -127,11 +127,7 @@ public class AddCommitView extends JPanel implements IView {
     setUpFileList(stagedFilesList, stagedFiles);
     setUpFileList(modifiedFilesList, modifiedFiles);
     setUpFileList(untrackedFilesList, untrackedFiles);
-    setUpFileList(removedFilesList, removedFiles);
-
-    setDiffListener(stagedFilesList);
-    setDiffListener(modifiedFilesList);
-    setDiffListener(untrackedFilesList);
+    setUpFileList(deletedFilesList, deletedFiles);
 
     //make all files appear green or red, depending on their current stage
     stagedFilesList.setForeground(Color.GREEN);
@@ -237,6 +233,7 @@ public class AddCommitView extends JPanel implements IView {
     defaultListModel.addAll(fileListItems);
     list.setModel(defaultListModel);
 
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     //Mouse Listener for Checkboxes. Selected files are being marked for git add
     list.addMouseListener(new MouseAdapter() {
       @Override
@@ -245,7 +242,10 @@ public class AddCommitView extends JPanel implements IView {
         //get the item index that was clicked
         int index = list.locationToIndex(event.getPoint());
         FileListItem item = (FileListItem) list.getModel().getElementAt(index);
-
+        //set index in list to be selected
+        list.setSelectedIndex(index);
+        //call diff on selected file
+        diffView.setDiff(item.getGitFile());
         //if item was not selected before, select; otherwise, deselect
         item.setSelected(!item.isSelected());
         //repaint cell
@@ -276,22 +276,7 @@ public class AddCommitView extends JPanel implements IView {
 
   }
 
-  private void setDiffListener(JList<FileListItem> list){
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        JList list = (JList) e.getSource();
-        //get the item index that was clicked
-        int index = list.locationToIndex(e.getPoint());
-        FileListItem item = (FileListItem) list.getModel().getElementAt(index);
-        //set index in list to be selected
-        list.setSelectedIndex(index);
-        //call diff on selected file
-        diffView.setDiff(item.getGitFile());
-      }
-    });
-    }
+
 
 
   /*
