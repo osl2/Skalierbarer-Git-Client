@@ -63,9 +63,16 @@ public class GitRemote {
     public boolean remove() {
         return false;
     }
+
+    /**
+     * Changes the Url of this Repository in JGit
+     * @param newUrl the new URL
+     * @return true if it was succesfully
+     * @throws GitException if something went wrong.
+     */
     public boolean setUrlGit(URL newUrl) throws GitException {
         url = newUrl;
-       Git git=  GitData.getJGit();
+       Git git =  GitData.getJGit();
        URIish ur = new URIish(newUrl);
         try {
             git.remoteSetUrl().setRemoteName(name).setRemoteUri(ur).call();
@@ -73,6 +80,18 @@ public class GitRemote {
         } catch (GitAPIException e) {
             throw new GitException(e.getMessage());
         }
+    }
+    public boolean setNameGit (String newName) throws GitException {
+
+        Git git = GitData.getJGit();
+        try {
+            git.remoteAdd().setName(newName).setUri(new URIish(url)).call();
+            git.remoteRemove().setRemoteName(name).call();
+            name = newName;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
+       return true;
     }
 }
 

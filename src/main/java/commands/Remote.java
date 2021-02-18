@@ -65,7 +65,12 @@ public class Remote implements ICommand, ICommandGUI {
           GUIController.getInstance().errorHandler(e);
           return false;
         }
-      case SET_NAME: return false;
+      case SET_NAME:
+        try {
+          return remote.setNameGit(remoteName);
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+        }
 
       case ADD:return false;
 
