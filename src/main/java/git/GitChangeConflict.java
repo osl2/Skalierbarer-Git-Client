@@ -141,6 +141,8 @@ public class GitChangeConflict {
         if (state == IndexDiff.StageState.DELETED_BY_US) {
             deleted = true;
         }
+        if (state != IndexDiff.StageState.BOTH_MODIFIED)
+            resolved = true;
         if (result == null) result = "";
         this.result += getOptionOurs() + System.lineSeparator();
     }
@@ -153,6 +155,8 @@ public class GitChangeConflict {
         if (state == IndexDiff.StageState.DELETED_BY_THEM) {
             deleted = true;
         }
+        if (state != IndexDiff.StageState.BOTH_MODIFIED)
+            resolved = true;
         if (result == null) result = "";
         this.result += getOptionTheirs() + System.lineSeparator();
 

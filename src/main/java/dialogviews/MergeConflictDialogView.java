@@ -110,9 +110,10 @@ public class MergeConflictDialogView implements IDialogView {
                     bw.write(baseVersion[i]);
                     bw.write(System.lineSeparator());
                 }
-                bw.flush();
-                bw.close();
             }
+
+            bw.flush();
+            bw.close();
 
         } catch (IOException e) {
             GUIController.getInstance().errorHandler(e);
@@ -138,7 +139,7 @@ public class MergeConflictDialogView implements IDialogView {
                 break;
         }
         sidesHandled++;
-        if (sidesHandled == 2 || c.isResolved() || c.isDeleted()) {
+        if (sidesHandled == 2 || c.isResolved()) {
             handleNextConflict();
             sidesHandled = 0;
         }
