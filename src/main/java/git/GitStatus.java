@@ -137,6 +137,9 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> removed = git.status().call().getRemoved();
             List<GitFile> removedFiles = toGitFile(removed);
+            for (GitFile file : removedFiles){
+                file.setStaged(true);
+            }
             return removedFiles;
         }
         catch (GitAPIException e){
