@@ -24,10 +24,12 @@ public class PullConflictDialogView implements IDialogView {
   private JPanel pullConflictPanel;
   private GitBranch src;
   private GitBranch dest;
+  private String commandLine;
 
-  public PullConflictDialogView(GitBranch src, GitBranch dest) {
+  public PullConflictDialogView(GitBranch src, GitBranch dest, String commandLine) {
     this.src = src;
     this.dest = dest;
+    this.commandLine = commandLine;
     mergeButton.setEnabled(false);
     rebaseButton.setEnabled(false);
     conflictMessage.setRows(3);
@@ -41,8 +43,8 @@ public class PullConflictDialogView implements IDialogView {
     if(width > 0) {
       conflictMessage.setSize(width, Short.MAX_VALUE);
     }
-    List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
     boolean merge = false;
+    /*List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
     for(int i = 0; i < commandList.size(); i++) {
       if(commandList.get(i).getName().compareTo("Merge") == 0) {
         mergeButton.setEnabled(true);
@@ -51,7 +53,7 @@ public class PullConflictDialogView implements IDialogView {
         rebaseButton.setEnabled(true);
         merge = true;
       }
-    }
+    }*/
     if(!merge) {
       mergeButton.setEnabled(true);
     }
@@ -64,15 +66,23 @@ public class PullConflictDialogView implements IDialogView {
     rebaseButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        GUIController.getInstance().closeDialogView();
         Rebase rebase = new Rebase(src, dest);
-        rebase.execute();
+        boolean success = rebase.execute();
+        if(success) {
+          GUIController.getInstance().setCommandLine("git pull --rebase " + commandLine);
+        }
       }
     });
     mergeButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        GUIController.getInstance().closeDialogView();
         Merge merge = new Merge(src, dest);
-        merge.execute();
+        boolean success = merge.execute();
+        if(success) {
+          GUIController.getInstance().setCommandLine("git pull " + commandLine);
+        }
       }
     });
   }

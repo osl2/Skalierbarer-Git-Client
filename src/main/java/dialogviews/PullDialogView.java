@@ -1,9 +1,11 @@
 package dialogviews;
 
 import commands.Pull;
+import git.CredentialProviderHolder;
 import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
+import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +35,9 @@ public class PullDialogView implements IDialogView {
                 listOfRemoteBranches.clear();
                 branchComboBox.removeAllItems();
                 int index = remoteCombobox.getSelectedIndex();
-                listOfRemoteBranches = data.getBranches(listOfRemotes.get(index));
+                if(!nextTry(index)) {
+                    return;
+                }
                 for(int i = 0; i < listOfRemoteBranches.size(); i++) {
                     branchComboBox.addItem(listOfRemoteBranches.get(i).getName());
                 }
@@ -57,6 +61,21 @@ public class PullDialogView implements IDialogView {
                 pull.execute();
             }
         });
+    }
+
+    private boolean nextTry(int index) {
+        try {
+            listOfRemoteBranches = data.getBranches(listOfRemotes.get(index));
+            return true;
+        } catch (GitException gitException) {
+            CredentialProviderHolder.getInstance().changeProvider(true, listOfRemotes.get(index).getName());
+            if(CredentialProviderHolder.getInstance().isActive()) {
+                return nextTry(index);
+            } else {
+                CredentialProviderHolder.getInstance().setActive(true);
+                return false;
+            }
+        }
     }
 
     private void initPull() {

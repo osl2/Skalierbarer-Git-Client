@@ -17,6 +17,7 @@ import java.util.List;
 public class Pull implements ICommand, ICommandGUI {
   private GitRemote remote;
   private GitBranch remoteBranch;
+  private String commandLine;
 
   /**
    * Method to get the current remote.
@@ -65,7 +66,7 @@ public class Pull implements ICommand, ICommandGUI {
   public void startRebasing(){}
 
   public String getCommandLine() {
-    return "git pull";
+    return commandLine;
   }
 
   public String getName() {
@@ -94,9 +95,10 @@ public class Pull implements ICommand, ICommandGUI {
     GitFacade facade = new GitFacade();
     ArrayList<GitRemote> remoteList = new ArrayList<GitRemote>();
     remoteList.add(remote);
-    boolean success = facade.fetchRemotes(remoteList);
-    if(!success) {
-      GUIController.getInstance().errorHandler("Es konnte kein remote gefunden werden.");
+    try {
+      facade.fetchRemotes(remoteList);
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
       return false;
     }
     GitData data = new GitData();
@@ -112,7 +114,7 @@ public class Pull implements ICommand, ICommandGUI {
     GitBranch src = null;
     for(int i = 0; i < allBranches.size(); i++) {
       // Find fetched branch.
-      if(allBranches.get(i).getName().compareTo("remotes/" + remote.getName() + "/" + remoteBranch.getName()) == 0) {
+      if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
         src = allBranches.get(i);
       }
       // Checks if the fetched branch exists locally.
@@ -135,7 +137,8 @@ public class Pull implements ICommand, ICommandGUI {
       }
     }
     GUIController.getInstance().closeDialogView();
-    GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest));
+    commandLine = remote.getName() + remoteBranch.getName();
+    GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest, getCommandLine()));
     return true;
   }
 }
