@@ -277,6 +277,45 @@ public class GitStatusTest extends AbstractGitTest {
                 gitStatus.getChangedFiles().size() + gitStatus.getModifiedFiles().size());
     }
 
+    @Test
+    public void getStagedFilesTest() throws IOException, GitAPIException, GitException {
+        //make two files, add and commit file1
+        File file1 = new File(repo, "file1");
+        File file2 = new File(repo, "file2");
+        new FileOutputStream(file1).close();
+        new FileOutputStream(file2).close();
+        GitFile gitFile1 = new GitFile(file1.getTotalSpace(), file1);
+        GitFile gitFile2 = new GitFile(file2.getTotalSpace(), file2);
+
+        git.add().addFilepattern(repo.toPath().relativize(file1.toPath()).toString()).call();
+        git.commit().setMessage("Test").call();
+
+        //modify file1
+        FileOutputStream out  = new FileOutputStream(file1);
+        out.write(new String("Test").getBytes(StandardCharsets.UTF_8));
+        out.close();
+
+        //add file1
+        git.add().addFilepattern(repo.toPath().relativize(file1.toPath()).toString()).call();
+
+        //add file2
+        git.add().addFilepattern(repo.toPath().relativize(file2.toPath()).toString()).call();
+
+
+        //file1 should now be in getChanged, file2 should be in getAdded, both should be in getStaged
+        Status status = git.status().call();
+        GitStatus gitStatus = GitStatus.getGitStatus();
+        assertTrue(status.getChanged().contains(file1.getName()));
+        assertTrue(status.getAdded().contains(file2.getName()));
+        assertTrue(gitStatus.getChangedFiles().contains(gitFile1));
+        assertTrue(gitStatus.getAddedFiles().contains(gitFile2));
+        assertTrue(gitStatus.getStagedFiles().contains(gitFile1));
+        assertTrue(gitStatus.getStagedFiles().contains(gitFile2));
+        assertEquals(gitStatus.getStagedFiles().size(),
+                gitStatus.getChangedFiles().size() + gitStatus.getAddedFiles().size());
+    }
+
+
     private void reloadFileLists() throws IOException, GitException {
         gitStatus = GitStatus.getGitStatus();
         untrackedFiles = gitStatus.getUntrackedFiles();
