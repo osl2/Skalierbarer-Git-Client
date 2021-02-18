@@ -35,16 +35,17 @@ public class RemoteView extends JPanel implements IView {
   private JButton safeButton;
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
+  private Remote remForSetURL = new Remote();
+  private Remote remForSetName = new Remote();
+
 
   public RemoteView(){
+    remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+    remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
     remotes = git.getRemotes();
-    //GitRemote[] remoteArray = remotes.toArray(new GitRemote[remotes.size()]);
     DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
     for (int i = 0; i < remotes.size(); i++){
-      //String added = remotes.get(i).getUrl().toString();
-      //String first = "Name: " + remotes.get(i).getName();
-      //String newAdded =   System.lineSeparator() + System.lineSeparator() + "Url: " + added;
       model.add(i, remotes.get(i) );
     }
     remoteList.setCellRenderer(new RemoteViewRenderer());
@@ -74,27 +75,27 @@ public class RemoteView extends JPanel implements IView {
           GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
           return;
         }
-        Remote rem1 = new Remote();
-        rem1.setRemote(remotes.get(index));
-        rem1.setRemoteSubcommand(Remote.RemoteSubcommand.SET_NAME);
+        remForSetName.setRemote(remotes.get(index));
         if (nameField.getText().compareTo("") == 0){
           GUIController.getInstance().errorHandler("Kein name eingegeben");
           return;
         }
-        rem1.setRemoteName(nameField.getText());
+        remForSetName.setRemoteName(nameField.getText());
         try {
-          rem1.setUrl(new URL(urlField.getText()));
+          remForSetName.setUrl(new URL(urlField.getText()));
         } catch (MalformedURLException malformedURLException) {
           GUIController.getInstance().errorHandler("Keine gültige Url");
           return;
         }
-        Remote rem2 = new Remote();
-        rem2.setRemote(remotes.get(index));
-        rem2.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
+        remForSetURL.setRemote(remotes.get(index));
         try {
           URL url = new URL(urlField.getText());
-          rem2.setUrl(url);
-          if (rem2.execute()){
+          remForSetURL.setUrl(url);
+        } catch (MalformedURLException malformedURLException) {
+          GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");
+          return;
+        }
+          if (remForSetURL.execute()){
             remotes = git.getRemotes();
             DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
             for (int i = 0; i < remotes.size(); i++){
@@ -103,26 +104,32 @@ public class RemoteView extends JPanel implements IView {
             }
             remoteList.setModel(newModel);
             remoteList.setSelectedIndex(index);
-            tryBranches(remotes.get(remoteList.getSelectedIndex()));
+            GitRemote act = remotes.get(index);
+            nameField.setText(act.getName());
+            urlField.setText(act.getUrl().toString());
+            tryBranches(act);
             String set = "";
             for (int i = 0; i < branches.size(); i++){
               set = set + branches.get(i).getName()+ System.lineSeparator();
             }
             branchArea.setText(set);
+
           }
-        } catch (MalformedURLException malformedURLException) {
-          GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");
-          return;
-        }
-        if (rem1.execute()){
+          remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+
+        if (remForSetName.execute()){
           remotes = git.getRemotes();
           DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
           for (int i = 0; i < remotes.size(); i++){
             newModel.add(i, remotes.get(i));
           }
           remoteList.setModel(newModel);
-          remoteList.setSelectedIndex(index);
+          nameField.setText("");
+          urlField.setText("");
+          branchArea.setText("");
+
         }
+        remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
       }
     });
     hinzufügenButton.addActionListener(new ActionListener() {
@@ -154,6 +161,32 @@ public class RemoteView extends JPanel implements IView {
           set = set + branches.get(i).getName()+ System.lineSeparator();
         }
         branchArea.setText(set);
+      }
+    });
+
+    urlField.addFocusListener(new FocusAdapter() {
+      /**
+       * Invoked when a component gains the keyboard focus.
+       *
+       * @param e
+       */
+      @Override
+      public void focusGained(FocusEvent e) {
+        if (remForSetName.getRemoteSubcommand() == Remote.RemoteSubcommand.INACTIVE){
+          remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
+        }
+      }
+    });
+    nameField.addFocusListener(new FocusAdapter() {
+      /**
+       * Invoked when a component gains the keyboard focus.
+       *
+       * @param e
+       */
+      @Override
+      public void focusGained(FocusEvent e) {
+        remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.SET_NAME);
+        remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
       }
     });
   }

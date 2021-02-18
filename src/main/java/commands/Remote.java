@@ -105,9 +105,13 @@ public class Remote implements ICommand, ICommandGUI {
     this.url = url;
   }
 
+  public RemoteSubcommand getRemoteSubcommand() {
+    return remoteSubcommand;
+  }
+
   /**
    * TBD
    */
-  public enum RemoteSubcommand{ADD, REMOVE, SET_NAME, SET_URL}
+  public enum RemoteSubcommand{ADD, REMOVE, SET_NAME, SET_URL, INACTIVE}
 
 }
