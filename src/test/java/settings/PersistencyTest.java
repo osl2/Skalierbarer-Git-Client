@@ -34,7 +34,7 @@ public class PersistencyTest extends AbstractGitTest {
     }
 
     @Test
-    public void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, IOException, URISyntaxException {
+    public void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, URISyntaxException {
         // The Instance fields are private, so we should not be able to set them. We use reflection to still do that.
         // This should create new instances when we try to get another Settings or Data instance.
         FieldUtils.writeField(settings, "INSTANCE", null, true);
