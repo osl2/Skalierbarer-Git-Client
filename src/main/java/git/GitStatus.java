@@ -127,6 +127,25 @@ public class GitStatus {
     }
 
     /**
+     * TODO: staged oder unstaged??
+     * @return A list of files that are known to the index but have been removed
+     * @throws IOException Thrown by toGitFile
+     * @throws GitException If the status could not be obtained from JGit
+     */
+    public List<GitFile> getRemovedFiles() throws IOException, GitException {
+        try{
+            Git git = GitData.getJGit();
+            Set<String> removed = git.status().call().getRemoved();
+            List<GitFile> removedFiles = toGitFile(removed);
+            return removedFiles;
+        }
+        catch (GitAPIException e){
+            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
+                    + "Fehlermeldung: " + e.getMessage());
+        }
+    }
+
+    /**
      * Like getUntrackedFiles(), but with folders.
      *
      * @return Returns a list of untracked files
