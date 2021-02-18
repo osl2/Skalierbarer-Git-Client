@@ -49,7 +49,6 @@ public class PersistencyTest extends AbstractGitTest {
         assertNotSame(settings, newSettings);
 
         assertEquals(settings.getLevel(), newSettings.getLevel());
-        assertEquals(settings.getUser(), newSettings.getUser());
         assertEquals(settings.getActiveRepositoryPath(), newSettings.getActiveRepositoryPath());
 
         assertEquals(data.getLevels(), newData.getLevels());
