@@ -33,6 +33,8 @@ public class RemoteView extends JPanel implements IView {
   private JScrollPane branchPane;
   private JTextArea branchArea;
   private JButton safeButton;
+  private JButton deleteButton;
+  private JPanel buttonPanel2;
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
   private Remote remForSetURL = new Remote();
@@ -187,6 +189,35 @@ public class RemoteView extends JPanel implements IView {
       public void focusGained(FocusEvent e) {
         remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.SET_NAME);
         remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+      }
+    });
+    deleteButton.addActionListener(new ActionListener() {
+      /**
+       * Invoked when an action occurs.
+       *
+       * @param e the event to be processed
+       */
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        int index = remoteList.getSelectedIndex();
+        if (index < 0){
+          GUIController.getInstance().errorHandler("Es ist kein Remote ausgewählt");
+          return;
+        }
+        Remote retRemote = new Remote();
+        retRemote.setRemoteSubcommand(Remote.RemoteSubcommand.REMOVE);
+        retRemote.setRemote(remotes.get(index));
+        if (retRemote.execute()){
+          remotes = git.getRemotes();
+          DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
+          for (int i = 0; i < remotes.size(); i++){
+            model.add(i, remotes.get(i) );
+          }
+          remoteList.setModel(model);
+          nameField.setText("");
+          urlField.setText("");
+          branchArea.setText("");
+        }
       }
     });
   }

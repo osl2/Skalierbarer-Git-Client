@@ -82,7 +82,14 @@ public class Remote implements ICommand, ICommandGUI {
           return false;
         }
 
-      case REMOVE:return false;
+      case REMOVE:
+        try {
+          remote.remove();
+          return true;
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
 
       default: return false;
     }
