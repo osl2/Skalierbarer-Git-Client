@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class FetchDialogView implements IDialogView {
 
@@ -24,7 +25,7 @@ public class FetchDialogView implements IDialogView {
   private JPanel bottomPanel;
   private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
   private DefaultTreeModel model;
-  private boolean needNew = false;
+  private boolean isOpen = true;
 
   public FetchDialogView() {
 
@@ -39,8 +40,7 @@ public class FetchDialogView implements IDialogView {
 
       try {
         remoteTreeNode = buildRemoteTree(gitRemote);
-      } catch (GitException e) {
-        needNew = true;
+      } catch (Exception e) {
         return;
       }
       root.add(remoteTreeNode);
@@ -79,16 +79,17 @@ public class FetchDialogView implements IDialogView {
       }
     });
   }
-
-
-  private RemoteTreeNode buildRemoteTree(GitRemote r) throws GitException {
+  private RemoteTreeNode buildRemoteTree(GitRemote r) throws Exception {
     GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
 
     git = new GitData();
 
     GitBranch[] branches;
-    branches = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    branches = loadRemoteBranches(r);
+    if (branches == null){
+      throw new Exception();
+    }
     for (int i = 0; i < branches.length; i++) {
       BranchTreeNode node = new BranchTreeNode(branches[i], r);
       root.add(node);
@@ -189,7 +190,30 @@ public class FetchDialogView implements IDialogView {
 
   }
 
-  public boolean isNeedNew() {
-    return needNew;
+  public boolean isOpen() {
+    return isOpen;
+  }
+
+  private GitBranch[] loadRemoteBranches(GitRemote r){
+
+    return reloadBranches(r);
+
+  }
+  private GitBranch[] reloadBranches(GitRemote r){
+    GitData git = new GitData();
+    GitBranch[] ret = null;
+    try {
+      ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return  loadRemoteBranches(r);
+      }
+      else {
+        isOpen = false;
+      }
+
+    }
+    return ret;
   }
 }

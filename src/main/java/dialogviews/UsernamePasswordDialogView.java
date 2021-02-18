@@ -19,8 +19,11 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel userNameLabel;
     private JButton okButton;
     private JLabel pwLabel;
+    private JButton breakButton;
+    private String name;
 
-    public UsernamePasswordDialogView() {
+    public UsernamePasswordDialogView(String name) {
+        this.name = name;
         okButton.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -39,6 +42,18 @@ public class UsernamePasswordDialogView implements IDialogView{
                 GUIController.getInstance().closeDialogView();
             }
         });
+        breakButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CredentialProviderHolder.getInstance().setActive(false);
+                GUIController.getInstance().closeDialogView();
+            }
+        });
     }
 
     /**
@@ -48,7 +63,7 @@ public class UsernamePasswordDialogView implements IDialogView{
      */
     @Override
     public String getTitle() {
-        return "Benutzername";
+        return "Benutzername - " + name;
     }
 
     /**

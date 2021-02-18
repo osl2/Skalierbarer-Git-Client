@@ -26,11 +26,7 @@ public class Fetch implements ICommand, ICommandGUI {
   public boolean execute()  {
     GitFacade facade = new GitFacade();
     boolean suc = false;
-    try {
-      suc = facade.fetchRemotes(remotes);
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
-    }
+      suc = tryFetch();
     return suc;
   }
 
@@ -94,12 +90,30 @@ public class Fetch implements ICommand, ICommandGUI {
   }
 
   public void onButtonClicked() {
-    FetchDialogView fetch = new FetchDialogView();
-    while (fetch.isNeedNew()){
-      CredentialProviderHolder.getInstance().changeProvider(true);
-      fetch = new FetchDialogView();
+    FetchDialogView dialogView = new FetchDialogView();
+    if (dialogView.isOpen()){
+      GUIController.getInstance().openDialog(dialogView);
     }
-    GUIController.getInstance().openDialog(fetch);
+
+  }
+  private boolean tryFetch(){
+    return retryFetch();
+  }
+  private boolean retryFetch(){
+    GitFacade gitFacade = new GitFacade();
+    try {
+      gitFacade.fetchRemotes(remotes);
+      return true;
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true, "");
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return tryFetch();
+      }
+      else{
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
+      }
+    }
   }
 }
 

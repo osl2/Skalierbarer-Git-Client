@@ -7,6 +7,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 public class CredentialProviderHolder {
     private static CredentialProviderHolder INSTANCE = null;
     private UsernamePasswordCredentialsProvider provider;
+    private boolean isActive = true;
     private CredentialProviderHolder(){
         provider = new UsernamePasswordCredentialsProvider("", "");
     }
@@ -24,14 +25,21 @@ public class CredentialProviderHolder {
     UsernamePasswordCredentialsProvider getProvider(){
         return provider;
     }
-    public void changeProvider(boolean needProv){
+    public void changeProvider(boolean needProv, String nameForProof){
         if (needProv) {
-            GUIController.getInstance().openDialog(new UsernamePasswordDialogView());
+            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof));
         }
         else {
             provider.clear();
         }
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
 
