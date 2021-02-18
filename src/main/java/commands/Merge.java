@@ -2,6 +2,7 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.MergeConflictDialogView;
+import dialogviews.MergeDialogView;
 import git.GitBranch;
 import git.GitChangeConflict;
 import git.GitFile;
@@ -110,7 +111,7 @@ public class Merge implements ICommand, ICommandGUI {
      * display on the command line
      */
     public String getCommandLine() {
-        return null;
+        return "git merge " + srcBranch.getName();
     }
 
     /**
@@ -119,7 +120,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return The name of the command
      */
     public String getName() {
-        return null;
+        return "Merge";
     }
 
     /**
@@ -129,10 +130,10 @@ public class Merge implements ICommand, ICommandGUI {
      * @return description as a Sting
      */
     public String getDescription() {
-        return null;
+        return "Verschmilzt zwei Zweige";
     }
 
     public void onButtonClicked() {
-
+        GUIController.getInstance().openDialog(new MergeDialogView());
     }
 }
