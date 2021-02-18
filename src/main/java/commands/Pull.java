@@ -112,13 +112,17 @@ public class Pull implements ICommand, ICommandGUI {
     }
     GitBranch master = null;
     GitBranch src = null;
+    System.out.println(remoteBranch.getName() + "Hallo");
     for(int i = 0; i < allBranches.size(); i++) {
       // Find fetched branch.
       if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
+        System.out.println(allBranches.get(i).getName() + "1");
         src = allBranches.get(i);
       }
+      System.out.println(allBranches.get(i).getName());
       // Checks if the fetched branch exists locally.
       if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
+        System.out.println(allBranches.get(i).getName() + "2");
         dest = allBranches.get(i);
       }
       // Find master branch if this branch was fetched the first time.
@@ -126,11 +130,19 @@ public class Pull implements ICommand, ICommandGUI {
         master = allBranches.get(i);
       }
     }
+
+    System.out.println(src.getName());
     // If fetched branch do not exist locally create new local branch.
     // The new created branch is based on the head commit of the master branch.
     if(dest == null) {
       try {
         facade.branchOperation(master.getCommit(), remoteBranch.getName());
+        for(int i = 0; i < allBranches.size(); i++) {
+          if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
+            System.out.println(allBranches.get(i).getName() + "2");
+            dest = allBranches.get(i);
+          }
+        }
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
         return false;
