@@ -299,4 +299,10 @@ public class GitStatus {
         modifiedChangedFiles.addAll(getChangedFiles());
         return modifiedChangedFiles;
     }
+
+    public List<GitFile> getStagedFiles() throws IOException, GitException {
+        List<GitFile> stagedFiles = getAddedFiles();
+        stagedFiles.addAll(getChangedFiles());
+        return stagedFiles;
+    }
 }
