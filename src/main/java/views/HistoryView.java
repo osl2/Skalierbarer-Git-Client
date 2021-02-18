@@ -95,6 +95,9 @@ public class HistoryView extends JPanel implements IView {
         super.mousePressed(e);
         diffView.setNotVisible();
         int index = commitList.getSelectedIndex();
+        if(index < 0) {
+          return;
+        }
         GitCommit selectedCommit = listOfCommits.get(index);
         String activeMessage = selectedCommit.getMessage();
         GitAuthor author = selectedCommit.getAuthor();
@@ -133,6 +136,9 @@ public class HistoryView extends JPanel implements IView {
         super.mousePressed(e);
         int fileIndex = fileList.getSelectedIndex();
         int commitIndex = commitList.getSelectedIndex();
+        if(fileIndex < 0 || commitIndex < 0) {
+          return;
+        }
         GitFile file = listOfFiles.get(fileIndex);
         GitCommit commit = listOfCommits.get(commitIndex);
         diffView.setDiff(commit, file);

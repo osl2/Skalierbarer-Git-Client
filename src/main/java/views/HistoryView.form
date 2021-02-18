@@ -21,7 +21,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="100" height="-1"/>
                 <preferred-size width="300" height="-1"/>
-                <maximum-size width="350" height="-1"/>
+                <maximum-size width="301" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -33,39 +33,7 @@
               <component id="c7fc2" class="javax.swing.JList" binding="commitList">
                 <constraints/>
                 <properties>
-                  <model>
-                    <item value="11111111111111111111111"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value=""/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                  </model>
+                  <model/>
                 </properties>
               </component>
             </children>
@@ -75,7 +43,7 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="100" height="-1"/>
                 <preferred-size width="300" height="-1"/>
-                <maximum-size width="350" height="-1"/>
+                <maximum-size width="301" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -86,32 +54,7 @@
               <component id="b462d" class="javax.swing.JList" binding="fileList">
                 <constraints/>
                 <properties>
-                  <model>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="11"/>
-                    <item value=""/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                    <item value="1"/>
-                  </model>
+                  <model/>
                 </properties>
               </component>
             </children>
