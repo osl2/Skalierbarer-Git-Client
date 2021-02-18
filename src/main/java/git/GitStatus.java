@@ -282,34 +282,21 @@ public class GitStatus {
         return gitFiles;
     }
 
-
-    /**
-     * Returns all staged files, i.e. added and modified files
-     * @return A list of all files in the staging-area
-     * @throws GitException Thrown by getAddedFiles(), getChangedFiles()
-     * @throws IOException Thrown by getAddedFiles(), getChangedFiles()
-     */
-    public List<GitFile> getStagedFiles() throws GitException, IOException {
-        List<GitFile> stagedFiles = getAddedFiles();
-        stagedFiles.addAll(getChangedFiles());
-        return stagedFiles;
-    }
-
     public List<GitFile> getDeletedFiles() throws IOException, GitException {
         List<GitFile> deletedFiles = getMissingFiles();
         deletedFiles.addAll(getRemovedFiles());
         return deletedFiles;
     }
 
-    /**
-     * Returns all unstaged files, i.e. untracked and modified files
-     * @return A list of all files that are not in the staging-area
-     * @throws GitException thrown by getUntrackedFiles() and getModifiedFiles()
-     * @throws IOException thrown by getUntrackedFiles(), getModifiedFiles()
-     */
-    public List<GitFile> getUnstagedFiles() throws IOException, GitException {
-        List<GitFile> unstagedFiles = getUntrackedFiles();
-        unstagedFiles.addAll(getModifiedFiles());
-        return unstagedFiles;
+    public List<GitFile> getNewFiles() throws IOException, GitException {
+        List<GitFile> newFiles = getUntrackedFiles();
+        newFiles.addAll(getAddedFiles());
+        return newFiles;
+    }
+
+    public List<GitFile> getModifiedChangedFiles() throws IOException, GitException {
+        List<GitFile> modifiedChangedFiles = getModifiedFiles();
+        modifiedChangedFiles.addAll(getChangedFiles());
+        return modifiedChangedFiles;
     }
 }
