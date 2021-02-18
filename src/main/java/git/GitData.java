@@ -73,7 +73,7 @@ public class GitData {
 
     public GitBranch getSelectedBranch() throws IOException {
         String branchName = git.getRepository().getFullBranch();
-        return new GitBranch(repository.exactRef(branchName));
+        return new GitBranch(branchName);
     }
 
     /**
