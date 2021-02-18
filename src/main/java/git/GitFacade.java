@@ -35,64 +35,64 @@ public class GitFacade {
     throw new AssertionError("not implemented");
   }
 
-  /**
-   * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
-   *
-   * @param branch branch that should be checked out
-   * @return true if it is successfully checked out, false if something went wrong
-   */
-  public boolean checkout(GitBranch branch) throws GitException {
-    try {
-      GitData.getJGit().checkout().setCreateBranch(false).setName(branch.getFullName()).call();
-      return true;
-    } catch (GitAPIException e) {
-      throw new GitException(e.getMessage());
+    /**
+     * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
+     *
+     * @param branch branch that should be checked out
+     * @return true if it is successfully checked out, false if something went wrong
+     */
+    public boolean checkout(GitBranch branch) throws GitException {
+        try {
+            GitData.getJGit().checkout().setCreateBranch(false).setName(branch.getFullName()).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
     }
-  }
 
-  /**
-   * Checkout a commit. It loads the data of the commit and provides the data from JGit
-   *
-   * @param commit commit that should be checked out
-   * @return true if it is performed successfully, false if something went wrong
-   */
-  public boolean checkout(GitCommit commit) throws GitException {
-    try {
-      GitData.getJGit().checkout().setCreateBranch(false).setName(commit.getHash()).call();
-      return true;
-    } catch (GitAPIException e) {
-      throw new GitException(e.getMessage());
+    /**
+     * Checkout a commit. It loads the data of the commit and provides the data from JGit
+     *
+     * @param commit commit that should be checked out
+     * @return true if it is performed successfully, false if something went wrong
+     */
+    public boolean checkout(GitCommit commit) throws GitException {
+        try {
+            GitData.getJGit().checkout().setCreateBranch(false).setName(commit.getHash()).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
     }
-  }
 
-  /**
-   * Creates a new branch with the specific name at the commit in JGit. The new branch is checked out afterward
-   *
-   * @param commit commit where the new branch begins
-   * @param name   name of the branch
-   * @return true if it is performed successfully, false if something went wrong
-   */
-  public boolean branchOperation(GitCommit commit, String name) throws GitException {
-    try {
-      Git git = GitData.getJGit();
-      git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
-      return true;
-    } catch (GitAPIException e) {
-      throw new GitException("Fehler beim Erstellen des neuen Branches \n"
-          + "Fehlermeldung: " + e.getMessage());
+    /**
+     * Creates a new branch with the specific name at the commit in JGit. The new branch is checked out afterward
+     *
+     * @param commit commit where the new branch begins
+     * @param name   name of the branch
+     * @return true if it is performed successfully, false if something went wrong
+     */
+    public boolean branchOperation(GitCommit commit, String name) throws GitException {
+        try {
+            Git git = GitData.getJGit();
+            git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException("Fehler beim Erstellen des neuen Branches \n"
+                    + "Fehlermeldung: " + e.getMessage());
+        }
     }
-  }
 
-  /**
-   * Pulls the files and commits from the branch of the remote to the local repo in Jgit.
-   *
-   * @param remote       remote where the commits come from
-   * @param remoteBranch chosen branch where the commits originate from
-   * @return true if it is performed successfully, false if something went wrong
-   */
-  public boolean pullOperation(GitRemote remote, GitBranch remoteBranch) {
-    throw new AssertionError("not implemented");
-  }
+    /**
+     * Pulls the files and commits from the branch of the remote to the local repo in Jgit.
+     *
+     * @param remote       remote where the commits come from
+     * @param remoteBranch chosen branch where the commits originate from
+     * @return true if it is performed successfully, false if something went wrong
+     */
+    public boolean pullOperation(GitRemote remote, GitBranch remoteBranch) {
+        throw new AssertionError("not implemented");
+    }
 
   /**
    * Creates a new Remote in JGit.
@@ -131,26 +131,26 @@ public class GitFacade {
     return true;
   }
 
-  public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
-    try {
-      Git git = Git.cloneRepository()
-              .setURI(gitUrl)
-              .setDirectory(dest)
-              .setCloneAllBranches(true)
-              .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
-              .setCloneSubmodules(recursive)
-              .call();
-    } catch (JGitInternalException e) {
-      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
-    }catch (TransportException e) {
-      throw new GitException("");
-    } catch (InvalidRemoteException e) {
-      throw new GitException("Es wurde keine korrekte git url angegeben: " + e.getMessage());
-    } catch (GitAPIException e) {
-      throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+    public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
+        try {
+            Git git = Git.cloneRepository()
+                    .setURI(gitUrl)
+                    .setDirectory(dest)
+                    .setCloneAllBranches(true)
+                    .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+                    .setCloneSubmodules(recursive)
+                    .call();
+        } catch (JGitInternalException e) {
+            throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+        } catch (TransportException e) {
+            throw new GitException("");
+        } catch (InvalidRemoteException e) {
+            throw new GitException("Es wurde keine korrekte git url angegeben: " + e.getMessage());
+        } catch (GitAPIException e) {
+            throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
+        }
+        return true;
     }
-    return true;
-  }
 
   public boolean fetchRemotes(List<GitRemote> remotes) throws GitException {
     try {
@@ -178,15 +178,15 @@ public class GitFacade {
         }
       }
 
-    } catch (InvalidRemoteException e) {
-      throw new GitException(e.getMessage());
-    } catch (TransportException e) {
-      throw new GitException(e.getMessage());
-    } catch (GitAPIException e) {
-      throw new GitException(e.getMessage());
+        } catch (InvalidRemoteException e) {
+            throw new GitException(e.getMessage());
+        } catch (TransportException e) {
+            throw new GitException(e.getMessage());
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
+        return true;
     }
-    return true;
-  }
 
   public boolean setRepositoryPath(File path) {
     Settings settings = Settings.getInstance();
@@ -287,11 +287,11 @@ public class GitFacade {
   public boolean revert(GitCommit commit) throws GitException {
     boolean suc;
 
-    suc = commit.revert();
-    return suc;
-  }
+        suc = commit.revert();
+        return suc;
+    }
 
-  public String getDiff(GitCommit activeCommit) {
-    throw new AssertionError("not implemented");
-  }
+    public String getDiff(GitCommit activeCommit) {
+        throw new AssertionError("not implemented");
+    }
 }

@@ -1,7 +1,9 @@
 package controller;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import commands.ICommandGUI;
 import dialogviews.IDialogView;
+import settings.Settings;
 import views.HistoryView;
 import views.IView;
 import views.MainWindow;
@@ -10,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.logging.Logger;
 
 public class GUIController {
 
@@ -24,8 +27,6 @@ public class GUIController {
         // Install FlatLaf light style
         FlatLightLaf.install();
 
-        // Setup MainWindow
-        initializeMainWindow();
     }
 
     public static GUIController getInstance() {
@@ -95,13 +96,15 @@ public class GUIController {
             this.window.setCommandLineText(commandLine);
     }
 
-    private void initializeMainWindow() {
+    public void initializeMainWindow() {
         this.window = new MainWindow();
-        for (int i = 1; i <= 10; i++) {
-            int finalI = i;
-            this.window.addButton("Button " + i, "Tooltip" + i,
-                    e -> System.out.printf("Button %d gedrückt%n", finalI)
-            );
+
+        for (ICommandGUI c : Settings.getInstance().getLevel().getCommands()) {
+            if (c.getName() == null || c.getDescription() == null) {
+                Logger.getGlobal().warning(c.getClass().getCanonicalName() + " not loaded because it returned null values");
+                continue;
+            }
+            this.window.addButton(c.getName(), c.getDescription(), e -> c.onButtonClicked());
         }
     }
 
