@@ -80,5 +80,4 @@ public class Pull implements ICommand, ICommandGUI {
     //not implemented yet
     return false;
   }
-
 }

@@ -1,34 +1,45 @@
 package commands;
 
+import controller.GUIController;
+import dialogviews.MergeConflictDialogView;
+import dialogviews.MergeDialogView;
 import git.GitBranch;
 import git.GitChangeConflict;
+import git.GitFile;
+import git.exception.GitException;
+import org.eclipse.jgit.annotations.NonNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class Merge implements ICommand, ICommandGUI {
-    private GitBranch branchA;
-    private GitBranch branchB;
+    @NonNull
+    private GitBranch srcBranch;
+    @NonNull
+    private GitBranch destBranch;
     private boolean fastForward = true;
 
-    public void setFastForward(boolean fastForward) {
-        this.fastForward = fastForward;
-    }
-
-    public Merge(GitBranch src, GitBranch dest) {
-        this.branchA = src;
-        this.branchB = dest;
+    public Merge(@NonNull GitBranch src, @NonNull GitBranch dest) {
+        this.srcBranch = src;
+        this.destBranch = dest;
     }
 
     public Merge() {
 
     }
 
-    public void setSourceBranch(GitBranch branchA) {
-        this.branchA = branchA;
+    public void setFastForward(boolean fastForward) {
+        this.fastForward = fastForward;
     }
 
-    public void setDestinationBranch(GitBranch branchB) {
-        this.branchB = branchB;
+    public void setSourceBranch(@NonNull GitBranch srcBranch) {
+        this.srcBranch = srcBranch;
+    }
+
+    public void setDestinationBranch(@NonNull GitBranch destBranch) {
+        this.destBranch = destBranch;
     }
 
     /**
@@ -37,6 +48,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return List of the conflicts that happen
      */
     public List<GitChangeConflict> getConflicts() {
+     // todo kann weg?
         return null;
     }
 
@@ -47,21 +59,49 @@ public class Merge implements ICommand, ICommandGUI {
      * If necessary a MergeDialogView will be opened to interact with the user.
      */
     public void resolveConflicts() {
+        // todo: das wurde auch anders gelöst -> kann weg?
         // Open GUI or another way to make sure all conflicts are resolved.
         // Probably a good point for dependency injection in the future.
     }
 
     /**
      * Method to execute the command.
+     * Different to the definition in {@link ICommand} this function may be called again after resolving conflicts
+     * iff the last execution ended in conflicts. To continue the "failed" merge.
      *
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
-        return false;
-    }
+        if (this.srcBranch == this.destBranch) {
+            // We cannot merge a branch into itself.
+            GUIController.getInstance().errorHandler("Quell- und Zielzweig können nicht der selbe sein");
+            return false;
+        }
 
-    public String getErrorMessage() {
-        return null;
+        Map<GitFile, List<GitChangeConflict>> conflicts = null;
+        try {
+            conflicts = this.srcBranch.merge(this.fastForward);
+        } catch (GitException e) {
+            e.printStackTrace();
+        }
+        while (conflicts.size() > 0) {
+            for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
+                GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
+                        this.destBranch.getName(), this.srcBranch.getName()));
+
+            // Everything has been resolved. Create Merge-Commit
+            // todo : Load AddCommitView with preloaded Message
+
+            try {
+                conflicts = this.srcBranch.merge(this.fastForward);
+            } catch (GitException e) {
+                Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
+                return false;
+            }
+            // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
+        }
+
+        return true;
     }
 
     /**
@@ -71,7 +111,7 @@ public class Merge implements ICommand, ICommandGUI {
      * display on the command line
      */
     public String getCommandLine() {
-        return null;
+        return "git merge " + srcBranch.getName();
     }
 
     /**
@@ -80,7 +120,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return The name of the command
      */
     public String getName() {
-        return null;
+        return "Merge";
     }
 
     /**
@@ -90,10 +130,10 @@ public class Merge implements ICommand, ICommandGUI {
      * @return description as a Sting
      */
     public String getDescription() {
-        return null;
+        return "Verschmilzt zwei Zweige";
     }
 
     public void onButtonClicked() {
-
+        GUIController.getInstance().openDialog(new MergeDialogView());
     }
 }

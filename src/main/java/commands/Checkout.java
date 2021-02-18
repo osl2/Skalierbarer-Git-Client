@@ -40,10 +40,6 @@ public class Checkout implements ICommand, ICommandGUI {
     }
 
 
-    public String getErrorMessage() {
-        return this.errorMessage;
-    }
-
     /**
      * Method to get the Commandline input that would be necessary to execute the command.
      *

@@ -27,10 +27,6 @@ public class GitignoreAdd implements ICommand {
     return false;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
-
   /**
    * This method specifies the file that should be added to the .gitignore.
    * When execute() is invoked, the specified file is added to the .gitignore file.

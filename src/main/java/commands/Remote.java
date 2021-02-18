@@ -58,11 +58,6 @@ public class Remote implements ICommand, ICommandGUI {
     return false;
   }
 
-  /**
-   *
-   * @return Returns an error message when execute() fails
-   */
-  public String getErrorMessage(){return null;}
 
   /**
    * This method is not abstract, since there is only one Remote button. When this button is clicked, it calls
