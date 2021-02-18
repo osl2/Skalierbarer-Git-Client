@@ -157,7 +157,8 @@ public class GUIController {
         if (this.currentDialogAnchor != null) {
             this.currentDialogAnchor.update();
         }
-        this.window.update();
+        if (this.window != null)
+            this.window.update();
     }
 
     /**
