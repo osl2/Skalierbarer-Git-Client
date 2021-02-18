@@ -106,15 +106,7 @@ public class RemoteView extends JPanel implements IView {
             }
             remoteList.setModel(newModel);
             remoteList.setSelectedIndex(index);
-            GitRemote act = remotes.get(index);
-            nameField.setText(act.getName());
-            urlField.setText(act.getUrl().toString());
-            tryBranches(act);
-            String set = "";
-            for (int i = 0; i < branches.size(); i++){
-              set = set + branches.get(i).getName()+ System.lineSeparator();
-            }
-            branchArea.setText(set);
+            reloadBranches();
 
           }
           remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
@@ -126,10 +118,14 @@ public class RemoteView extends JPanel implements IView {
             newModel.add(i, remotes.get(i));
           }
           remoteList.setModel(newModel);
-          nameField.setText("");
-          urlField.setText("");
-          branchArea.setText("");
-
+          int newIndex = 0;
+          for (int i = 0; i < remotes.size(); i++){
+            if (remotes.get(i).getName().compareTo(nameField.getText()) == 0){
+              newIndex = i;
+            }
+          }
+          remoteList.setSelectedIndex(newIndex);
+          reloadBranches();
         }
         remForSetName.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
       }
@@ -271,5 +267,16 @@ public class RemoteView extends JPanel implements IView {
       CredentialProviderHolder.getInstance().changeProvider(true);
       return tryBranches(r);
     }
+  }
+  private void reloadBranches(){
+    GitRemote act = remotes.get(remoteList.getSelectedIndex());
+    nameField.setText(act.getName());
+    urlField.setText(act.getUrl().toString());
+    tryBranches(act);
+    String set = "";
+    for (int i = 0; i < branches.size(); i++){
+      set = set + branches.get(i).getName()+ System.lineSeparator();
+    }
+    branchArea.setText(set);
   }
 }
