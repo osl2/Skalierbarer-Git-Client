@@ -93,6 +93,8 @@ public class MergeConflictDialogView implements IDialogView {
 
             try {
                 file.add(); // Add file to the merge commit
+                GUIController.getInstance().closeDialogView();
+
             } catch (GitException e) {
                 GUIController.getInstance().errorHandler(e);
             }
@@ -106,6 +108,7 @@ public class MergeConflictDialogView implements IDialogView {
                 if (localConflictMap.containsKey(i)) {
                     // Apply changes
                     bw.write(localConflictMap.get(i).getResult());
+                    i += localConflictMap.get(i).getLength() + 1;
                 } else {
                     bw.write(baseVersion[i]);
                     bw.write(System.lineSeparator());
@@ -114,6 +117,13 @@ public class MergeConflictDialogView implements IDialogView {
 
             bw.flush();
             bw.close();
+
+            try {
+                file.add(); // Add file to the merge commit
+                GUIController.getInstance().closeDialogView();
+            } catch (GitException e) {
+                GUIController.getInstance().errorHandler(e);
+            }
 
         } catch (IOException e) {
             GUIController.getInstance().errorHandler(e);
@@ -140,6 +150,10 @@ public class MergeConflictDialogView implements IDialogView {
         }
         sidesHandled++;
         if (sidesHandled == 2 || c.isResolved()) {
+            buttonRightAccept.setEnabled(false);
+            buttonLeftAccept.setEnabled(false);
+            buttonLeftDecline.setEnabled(false);
+            buttonRightDecline.setEnabled(false);
             handleNextConflict();
             sidesHandled = 0;
         }
@@ -241,7 +255,6 @@ public class MergeConflictDialogView implements IDialogView {
         this.leftTextPane.revalidate();
         this.rightTextPane.revalidate();
         this.centerTextArea.revalidate();
-
     }
 
 
@@ -262,8 +275,8 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        return new Dimension(1400, 900);
-        //return contentPane.getPreferredSize();
+        //return new Dimension(1400, 900);
+        return contentPane.getPreferredSize();
     }
 
     /**
