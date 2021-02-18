@@ -124,31 +124,6 @@ public class GitFile {
         }
     }
 
-    /**
-     * Removes file from the staging-area, thereby performing git restore --staged <file>
-     *
-     * @return True if the file was removed from the staging area successfully
-     */
-    public boolean addUndo() throws GitException {
-        Repository repository = GitData.getRepository();
-        Git git = GitData.getJGit();
-        Path repoPath = Paths.get(repository.getDirectory().toURI());
-        Path filePath = Paths.get(this.path.toURI());
-        String relative = repoPath.relativize(filePath).toString();
-        if (relative.substring(0, 3).equals((".." + File.separatorChar).substring(0, 3))) {
-            relative = relative.substring(3);
-        } else {
-            throw new GitException("something with the Filepath went wrong");
-        }
-        try {
-            //git.add().addFilepattern(relative).call();
-            git.reset().addPath(relative).call();
-            return true;
-        } catch (GitAPIException e) {
-            throw new GitException("File not found in Git");
-
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
