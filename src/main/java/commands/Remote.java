@@ -63,9 +63,14 @@ public class Remote implements ICommand, ICommandGUI {
         }
       case SET_NAME:
         try {
-          return remote.setNameGit(remoteName);
+          GitFacade gitFacade = new GitFacade();
+          boolean sucRem = remote.remove();
+          boolean sucAdd = gitFacade.remoteAddOperation(remoteName,url);
+
+          return sucRem && sucAdd;
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
+          return false;
         }
 
       case ADD:

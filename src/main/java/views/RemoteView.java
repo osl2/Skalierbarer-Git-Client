@@ -95,11 +95,21 @@ public class RemoteView extends JPanel implements IView {
         Remote rem1 = new Remote();
         rem1.setRemote(remotes.get(remoteList.getSelectedIndex()));
         rem1.setRemoteSubcommand(Remote.RemoteSubcommand.SET_NAME);
+        if (nameField.getText().compareTo("") == 0){
+          GUIController.getInstance().errorHandler("Kein name eingegeben");
+          return;
+        }
         rem1.setRemoteName(nameField.getName());
+        try {
+          rem1.setUrl(new URL(urlField.getText()));
+        } catch (MalformedURLException malformedURLException) {
+          GUIController.getInstance().errorHandler("Keine gültige Url");
+          return;
+        }
         Remote rem2 = new Remote();
         rem2.setRemote(remotes.get(remoteList.getSelectedIndex()));
         rem2.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
-        try {
+        /*try {
           URL url = new URL(urlField.getText());
           rem2.setUrl(url);
           if (rem2.execute()){
@@ -113,7 +123,7 @@ public class RemoteView extends JPanel implements IView {
         } catch (MalformedURLException malformedURLException) {
           GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");
           return;
-        }
+        }*/
         if (rem1.execute()){
           remotes = git.getRemotes();
           DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();

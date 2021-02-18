@@ -60,8 +60,15 @@ public class GitRemote {
      *
      * @return true iff successful
      */
-    public boolean remove() {
-        return false;
+    public boolean remove() throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.remoteRemove().setRemoteName(name).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
+
     }
 
     /**
@@ -80,18 +87,6 @@ public class GitRemote {
         } catch (GitAPIException e) {
             throw new GitException(e.getMessage());
         }
-    }
-    public boolean setNameGit (String newName) throws GitException {
-
-        Git git = GitData.getJGit();
-        try {
-            git.remoteAdd().setName(newName).setUri(new URIish(url)).call();
-            git.remoteRemove().setRemoteName(name).call();
-            name = newName;
-        } catch (GitAPIException e) {
-            throw new GitException(e.getMessage());
-        }
-       return true;
     }
 }
 
