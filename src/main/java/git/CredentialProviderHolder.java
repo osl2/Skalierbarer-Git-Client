@@ -17,17 +17,17 @@ public class CredentialProviderHolder {
     private WindowListener windowListener = new WindowListener() {
         @Override
         public void windowOpened(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowClosing(WindowEvent e) {
             CredentialProviderHolder.getInstance().setActive(false);
         }
 
         @Override
-        public void windowClosed(WindowEvent e) {
+        public void windowClosing(WindowEvent e) {
 
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            CredentialProviderHolder.getInstance().setActive(true);
         }
 
         @Override
@@ -37,17 +37,14 @@ public class CredentialProviderHolder {
 
         @Override
         public void windowDeiconified(WindowEvent e) {
-
         }
 
         @Override
         public void windowActivated(WindowEvent e) {
-
         }
 
         @Override
         public void windowDeactivated(WindowEvent e) {
-
         }
     };
     public static CredentialProviderHolder getInstance(){
@@ -66,7 +63,7 @@ public class CredentialProviderHolder {
     }
     public void changeProvider(boolean needProv, String nameForProof){
         if (needProv) {
-            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof));
+            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof),windowListener);
         }
         else {
             provider.clear();
