@@ -1,10 +1,13 @@
 package views;
 
+import git.GitData;
 import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public class MainWindow extends JFrame {
 
@@ -17,6 +20,7 @@ public class MainWindow extends JFrame {
     private JPanel viewPanel;
     private JPanel headPanel;
     private JTextField commandLineTextField;
+    private JLabel branchLabel;
 
     /**
      * Replace the lower view of the window.
@@ -58,6 +62,13 @@ public class MainWindow extends JFrame {
             this.contentPane.add(viewPanel);
             this.viewPanel.revalidate();
             this.viewPanel.repaint();
+        }
+
+        try {
+            this.branchLabel.setText(new GitData().getSelectedBranch().getFullName());
+        } catch (IOException e) {
+            this.branchLabel.setText("");
+            Logger.getGlobal().warning("GIT DATA RETURNED NO BRANCH");
         }
 
         // Refresh menubar
