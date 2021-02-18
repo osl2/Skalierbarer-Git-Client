@@ -127,108 +127,48 @@ public class GitStatus {
     }
 
     /**
-     * Like getUntrackedFiles(), but with folders.
-     *
-     * @return Returns a list of untracked files
-     * @see #getUntrackedFiles()
+     * @return A list of files that are known to the index but have been removed and added to the staging area (what you get
+     * if you call git rm on an existing file or if you delete the file manually and call git add afterwards=
+     * @throws IOException Thrown by toGitFile
+     * @throws GitException If the status could not be obtained from JGit
      */
-    public List<String> getUntrackedFolders() throws GitException {
-        try {
+    public List<GitFile> getRemovedFiles() throws IOException, GitException {
+        try{
             Git git = GitData.getJGit();
-            Set<String> untrackedFolders = git.status().call().getUntrackedFolders();
-            return new ArrayList<>(untrackedFolders);
-        } catch (GitAPIException e) {
-            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-                    + "Fehlermeldung: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Jgit: getConflicting(); e.g. what you get if you modify a file that was modified
-     * by someone else in the meantime
-     *
-     * @return a list of files that are in conflict
-     */
-    public List<GitFile> getConflictingFiles() throws GitException, IOException {
-        try {
-            Git git = GitData.getJGit();
-            Set<String> conflicting = git.status().call().getConflicting();
-            return toGitFile(conflicting);
-        } catch (GitAPIException e) {
-            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-                    + "Fehlermeldung: " + e.getMessage());
-        }
-
-    }
-
-    /**
-     * Jgit: getConflictingStageState():Map(String,IndexDiff.StageState)
-     * A map from conflicting path to its IndexDiff.StageState.
-     */
-    //TODO: Rückgabetyp
-    public void getConflictingStageState() throws GitException {
-        try {
-            Git git = GitData.getJGit();
-            Map<String, IndexDiff.StageState> conflictingStageState
-                    = git.status().call().getConflictingStageState();
-            // todo implement?
-            throw new AssertionError("not implemented");
-        } catch (GitAPIException e) {
-            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-                    + "Fehlermeldung: " + e.getMessage());
-        }
-    }
-
-    /**
-     * JGit: get ignored files which are not in the index.
-     *
-     * @return set of files and folders that are ignored and not in the index
-     */
-    public List<GitFile> getIgnoredNotInIndex() throws GitException, IOException {
-        try {
-            Git git = GitData.getJGit();
-            Set<String> ignored = git.status().call().getIgnoredNotInIndex();
-            List<GitFile> ignoredGitFiles = toGitFile(ignored);
-            for (GitFile gitFile : ignoredGitFiles){
-                gitFile.setIgnored(true);
+            Set<String> removed = git.status().call().getRemoved();
+            List<GitFile> removedFiles = toGitFile(removed);
+            for (GitFile file : removedFiles){
+                file.setStaged(true);
             }
-            return ignoredGitFiles;
-        } catch (GitAPIException e) {
+            return removedFiles;
+        }
+        catch (GitAPIException e){
             throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
         }
     }
 
     /**
-     * This method indicates whether the working state is clean or not.
      *
-     * @return true if there are no untracked changes in the working directory
+     * @return A list of files that have been deleted manually, therefore do not appear in the working directory anymore
+     * (but are still present in the index)
+     * @throws IOException
+     * @throws GitException
      */
-    public boolean isClean() throws GitException {
-        Git git = GitData.getJGit();
-        try {
-            return git.status().call().isClean();
-        } catch (GitAPIException e) {
-            throw new GitException("Fehler in Git \n"
+    public List<GitFile> getMissingFiles() throws IOException, GitException {
+        try{
+            Git git = GitData.getJGit();
+            Set<String> missing = git.status().call().getMissing();
+            List<GitFile> missingFiles = toGitFile(missing);
+            return missingFiles;
+        }
+        catch (GitAPIException e){
+            throw new GitException("Ein Fehler in Git ist aufgetreten \n"
                     + "Fehlermeldung: " + e.getMessage());
         }
     }
 
-    /**
-     * This method indicates whether there are changes in the working directory
-     * that have not been committed yet.
-     *
-     * @return true if any tracked file has changed
-     */
-    public boolean hasUncommittedChanges() throws GitException {
-        Git git = GitData.getJGit();
-        try {
-            return git.status().call().hasUncommittedChanges();
-        } catch (GitAPIException e) {
-            throw new GitException("Fehler in Git \n"
-                    + "Fehlermeldung: " + e.getMessage());
-        }
-    }
+
 
     private List<GitFile> toGitFile(Set<String> jgitFiles) throws IOException {
         File repoPath = GitData.getRepository().getWorkTree();
@@ -238,5 +178,29 @@ public class GitStatus {
             gitFiles.add(new GitFile(toGitFile.getTotalSpace(), toGitFile));
         }
         return gitFiles;
+    }
+
+    public List<GitFile> getDeletedFiles() throws IOException, GitException {
+        List<GitFile> deletedFiles = getMissingFiles();
+        deletedFiles.addAll(getRemovedFiles());
+        return deletedFiles;
+    }
+
+    public List<GitFile> getNewFiles() throws IOException, GitException {
+        List<GitFile> newFiles = getUntrackedFiles();
+        newFiles.addAll(getAddedFiles());
+        return newFiles;
+    }
+
+    public List<GitFile> getModifiedChangedFiles() throws IOException, GitException {
+        List<GitFile> modifiedChangedFiles = getModifiedFiles();
+        modifiedChangedFiles.addAll(getChangedFiles());
+        return modifiedChangedFiles;
+    }
+
+    public List<GitFile> getStagedFiles() throws IOException, GitException {
+        List<GitFile> stagedFiles = getAddedFiles();
+        stagedFiles.addAll(getChangedFiles());
+        return stagedFiles;
     }
 }
