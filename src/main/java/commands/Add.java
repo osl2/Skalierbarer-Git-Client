@@ -73,7 +73,6 @@ public class Add implements ICommand, ICommandGUI {
    * @param files
    */
   public void addFiles(List<GitFile> files){
-    //TODO: new method, report!
     this.files.addAll(files);
   }
 

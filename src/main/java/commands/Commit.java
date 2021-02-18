@@ -56,7 +56,6 @@ public class Commit implements ICommand, ICommandGUI {
     //check if staging-area is empty
     try {
       if (gitStatus.getStagedFiles().isEmpty()){
-        //TODO: Fehlermeldung ändern?
         GUIController.getInstance().errorHandler("Staging-Area ist leer. Leerer Commit nicht erlaubt!");
       }
     } catch (GitException e) {
@@ -67,7 +66,6 @@ public class Commit implements ICommand, ICommandGUI {
     if (commitMessage == null
             || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
             || commitMessage.equals("")){
-      //TODO: Fehlermeldung ändern?
       GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
     }
     boolean success = false;
