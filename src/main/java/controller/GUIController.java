@@ -3,6 +3,9 @@ package controller;
 import com.formdev.flatlaf.FlatLightLaf;
 import commands.ICommandGUI;
 import dialogviews.IDialogView;
+import settings.Data;
+import settings.DataObservable;
+import settings.DataObserver;
 import settings.Settings;
 import views.HistoryView;
 import views.IView;
@@ -14,7 +17,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.logging.Logger;
 
-public class GUIController {
+public class GUIController extends DataObserver {
 
     private static GUIController INSTANCE;
     private MainWindow window;
@@ -26,6 +29,11 @@ public class GUIController {
 
         // Install FlatLaf light style
         FlatLightLaf.install();
+
+
+        // register observer
+        Data.getInstance().addDataChangedListener(this);
+        Settings.getInstance().addDataChangedListener(this);
 
     }
 
@@ -98,8 +106,16 @@ public class GUIController {
     }
 
     public void initializeMainWindow() {
+        if (this.window != null)
+            this.window.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
+
         this.window = new MainWindow();
 
+        createButtonPanel();
+    }
+
+    private void createButtonPanel() {
+        this.window.clearButtonPanel();
         for (ICommandGUI c : Settings.getInstance().getLevel().getCommands()) {
             if (c.getName() == null || c.getDescription() == null) {
                 Logger.getGlobal().warning(c.getClass().getCanonicalName() + " not loaded because it returned null values");
@@ -157,8 +173,11 @@ public class GUIController {
         if (this.currentDialogAnchor != null) {
             this.currentDialogAnchor.update();
         }
-        if (this.window != null)
+
+        if (this.window != null) {
+            this.createButtonPanel();
             this.window.update();
+        }
     }
 
     /**
@@ -166,5 +185,10 @@ public class GUIController {
      */
     public void openMainWindow() {
         this.window.open();
+    }
+
+    @Override
+    protected void dataChangedListener(DataObservable observable) {
+        this.update();
     }
 }

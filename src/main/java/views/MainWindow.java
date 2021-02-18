@@ -44,6 +44,11 @@ public class MainWindow extends JFrame {
         this.commandLineTextField.setText(text);
     }
 
+    public void clearButtonPanel() {
+        for (Component c : buttonPanel.getComponents()) {
+            this.buttonPanel.remove(c);
+        }
+    }
 
     /**
      * Get the lower part of the window

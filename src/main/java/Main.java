@@ -12,8 +12,9 @@ public class Main {
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         Persistency persistency = new Persistency();
+        boolean settingsLoaded = persistency.load();
         GUIController c = GUIController.getInstance();
-        if (!persistency.load()) {
+        if (!settingsLoaded) {
             // Initialize Objects with sane values
             Settings settings = Settings.getInstance();
             Data data = Data.getInstance();
