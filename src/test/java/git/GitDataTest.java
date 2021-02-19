@@ -29,11 +29,10 @@ public class GitDataTest extends AbstractGitTest {
 
     @Test
     public void getBranchesTest() throws GitAPIException, GitException {
+        git.branchCreate().setName("TestBranch").call();
         List<GitBranch> branchesGitData = gitData.getBranches();
         List<Ref> branchesJGit = git.branchList().call();
         assertEquals(branchesGitData.size(), branchesJGit.size());
-        // TODO: mehr testen
-
     }
 
     @Test
