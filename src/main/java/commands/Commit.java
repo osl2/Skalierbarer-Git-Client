@@ -15,6 +15,10 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * This class represents the git commit command. In order to execute this command
+ * at least one file has to be in the staging area and a Commit message has to be passed.
+ */
 public class Commit implements ICommand, ICommandGUI {
   private String commitMessage;
   private boolean amend;

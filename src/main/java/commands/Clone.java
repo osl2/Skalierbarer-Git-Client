@@ -9,6 +9,10 @@ import settings.Settings;
 
 import java.io.File;
 
+/**
+ * This class represents the git clone command. In order to execute this command
+ * you have to pass an url and a path to a local directory.
+ */
 public class Clone implements ICommand, ICommandGUI {
   private String commandLine = "git clone ";
   private String commandName = "Clone";
@@ -73,19 +77,30 @@ public class Clone implements ICommand, ICommandGUI {
     return true;
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   public String getCommandLine() {
     return commandLine;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getName() {
     return commandName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getDescription() {
     return commandDescription;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new CloneDialogView());
   }

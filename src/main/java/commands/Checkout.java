@@ -7,6 +7,12 @@ import git.GitCommit;
 import git.GitFacade;
 import git.exception.GitException;
 
+import java.lang.annotation.Inherited;
+
+/**
+ * This class represents the git checkout command. In order to execute this command
+ * you have to pass the {@link GitBranch} or the {@link GitCommit} you want to checkout.
+ */
 public class Checkout implements ICommand, ICommandGUI {
     private String errorMessage;
     private GitBranch branch;
@@ -75,6 +81,9 @@ public class Checkout implements ICommand, ICommandGUI {
         return "Wechselt auf einen anderen Zweig / eine andere Einbuchung";
     }
 
+    /**
+     * OnClick handler for the GUI button representation.
+     */
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new CheckoutDialogView());
     }
