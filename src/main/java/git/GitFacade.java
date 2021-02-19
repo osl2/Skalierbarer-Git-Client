@@ -6,19 +6,12 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.PushConfig;
-import org.eclipse.jgit.transport.RefSpec;
-import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.lib.RepositoryCache;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A class to do operations, that change something in the Git repository.
