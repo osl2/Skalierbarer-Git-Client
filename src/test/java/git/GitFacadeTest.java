@@ -1,10 +1,13 @@
 package git;
 
 import git.exception.GitException;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import settings.Settings;
 import shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.File;
@@ -17,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GitFacadeTest extends AbstractGitTest {
 
   File fileNotStaged;
+  @TempDir
+  File newRepo;
 
   @Override
   protected void setupRepo() throws GitAPIException, IOException {
@@ -61,5 +66,17 @@ public class GitFacadeTest extends AbstractGitTest {
     assertEquals(commitMessage, commit.getFullMessage()); //expected commit-Message
     assertEquals(settings.getUser().getName(), commit.getAuthorIdent().getName()); //expected Author name
     assertEquals(settings.getUser().getEmail(), commit.getAuthorIdent().getEmailAddress()); //expected Author mail
+  }
+
+  @Test
+  public void setReopsitoryPathTest() throws IOException {
+    FileUtils.forceMkdir(newRepo);
+    GitFacade facade = new GitFacade();
+    facade.setRepositoryPath(newRepo);
+    assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
+    assertEquals(GitData.getRepository().getDirectory(), new File (newRepo, ".git"));
+    facade.setRepositoryPath(repo);
+    assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
+    assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
   }
 }
