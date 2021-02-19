@@ -121,8 +121,4 @@ public class PullConflictDialogView implements IDialogView {
     public void update() {
 
     }
-
-    public void setErrorMessage(String errorMessage) {
-
-    }
 }

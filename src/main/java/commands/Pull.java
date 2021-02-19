@@ -19,14 +19,6 @@ public class Pull implements ICommand, ICommandGUI {
   private GitBranch remoteBranch;
   private String commandLine;
 
-  /**
-   * Method to get the current remote.
-   *
-   * @return Returns active repo
-   */
-  public GitRemote getRemote() {
-    return remote;
-  }
 
   /**
    * method to set the current remote.
@@ -37,14 +29,6 @@ public class Pull implements ICommand, ICommandGUI {
     this.remote = remote;
   }
 
-  /**
-   * Method to get the currently active remote branch.
-   *
-   * @return Returns the active remoteBranch
-   */
-  public GitBranch getRemoteBranch() {
-    return remoteBranch;
-  }
 
   /**
    * Method to set the current remote Branch.
@@ -55,22 +39,13 @@ public class Pull implements ICommand, ICommandGUI {
     this.remoteBranch = remoteBranch;
   }
 
-  /**
-   * Starts mergeprogress for conflict
-   */
-  public void startMerging() {}
-
-  /**
-   * Starts rebaseprogress for conflict
-   */
-  public void startRebasing(){}
 
   public String getCommandLine() {
     return commandLine;
   }
 
   public String getName() {
-    return "pull";
+    return "Pull";
   }
 
   public String getDescription() {
@@ -89,7 +64,7 @@ public class Pull implements ICommand, ICommandGUI {
    */
   public boolean execute() {
     if(remote == null || remoteBranch == null) {
-      GUIController.getInstance().errorHandler("Es muss ein remote und ein branch auf dem remote übergeben werden.");
+      GUIController.getInstance().errorHandler("Es muss ein Remote und ein Branch auf dem Remote übergeben werden.");
       return false;
     }
     GitFacade facade = new GitFacade();
@@ -113,17 +88,13 @@ public class Pull implements ICommand, ICommandGUI {
     }
     GitBranch master = null;
     GitBranch src = null;
-    System.out.println(remoteBranch.getName() + "Hallo");
     for(int i = 0; i < allBranches.size(); i++) {
       // Find fetched branch.
       if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
-        System.out.println(allBranches.get(i).getName() + "1");
         src = allBranches.get(i);
       }
-      System.out.println(allBranches.get(i).getName());
       // Checks if the fetched branch exists locally.
       if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
-        System.out.println(allBranches.get(i).getName() + "2");
         dest = allBranches.get(i);
       }
       // Find master branch if this branch was fetched the first time.
@@ -131,8 +102,6 @@ public class Pull implements ICommand, ICommandGUI {
         master = allBranches.get(i);
       }
     }
-
-    System.out.println(src.getName());
     // If fetched branch do not exist locally create new local branch.
     // The new created branch is based on the head commit of the master branch.
     if(dest == null) {
@@ -140,7 +109,6 @@ public class Pull implements ICommand, ICommandGUI {
         facade.branchOperation(master.getCommit(), remoteBranch.getName());
         for(int i = 0; i < allBranches.size(); i++) {
           if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
-            System.out.println(allBranches.get(i).getName() + "2");
             dest = allBranches.get(i);
           }
         }
