@@ -27,10 +27,6 @@ public class Main {
         c.initializeMainWindow();
         c.restoreDefaultView();
         c.openMainWindow();
-        // Load Data -> Persistency
-        // Todo: Load Plugins -> ???
-        // Apply Plugin changes
-        // Open GUI
     }
 
     public static void restart(String commandLine) {

@@ -113,6 +113,13 @@ public class MainWindow extends JFrame {
         this.setVisible(true);
     }
 
+    private void changeRepository(File path) {
+        Settings.getInstance().setActiveRepositoryPath(path);
+        Settings.getInstance().fireDataChangedEvent();
+        new GitData().reinitialize();
+        GUIController.getInstance().update();
+    }
+
     private void createMenubar() {
         JMenuBar bar = new JMenuBar();
         JMenu m1 = new JMenu("Repository");
@@ -120,12 +127,16 @@ public class MainWindow extends JFrame {
         JMenu recentlyUsed = new JMenu("Kürzlich Verwendet");
 
         for (File f : Data.getInstance().getRecentlyOpenedRepositories()) {
-            recentlyUsed.add(new JMenuItem(f.getPath()));
+            if (!f.isDirectory()) continue;
+
+            JMenuItem repo = new JMenuItem(f.getPath());
+            repo.addActionListener(e -> changeRepository(f));
+            recentlyUsed.add(repo);
         }
 
         m1.add(new JMenuItem("Öffnen"));
-        m1.add(new JMenuItem("Initialisieren"));
-        m1.add(new JMenuItem("Klonen"));
+        //m1.add(new JMenuItem("Initialisieren")); // removed as it has got it's own button in the gui right now
+        //m1.add(new JMenuItem("Klonen")); // Also has a button apparently.
         m1.add(recentlyUsed);
 
         JMenuItem settingsItem = new JMenuItem("Einstellungen");

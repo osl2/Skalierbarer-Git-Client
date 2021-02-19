@@ -71,6 +71,7 @@ public class Settings extends DataObservable {
     }
 
     public void setActiveRepositoryPath(File activeRepositoryPath) {
+        Data.getInstance().storeNewRepositoryPath(activeRepositoryPath);
         if (activeRepositoryPath != this.getActiveRepositoryPath()) {
             this.settingsChanged = true;
         }
