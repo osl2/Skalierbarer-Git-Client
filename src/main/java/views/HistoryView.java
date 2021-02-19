@@ -34,9 +34,13 @@ public class HistoryView extends JPanel implements IView {
   private Iterator<GitCommit> iteratorOfCommits;
   private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
+  private Iterator<GitFile> gitFileIterator;
+  private DefaultListModel fileListModel;
   private GitBranch branch;
   private int maxCommits = 20;
   private int loadedCommits = 0;
+  private int maxFiles;
+  private int loadedFiles;
   private DefaultListModel listModel;
 
 
@@ -100,6 +104,8 @@ public class HistoryView extends JPanel implements IView {
       @Override
       public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
+        maxFiles = 50;
+        loadedFiles = 0;
         diffView.setNotVisible();
         int index = commitList.getSelectedIndex();
         if(index < 0) {
@@ -118,7 +124,7 @@ public class HistoryView extends JPanel implements IView {
                 + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
                 + System.lineSeparator()
                 + activeMessage);
-        DefaultListModel fileListModel = new DefaultListModel();
+        fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         int width = commitMessage.getWidth();
@@ -133,12 +139,10 @@ public class HistoryView extends JPanel implements IView {
           listOfFiles = selectedCommit.getChangedFiles();
         } catch (IOException ioException) {
           GUIController.getInstance().errorHandler(ioException);
+          return;
         }
-        Iterator<GitFile> gitFileIterator = listOfFiles.iterator();
-        while (gitFileIterator.hasNext()) {
-          String activeFile = gitFileIterator.next().getPath().getName();
-          fileListModel.addElement(activeFile);
-        }
+        gitFileIterator = listOfFiles.iterator();
+        addFiles();
       }
     });
     fileList.addMouseListener(new MouseAdapter() {
@@ -170,6 +174,17 @@ public class HistoryView extends JPanel implements IView {
         }
       }
     });
+    fileScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+      @Override
+      public void adjustmentValueChanged(AdjustmentEvent ae) {
+        int extent = fileScrollPane.getVerticalScrollBar().getModel().getExtent();
+        int max = fileScrollPane.getVerticalScrollBar().getMaximum();
+        if(max == extent + fileScrollPane.getVerticalScrollBar().getModel().getValue()) {
+          maxFiles += 50;
+          addFiles();
+        }
+      }
+    });
   }
 
   private void addCommits() {
@@ -179,6 +194,14 @@ public class HistoryView extends JPanel implements IView {
       listOfCommits.add(loadedCommits, current);
       listModel.addElement(message);
       loadedCommits++;
+    }
+  }
+
+  private void addFiles() {
+    while (gitFileIterator.hasNext() && loadedFiles < maxFiles) {
+      String activeFile = gitFileIterator.next().getPath().getName();
+      fileListModel.addElement(activeFile);
+      loadedFiles++;
     }
   }
 

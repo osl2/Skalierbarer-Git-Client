@@ -8,12 +8,12 @@ import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.PushConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
-import org.eclipse.jgit.lib.StoredConfig;
 import settings.Settings;
 
 import java.io.File;
@@ -106,13 +106,13 @@ public class GitFacade {
    * @return true if it is performed successfully, false if something went wrong
    */
   public boolean remoteAddOperation(String name, URL url) throws GitException {
-    Git git = GitData.getJGit();
-    try {
-      git.remoteAdd().setName(name).setUri(new URIish(url)).call();
-      return true;
-    } catch (GitAPIException e) {
-      throw new GitException(e.getMessage());
-    }
+      Git git = GitData.getJGit();
+      try {
+          git.remoteAdd().setName(name).setUri(new URIish(url)).call();
+          return true;
+      } catch (GitAPIException e) {
+          throw new GitException(e.getMessage());
+      }
   }
 
     /**
@@ -124,7 +124,11 @@ public class GitFacade {
     public boolean initializeRepository(File path) {
         Git git;
         try {
-            git = Git.init().setDirectory(path).setBare(false).call();
+            git = Git.init().setDirectory(path).call();
+            Settings settings = Settings.getInstance();
+            settings.setActiveRepositoryPath(path);
+            GitData data = new GitData();
+            data.reinitialize();
         } catch (GitAPIException e) {
             return false;
         }
