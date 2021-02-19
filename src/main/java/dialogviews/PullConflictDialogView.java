@@ -44,7 +44,7 @@ public class PullConflictDialogView implements IDialogView {
       conflictMessage.setSize(width, Short.MAX_VALUE);
     }
     boolean merge = false;
-    /*List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
+    List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
     for(int i = 0; i < commandList.size(); i++) {
       if(commandList.get(i).getName().compareTo("Merge") == 0) {
         mergeButton.setEnabled(true);
@@ -53,7 +53,7 @@ public class PullConflictDialogView implements IDialogView {
         rebaseButton.setEnabled(true);
         merge = true;
       }
-    }*/
+    }
     if(!merge) {
       mergeButton.setEnabled(true);
     }
