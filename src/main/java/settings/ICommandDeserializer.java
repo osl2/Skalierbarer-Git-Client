@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import commands.ICommand;
 import commands.ICommandGUI;
 
 import java.io.IOException;
@@ -27,8 +26,8 @@ public class ICommandDeserializer extends StdDeserializer<ICommandGUI> {
         try {
             Class<?> cl = this.getClass().getClassLoader().loadClass(classPath);
 
-            // Class implements ICommand?
-            if (ICommand.class.isAssignableFrom(cl)) {
+            // Class implements ICommandGUI?
+            if (ICommandGUI.class.isAssignableFrom(cl)) {
                 return (ICommandGUI) cl.getConstructor().newInstance();
             } else {
                 throw new IOException("Could not create instance of " + classPath);
