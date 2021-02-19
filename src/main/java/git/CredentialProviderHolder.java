@@ -7,16 +7,25 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+/**
+ * Class which creates the CredentialProvider
+ */
 public class CredentialProviderHolder {
     private static CredentialProviderHolder INSTANCE = null;
-    private UsernamePasswordCredentialsProvider provider;
+    private String username;
+    private String password;
     private boolean isActive = true;
+
+    /**
+     * This calss is a singelton, so the Construktor is private
+     */
     private CredentialProviderHolder(){
-        provider = new UsernamePasswordCredentialsProvider("", "");
+        username = "";
+        password = "";
     }
     private WindowListener windowListener = new WindowListener() {
         /**
-         * Method to change something
+         * Method to change the boolean if the window is Opened
          * @param e
          */
         @Override
@@ -29,6 +38,10 @@ public class CredentialProviderHolder {
 
         }
 
+        /**
+         * Method to set the boolean on true during the window is closed
+         * @param e
+         */
         @Override
         public void windowClosed(WindowEvent e) {
             CredentialProviderHolder.getInstance().setActive(true);
@@ -51,6 +64,11 @@ public class CredentialProviderHolder {
         public void windowDeactivated(WindowEvent e) {
         }
     };
+
+    /**
+     * Method to create the Singelton
+     * @return Returns the Instance of the CredentialProvider
+     */
     public static CredentialProviderHolder getInstance(){
         if (INSTANCE == null){
             INSTANCE = new CredentialProviderHolder();
@@ -58,28 +76,59 @@ public class CredentialProviderHolder {
         return INSTANCE;
     }
 
-    public void setProvider(UsernamePasswordCredentialsProvider provider) {
-        this.provider = provider;
+
+    /**
+     * Method to get a UsernamePasswordProvider
+     * @return Returns the created provider
+     */
+    UsernamePasswordCredentialsProvider getProvider(){
+        return new UsernamePasswordCredentialsProvider(username, password);
     }
 
-    UsernamePasswordCredentialsProvider getProvider(){
-        return provider;
-    }
+    /**
+     * Method to change the Strings for the Provider. Opens the dialogView for Userinput
+     * @param needProv Boolean if there should be a change
+     * @param nameForProof Name of the remote, which the provider is for
+     */
     public void changeProvider(boolean needProv, String nameForProof){
         if (needProv) {
             GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof),windowListener);
         }
         else {
-            provider.clear();
+            return;
         }
     }
 
+    /**
+     * Get method for the boolean isActiv
+     * @return gets the value of the variable
+     */
     public boolean isActive() {
         return isActive;
     }
 
+    /**
+     * Set method for the boolean isActiv
+     * @param active new value of Boolean
+     */
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    /**
+     * Method to set the variable username
+     * @param username new value
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Method to set the variable password
+     * @param password new value
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 

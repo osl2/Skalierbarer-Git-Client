@@ -39,7 +39,8 @@ public class UsernamePasswordDialogView implements IDialogView{
                 for (int i = 0; i < password.length; i++){
                     pw += password[i];
                 }
-                CredentialProviderHolder.getInstance().setProvider(new UsernamePasswordCredentialsProvider(username, pw));
+                CredentialProviderHolder.getInstance().setPassword(pw);
+                CredentialProviderHolder.getInstance().setUsername(username);
                 CredentialProviderHolder.getInstance().setActive(true);
                 GUIController.getInstance().closeDialogView();
             }
