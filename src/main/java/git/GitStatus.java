@@ -16,11 +16,10 @@ import java.util.Set;
  * To ensure there is only one status element, this class implements the Singleton pattern
  */
 public class GitStatus {
-    //TODO: delete methods that are not used?
 
     private static GitStatus gitStatus = null;
 
-    /*
+    /**
      * The constructor is private to ensure there is only one GitStatus object at a time
      */
     private GitStatus() {
@@ -181,24 +180,50 @@ public class GitStatus {
         return gitFiles;
     }
 
+    /**
+     * Method to get a list of all files, that are new in the repository directory.
+     * @return List of all new files
+     * @throws IOException If something with the Files went wrong
+     * @throws GitException If something with git went wrong
+     */
     public List<GitFile> getDeletedFiles() throws IOException, GitException {
         List<GitFile> deletedFiles = getMissingFiles();
         deletedFiles.addAll(getRemovedFiles());
         return deletedFiles;
     }
 
+
+    /**
+     * Method to get a list of all files, that are new in the repository directory.
+     * @return List of all new files
+     * @throws IOException If something with the Files went wrong
+     * @throws GitException If something with git went wrong
+     */
     public List<GitFile> getNewFiles() throws IOException, GitException {
         List<GitFile> newFiles = getUntrackedFiles();
         newFiles.addAll(getAddedFiles());
         return newFiles;
     }
 
+
+    /**
+     * Method to get a list of all files, that are modified.
+     * @return List of all modified files
+     * @throws IOException If something with the Files went wrong
+     * @throws GitException If something with git went wrong
+     */
     public List<GitFile> getModifiedChangedFiles() throws IOException, GitException {
         List<GitFile> modifiedChangedFiles = getModifiedFiles();
         modifiedChangedFiles.addAll(getChangedFiles());
         return modifiedChangedFiles;
     }
 
+    /**
+     * Method to get a list of all files, that are staged.
+     * @return List of all staged files
+     * @throws IOException If something with the Files went wrong
+     * @throws GitException If something with git went wrong
+     */
     public List<GitFile> getStagedFiles() throws IOException, GitException {
         List<GitFile> stagedFiles = getAddedFiles();
         stagedFiles.addAll(getChangedFiles());
