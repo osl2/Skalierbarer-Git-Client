@@ -5,12 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
-
 import commands.Push;
 import controller.GUIController;
-import git.CredentialProviderHolder;
 import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
@@ -19,20 +16,19 @@ import git.exception.GitException;
 public class PushDialogView implements IDialogView {
 
   private JPanel contentPane;
-  private JComboBox remoteComboBox;
-  private JComboBox remoteBranchComboBox;
+  private JComboBox<String> remoteComboBox;
   private JCheckBox setUpstreamCheckbox;
   private JButton pushButton;
   private JPanel remotePanel;
   private JButton refreshButton;
-  private JComboBox localBranchComboBox;
-  private GitData gitData;
+  private JComboBox<String> localBranchComboBox;
+  private JTextField branchnameTextfield;
+  private final GitData gitData;
   private GitBranch localBranch;
   private GitRemote remote;
-  private GitBranch remoteBranch;
+  private String remoteBranch;
   private boolean setUpstream;
   private boolean open;
-  private List<GitBranch> remoteBranches;
   private List<GitBranch> localBranches;
   private List<GitRemote> remoteList;
 
@@ -40,27 +36,15 @@ public class PushDialogView implements IDialogView {
     gitData = new GitData();
     setUpLocalBranchComboBox();
     setUpRemoteComboBox();
+    branchnameTextfield.setText(localBranches.get(localBranchComboBox.getSelectedIndex()).getName());
 
     localBranchComboBox.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         int index = localBranchComboBox.getSelectedIndex();
         localBranch = localBranches.get(index);
+        branchnameTextfield.setText(localBranch.getName());
         //if remote and local branch have been set, setup the remote branch combo box
-        if(localBranch != null && remote != null){
-          setUpRemoteBranchComboBox();
-        }
-      }
-    });
-    remoteComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int index = remoteComboBox.getSelectedIndex();
-        remote = remoteList.get(index);
-        //if remote and local branch have been set, setup the remote branch combo box
-        if(remote != null && localBranch != null){
-          setUpRemoteBranchComboBox();
-        }
       }
     });
     pushButton.addActionListener(new ActionListener() {
@@ -121,7 +105,6 @@ public class PushDialogView implements IDialogView {
     private void createUIComponents() {
       localBranchComboBox = new JComboBox<>();
       remoteComboBox = new JComboBox();
-      remoteBranchComboBox = new JComboBox();
   }
 
   public boolean isOpen() {
@@ -185,6 +168,7 @@ public class PushDialogView implements IDialogView {
    */
   private void setUpRemoteComboBox(){
     remoteList = gitData.getRemotes();
+    remoteComboBox.removeAllItems();
     int count = 0;
     for (GitRemote remote : remoteList){
       remoteComboBox.addItem(remote.getName());
@@ -195,49 +179,12 @@ public class PushDialogView implements IDialogView {
     }
   }
 
-  private void setUpRemoteBranchComboBox(){
-    if (remoteBranches != null){
-      remoteBranches.clear();
-      remoteBranchComboBox.removeAllItems();
-    }
-
-    if(reloadBranches(remote) == false){
-      return;
-    }
-
-    if (remoteBranches == null){
-      GUIController.getInstance().errorHandler("Remote Branches konnten nicht geladen werden");
-      return;
-    }
-    boolean containsUpStreamBranch = false;
-    int count = 0;
-    for (GitBranch remoteBranch : remoteBranches){
-      remoteBranchComboBox.addItem(remoteBranch.getName());
-      //gibt es schon einen remote upstream branch? Falls nicht, füge lokalen Branch als "Dummy" hinzu
-      if (remoteBranch.getName().compareTo(localBranch.getName()) == 0){
-        containsUpStreamBranch = true;
-        remoteBranchComboBox.setSelectedIndex(count);
-      }
-      count++;
-    }
-
-    //add dummy upstream branch
-    if (!containsUpStreamBranch){
-      remoteBranches.add(count, localBranch);
-      remoteBranchComboBox.addItem(localBranch.getName());
-      remoteBranchComboBox.setSelectedIndex(count);
-    }
-  }
-
   private boolean executePush(){
 
-    remoteBranch = remoteBranches.get(remoteBranchComboBox.getSelectedIndex());
+    remoteBranch = branchnameTextfield.getText();
     setUpstream = setUpstreamCheckbox.isSelected();
     remote = remoteList.get(remoteComboBox.getSelectedIndex());
     localBranch = localBranches.get(localBranchComboBox.getSelectedIndex());
-    System.out.println(remote.getName());
-    System.out.println(remoteBranch.getName());
-    System.out.println(localBranch.getName());
     Push push = new Push();
     push.setLocalBranch(localBranch);
     push.setRemote(remote);
@@ -245,7 +192,7 @@ public class PushDialogView implements IDialogView {
     remoteBranchComboBox was only a dummy for the to-be-created upstream branch. So, in case they are equal, set remote
     branch to null 
      */
-    if (remoteBranch.getName().compareTo(localBranch.getName()) == 0){
+    if (remoteBranch.compareTo(localBranch.getName()) == 0){
       push.setRemoteBranch(null);
     }
     else{
@@ -258,26 +205,6 @@ public class PushDialogView implements IDialogView {
       GUIController.getInstance().setCommandLine(push.getCommandLine());
     }
     return success;
-  }
-
-
-
-  private boolean reloadBranches(GitRemote r){
-    GitData git = new GitData();
-    try {
-      remoteBranches =  git.getBranches(r);
-      return true;
-    } catch (GitException e) {
-      CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
-      if (CredentialProviderHolder.getInstance().isActive()){
-        return reloadBranches(r);
-      }
-      else {
-        CredentialProviderHolder.getInstance().setActive(true);
-        return false;
-      }
-
-    }
   }
 }
 

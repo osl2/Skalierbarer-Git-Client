@@ -2,16 +2,17 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.PushDialogView;
-import git.GitBranch;
-import git.GitFacade;
-import git.GitRemote;
+import git.*;
 import git.exception.GitException;
+
+import java.util.List;
 
 public class Push implements ICommand, ICommandGUI {
   private GitBranch localBranch;
   private GitRemote remote;
-  private GitBranch remoteBranch;
+  private String remoteBranch;
   private boolean setUpstream;
+  private List<GitBranch> branchList;
 
   /**
    * Method to execute the command.
@@ -33,22 +34,21 @@ public class Push implements ICommand, ICommandGUI {
     }
     //remote branch does not yet exist, git will automatically create one with the same name as the local branch
     if (remoteBranch == null){
-      try {
-        System.out.println("Hello from execute");
-        success = facade.pushOperation(remote, localBranch, setUpstream);
-      } catch (GitException e) {
-        GUIController.getInstance().errorHandler(e);
-        return false;
-      }
+      remoteBranch = localBranch.getName();
+        success = tryExecute();
     }
     //remote branch already exists
     else{
-      try {
-        success = facade.pushOperation(remote, localBranch, remoteBranch, setUpstream);
-      } catch (GitException e) {
-        GUIController.getInstance().errorHandler(e);
-        return false;
-      }
+        if (getBanches() == false){
+          return false;
+        }
+        for (int i = 0; i < branchList.size(); i++){
+          if (branchList.get(i).getName().compareTo(remoteBranch) == 0){
+            GUIController.getInstance().errorHandler("Es exitiert bereits ein anderer Branch mit diesem namen");
+            success = false;
+          }
+        }
+        success = tryExecute();
     }
     return success;
   }
@@ -108,9 +108,9 @@ public class Push implements ICommand, ICommandGUI {
   /**
    * Sets the remote branch the local commits should be pushed to. If the remote branch does not exist,
    * a new upstream branch will be created
-   * @param remoteBranch
+   * @param remoteBranch the name of the new RemoteBranch
    */
-  public void setRemoteBranch(GitBranch remoteBranch){
+  public void setRemoteBranch(String remoteBranch){
     this.remoteBranch = remoteBranch;
   }
 
@@ -121,4 +121,38 @@ public class Push implements ICommand, ICommandGUI {
   public void setSetUpstream(boolean setUpstream){
     this.setUpstream = setUpstream;
   }
+
+  private boolean tryExecute(){
+    GitFacade gitFacade = new GitFacade();
+    try {
+      gitFacade.pushOperation(remote, localBranch, remoteBranch, setUpstream);
+      return true;
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return tryExecute();
+      }
+      else {
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
+      }
+    }
+  }
+  private boolean getBanches(){
+    GitData git = new GitData();
+    try {
+      branchList = git.getBranches(remote);
+      return true;
+    } catch (GitException e){
+      CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return getBanches();
+      }
+      else {
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
+      }
+    }
+  }
 }
+
