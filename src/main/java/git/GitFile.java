@@ -6,6 +6,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import settings.Settings;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class GitFile {
@@ -37,8 +38,14 @@ public class GitFile {
         return this.path;
     }
 
-    public String getRelativePath() {
-        return GitData.getRepository().getWorkTree().toPath().relativize(path.toPath()).toString();
+    private String getRelativePath() {
+        Path filePath = GitData.getRepository().getWorkTree().toPath().relativize(path.toPath());
+        String toReturn = filePath.toString();
+        if(toReturn.contains("\\")) {
+            toReturn.replace(File.separator, "/");
+            return toReturn;
+        } else
+            return toReturn;
     }
 
     /**
