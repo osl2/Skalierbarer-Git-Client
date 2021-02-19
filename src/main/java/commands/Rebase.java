@@ -4,16 +4,28 @@ package commands;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import git.GitBranch;
 
+/**
+ * This class represents the git rebase command. In order to execute you have
+ * to pass two branches.
+ */
 public class Rebase implements ICommand, ICommandGUI {
 
   private final GitBranch branchA;
   private final GitBranch branchB;
 
+  /**
+   * Creates a new instance an sets the two branches to rebase.
+   * @param branchA the {@link GitBranch} to rebase onto.
+   * @param branchB the {@link GitBranch} which gets rebased.
+   */
   public Rebase(GitBranch branchA, GitBranch branchB) {
     this.branchA = branchA;
     this.branchB = branchB;
   }
 
+  /**
+   * Used by Jackson to create object for Level.
+   */
   @JsonCreator
   public Rebase() {
     /* Used by Jackson to create object for Level */
@@ -59,10 +71,10 @@ public class Rebase implements ICommand, ICommandGUI {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
   }
 }
 
-//  Config view geöffnet dann merge oder rebase bei Dann rebase ohne weiterer Eingabe
-
-//  Zwei Branches setzen darauf dann execute...

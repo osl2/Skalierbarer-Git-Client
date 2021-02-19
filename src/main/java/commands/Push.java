@@ -7,6 +7,10 @@ import git.exception.GitException;
 
 import java.util.List;
 
+/**
+ * This class represents the git push command. In order to execute this command you
+ * have to pass a local {@link GitBranch} and a {@link GitRemote}.
+ */
 public class Push implements ICommand, ICommandGUI {
   private GitBranch localBranch;
   private GitRemote remote;
@@ -79,7 +83,9 @@ public class Push implements ICommand, ICommandGUI {
   public String getDescription() {
     return "Lädt die lokalen Einbuchungen aus dem aktuellen Branch in das Online-Verzeichnis hoch";
   }
-
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     GUIController c = GUIController.getInstance();
     c.openDialog(new PushDialogView());

@@ -10,11 +10,8 @@ public class Config implements ICommand {
     private String name = "";
     private String eMail = "";
 
-    /**
-     * Sets default values for name and e-Mail if they exist.
-     */
-    public Config() {
-    }
+
+
     /**
      * {@inheritDoc}
      */
