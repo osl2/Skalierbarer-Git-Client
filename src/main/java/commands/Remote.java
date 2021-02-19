@@ -5,6 +5,7 @@ import git.GitData;
 import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
+import views.RemoteView;
 
 import java.util.List;
 
@@ -107,7 +108,7 @@ public class Remote implements ICommand, ICommandGUI {
    * onButtonClicked() on Remote and opens the RemoteView
    */
   public void onButtonClicked(){
-
+    GUIController.getInstance().openView(new RemoteView());
   }
 
   public void setRemoteName(String remoteName) {
