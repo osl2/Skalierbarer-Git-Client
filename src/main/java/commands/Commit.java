@@ -119,7 +119,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return "Commit";
+    return null;
   }
 
   /**

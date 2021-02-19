@@ -119,7 +119,7 @@ public class Add implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return "Add";
+    return "Add/Commit";
   }
 
   /**
