@@ -9,12 +9,12 @@ import git.GitStatus;
 import git.exception.GitException;
 import settings.Settings;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.*;
 
 public class AddCommitView extends JPanel implements IView {
 
@@ -45,7 +45,16 @@ public class AddCommitView extends JPanel implements IView {
   private GitData gitData;
   private Settings settings;
   private static final String DEFAULT_COMMIT_MESSAGE = "Hier die Commit-Nachricht eingeben";
+  private String commitMessage;
 
+
+  public AddCommitView() {
+    this.commitMessage = DEFAULT_COMMIT_MESSAGE;
+  }
+
+  public AddCommitView(String commitMessage) {
+    this.commitMessage = commitMessage;
+  }
 
   /*
    * This method is invoked inside getView(). It configures all button listeners as well as the lists of files
@@ -122,7 +131,7 @@ public class AddCommitView extends JPanel implements IView {
     setUpFileList(deletedFilesList, deletedFiles);
 
     //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+    commitMessageTextArea.setText(commitMessage);
     //when the user clicks inside the text area, the default message should disappear
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override
@@ -159,19 +168,8 @@ public class AddCommitView extends JPanel implements IView {
    * @return The JPanel that holds all the elements in the view
    */
   public JPanel getView() {
-    buildAddCommitView();
-    return addCommitView;
-  }
 
-  /**
-   * Returns the JPanel that holds all the elements in the view, sets the initial text of the commit message
-   * text area to the specified String
-   * @param commitMessage The message that should be presented in the commit message text area
-   * @return The JPanel that holds all the elements in the view
-   */
-  public JPanel getView(String commitMessage){
     buildAddCommitView();
-    commitMessageTextArea.setText(commitMessage);
     return addCommitView;
   }
 

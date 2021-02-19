@@ -83,8 +83,12 @@ public class GUIController extends DataObserver {
             bufferPanel.setPreferredSize(jTextArea.getPreferredSize());
         }
         bufferPanel.revalidate();
-        JDialog currentDialog = dialogStack.peek();
-        JOptionPane.showMessageDialog(currentDialog,
+        Component target;
+        if (dialogStack.isEmpty())
+            target = this.window;
+        else
+            target = dialogStack.peek();
+        JOptionPane.showMessageDialog(target,
                 bufferPanel,
                 "Fehler",
                 JOptionPane.ERROR_MESSAGE);

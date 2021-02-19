@@ -17,8 +17,7 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Provides a central point to obtain and create a number of git objects.
@@ -58,6 +58,25 @@ public class GitData {
 
     public void reinitialize() {
         initializeRepository();
+    }
+
+    /**
+     * Returns the merge oommit message as prepared by git
+     *
+     * @return String with commit message; NULL if MERGE_MSG does not exist in .git
+     */
+    public String getMergeCommitMessage() {
+
+        File mergeFile = new File(getRepository().getDirectory(), "MERGE_MSG");
+        if (!mergeFile.exists() || mergeFile.isDirectory()) {
+            return null;
+        }
+        try {
+            return new BufferedReader(new FileReader(mergeFile)).lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+
     }
 
     private void initializeRepository() {
