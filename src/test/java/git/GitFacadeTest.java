@@ -73,9 +73,8 @@ public class GitFacadeTest extends AbstractGitTest {
     FileUtils.forceMkdir(newRepo);
     GitFacade facade = new GitFacade();
     facade.setRepositoryPath(newRepo);
-    Git gitAfterChange = GitData.getJGit();
     assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
-    assertEquals(GitData.getRepository().getDirectory(), new File (newRepo, "\\.git"));
+    assertEquals(GitData.getRepository().getDirectory(), new File (newRepo, ".git"));
     facade.setRepositoryPath(repo);
     assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
     assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
