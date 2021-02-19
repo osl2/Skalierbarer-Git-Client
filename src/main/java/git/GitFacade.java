@@ -265,7 +265,7 @@ public class GitFacade {
       git.push()
               .setRemote(remote.getName())  //In JGIT uri or name of the remote can be set
               .setCredentialsProvider(provider)
-              .setRefSpecs(new RefSpec(localBranch.getName() + ":" + remoteBranch.getName()))
+              .setRefSpecs(new RefSpec( localBranch.getName()+ ":" + remoteBranch.getName()))
               .call();
       return true;
     } catch (InvalidRemoteException e) {
