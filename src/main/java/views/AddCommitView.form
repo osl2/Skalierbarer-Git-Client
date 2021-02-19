@@ -104,6 +104,7 @@
               </grid>
             </constraints>
             <properties>
+              <editable value="false"/>
               <text value="Dateien, von denen schon eine ältere Version existiert"/>
               <toolTipText value="Aktiviere das Kontrollkästchen, um die Datei der Staging-Area hinzuzufügen"/>
             </properties>
@@ -128,6 +129,7 @@
               </grid>
             </constraints>
             <properties>
+              <editable value="false"/>
               <text value="Dateien, die neu erstellt wurden"/>
               <toolTipText value="Aktiviere das Kontrollkästchen, um die Datei der Staging-Area hinzuzufügen"/>
             </properties>
@@ -152,6 +154,7 @@
               </grid>
             </constraints>
             <properties>
+              <editable value="false"/>
               <text value="Gelöschte Dateien"/>
               <toolTipText value=""/>
             </properties>

@@ -18,8 +18,6 @@ public class Add implements ICommand, ICommandGUI {
   private GitData gitData;
 
   public Add(){
-    gitData = new GitData();
-    gitStatus = gitData.getStatus();
     files = new LinkedList<>();
   }
 
@@ -32,7 +30,8 @@ public class Add implements ICommand, ICommandGUI {
    */
   public boolean execute() {
     List<GitFile> stagedFiles = new LinkedList<>();
-
+    gitData = new GitData();
+    gitStatus = gitData.getStatus();
 
       //get all the staged files
     try {
@@ -119,7 +118,7 @@ public class Add implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return "Add";
+    return "Add/Commit";
   }
 
   /**

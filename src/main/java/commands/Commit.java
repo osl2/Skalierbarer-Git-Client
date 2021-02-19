@@ -27,8 +27,6 @@ public class Commit implements ICommand, ICommandGUI {
    */
   public Commit() {
     this.amend = false;
-    gitData = new GitData();
-    this.gitStatus = gitData.getStatus();
   }
 
   /**
@@ -56,6 +54,8 @@ public class Commit implements ICommand, ICommandGUI {
    * execution of the command in JGit throws an exception
    */
   public boolean execute() {
+    gitData = new GitData();
+    this.gitStatus = gitData.getStatus();
     gitFacade = new GitFacade();
     List<GitFile> stagedFiles = new LinkedList<>();
 
@@ -119,7 +119,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return The name of the command
    */
   public String getName() {
-    return "Commit";
+    return null;
   }
 
   /**
