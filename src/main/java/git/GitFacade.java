@@ -234,8 +234,8 @@ public class GitFacade {
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) throws GitException {
-    return pushOperation(remote, localBranch, localBranch, setUpstream);
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch) throws GitException {
+    return pushOperation(remote, localBranch, localBranch.getName());
   }
 
   /**
@@ -244,12 +244,12 @@ public class GitFacade {
    *
    * @param remote       The remote repo the local changes should be pushed to
    * @param localBranch  The local branch whose changes should be pushed
-   * @param remoteBranch The remote branch the changes should be pushed to (already existing)
+   * @param remoteBranchName The remote branch the changes should be pushed to (already existing)
    * @param follow       Whether the --set-upstream flag should be set, i.e. whether a direct connection should be created
    *                     between the local tracking branch and the remote upstream branch
    * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow) throws GitException {
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, String remoteBranchName) throws GitException {
     try {
       remote.getUrl();
       Git git = GitData.getJGit();
@@ -260,24 +260,19 @@ public class GitFacade {
       if (!remoteNames.contains(remote.getName())) {
         git.remoteAdd().setName(remote.getName()).setUri(new URIish(remote.getUrl())).call();
       }
-      RefSpec refSpec = new RefSpec();
-      refSpec.setSource(localBranch.getFullName());
-      refSpec.setDestination(remoteBranch.getFullName());
 
       PushConfig pushConfig = new PushConfig();
-
       git.push()
-              .setRemote(remote.getUrl().toString())  //In JGIT uri or name of the remote can be set
+              .setRemote(remote.getName())  //In JGIT uri or name of the remote can be set
               .setCredentialsProvider(provider)
-              .setRefSpecs(refSpec)
+              .setRefSpecs(new RefSpec( localBranch.getName()+ ":" + remoteBranchName))
               .call();
       return true;
     } catch (InvalidRemoteException e) {
       throw new GitException("Remote war ungültig \n" +
               "Fehlermeldung: " + e.getMessage());
     } catch (TransportException e) {
-      throw new GitException("Mit der Internet-Verbindung ist etwas schief gelaufen \n" +
-              "Fehlermeldung: " + e.getMessage());
+      throw new GitException();
     } catch (GitAPIException e) {
       throw new GitException("Ein Fehler ist aufgetreten \n" +
               "Fehlermeldung: " + e.getMessage());
