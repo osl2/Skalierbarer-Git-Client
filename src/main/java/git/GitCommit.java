@@ -29,9 +29,16 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
+/**
+ * The representation of a Commit in this program.
+ */
 public class GitCommit {
     private final RevCommit revCommit;
 
+    /**
+     * Creates a new GitCommit with the given RevCommit.
+     * @param revCommit given RevCommit to create the GitCommit.
+     */
     GitCommit(RevCommit revCommit) {
         this.revCommit = revCommit;
     }
@@ -49,6 +56,10 @@ public class GitCommit {
         }
     }
 
+    /**
+     * The author of this Commit.
+     * @return the author.
+     */
     public GitAuthor getAuthor() {
         initializeCommit();
         return new GitAuthor(
@@ -56,43 +67,78 @@ public class GitCommit {
                 revCommit.getAuthorIdent().getEmailAddress());
     }
 
+    /**
+     * The message of this Commit.
+     * @return the Commit message.
+     */
     public String getMessage() {
         initializeCommit();
         return this.revCommit.getFullMessage();
     }
 
+    /**
+     * The first line of the Commit message.
+     * @return the fist line of the Commit message.
+     */
     public String getShortMessage() {
         initializeCommit();
         return this.revCommit.getShortMessage();
     }
 
+    /**
+     * Return an abbreviation (prefix) with length 7 of the SHA-1.
+     * This guarantees no uniqueness.
+     * @return a String with length 7 of the abbreviation in lower
+     * case hexadecimal.
+     */
     public String getHashAbbrev() {
         initializeCommit();
         return this.revCommit.abbreviate(7).name();
     }
 
+    /**
+     * Return an array of all direct parents of this GitCommit.
+     * @return an array containing all direct parents.
+     */
     public GitCommit[] getParents() {
         initializeCommit();
         return Arrays.stream(this.revCommit.getParents()).map(GitCommit::new).toArray(GitCommit[]::new);
     }
 
+    /**
+     * The date this Commit was committed.
+     * @return the Commit date.
+     */
     public Date getDate() {
         initializeCommit();
         return Date.from(Instant.ofEpochSecond(this.revCommit.getCommitTime()));
     }
 
+    /**
+     * The string form of the SHA-1, in lower case hexadecimal.
+     * @return the string form of the SHA-1, in lower case hexadecimal.
+     */
     public String getHash() {
         initializeCommit();
         return this.revCommit.getName();
     }
 
+    /**
+     * Return true if the Commit is signed, else false.
+     * @return true if signed, else false.
+     */
+    @SuppressWarnings("unused")
     public boolean isSigned() {
         initializeCommit();
         return this.revCommit.getRawGpgSignature() != null;
     }
 
 
-
+    /**
+     * Applying the git revert command on this Commit.
+     * @return true if this Commit was successfully reverted.
+     * @throws GitException if revert can not be executed successfully.
+     */
     public boolean revert() throws GitException {
         Git git = GitData.getJGit();
         try {
@@ -104,6 +150,11 @@ public class GitCommit {
         }
     }
 
+    /**
+     * The JGit representation of the GitCommit. This method should only be
+     * visible in the git package.
+     * @return the RevCommit this GitCommit is based on.
+     */
     RevCommit getRevCommit() {
         return this.revCommit;
     }
@@ -112,7 +163,7 @@ public class GitCommit {
              * Generates the difference between the given file this commit and the one passed.
              *
              * @param other the other commit, if you want to compare to the empty git repository set other to null.
-             * @param file the you want to get the git diff.
+             * @param file the file you want to get the git diff.
              * @return String representation of the diff.
              */
     public String getDiff(GitCommit other, GitFile file) throws IOException {
@@ -136,14 +187,13 @@ public class GitCommit {
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
-        String output = out.toString();
-        return output;
+        return out.toString();
     }
 
     /**
      * Generates the difference between the index (current HEAD position) and the working directory.
-     *
-     * @return String representation of the difference between index and working directory
+     * @param file the file you want to get the git diff.
+     * @return String representation of the git diff.
      */
     public static String getDiff(GitFile file) throws IOException {
         Git git = GitData.getJGit();
@@ -167,32 +217,22 @@ public class GitCommit {
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
-        String output = out.toString();
-        return output;
+        return out.toString();
     }
 
     private static TreeFilter pathFilter(GitFile file) {
         String separator = Pattern.quote(System.getProperty("file.separator"));
         String[] relativePath = file.getPath().getPath().split(separator);
-        String output = relativePath[0];
+        StringBuilder output = new StringBuilder(relativePath[0]);
         for(int i = 1; i < relativePath.length; i++) {
-            output += "/" + relativePath[i];
+            output.append("/").append(relativePath[i]);
         }
-        output = output.substring(Settings.getInstance().getActiveRepositoryPath().getPath().length() + 1);
-        TreeFilter filter = PathFilter.create(output);
-        return filter;
+        output = new StringBuilder(output.substring(Settings.getInstance().getActiveRepositoryPath().getPath().length() + 1));
+        return PathFilter.create(output.toString());
     }
 
 
-    /**
-     * Method to get a CanonicalTreeParser
-     * TODO: JAVADOC
-     *
-     * @param commitId
-     * @param git
-     * @return
-     * @throws IOException
-     */
+
     private static AbstractTreeIterator getCanonicalTreeParser(ObjectId commitId, Git git) throws IOException {
         RevWalk walk = new RevWalk(git.getRepository());
         RevCommit commit = walk.parseCommit(commitId);
@@ -204,15 +244,14 @@ public class GitCommit {
     }
 
     /**
-     * Method to get the files changed in that Commit
+     * Method to get the files changed in that Commit.
      *
-     * @return List of the changed Files
+     * @return List of the changed Files.
      */
     public List<GitFile> getChangedFiles() throws IOException {
         initializeCommit();
         Repository repository = GitData.getRepository();
         Git git = GitData.getJGit();
-        RevWalk walk = new RevWalk(repository);
         AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
         if(revCommit.getParents().length!= 0) {
             RevCommit oldCommit = Arrays.stream(revCommit.getParents()).iterator().next();
@@ -231,6 +270,10 @@ public class GitCommit {
 
       for (DiffEntry diffEntry : diffEntries) {
           path = diffEntry.getPath(DiffEntry.Side.NEW);
+          // A simple way to get deleted files.
+          if(path.compareTo("/dev/null") == 0) {
+              path = diffEntry.getPath(DiffEntry.Side.OLD);
+          }
           filePath = new File(repository.getWorkTree(), path);
           size = (int) filePath.length();
           files.add(new GitFile(size, filePath));
@@ -238,6 +281,13 @@ public class GitCommit {
       return  files;
   }
 
+    /**
+     * Returns true if the string form of the SHA-1 from this GitCommit, in lower case hexadecimal
+     * equals the string form of the SHA-1, in lower case hexadecimal of the
+     * given GitCommit. If the given object is no GitCommit return false.
+     * @param o the object to compare to.
+     * @return true if the two objects are equal else false
+     */
   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -246,6 +296,10 @@ public class GitCommit {
         return revCommit.getName().equals(gitCommit.revCommit.getName());
     }
 
+    /**
+     * Return a hash code representation of this object.
+     * @return a hash representation of this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(revCommit);
