@@ -69,18 +69,27 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="62358" class="javax.swing.JTextArea" binding="commitMessage">
+          <scrollpane id="c5655">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
-                <minimum-size width="300" height="-1"/>
-                <preferred-size width="600" height="-1"/>
-                <maximum-size width="680" height="-1"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <minimum-size width="200" height="30"/>
+                <preferred-size width="600" height="80"/>
+                <maximum-size width="600" height="80"/>
               </grid>
             </constraints>
             <properties>
-              <text value=""/>
+              <horizontalScrollBarPolicy value="31"/>
             </properties>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="62358" class="javax.swing.JTextArea" binding="commitMessage">
+                <constraints/>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
         </children>
       </grid>
       <scrollpane id="48560" binding="diffPane">
