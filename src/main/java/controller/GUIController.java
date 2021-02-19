@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 public class GUIController extends DataObserver {
 
+    private static final int ERROR_MESSAGE_WIDTH = 600;
+    private static final int ERROR_MESSAGE_HEIGHT = 800;
     private static GUIController INSTANCE;
     private MainWindow window;
     private JDialog currentDialog;
@@ -65,10 +67,15 @@ public class GUIController extends DataObserver {
         JPanel bufferPanel = new JPanel(new BorderLayout());
         bufferPanel.add(new JScrollPane(jTextArea));
         jTextArea.setEditable(false);
-        if (jTextArea.getPreferredSize().height > 600 || jTextArea.getPreferredSize().width > 600)
-            bufferPanel.setPreferredSize(new Dimension(800, 600));
-        else
+        jTextArea.setSize(ERROR_MESSAGE_WIDTH, jTextArea.getPreferredSize().height);
+
+        if (jTextArea.getPreferredSize().height > ERROR_MESSAGE_HEIGHT ||
+                jTextArea.getPreferredSize().width > ERROR_MESSAGE_WIDTH) {
+
+            bufferPanel.setPreferredSize(new Dimension(ERROR_MESSAGE_WIDTH, ERROR_MESSAGE_HEIGHT));
+        } else {
             bufferPanel.setPreferredSize(jTextArea.getPreferredSize());
+        }
         bufferPanel.revalidate();
         JOptionPane.showMessageDialog(this.currentDialog,
                 bufferPanel,
