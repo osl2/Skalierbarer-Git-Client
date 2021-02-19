@@ -61,20 +61,6 @@ public class PushDialogView implements IDialogView {
         }
       }
     });
-    remoteBranchComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        JComboBox<GitBranch> source = (JComboBox<GitBranch>) e.getSource();
-        remoteBranch = (GitBranch) source.getSelectedItem();
-      }
-    });
-    setUpstreamCheckbox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        JCheckBox source = (JCheckBox) e.getSource();
-        setUpstream = source.isSelected();
-      }
-    });
     pushButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -170,20 +156,21 @@ public class PushDialogView implements IDialogView {
     try {
       localBranches = gitData.getBranches();
     } catch (GitException e) {
-      //TODO: do something
+      GUIController.getInstance().errorHandler(e);
+      return;
     }
     GitBranch selectedBranch = null;
     try {
       selectedBranch = gitData.getSelectedBranch();
     } catch (IOException e) {
-      e.printStackTrace();
+      GUIController.getInstance().errorHandler(e);
+      return;
     }
-    //TODO: wieso schlägt es bei model.addAll() fehl??????????
-    //model.addAll(localBranches);
+
     for (GitBranch branch : localBranches){
       model.addElement(branch);
       if (branch.getName().compareTo((selectedBranch.getName())) == 0){
-        //model.setSelectedItem(branch);
+        localBranchComboBox.setSelectedItem(branch);
       }
     }
     localBranchComboBox.setModel(model);
@@ -199,7 +186,7 @@ public class PushDialogView implements IDialogView {
     for (GitRemote remote : remotes){
       model.addElement(remote);
       if (remote.getName().compareTo("origin") == 0){
-        //model.setSelectedItem(remote);
+        remoteComboBox.setSelectedItem(remote);
       }
     }
     remoteComboBox.setModel(model);
@@ -223,19 +210,23 @@ public class PushDialogView implements IDialogView {
       //gibt es schon einen remote upstream branch? Falls nicht, füge lokalen Branch als "Dummy" hinzu
       if (remoteBranch.getName().compareTo(localBranch.getName()) == 0){
         containsUpStreamBranch = true;
-        //model.setSelectedItem(remoteBranch);
+        remoteBranchComboBox.setSelectedItem(remoteBranch);
       }
     }
 
     //add dummy upstream branch
     if (!containsUpStreamBranch){
       model.addElement(localBranch);
-      //model.setSelectedItem(localBranch);
+      remoteBranchComboBox.setSelectedItem(localBranch);
     }
     remoteBranchComboBox.setModel(model);
   }
 
   private boolean executePush(){
+    remoteBranch = (GitBranch) remoteBranchComboBox.getSelectedItem();
+    setUpstream = setUpstreamCheckbox.isSelected();
+    remote = (GitRemote) remoteComboBox.getSelectedItem();
+    localBranch = (GitBranch) remoteComboBox.getSelectedItem();
     Push push = new Push();
     push.setLocalBranch(localBranch);
     push.setRemote(remote);
