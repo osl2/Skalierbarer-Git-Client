@@ -251,7 +251,7 @@ public class GitFacade {
   }
 
   public boolean revert(GitCommit commit) throws GitException {
-    boolean suc = false;
+    boolean suc;
 
     suc = commit.revert();
     return suc;
