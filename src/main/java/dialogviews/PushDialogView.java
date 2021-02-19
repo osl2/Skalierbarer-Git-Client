@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import commands.Push;
@@ -31,6 +32,7 @@ public class PushDialogView implements IDialogView {
   private GitBranch remoteBranch;
   private boolean setUpstream;
   private boolean open;
+  private List<GitBranch> remoteBranches;
 
   public PushDialogView() {
     gitData = new GitData();
@@ -206,14 +208,17 @@ public class PushDialogView implements IDialogView {
   private void setUpRemoteBranchComboBox(){
     remoteBranchComboBox.setRenderer(new BranchComboBoxRenderer());
     DefaultComboBoxModel<GitBranch> model = new DefaultComboBoxModel<>();
-    GitBranch [] remoteBranches = loadRemoteBranches(remote);
+
+    if(reloadBranches(remote) == false){
+      return;
+    }
+
     if (remoteBranches == null){
       GUIController.getInstance().errorHandler("Remote Branches konnten nicht geladen werden");
       return;
     }
     boolean containsUpStreamBranch = false;
-    for (int i = 0; i < remoteBranches.length; i++){
-      GitBranch remoteBranch = remoteBranches[i];
+    for (GitBranch remoteBranch : remoteBranches){
       model.addElement(remoteBranch);
       //gibt es schon einen remote upstream branch? Falls nicht, füge lokalen Branch als "Dummy" hinzu
       if (remoteBranch.getName().equals(localBranch.getName())){
@@ -250,28 +255,24 @@ public class PushDialogView implements IDialogView {
     return success;
   }
 
-  private GitBranch[] loadRemoteBranches(GitRemote r){
 
-    return reloadBranches(r);
 
-  }
-
-  private GitBranch[] reloadBranches(GitRemote r){
+  private boolean reloadBranches(GitRemote r){
     GitData git = new GitData();
-    GitBranch[] ret = null;
     try {
-      ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+      remoteBranches =  git.getBranches(r);
+      return true;
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
       if (CredentialProviderHolder.getInstance().isActive()){
-        return  loadRemoteBranches(r);
+        return reloadBranches(r);
       }
       else {
-        open = false;
+        CredentialProviderHolder.getInstance().setActive(true);
+        return false;
       }
 
     }
-    return ret;
   }
 }
 
