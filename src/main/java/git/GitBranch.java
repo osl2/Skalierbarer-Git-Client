@@ -93,6 +93,7 @@ public class GitBranch {
             MergeResult mr = GitData.getJGit().merge()
                     .setStrategy(MergeStrategy.RESOLVE)
                     .include(ref)
+                    .setCommit(true)
                     .setFastForward(ffm)
                     .call();
             // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing

@@ -48,7 +48,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return List of the conflicts that happen
      */
     public List<GitChangeConflict> getConflicts() {
-     // todo kann weg?
+        // todo kann weg?
         return null;
     }
 
@@ -78,31 +78,31 @@ public class Merge implements ICommand, ICommandGUI {
             return false;
         }
 
-        Map<GitFile, List<GitChangeConflict>> conflicts = null;
+        Map<GitFile, List<GitChangeConflict>> conflicts;
         try {
             conflicts = this.srcBranch.merge(this.fastForward);
-        } catch (GitException e) {
-            e.printStackTrace();
-        }
-        while (conflicts.size() > 0) {
-            for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet())
-                GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
-                        this.destBranch.getName(), this.srcBranch.getName()));
+            while (conflicts.size() > 0) {
+                for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet()) {
+                    GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
+                            this.destBranch.getName(), this.srcBranch.getName()));
+                }
 
-            // Everything has been resolved. Create Merge-Commit
-            // todo : Load AddCommitView with preloaded Message
-
-            try {
-                conflicts = this.srcBranch.merge(this.fastForward);
-            } catch (GitException e) {
-                Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
-                return false;
+                // Everything has been resolved. Create Merge-Commit
+                // todo: Currently jgit does that. We should provide the opportunity to change that message in AddCommitView
+                try {
+                    conflicts = this.srcBranch.merge(this.fastForward);
+                } catch (GitException e) {
+                    Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
+                    return false;
+                }
             }
-            // todo: After merge a new Commit is needed. As we don't set the setCommit(true) flag of JGIT-Merge.
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
         }
 
         return true;
     }
+
 
     /**
      * Method to get the Commandline input that would be necessary to execute the command.
