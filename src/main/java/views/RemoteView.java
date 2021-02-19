@@ -53,6 +53,7 @@ public class RemoteView extends JPanel implements IView {
     remoteList.setCellRenderer(new RemoteViewRenderer());
     remoteList.setModel(model);
 
+
     removeButton.addActionListener(new ActionListener() {
       /**
        * Invoked when an action occurs.

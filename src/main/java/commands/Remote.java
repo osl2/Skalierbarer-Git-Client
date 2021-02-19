@@ -1,11 +1,13 @@
 package commands;
 
 import controller.GUIController;
+import git.GitData;
 import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 
 import java.net.URL;
+import java.util.List;
 
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
@@ -72,6 +74,14 @@ public class Remote implements ICommand, ICommandGUI {
         }
       case ADD:
         GitFacade gitFacade = new GitFacade();
+        GitData gitData = new GitData();
+        List<GitRemote> remoteList = gitData.getRemotes();
+        for (int i = 0; i < remoteList.size(); i++){
+          if (remoteList.get(i).getName().compareTo(remoteName) == 0){
+            GUIController.getInstance().errorHandler("Ein Remote mit diesem namen existiert bereits");
+            return false;
+          }
+        }
         try {
           return gitFacade.remoteAddOperation(remoteName, url);
         } catch (GitException e) {
