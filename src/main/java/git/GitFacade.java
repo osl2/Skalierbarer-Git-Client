@@ -189,7 +189,11 @@ public class GitFacade {
 
 
   public boolean setRepositoryPath(File path) {
-    throw new AssertionError("not implemented");
+    Settings settings = Settings.getInstance();
+    settings.setActiveRepositoryPath(path);
+    GitData data = new GitData();
+    data.reinitialize();
+    return true;
   }
 
   /**
