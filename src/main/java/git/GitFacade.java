@@ -6,13 +6,19 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.transport.PushConfig;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class to do operations, that change something in the Git repository.
@@ -228,22 +234,54 @@ public class GitFacade {
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) {
-    throw new AssertionError("not implemented");
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) throws GitException {
+    return pushOperation(remote, localBranch, localBranch, setUpstream);
   }
 
   /**
    * Pushes the local commit history from the selected branch to the selected online repo in the selected branch. Sets up
    * the local branch to track the remote branch if 'setUpstream' is true
-   * @param remote The remote repo the local changes should be pushed to
-   * @param localBranch The local branch whose changes should be pushed
+   *
+   * @param remote       The remote repo the local changes should be pushed to
+   * @param localBranch  The local branch whose changes should be pushed
    * @param remoteBranch The remote branch the changes should be pushed to (already existing)
-   * @param follow Whether the --set-upstream flag should be set, i.e. whether a direct connection should be created
-   *               between the local tracking branch and the remote upstream branch
-   * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed 
+   * @param follow       Whether the --set-upstream flag should be set, i.e. whether a direct connection should be created
+   *                     between the local tracking branch and the remote upstream branch
+   * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow){
-    throw new AssertionError("not implemented");
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow) throws GitException {
+    try {
+      remote.getUrl();
+      Git git = GitData.getJGit();
+      Repository repository = GitData.getRepository();
+      CredentialProviderHolder credentialProvider = CredentialProviderHolder.getInstance();
+      UsernamePasswordCredentialsProvider provider = credentialProvider.getProvider();
+      Set<String> remoteNames = repository.getRemoteNames();
+      if (!remoteNames.contains(remote.getName())) {
+        git.remoteAdd().setName(remote.getName()).setUri(new URIish(remote.getUrl())).call();
+      }
+      RefSpec refSpec = new RefSpec();
+      refSpec.setSource(localBranch.getFullName());
+      refSpec.setDestination(remoteBranch.getFullName());
+
+      PushConfig pushConfig = new PushConfig();
+
+      git.push()
+              .setRemote(remote.getUrl().toString())  //In JGIT uri or name of the remote can be set
+              .setCredentialsProvider(provider)
+              .setRefSpecs(refSpec)
+              .call();
+      return true;
+    } catch (InvalidRemoteException e) {
+      throw new GitException("Remote war ungültig \n" +
+              "Fehlermeldung: " + e.getMessage());
+    } catch (TransportException e) {
+      throw new GitException("Mit der Internet-Verbindung ist etwas schief gelaufen \n" +
+              "Fehlermeldung: " + e.getMessage());
+    } catch (GitAPIException e) {
+      throw new GitException("Ein Fehler ist aufgetreten \n" +
+              "Fehlermeldung: " + e.getMessage());
+    }
   }
 
 
