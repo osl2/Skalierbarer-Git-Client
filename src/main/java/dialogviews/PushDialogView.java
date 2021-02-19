@@ -226,7 +226,7 @@ public class PushDialogView implements IDialogView {
     remoteBranch = (GitBranch) remoteBranchComboBox.getSelectedItem();
     setUpstream = setUpstreamCheckbox.isSelected();
     remote = (GitRemote) remoteComboBox.getSelectedItem();
-    localBranch = (GitBranch) remoteComboBox.getSelectedItem();
+    localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
     Push push = new Push();
     push.setLocalBranch(localBranch);
     push.setRemote(remote);
