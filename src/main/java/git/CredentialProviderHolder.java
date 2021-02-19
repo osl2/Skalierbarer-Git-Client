@@ -25,8 +25,7 @@ public class CredentialProviderHolder {
     }
     private WindowListener windowListener = new WindowListener() {
         /**
-         * Method to change the boolean if the window is Opened
-         * @param e
+         * {@inheritDoc}
          */
         @Override
         public void windowOpened(WindowEvent e) {
@@ -39,8 +38,7 @@ public class CredentialProviderHolder {
         }
 
         /**
-         * Method to set the boolean on true during the window is closed
-         * @param e
+         * {@inheritDoc}
          */
         @Override
         public void windowClosed(WindowEvent e) {

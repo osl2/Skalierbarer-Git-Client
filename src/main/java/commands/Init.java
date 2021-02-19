@@ -2,8 +2,6 @@ package commands;
 
 import controller.GUIController;
 import git.GitFacade;
-import settings.Data;
-import settings.Settings;
 
 import javax.swing.*;
 import java.io.File;
@@ -48,18 +46,12 @@ public class Init implements ICommand, ICommandGUI {
     facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
     if(!success) {
-      GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiertw werden.");
+      GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiert werden.");
       return false;
     }
     // Create the git commandLine input to execute this command.
-    commandLine = path.getAbsolutePath() + " git init";
-    Data.getInstance().storeNewRepositoryPath(path);
-    Settings.getInstance().setActiveRepositoryPath(path);
+    commandLine = "git init";
     return true;
-  }
-
-  public String getErrorMessage() {
-    return null;
   }
 
   public String getCommandLine() {

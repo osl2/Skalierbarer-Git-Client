@@ -2,7 +2,10 @@ package dialogviews;
 
 import commands.Fetch;
 import controller.GUIController;
-import git.*;
+import git.CredentialProviderHolder;
+import git.GitBranch;
+import git.GitData;
+import git.GitRemote;
 import git.exception.GitException;
 
 import javax.swing.*;
@@ -13,8 +16,6 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 public class FetchDialogView implements IDialogView {
 
@@ -100,7 +101,6 @@ public class FetchDialogView implements IDialogView {
   /**
    * DialogWindow Title
    *
-   * @return Window Title as String
    */
 
   private static abstract class RefTreeNode extends DefaultMutableTreeNode {

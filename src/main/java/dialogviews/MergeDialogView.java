@@ -45,7 +45,12 @@ public class MergeDialogView implements IDialogView {
                     .filter(b -> !b.equals(selectedBranch)) // dont allow merging into itself
                     .forEach(cbModel::addElement);
 
-            fromComboBox.setRenderer((jList, gitBranch, i, b, b1) -> new JLabel(gitBranch.getName()));
+            fromComboBox.setRenderer((jList, gitBranch, i, b, b1) -> {
+                if (gitBranch != null)
+                    return new JLabel(gitBranch.getName());
+                else
+                    return new JLabel("");
+            });
             fromComboBox.setModel(cbModel);
 
 
@@ -63,6 +68,11 @@ public class MergeDialogView implements IDialogView {
      */
     private void okButtonListener(ActionEvent actionEvent) {
         try {
+            if (fromComboBox.getSelectedItem() == null || data.getSelectedBranch() == null) {
+                GUIController.getInstance().errorHandler("Es müssen zwei Branches ausgewählt werden");
+                return;
+            }
+            GUIController.getInstance().closeDialogView();
             this.merge = new Merge((GitBranch) fromComboBox.getSelectedItem(), data.getSelectedBranch());
             if (!merge.execute()) {
                 GUIController.getInstance().errorHandler("Merge fehlgeschlagen");

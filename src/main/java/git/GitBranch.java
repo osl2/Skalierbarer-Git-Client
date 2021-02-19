@@ -21,11 +21,15 @@ import java.util.Map;
  * Represents a git-branch in this program.
  */
 public class GitBranch {
-    private final Ref ref;
+    private final String branchName;
 
     /* Is only instantiated inside the git Package */
     GitBranch(Ref branch) {
-        this.ref = branch;
+        this.branchName = branch.getName();
+    }
+
+    GitBranch(String branchName) {
+        this.branchName = branchName;
     }
 
     public Iterator<GitCommit> getCommits() throws GitException, IOException {
@@ -38,14 +42,13 @@ public class GitBranch {
      * @return Name of the branch
      */
     public String getName() {
-        if (ref.getName().startsWith("refs/heads/"))
-            return ref.getName().substring("refs/heads/".length());
-        else if (ref.getName().startsWith("refs/remotes/")){
-            String[] refParts = ref.getName().split("/");
-            return ref.getName().substring("refs/remotes/".length() + refParts[2].length() + 1);
-        }
-        else
-            return ref.getName();
+        if (this.branchName.startsWith("refs/heads/"))
+            return this.branchName.substring("refs/heads/".length());
+        else if (this.branchName.startsWith("refs/remotes/")) {
+            String[] refParts = this.branchName.split("/");
+            return this.branchName.substring("refs/remotes/".length() + refParts[2].length() + 1);
+        } else
+            return this.branchName;
     }
 
     /**
@@ -55,7 +58,7 @@ public class GitBranch {
      * @return Name of the branch
      */
     public String getFullName() {
-        return ref.getName();
+        return this.branchName;
     }
 
     /**
@@ -68,7 +71,7 @@ public class GitBranch {
         GitCommit head = null;
         try {
             // dirty way to update the pointer
-            Ref r = GitData.getRepository().exactRef(ref.getName());
+            Ref r = GitData.getRepository().exactRef(this.branchName);
             RevCommit revCommit = revWalk.parseCommit(r.getObjectId());
             head = new GitCommit(revCommit);
         } catch (IOException e) {
@@ -90,6 +93,7 @@ public class GitBranch {
         MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;
 
         try {
+            Ref ref = GitData.getRepository().exactRef(this.branchName);
             MergeResult mr = GitData.getJGit().merge()
                     .setStrategy(MergeStrategy.RESOLVE)
                     .include(ref)
@@ -109,7 +113,7 @@ public class GitBranch {
 
             return conflictMap;
 
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | IOException e) {
             throw new GitException(e.getMessage());
         }
 

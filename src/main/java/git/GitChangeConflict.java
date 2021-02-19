@@ -118,7 +118,7 @@ public class GitChangeConflict {
                 optionTheirsBuilder.append(System.lineSeparator());
                 ++i;
             }
-            // todo : Crashes if string is empty.
+
             if (optionOursBuilder.length() > 0)
                 optionOursBuilder.deleteCharAt(optionOursBuilder.lastIndexOf(System.lineSeparator()));
             if (optionTheirsBuilder.length() > 0)
@@ -136,7 +136,7 @@ public class GitChangeConflict {
     /**
      * accepts the first option
      */
-    public void accecptOurs() {
+    public void acceptOurs() {
         if (resolved) return;
         if (state == IndexDiff.StageState.DELETED_BY_US) {
             deleted = true;

@@ -18,6 +18,27 @@ maven_build:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building project with maven"
-    - mvn --no-transfer-progress verify
+    - mvn --no-transfer-progress test
     - echo "Generating LOC overview"
     - tokei
+
+generate_artifacts:
+  # A job is always executed within a stage. If no stage is set, it defaults to 'test'
+  stage: deploy
+  # Since we require Maven for this job, we can restrict the job to runners with a certain tag. Of course, we need to configure a runner with the tag maven with a maven installation
+  tags:
+    - maven
+  only:
+    - tags
+  # Here you can execute arbitrate terminal commands.
+  # If any of the commands returns a non zero exit code the job fails
+  script:
+    - echo "Building artifacts"
+    - mvn --no-transfer-progress -Dmaven.test.skip=true package
+  artifacts:
+    paths:
+      - target/*-SNAPSHOT.jar
+      - target/*-SNAPSHOT-jar-with-dependencies.jar
+      - target/JavaDoc.zip
+    expire_in: 1 month
+

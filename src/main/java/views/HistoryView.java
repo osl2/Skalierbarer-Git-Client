@@ -7,7 +7,10 @@ import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,9 +34,13 @@ public class HistoryView extends JPanel implements IView {
   private Iterator<GitCommit> iteratorOfCommits;
   private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
+  private Iterator<GitFile> gitFileIterator;
+  private DefaultListModel fileListModel;
   private GitBranch branch;
   private int maxCommits = 20;
   private int loadedCommits = 0;
+  private int maxFiles;
+  private int loadedFiles;
   private DefaultListModel listModel;
 
 
@@ -97,6 +104,8 @@ public class HistoryView extends JPanel implements IView {
       @Override
       public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
+        maxFiles = 50;
+        loadedFiles = 0;
         diffView.setNotVisible();
         int index = commitList.getSelectedIndex();
         if(index < 0) {
@@ -110,13 +119,17 @@ public class HistoryView extends JPanel implements IView {
         Date date = selectedCommit.getDate();
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy, hh:mm:ss");
         String commitDate = format.format(date);
-        commitMessage.setText("Autor: " + name + ", E-Mail: " + eMail + ", Datum: " + commitDate + " Uhr: " + activeMessage);
-        DefaultListModel fileListModel = new DefaultListModel();
+        commitMessage.setText("Autor: " + name + System.lineSeparator()
+                + "E-Mail: " + eMail + System.lineSeparator()
+                + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
+                + System.lineSeparator()
+                + activeMessage);
+        fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         int width = commitMessage.getWidth();
         commitMessage.setVisible(true);
-        if(width > 0) {
+        if (width > 0) {
           commitMessage.setSize(width, Short.MAX_VALUE);
         }
         commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -126,12 +139,10 @@ public class HistoryView extends JPanel implements IView {
           listOfFiles = selectedCommit.getChangedFiles();
         } catch (IOException ioException) {
           GUIController.getInstance().errorHandler(ioException);
+          return;
         }
-        int size = listOfFiles.size();
-        for(int i = 0; i < size; i++) {
-          String activeFile = listOfFiles.get(i).getPath().getName();
-          fileListModel.addElement(activeFile);
-        }
+        gitFileIterator = listOfFiles.iterator();
+        addFiles();
       }
     });
     fileList.addMouseListener(new MouseAdapter() {
@@ -163,15 +174,35 @@ public class HistoryView extends JPanel implements IView {
         }
       }
     });
+    fileScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+      @Override
+      public void adjustmentValueChanged(AdjustmentEvent ae) {
+        int extent = fileScrollPane.getVerticalScrollBar().getModel().getExtent();
+        int max = fileScrollPane.getVerticalScrollBar().getMaximum();
+        if(max == extent + fileScrollPane.getVerticalScrollBar().getModel().getValue()) {
+          maxFiles += 50;
+          if (gitFileIterator != null)
+            addFiles();
+        }
+      }
+    });
   }
 
   private void addCommits() {
     while(iteratorOfCommits.hasNext() && loadedCommits < maxCommits) {
       GitCommit current = iteratorOfCommits.next();
-      String message = current.getMessage();
+      String message = current.getShortMessage();
       listOfCommits.add(loadedCommits, current);
       listModel.addElement(message);
       loadedCommits++;
+    }
+  }
+
+  private void addFiles() {
+    while (gitFileIterator.hasNext() && loadedFiles < maxFiles) {
+      String activeFile = gitFileIterator.next().getRelativePath();
+      fileListModel.addElement(activeFile);
+      loadedFiles++;
     }
   }
 

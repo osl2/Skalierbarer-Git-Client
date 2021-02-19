@@ -6,12 +6,14 @@ import commands.Merge;
 import commands.Rebase;
 import controller.GUIController;
 import git.GitBranch;
+import levels.Level;
 import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 
 public class PullConflictDialogView implements IDialogView {
@@ -38,18 +40,20 @@ public class PullConflictDialogView implements IDialogView {
     conflictMessage.setWrapStyleWord(true);
     conflictMessage.setLineWrap(true);
     conflictMessage.setText("Die Änderungen auf dem Server konfligieren mit den lokalen Änderungen. " +
-              "Die Änderungen müssen verschmolzen werden.");
+            "Die Änderungen müssen verschmolzen werden.");
     int width = conflictMessage.getWidth();
-    if(width > 0) {
+    if (width > 0) {
       conflictMessage.setSize(width, Short.MAX_VALUE);
     }
     boolean merge = false;
+    List<ICommandGUI> mergeCommand = Collections.singletonList(new Merge());
+    List<ICommandGUI> rebaseCommand = Collections.singletonList(new Rebase());
     List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
-    for(int i = 0; i < commandList.size(); i++) {
-      if(commandList.get(i).getName().compareTo("Merge") == 0) {
+    for (int i = 0; i < commandList.size(); i++) {
+      if (Level.iCommandGUIEquals(Collections.singletonList(commandList.get(i)), mergeCommand)) {
         mergeButton.setEnabled(true);
         merge = true;
-      } else if(commandList.get(i).getName().compareTo("Rebase") == 0) {
+      } else if (Level.iCommandGUIEquals(Collections.singletonList(commandList.get(i)), rebaseCommand)) {
         rebaseButton.setEnabled(true);
         merge = true;
       }

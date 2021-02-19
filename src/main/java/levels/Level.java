@@ -61,7 +61,7 @@ public class Level {
         return id == level.id && name.equals(level.name) && iCommandGUIEquals(commands, level.commands);
     }
 
-    private boolean iCommandGUIEquals(List<ICommandGUI> a, List<ICommandGUI> b) {
+    public static boolean iCommandGUIEquals(List<ICommandGUI> a, List<ICommandGUI> b) {
         return a.stream()
                 .allMatch( // for all Commands in a
                         e -> b.stream()

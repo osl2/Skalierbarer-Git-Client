@@ -38,10 +38,10 @@ public class GitFile {
         return this.path;
     }
 
-    private String getRelativePath() {
+    public String getRelativePath() {
         Path filePath = GitData.getRepository().getWorkTree().toPath().relativize(path.toPath());
         String toReturn = filePath.toString();
-        if(toReturn.contains("\\")) {
+        if (toReturn.contains("\\")) {
             toReturn.replace(File.separator, "/");
             return toReturn;
         } else
@@ -122,7 +122,7 @@ public class GitFile {
      * Adds a remove operation for that file to the staging area.
      *
      * @return True if the file was successfully marked as removed.
-     * @throws GitException
+     * @throws GitException if a file could not be marked as removed.
      */
     public boolean rm() throws GitException {
         Git git = GitData.getJGit();

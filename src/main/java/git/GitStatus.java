@@ -3,14 +3,11 @@ package git;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.IndexDiff;
-import org.eclipse.jgit.util.IO;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -151,11 +148,10 @@ public class GitStatus {
     }
 
     /**
-     *
      * @return A list of files that have been deleted manually, therefore do not appear in the working directory anymore
      * (but are still present in the index)
-     * @throws IOException
-     * @throws GitException
+     * @throws IOException  if the filesystem returns an error
+     * @throws GitException if the parsing of the Git data fails
      */
     public List<GitFile> getMissingFiles() throws IOException, GitException {
         try{

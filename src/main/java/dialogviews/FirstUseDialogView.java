@@ -3,11 +3,12 @@ package dialogviews;
 import commands.Config;
 import commands.Init;
 import controller.GUIController;
+import git.GitData;
+import settings.Data;
+import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 public class FirstUseDialogView implements IDialogView {
@@ -24,44 +25,35 @@ public class FirstUseDialogView implements IDialogView {
   private JFileChooser chooser;
 
 
-
   public FirstUseDialogView() {
-    finishButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        name = nameField.getText();
-        eMail = eMailField.getText();
-        config = new Config();
-        config.setName(name);
-        config.setEMail(eMail);
-        boolean successConfig = config.execute();
-        /*
-        TODO: Wird nicht benötigt, da execute() selbst den error handler vom GUI Controller aufruft, oder?
-
-        if(!successConfig) {
-          return;
-        }
-
-         */
-        init = new Init();
-        init.setPathToRepository(path);
-        boolean successInit = init.execute();
-        if(!successInit) {
-          return;
-        }
-        GUIController.getInstance().closeDialogView();
+    finishButton.addActionListener(e -> {
+      name = nameField.getText();
+      eMail = eMailField.getText();
+      config = new Config();
+      config.setName(name);
+      config.setEMail(eMail);
+      // Set active repository
+      Settings.getInstance().setActiveRepositoryPath(path);
+      Data.getInstance().storeNewRepositoryPath(path);
+      init = new Init();
+      init.setPathToRepository(path);
+      boolean successInit = init.execute();
+      // make sure it is initialized.
+      GitData data = new GitData();
+      data.reinitialize();
+      boolean successConfig = config.execute();
+      if (!successInit) {
+        return;
       }
+      GUIController.getInstance().closeDialogView();
     });
     // Opens a new JFileChooser to set a path to a directory.
-    chooseButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnVal = chooser.showOpenDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-          path = chooser.getSelectedFile();
-        }
+    chooseButton.addActionListener(e -> {
+      chooser = new JFileChooser();
+      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      int returnVal = chooser.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        path = chooser.getSelectedFile();
       }
     });
   }
@@ -84,8 +76,7 @@ public class FirstUseDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    Dimension dim = new Dimension(700, 300);
-    return dim;
+    return new Dimension(500, 150);
   }
 
   /**

@@ -9,7 +9,6 @@ import git.GitRemote;
 import git.exception.GitException;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class Fetch implements ICommand, ICommandGUI {
   private String errorMessage;
@@ -34,7 +33,6 @@ public class Fetch implements ICommand, ICommandGUI {
   /**
    * Returns a list containing all remote names.
    *
-   * @return a list with with remote names.
    */
 
   public void addRemote(GitRemote remote){

@@ -1,10 +1,17 @@
 package views;
 
+import controller.GUIController;
+import dialogviews.SettingsDialogView;
+import git.GitData;
+import settings.Data;
 import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public class MainWindow extends JFrame {
 
@@ -17,6 +24,7 @@ public class MainWindow extends JFrame {
     private JPanel viewPanel;
     private JPanel headPanel;
     private JTextField commandLineTextField;
+    private JLabel branchLabel;
 
     /**
      * Replace the lower view of the window.
@@ -36,6 +44,11 @@ public class MainWindow extends JFrame {
         this.commandLineTextField.setText(text);
     }
 
+    public void clearButtonPanel() {
+        for (Component c : buttonPanel.getComponents()) {
+            this.buttonPanel.remove(c);
+        }
+    }
 
     /**
      * Get the lower part of the window
@@ -58,6 +71,13 @@ public class MainWindow extends JFrame {
             this.contentPane.add(viewPanel);
             this.viewPanel.revalidate();
             this.viewPanel.repaint();
+        }
+
+        try {
+            this.branchLabel.setText(new GitData().getSelectedBranch().getFullName());
+        } catch (IOException e) {
+            this.branchLabel.setText("");
+            Logger.getGlobal().warning("GIT DATA RETURNED NO BRANCH");
         }
 
         // Refresh menubar
@@ -93,10 +113,57 @@ public class MainWindow extends JFrame {
         this.setVisible(true);
     }
 
+    private void changeRepository(File path) {
+        Settings.getInstance().setActiveRepositoryPath(path);
+        Settings.getInstance().fireDataChangedEvent();
+        new GitData().reinitialize();
+        GUIController.getInstance().update();
+    }
+
+    private void openFileListener() {
+        JFileChooser dirChooser = new JFileChooser();
+        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int response = dirChooser.showOpenDialog(this);
+
+        if (response != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File newDirectory = dirChooser.getSelectedFile();
+        if (!(new File(newDirectory, ".git")).isDirectory()) {
+            GUIController.getInstance().errorHandler(dirChooser.getSelectedFile() + " ist kein valides Git Repository");
+            return;
+        }
+
+        changeRepository(newDirectory);
+
+    }
+
     private void createMenubar() {
         JMenuBar bar = new JMenuBar();
-        JMenu m1 = new JMenu("Menu 1");
-        JMenu m2 = new JMenu("Menu 2");
+        JMenu m1 = new JMenu("Repository");
+        JMenu m2 = new JMenu("Über");
+        JMenu recentlyUsed = new JMenu("Kürzlich Verwendet");
+
+        for (File f : Data.getInstance().getRecentlyOpenedRepositories()) {
+            if (!f.isDirectory()) continue;
+
+            JMenuItem repo = new JMenuItem(f.getPath());
+            repo.addActionListener(e -> changeRepository(f));
+            recentlyUsed.add(repo);
+        }
+
+        JMenuItem openItem = new JMenuItem("Öffnen");
+
+        openItem.addActionListener(l -> openFileListener());
+
+        m1.add(openItem);
+        //m1.add(new JMenuItem("Initialisieren")); // removed as it has got it's own button in the gui right now
+        //m1.add(new JMenuItem("Klonen")); // Also has a button apparently.
+        m1.add(recentlyUsed);
+
+        JMenuItem settingsItem = new JMenuItem("Einstellungen");
+        settingsItem.addActionListener(e -> GUIController.getInstance().openDialog(new SettingsDialogView()));
+        m1.add(settingsItem);
 
         bar.add(m1);
         bar.add(m2);

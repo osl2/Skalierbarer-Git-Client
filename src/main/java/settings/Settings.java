@@ -2,6 +2,8 @@ package settings;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import git.GitAuthor;
+import git.GitData;
+import git.GitFacade;
 import levels.Level;
 
 import java.io.File;
@@ -11,7 +13,6 @@ public class Settings extends DataObservable {
     // Modify settings.PersistencyTest if you add or remove a field!
     private static Settings INSTANCE = null;
     private Level level;
-    private GitAuthor user;
     private boolean useTooltips = true;
     private boolean showTreeView = false;
     @JsonIgnore
@@ -52,15 +53,17 @@ public class Settings extends DataObservable {
         this.level = level;
     }
 
+    @JsonIgnore
     public GitAuthor getUser() {
-        return user;
+        return new GitData().getUser();
     }
 
+    @JsonIgnore
     public void setUser(GitAuthor user) {
-        if (user != this.getUser()) {
-            this.settingsChanged = true;
-        }
-        this.user = user;
+        GitFacade facade = new GitFacade();
+        facade.setConfigValue("user.name", user.getName());
+        facade.setConfigValue("user.email", user.getEmail());
+
     }
 
     public File getActiveRepositoryPath() {
@@ -68,6 +71,7 @@ public class Settings extends DataObservable {
     }
 
     public void setActiveRepositoryPath(File activeRepositoryPath) {
+        Data.getInstance().storeNewRepositoryPath(activeRepositoryPath);
         if (activeRepositoryPath != this.getActiveRepositoryPath()) {
             this.settingsChanged = true;
         }
