@@ -25,6 +25,11 @@ public class Data extends DataObservable {
             INSTANCE = this;
     }
 
+    /**
+     * Singleton
+     *
+     * @return the only Instance
+     */
     public static Data getInstance() {
         if (INSTANCE == null)
             new Data();

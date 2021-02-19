@@ -9,16 +9,28 @@ import commands.ICommandGUI;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Deserializer for ICommandGUI instances.
+ */
 public class ICommandDeserializer extends StdDeserializer<ICommandGUI> {
+    /**
+     * {@inheritDoc}
+     */
     protected ICommandDeserializer(Class<?> vc) {
         super(vc);
     }
 
+    /**
+     * Constructor for Jackson,
+     */
     @SuppressWarnings("unused") /* Jackson uses it. */
     public ICommandDeserializer() {
         this(null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ICommandGUI deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
