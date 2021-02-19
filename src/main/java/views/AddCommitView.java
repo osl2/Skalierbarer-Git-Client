@@ -47,12 +47,12 @@ public class AddCommitView extends JPanel implements IView {
   private static final String DEFAULT_COMMIT_MESSAGE = "Hier die Commit-Nachricht eingeben";
 
 
-  /**
-   * At the time of its instantiation, an instance of AddCommitView creates instances of all supported commands.
-   * Concurrently, all button listeners are being configured, als well as the list of files with uncommittedchanges in
-   * the middle panel
+  /*
+   * This method is invoked inside getView(). It configures all button listeners as well as the lists of files
+   * with uncommitted changes in the middle status panel. It sets up the diff panel and on the left and the
+   * text area for commit messages on the right.
    */
-  public AddCommitView() {
+  private void buildAddCommitView() {
     c = GUIController.getInstance();
     gitData = new GitData();
     gitStatus = gitData.getStatus();
@@ -159,6 +159,7 @@ public class AddCommitView extends JPanel implements IView {
    * @return The JPanel that holds all the elements in the view
    */
   public JPanel getView() {
+    buildAddCommitView();
     return addCommitView;
   }
 
@@ -169,6 +170,7 @@ public class AddCommitView extends JPanel implements IView {
    * @return The JPanel that holds all the elements in the view
    */
   public JPanel getView(String commitMessage){
+    buildAddCommitView();
     commitMessageTextArea.setText(commitMessage);
     return addCommitView;
   }
