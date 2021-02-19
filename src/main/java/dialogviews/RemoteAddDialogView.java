@@ -43,7 +43,7 @@ public class RemoteAddDialogView implements IDialogView{
             public void actionPerformed(ActionEvent e) {
                 String name = namefield.getText();
                 if (name.compareTo("") == 0){
-                    GUIController.getInstance().errorHandler("Kein name eingegeben");
+                    GUIController.getInstance().errorHandler("Kein Name eingegeben");
                     return;
                 }
                 URL url = null;
