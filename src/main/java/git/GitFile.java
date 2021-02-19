@@ -37,7 +37,7 @@ public class GitFile {
         return this.path;
     }
 
-    private String getRelativePath() {
+    public String getRelativePath() {
         return GitData.getRepository().getWorkTree().toPath().relativize(path.toPath()).toString();
     }
 
