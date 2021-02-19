@@ -101,6 +101,8 @@ public class GitFile {
         Git git = GitData.getJGit();
         try {
             git.add().addFilepattern(this.getRelativePath()).call();
+            assert git.status().call().getAdded().contains(this.getRelativePath());
+            assert !git.status().call().getAdded().isEmpty();
             return true;
         } catch (GitAPIException e) {
             throw new GitException("File not found in Git");
