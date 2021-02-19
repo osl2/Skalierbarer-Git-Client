@@ -11,7 +11,9 @@ public class Config implements ICommand {
     private String eMail = "";
 
 
+    public Config() {
 
+    }
     /**
      * {@inheritDoc}
      */
