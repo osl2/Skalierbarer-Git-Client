@@ -9,6 +9,7 @@ import views.MainWindow;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class GUIController {
 
@@ -107,12 +108,23 @@ public class GUIController {
     /**
      * Open a Dialog
      *
-     * @param dialog the Dialog to be opened
+     * @param dialog   the Dialog to be opened
+     * @param listener WindowListener to attach to the dialog
      */
-    public void openDialog(IDialogView dialog) {
+    public void openDialog(IDialogView dialog, WindowListener listener) {
         this.currentDialog = createDialog(dialog);
         this.currentDialogAnchor = dialog;
+        if (listener != null)
+            currentDialog.addWindowListener(listener);
+
         currentDialog.setVisible(true);
+    }
+
+    /**
+     * See {@link #openDialog(IDialogView, WindowListener)}
+     */
+    public void openDialog(IDialogView dialog) {
+        this.openDialog(dialog, null);
     }
 
     private JDialog createDialog(IDialogView dialogView) {
