@@ -42,6 +42,7 @@ public class Data extends DataObservable {
         Merge merge = new Merge();
 
         Clone clone = new Clone();
+        Fetch fetch = new Fetch();
         Pull pull = new Pull();
         Push push = new Push();
 
@@ -76,6 +77,7 @@ public class Data extends DataObservable {
                 commands.add(checkout);
                 commands.add(merge);
                 commands.add(clone);
+                commands.add(fetch);
                 commands.add(pull);
                 commands.add(push);
                 break;
@@ -88,6 +90,7 @@ public class Data extends DataObservable {
                 commands.add(checkout);
                 commands.add(merge);
                 commands.add(clone);
+                commands.add(fetch);
                 commands.add(pull);
                 commands.add(push);
                 commands.add(stash);

@@ -53,14 +53,14 @@ public class Remote implements ICommand, ICommandGUI {
    *
    * @return Returns the name of the command
    */
-  public String getName(){return "remote";}
+  public String getName(){return "Remote";}
 
   /**
    * Method to get a description of the command.
    *
    * @return Returns a Description of what the command is doing
    */
-  public String getDescription(){return null;}
+  public String getDescription(){return "Möglichkeit die Onlinerepositories hinzuzufügen und zu verwalten";}
 
   public boolean execute() {
     switch (remoteSubcommand) {
