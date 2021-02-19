@@ -1,8 +1,13 @@
 package commands;
 
+import controller.GUIController;
+import git.GitData;
+import git.GitFacade;
 import git.GitRemote;
+import git.exception.GitException;
 
 import java.net.URL;
+import java.util.List;
 
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
@@ -17,19 +22,14 @@ public class Remote implements ICommand, ICommandGUI {
 
   private RemoteSubcommand remoteSubcommand;
   /**
-   * Method to get the current remote repository.
-   *
-   * @return The current remote repository
-   */
-  public GitRemote getRemote(){ return null;}
-
-  /**
    * Method to set tue current remote repository.
    *
    * @param remote The remote repository on which the command should be executed
    *               (getName, getURL, setName, setURL, remove)
    */
-  public void setRemote(GitRemote remote){}
+  public void setRemote(GitRemote remote){
+    this.remote = remote;
+  }
 
   /**
    * Creates with the input the command of the commandline.
@@ -37,7 +37,16 @@ public class Remote implements ICommand, ICommandGUI {
    * @return Returns command for Commandline
    */
   public String getCommandLine() {
-    return null;
+    String ret = "";
+    switch (remoteSubcommand){
+      case ADD: ret =  "git remote add " + remoteName + " " + url.toString();
+      break;
+      case SET_URL: ret = "git remote set-url " + remote.getName() + " " + url.toString();
+      break;
+      case REMOVE: ret = "git remote rm " + remote.getName();
+      break;
+    }
+    return ret;
   }
 
   /**
@@ -55,7 +64,42 @@ public class Remote implements ICommand, ICommandGUI {
   public String getDescription(){return null;}
 
   public boolean execute() {
-    return false;
+    switch (remoteSubcommand) {
+      case SET_URL:
+        try {
+          return remote.setUrlGit(url);
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
+      case ADD:
+        GitFacade gitFacade = new GitFacade();
+        GitData gitData = new GitData();
+        List<GitRemote> remoteList = gitData.getRemotes();
+        for (int i = 0; i < remoteList.size(); i++){
+          if (remoteList.get(i).getName().compareTo(remoteName) == 0){
+            GUIController.getInstance().errorHandler("Ein Remote mit diesem namen existiert bereits");
+            return false;
+          }
+        }
+        try {
+          return gitFacade.remoteAddOperation(remoteName, url);
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
+
+      case REMOVE:
+        try {
+          remote.remove();
+          return true;
+        } catch (GitException e) {
+          GUIController.getInstance().errorHandler(e);
+          return false;
+        }
+
+      default: return false;
+    }
   }
 
 
@@ -67,9 +111,21 @@ public class Remote implements ICommand, ICommandGUI {
 
   }
 
+  public void setRemoteName(String remoteName) {
+    this.remoteName = remoteName;
+  }
+
+  public void setUrl(URL url) {
+    this.url = url;
+  }
+
+  public RemoteSubcommand getRemoteSubcommand() {
+    return remoteSubcommand;
+  }
+
   /**
    * TBD
    */
-  public enum RemoteSubcommand{ADD, REMOVE, SET_NAME, SET_URL}
+  public enum RemoteSubcommand{ADD, REMOVE, SET_URL, INACTIVE}
 
 }

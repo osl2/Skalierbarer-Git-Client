@@ -1,5 +1,10 @@
 package git;
 
+import git.exception.GitException;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.URIish;
+
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,9 +60,33 @@ public class GitRemote {
      *
      * @return true iff successful
      */
-    public boolean remove() {
-        return false;
+    public boolean remove() throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.remoteRemove().setRemoteName(name).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
+
     }
 
+    /**
+     * Changes the Url of this Repository in JGit
+     * @param newUrl the new URL
+     * @return true if it was succesfully
+     * @throws GitException if something went wrong.
+     */
+    public boolean setUrlGit(URL newUrl) throws GitException {
+        url = newUrl;
+       Git git =  GitData.getJGit();
+       URIish ur = new URIish(newUrl);
+        try {
+            git.remoteSetUrl().setRemoteName(name).setRemoteUri(ur).call();
+            return true;
+        } catch (GitAPIException e) {
+            throw new GitException(e.getMessage());
+        }
+    }
 }
 
