@@ -292,7 +292,7 @@ public class AddCommitView extends JPanel implements IView {
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
    * panel of AddCommitView. The renderer is configured to show items as checkboxes.
    */
-  class FileListRenderer implements ListCellRenderer<FileListItem> {
+  private class FileListRenderer implements ListCellRenderer<FileListItem> {
     /**
      * Method that returns a Component that defines the appearance of the list entries
      * @param list The corresponding list the renderer is set for
@@ -335,7 +335,7 @@ public class AddCommitView extends JPanel implements IView {
    * This class represents a list item that holds a GitFile instance. This class is necessary to build the list
    * of files with uncommitted changes that is located in the middle panel of AddCommitView.
    */
-  class FileListItem {
+  private class FileListItem {
     private GitFile gitFile;
     private boolean isSelected;
     private int i;
