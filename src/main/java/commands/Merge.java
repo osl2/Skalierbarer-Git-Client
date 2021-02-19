@@ -14,6 +14,9 @@ import views.AddCommitView;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a Merge-Command
+ */
 public class Merge implements ICommand, ICommandGUI {
     @NonNull
     private GitBranch srcBranch;
@@ -21,23 +24,50 @@ public class Merge implements ICommand, ICommandGUI {
     private GitBranch destBranch;
     private boolean fastForward = true;
 
+    /**
+     * Constructor
+     *
+     * @param src  branch to merge from
+     * @param dest branch to merge into
+     */
     public Merge(@NonNull GitBranch src, @NonNull GitBranch dest) {
         this.srcBranch = src;
         this.destBranch = dest;
     }
 
+    /**
+     * Constructor without parameters. Needs {@link #setSourceBranch(GitBranch)} and
+     * {@link #setDestinationBranch(GitBranch)} before {@link #execute()} may be called.
+     */
     public Merge() {
 
     }
 
+    /**
+     * Enable fast forward?
+     * <p>
+     * Default: true
+     *
+     * @param fastForward fast-forward enabled or disabled
+     */
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
+    /**
+     * Set source Branch
+     *
+     * @param srcBranch branch from which shall be merged
+     */
     public void setSourceBranch(@NonNull GitBranch srcBranch) {
         this.srcBranch = srcBranch;
     }
 
+    /**
+     * Set destination branch
+     *
+     * @param destBranch branch to merge into
+     */
     public void setDestinationBranch(@NonNull GitBranch destBranch) {
         this.destBranch = destBranch;
     }
@@ -132,6 +162,9 @@ public class Merge implements ICommand, ICommandGUI {
         return "Verschmilzt zwei Zweige";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new MergeDialogView());
     }
