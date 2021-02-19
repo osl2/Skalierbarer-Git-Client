@@ -31,23 +31,43 @@ public class Add implements ICommand, ICommandGUI {
    * @throws GitException if command execution in JGit throws an exception
    */
   public boolean execute() {
-    //TODO: Ist hier mehr Fehlerbehandlung notwendig? Was passiert, wenn mehrere Dateien fehlschlagen?
-    boolean success = false;
     List<GitFile> stagedFiles = new LinkedList<>();
+
+
+      //get all the staged files
     try {
       stagedFiles = gitStatus.getStagedFiles();
     } catch (GitException e) {
       GUIController.getInstance().errorHandler(e);
+      return false;
     } catch (IOException e) {
       GUIController.getInstance().errorHandler(e);
+      return false;
     }
+
     //add files that are not in the staging-area yet
     for (GitFile unstagedFile : files){
-      if (!stagedFiles.contains(unstagedFile)){
+      /*
+      determine whether the file might have been deleted. In this case, call rm() on the GitFile to remove it from the
+      list of uncommitted changes. Note: This is a workaround for the fact that manually deleted files cannot be added
+      anymore and therefore appear in the status forever
+       */
+      if (unstagedFile.isDeleted()){
         try {
-          success = unstagedFile.add();
+          unstagedFile.rm();
+        } catch (GitException e) {
+          e.printStackTrace();
+          return false;
+        }
+      }
+
+      //if file has not been deleted and file is not staged yet, add it to the staging area
+      else if (!stagedFiles.contains(unstagedFile)){
+        try {
+          unstagedFile.add();
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
+          return false;
         }
       }
     }
@@ -55,14 +75,15 @@ public class Add implements ICommand, ICommandGUI {
     for (GitFile stagedFile : stagedFiles){
       if (!files.contains(stagedFile)){
         try {
-          success = stagedFile.addUndo();
+          stagedFile.addUndo();
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
+          return false;
         }
       }
     }
 
-    return success;
+    return true;
   }
 
 

@@ -82,8 +82,9 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        executeCommit(false);
-        c.restoreDefaultView();
+        if (executeCommit(false)){
+          c.restoreDefaultView();
+        }
       }
     });
 
@@ -93,8 +94,9 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        executeCommit(true);
-        c.restoreDefaultView();
+        if (executeCommit(true)){
+          c.restoreDefaultView();
+        }
       }
     });
 
@@ -175,7 +177,6 @@ public class AddCommitView extends JPanel implements IView {
    * Updates the view. Here: does nothing
    */
   public void update() {
-    //TODO: delete?
   }
 
   /**
@@ -195,14 +196,10 @@ public class AddCommitView extends JPanel implements IView {
 
     List<GitFile> filesToBeAdded = new LinkedList<>();
 
-    //there are three different lists that may contain selected files: Unify them first
-    List<FileListItem> selectedValuesList = newFilesList.getSelectedValuesList();
-    selectedValuesList.addAll(modifiedChangedFilesList.getSelectedValuesList());
-    selectedValuesList.addAll(deletedFilesList.getSelectedValuesList());
-
-    for (FileListItem item : selectedValuesList){
-      filesToBeAdded.add(item.getGitFile());
-    }
+    //iterate over all three lists and extract the items with selected state
+    filesToBeAdded.addAll(getSelectedGitFiles(newFilesList));
+    filesToBeAdded.addAll(getSelectedGitFiles(modifiedChangedFilesList));
+    filesToBeAdded.addAll(getSelectedGitFiles(deletedFilesList));
 
     //pass all selected GitFiles to add
     addCommand.addFiles(filesToBeAdded);
@@ -274,6 +271,21 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+  }
+
+  /*
+  Iterate over the given list of FileListItems and check which ones have selected state. Return the nested GitFile
+  objects of those FileListItems with selected state.
+   */
+  private List<GitFile> getSelectedGitFiles(JList<FileListItem> list){
+    List<GitFile> selectedCheckboxes = new LinkedList<>();
+    for (int i = 0; i < list.getModel().getSize(); i++){
+      FileListItem item = (FileListItem) list.getModel().getElementAt(i);
+      if (item.isSelected()){
+        selectedCheckboxes.add(item.getGitFile());
+      }
+    }
+    return selectedCheckboxes;
   }
 
   /*
