@@ -29,8 +29,7 @@ generate_artifacts:
   tags:
     - maven
   only:
-    - merge_requests
-    - master
+    - tags
   # Here you can execute arbitrate terminal commands.
   # If any of the commands returns a non zero exit code the job fails
   script:
