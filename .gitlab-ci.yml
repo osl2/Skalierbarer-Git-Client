@@ -35,11 +35,11 @@ generate_artifacts:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building artifacts"
-    - mvn --no-transfer-progress package
+    - mvn --no-transfer-progress -Dmaven.test.skip=true package
   artifacts:
     paths:
-      - target/Entwurf-1.0-SNAPSHOT.jar
-      - target/Entwurf-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - target/*-SNAPSHOT.jar
+      - target/*-SNAPSHOT-jar-with-dependencies.jar
       - target/JavaDoc.zip
     expire_in: 1 month
 
