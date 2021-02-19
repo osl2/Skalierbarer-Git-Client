@@ -45,8 +45,6 @@ public class Data extends DataObservable {
         Pull pull = new Pull();
         Push push = new Push();
 
-        GitignoreAdd gitignoreAdd = new GitignoreAdd(null);
-        GitignoreRemove gitignoreRemove = new GitignoreRemove();
         Rebase rebase = new Rebase(null, null);
         Remote remote = new Remote();
         Stash stash = new Stash();
