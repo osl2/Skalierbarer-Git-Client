@@ -34,6 +34,16 @@ public class RevertDialogView implements IDialogView {
     private DefaultTreeModel model;
 
     public RevertDialogView() {
+        GitData testGit = new GitData();
+        try {
+            if (testGit.getBranches().size() == 0){
+                GUIController.getInstance().errorHandler("Es existiert kein commit");
+                GUIController.getInstance().closeDialogView();
+            }
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            GUIController.getInstance().closeDialogView();
+        }
         this.revertTree.addTreeSelectionListener(loadMoreListener());
         try {
             final GitData git;
