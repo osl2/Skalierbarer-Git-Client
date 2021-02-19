@@ -126,7 +126,7 @@ public class GitFacade {
     try {
       git = Git.init().setDirectory(path).call();
       Settings settings = Settings.getInstance();
-      setRepositoryPath(path);
+      settings.setActiveRepositoryPath(path);
     } catch (GitAPIException e) {
       return false;
     }

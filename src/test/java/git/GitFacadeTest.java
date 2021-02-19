@@ -70,11 +70,13 @@ public class GitFacadeTest extends AbstractGitTest {
 
   @Test
   public void setReopsitoryPathTest() throws IOException {
-    FileUtils.forceMkdir(repo);
+    FileUtils.forceMkdir(newRepo);
     GitFacade facade = new GitFacade();
     facade.setRepositoryPath(newRepo);
     assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
 
-    assertEquals(true, true);
+    facade.setRepositoryPath(repo);
+    assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
+    assertEquals(git, Git.open(repo));
   }
 }
