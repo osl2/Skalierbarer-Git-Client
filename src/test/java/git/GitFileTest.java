@@ -54,6 +54,14 @@ public class GitFileTest extends AbstractGitTest {
     assertEquals(gitDataFile, jGitFile);
     assertTrue(GitStatus.getInstance().getAddedFiles().contains(gitFile));
     assertTrue(git.status().call().getAdded().contains(gitFile.getPath().getName()));
+    File newFile = new File(repo, "newFolder\\newFile.txt");
+    FileWriter fr = new FileWriter(newFile, true);
+    fr.write("data");
+    fr.close();
+    GitFile toAdd = new GitFile(newFile.getTotalSpace(), newFile);
+    toAdd.add();
+    assertEquals(1, git.status().call().getAdded().size());
+
   }
 
   @Test
