@@ -188,7 +188,6 @@ public class GitFacade {
     return true;
   }
 
-
   public boolean setRepositoryPath(File path) {
     Settings settings = Settings.getInstance();
     GitData data = new GitData();
@@ -235,8 +234,8 @@ public class GitFacade {
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) throws GitException {
-    return pushOperation(remote, localBranch, localBranch, setUpstream);
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) {
+    throw new AssertionError("not implemented");
   }
 
   /**
@@ -249,39 +248,8 @@ public class GitFacade {
    *               between the local tracking branch and the remote upstream branch
    * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed 
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow) throws GitException {
-    try {
-      remote.getUrl();
-      Git git = GitData.getJGit();
-      Repository repository = GitData.getRepository();
-      CredentialProviderHolder credentialProvider = CredentialProviderHolder.getInstance();
-      UsernamePasswordCredentialsProvider provider = credentialProvider.getProvider();
-      Set<String> remoteNames = repository.getRemoteNames();
-      if (!remoteNames.contains(remote.getName())) {
-        git.remoteAdd().setName(remote.getName()).setUri(new URIish(remote.getUrl())).call();
-      }
-      RefSpec refSpec = new RefSpec();
-      refSpec.setSource(localBranch.getFullName());
-      refSpec.setDestination(remoteBranch.getFullName());
-
-      PushConfig pushConfig = new PushConfig();
-
-      git.push()
-          .setRemote(remote.getUrl().toString())  //In JGIT uri or name of the remote can be set
-          .setCredentialsProvider(provider)
-          .setRefSpecs(refSpec)
-          .call();
-      return true;
-    } catch (InvalidRemoteException e) {
-      throw new GitException("Remote war ungültig \n" +
-          "Fehlermeldung: " + e.getMessage());
-    } catch (TransportException e) {
-      throw new GitException("Mit der Internet-Verbindung ist etwas schief gelaufen \n" +
-          "Fehlermeldung: " + e.getMessage());
-    } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler ist aufgetreten \n" +
-          "Fehlermeldung: " + e.getMessage());
-    }
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow){
+    throw new AssertionError("not implemented");
   }
 
 
