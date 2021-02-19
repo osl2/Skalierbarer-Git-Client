@@ -37,8 +37,9 @@ public class RevertDialogView implements IDialogView {
         GitData testGit = new GitData();
         try {
             if (testGit.getBranches().size() == 0){
-                GUIController.getInstance().errorHandler("Es existiert kein commit");
+                GUIController.getInstance().errorHandler("Es existiert kein Commit");
                 GUIController.getInstance().closeDialogView();
+                return;
             }
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
