@@ -115,9 +115,8 @@ public class HistoryView extends JPanel implements IView {
         String commitDate = format.format(date);
         commitMessage.setText("Autor: " + name + System.lineSeparator()
                 + "E-Mail: " + eMail + System.lineSeparator()
-                + "Datum: " + commitDate + System.lineSeparator()
+                + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
                 + System.lineSeparator()
-                + "Uhr: " + System.lineSeparator()
                 + activeMessage);
         DefaultListModel fileListModel = new DefaultListModel();
         fileList.setModel(fileListModel);
@@ -135,9 +134,9 @@ public class HistoryView extends JPanel implements IView {
         } catch (IOException ioException) {
           GUIController.getInstance().errorHandler(ioException);
         }
-        int size = listOfFiles.size();
-        for(int i = 0; i < size; i++) {
-          String activeFile = listOfFiles.get(i).getPath().getName();
+        Iterator<GitFile> gitFileIterator = listOfFiles.iterator();
+        while (gitFileIterator.hasNext()) {
+          String activeFile = gitFileIterator.next().getPath().getName();
           fileListModel.addElement(activeFile);
         }
       }
