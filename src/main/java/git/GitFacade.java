@@ -10,7 +10,10 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.PushConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
 import java.io.File;
@@ -190,8 +193,12 @@ public class GitFacade {
 
   public boolean setRepositoryPath(File path) {
     Settings settings = Settings.getInstance();
-    settings.setActiveRepositoryPath(path);
     GitData data = new GitData();
+    if (RepositoryCache.FileKey.isGitRepository(path, FS.DETECTED)){
+      settings.setActiveRepositoryPath(path);
+    } else {
+      initializeRepository(path);
+    }
     data.reinitialize();
     return true;
   }
