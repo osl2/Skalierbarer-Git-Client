@@ -1,11 +1,5 @@
 package dialogviews;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.List;
 import commands.Push;
 import controller.GUIController;
 import git.GitBranch;
@@ -13,190 +7,231 @@ import git.GitData;
 import git.GitRemote;
 import git.exception.GitException;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.List;
+
 public class PushDialogView implements IDialogView {
 
-  private JPanel contentPane;
-  private JComboBox<String> remoteComboBox;
-  private JButton pushButton;
-  private JPanel remotePanel;
-  private JButton refreshButton;
-  private JComboBox<String> localBranchComboBox;
-  private JTextField branchnameTextfield;
-  private final GitData gitData;
-  private GitBranch localBranch;
-  private GitRemote remote;
-  private String remoteBranch;
-  private List<GitBranch> localBranches;
-  private List<GitRemote> remoteList;
+    private final GitData gitData;
+    private JPanel contentPane;
+    private JComboBox<String> remoteComboBox;
+    private JButton pushButton;
+    private JPanel remotePanel;
+    private JButton refreshButton;
+    private JComboBox<String> localBranchComboBox;
+    private JTextField branchnameTextfield;
+    private GitBranch localBranch;
+    private GitRemote remote;
+    private String remoteBranch;
+    private List<GitBranch> localBranches;
+    private List<GitRemote> remoteList;
 
-  public PushDialogView() {
-    gitData = new GitData();
-    setUpLocalBranchComboBox();
-    setUpRemoteComboBox();
-    branchnameTextfield.setText(localBranches.get(localBranchComboBox.getSelectedIndex()).getName());
-
-    localBranchComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int index = localBranchComboBox.getSelectedIndex();
-        localBranch = localBranches.get(index);
-        branchnameTextfield.setText(localBranch.getName());
-        //if remote and local branch have been set, setup the remote branch combo box
-      }
-    });
-    pushButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        //try to execute push. If successful, close the push dialog view
-        if(executePush()){
-
-          GUIController.getInstance().closeDialogView();
-        }
-      }
-    });
-
-    //refresh the list of remotes and remote branches. List of remote branches is refreshed every time a new remote is
-    //selected
-    refreshButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    public PushDialogView() {
+        gitData = new GitData();
+        $$$setupUI$$$();
+        setUpLocalBranchComboBox();
         setUpRemoteComboBox();
-      }
-    });
-  }
+        branchnameTextfield.setText(localBranches.get(localBranchComboBox.getSelectedIndex()).getName());
 
-  /**
-   * DialogWindow Title
-   *
-   * @return Window Title as String
-   */
-  @Override
-  public String getTitle() {
-    return "Push";
-  }
+        localBranchComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = localBranchComboBox.getSelectedIndex();
+                localBranch = localBranches.get(index);
+                branchnameTextfield.setText(localBranch.getName());
+                //if remote and local branch have been set, setup the remote branch combo box
+            }
+        });
+        pushButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //try to execute push. If successful, close the push dialog view
+                if (executePush()) {
 
-  /**
-   * The Size of the newly created Dialog
-   *
-   * @return 2D Dimension
-   */
-  @Override
-  public Dimension getDimension() {
-    return this.contentPane.getPreferredSize();
-  }
+                    GUIController.getInstance().closeDialogView();
+                }
+            }
+        });
 
-  /**
-   * The content Panel containing all contents of the Dialog
-   *
-   * @return the shown content
-   */
-  @Override
-  public JPanel getPanel() {
-    return this.contentPane;
-  }
+        //refresh the list of remotes and remote branches. List of remote branches is refreshed every time a new remote is
+        //selected
+        refreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setUpRemoteComboBox();
+            }
+        });
+    }
 
-  public void update() {
-    //TODO
-  }
+    /**
+     * DialogWindow Title
+     *
+     * @return Window Title as String
+     */
+    @Override
+    public String getTitle() {
+        return "Push";
+    }
+
+    /**
+     * The Size of the newly created Dialog
+     *
+     * @return 2D Dimension
+     */
+    @Override
+    public Dimension getDimension() {
+        return this.contentPane.getPreferredSize();
+    }
+
+    /**
+     * The content Panel containing all contents of the Dialog
+     *
+     * @return the shown content
+     */
+    @Override
+    public JPanel getPanel() {
+        return this.contentPane;
+    }
+
+    public void update() {
+        //TODO
+    }
 
     private void createUIComponents() {
-      localBranchComboBox = new JComboBox<>();
-      remoteComboBox = new JComboBox();
-  }
-
-  private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
-
-
-    @Override
-    public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
-      GitBranch branch = (GitBranch) value;
-      this.setText(branch.getName());
-      return this;
-    }
-  }
-
-  private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote>{
-
-    @Override
-    public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
-      GitRemote remote = (GitRemote) value;
-      this.setText(remote.getName());
-      return this;
-    }
-  }
-
-  /*
-  setup the combo box that contains the local branches. Preselects the branch that is currently checked out
-   */
-  private void setUpLocalBranchComboBox(){
-    //localBranchComboBox.setRenderer(new BranchComboBoxRenderer());
-
-    try {
-      localBranches = gitData.getBranches();
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
-      return;
-    }
-    GitBranch selectedBranch = null;
-    try {
-      selectedBranch = gitData.getSelectedBranch();
-    } catch (IOException e) {
-      GUIController.getInstance().errorHandler(e);
-      return;
-    }
-    int count = 0;
-    for (GitBranch branch : localBranches){
-
-      localBranchComboBox.addItem(branch.getName());
-      if (branch.getName().compareTo((selectedBranch.getName())) == 0){
-        localBranchComboBox.setSelectedIndex(count);
-      }
-      count++;
+        localBranchComboBox = new JComboBox<>();
+        remoteComboBox = new JComboBox();
     }
 
-  }
-
-  /*
-  sets ups the combo box that contains the registered remotes. Preselects origin (if existing)
-   */
-  private void setUpRemoteComboBox(){
-    remoteList = gitData.getRemotes();
-    remoteComboBox.removeAllItems();
-    int count = 0;
-    for (GitRemote remote : remoteList){
-      remoteComboBox.addItem(remote.getName());
-      if (remote.getName().compareTo("origin") == 0){
-        remoteComboBox.setSelectedIndex(count);
-      }
-      count++;
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        createUIComponents();
+        contentPane = new JPanel();
+        contentPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.setPreferredSize(new Dimension(400, 300));
+        pushButton = new JButton();
+        pushButton.setText("Push");
+        contentPane.add(pushButton, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        remotePanel = new JPanel();
+        remotePanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.add(remotePanel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(400, 100), null, 0, false));
+        remotePanel.add(remoteComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        refreshButton = new JButton();
+        refreshButton.setText("Aktualisieren");
+        remotePanel.add(refreshButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        branchnameTextfield = new JTextField();
+        remotePanel.add(branchnameTextfield, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        contentPane.add(localBranchComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
-  }
 
-  private boolean executePush(){
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
+    }
 
-    remoteBranch = branchnameTextfield.getText();
-    remote = remoteList.get(remoteComboBox.getSelectedIndex());
-    localBranch = localBranches.get(localBranchComboBox.getSelectedIndex());
-    Push push = new Push();
-    push.setLocalBranch(localBranch);
-    push.setRemote(remote);
+    /*
+    setup the combo box that contains the local branches. Preselects the branch that is currently checked out
+     */
+    private void setUpLocalBranchComboBox() {
+        //localBranchComboBox.setRenderer(new BranchComboBoxRenderer());
+
+        try {
+            localBranches = gitData.getBranches();
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            return;
+        }
+        GitBranch selectedBranch = null;
+        try {
+            selectedBranch = gitData.getSelectedBranch();
+        } catch (IOException e) {
+            GUIController.getInstance().errorHandler(e);
+            return;
+        }
+        int count = 0;
+        for (GitBranch branch : localBranches) {
+
+            localBranchComboBox.addItem(branch.getName());
+            if (branch.getName().compareTo((selectedBranch.getName())) == 0) {
+                localBranchComboBox.setSelectedIndex(count);
+            }
+            count++;
+        }
+
+    }
+
+    /*
+    sets ups the combo box that contains the registered remotes. Preselects origin (if existing)
+     */
+    private void setUpRemoteComboBox() {
+        remoteList = gitData.getRemotes();
+        remoteComboBox.removeAllItems();
+        int count = 0;
+        for (GitRemote remote : remoteList) {
+            remoteComboBox.addItem(remote.getName());
+            if (remote.getName().compareTo("origin") == 0) {
+                remoteComboBox.setSelectedIndex(count);
+            }
+            count++;
+        }
+    }
+
+    private boolean executePush() {
+
+        remoteBranch = branchnameTextfield.getText();
+        remote = remoteList.get(remoteComboBox.getSelectedIndex());
+        localBranch = localBranches.get(localBranchComboBox.getSelectedIndex());
+        Push push = new Push();
+        push.setLocalBranch(localBranch);
+        push.setRemote(remote);
     /*if remote branch equals local branch, the remote upstream branch does not yet exist. The selected item from
     remoteBranchComboBox was only a dummy for the to-be-created upstream branch. So, in case they are equal, set remote
-    branch to null 
+    branch to null
      */
-    if (remoteBranch.compareTo(localBranch.getName()) == 0){
-      push.setRemoteBranch(null);
+        if (remoteBranch.compareTo(localBranch.getName()) == 0) {
+            push.setRemoteBranch(null);
+        } else {
+            push.setRemoteBranch(remoteBranch);
+        }
+        boolean success = false;
+        success = push.execute();
+        if (success) {
+            GUIController.getInstance().setCommandLine(push.getCommandLine());
+        }
+        return success;
     }
-    else{
-      push.setRemoteBranch(remoteBranch);
+
+    private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
+
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
+            GitBranch branch = (GitBranch) value;
+            this.setText(branch.getName());
+            return this;
+        }
     }
-    boolean success = false;
-    success = push.execute();
-    if (success){
-      GUIController.getInstance().setCommandLine(push.getCommandLine());
+
+    private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote> {
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
+            GitRemote remote = (GitRemote) value;
+            this.setText(remote.getName());
+            return this;
+        }
     }
-    return success;
-  }
 }
 
 
