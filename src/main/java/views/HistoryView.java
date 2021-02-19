@@ -181,7 +181,8 @@ public class HistoryView extends JPanel implements IView {
         int max = fileScrollPane.getVerticalScrollBar().getMaximum();
         if(max == extent + fileScrollPane.getVerticalScrollBar().getModel().getValue()) {
           maxFiles += 50;
-          addFiles();
+          if (gitFileIterator != null)
+            addFiles();
         }
       }
     });
