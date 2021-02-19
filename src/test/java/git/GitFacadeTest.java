@@ -77,6 +77,6 @@ public class GitFacadeTest extends AbstractGitTest {
 
     facade.setRepositoryPath(repo);
     assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
-    assertEquals(git, Git.open(repo));
+    assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
   }
 }

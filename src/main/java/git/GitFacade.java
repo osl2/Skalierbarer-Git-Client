@@ -11,13 +11,10 @@ import org.eclipse.jgit.transport.PushConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.lib.RepositoryCache;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -292,7 +289,7 @@ public class GitFacade {
   }
 
   public boolean revert(GitCommit commit) throws GitException {
-    boolean suc = false;
+    boolean suc;
 
     suc = commit.revert();
     return suc;
