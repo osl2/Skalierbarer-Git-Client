@@ -175,7 +175,6 @@ public class AddCommitView extends JPanel implements IView {
    * Updates the view. Here: does nothing
    */
   public void update() {
-    //TODO: delete?
   }
 
   /**

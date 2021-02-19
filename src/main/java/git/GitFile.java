@@ -13,6 +13,7 @@ public class GitFile {
     private File path;
     private boolean ignored;
     private boolean staged = false;
+    private boolean deleted;
 
     GitFile(long size, File path) {
         if (!path.getAbsolutePath().startsWith(Settings.getInstance().getActiveRepositoryPath().getAbsolutePath())) {
@@ -73,6 +74,22 @@ public class GitFile {
      */
     public boolean isStaged(){
         return staged;
+    }
+
+    /**
+     * Sets the internal state of the file to 'deleted' if its nested File object does not exist
+     * @param deleted Whether the file has been deleted
+     */
+    public void setDeleted(boolean deleted){
+        this.deleted = deleted;
+    }
+
+    /**
+     * Determinates if the file is deleted
+     * @return True if the file does not exist in the workspace anymore
+     */
+    public boolean isDeleted(){
+        return deleted;
     }
 
     /**

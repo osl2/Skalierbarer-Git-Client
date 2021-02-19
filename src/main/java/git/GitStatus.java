@@ -140,6 +140,7 @@ public class GitStatus {
             List<GitFile> removedFiles = toGitFile(removed);
             for (GitFile file : removedFiles){
                 file.setStaged(true);
+                file.setDeleted(true);
             }
             return removedFiles;
         }
@@ -161,6 +162,9 @@ public class GitStatus {
             Git git = GitData.getJGit();
             Set<String> missing = git.status().call().getMissing();
             List<GitFile> missingFiles = toGitFile(missing);
+            for (GitFile file : missingFiles){
+                file.setDeleted(true);
+            }
             return missingFiles;
         }
         catch (GitAPIException e){
@@ -202,6 +206,7 @@ public class GitStatus {
     public List<GitFile> getStagedFiles() throws IOException, GitException {
         List<GitFile> stagedFiles = getAddedFiles();
         stagedFiles.addAll(getChangedFiles());
+        stagedFiles.addAll(getRemovedFiles());
         return stagedFiles;
     }
 
