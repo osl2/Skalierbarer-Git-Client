@@ -9,12 +9,20 @@ import views.RemoteView;
 
 import java.util.List;
 
+/**
+ * This class represents the git remote command. It uses {@link RemoteSubcommand} to
+ * indicate which command should be executed.
+ */
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
   private String subCommandName;
   private String remoteName;
   private String url;
 
+  /**
+   * Sets the subcommand which indicates which remote command should be executed
+   * @param remoteSubcommand the remote command to execute.
+   */
   public void setRemoteSubcommand(RemoteSubcommand remoteSubcommand) {
     this.remoteSubcommand = remoteSubcommand;
   }
@@ -63,6 +71,9 @@ public class Remote implements ICommand, ICommandGUI {
    */
   public String getDescription(){return "Möglichkeit die Onlinerepositories hinzuzufügen und zu verwalten";}
 
+  /**
+   * {@inheritDoc}
+   */
   public boolean execute() {
     switch (remoteSubcommand) {
       case SET_URL:
@@ -111,20 +122,32 @@ public class Remote implements ICommand, ICommandGUI {
     GUIController.getInstance().openView(new RemoteView());
   }
 
+  /**
+   * Sets the name of the remote.
+   * @param remoteName name of the remote.
+   */
   public void setRemoteName(String remoteName) {
     this.remoteName = remoteName;
   }
 
+  /**
+   * Sets the url of the remote.
+   * @param url the url of the remote.
+   */
   public void setUrl(String url) {
     this.url = url;
   }
 
+  /**
+   * Return the active {@link RemoteSubcommand}.
+   * @return the {@link RemoteSubcommand}.
+   */
   public RemoteSubcommand getRemoteSubcommand() {
     return remoteSubcommand;
   }
 
   /**
-   * TBD
+   * This subcommands indicate which git remote operation is needed.
    */
   public enum RemoteSubcommand{ADD, REMOVE, SET_URL, INACTIVE}
 

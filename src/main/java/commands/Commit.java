@@ -133,6 +133,9 @@ public class Commit implements ICommand, ICommandGUI {
             "Staging-Area und der angegebenen Commit-Nachricht";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     //do nothing, since there is no commit button
   }

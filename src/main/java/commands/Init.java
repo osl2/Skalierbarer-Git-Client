@@ -5,8 +5,11 @@ import git.GitFacade;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.List;
 
+/**
+ * This class represents the git init command. In order to execute you have
+ * pass a {@link File} which represents a path to a local directory.
+ */
 public class Init implements ICommand, ICommandGUI {
   private String errorMessage = "";
   private String commandLine = "";
@@ -30,14 +33,8 @@ public class Init implements ICommand, ICommandGUI {
   }
 
   /**
-   * Returns the paths to all local git repositorys.
-   *
-   * @return a list containing all paths to the local repositorys.
+   * {@inheritDoc}
    */
-  public List<String> getRepositorys() {
-    return null;
-  }
-
   public boolean execute() {
     if(path == null) {
       GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
@@ -54,18 +51,30 @@ public class Init implements ICommand, ICommandGUI {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getCommandLine() {
     return commandLine;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getName() {
     return commandName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getDescription() {
     return commandDescription;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
