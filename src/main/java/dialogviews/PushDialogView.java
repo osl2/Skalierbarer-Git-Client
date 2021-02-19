@@ -17,7 +17,6 @@ public class PushDialogView implements IDialogView {
 
   private JPanel contentPane;
   private JComboBox<String> remoteComboBox;
-  private JCheckBox setUpstreamCheckbox;
   private JButton pushButton;
   private JPanel remotePanel;
   private JButton refreshButton;
@@ -27,8 +26,6 @@ public class PushDialogView implements IDialogView {
   private GitBranch localBranch;
   private GitRemote remote;
   private String remoteBranch;
-  private boolean setUpstream;
-  private boolean open;
   private List<GitBranch> localBranches;
   private List<GitRemote> remoteList;
 
@@ -107,10 +104,6 @@ public class PushDialogView implements IDialogView {
       remoteComboBox = new JComboBox();
   }
 
-  public boolean isOpen() {
-    return open;
-  }
-
   private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
 
 
@@ -182,7 +175,6 @@ public class PushDialogView implements IDialogView {
   private boolean executePush(){
 
     remoteBranch = branchnameTextfield.getText();
-    setUpstream = setUpstreamCheckbox.isSelected();
     remote = remoteList.get(remoteComboBox.getSelectedIndex());
     localBranch = localBranches.get(localBranchComboBox.getSelectedIndex());
     Push push = new Push();
@@ -198,7 +190,6 @@ public class PushDialogView implements IDialogView {
     else{
       push.setRemoteBranch(remoteBranch);
     }
-    push.setSetUpstream(setUpstream);
     boolean success = false;
     success = push.execute();
     if (success){

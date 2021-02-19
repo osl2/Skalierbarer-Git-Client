@@ -234,8 +234,8 @@ public class GitFacade {
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) throws GitException {
-    return pushOperation(remote, localBranch, localBranch.getName(), setUpstream);
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch) throws GitException {
+    return pushOperation(remote, localBranch, localBranch.getName());
   }
 
   /**
@@ -249,7 +249,7 @@ public class GitFacade {
    *                     between the local tracking branch and the remote upstream branch
    * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, String remoteBranchName, boolean follow) throws GitException {
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, String remoteBranchName) throws GitException {
     try {
       remote.getUrl();
       Git git = GitData.getJGit();

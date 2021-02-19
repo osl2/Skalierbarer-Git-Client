@@ -11,7 +11,6 @@ public class Push implements ICommand, ICommandGUI {
   private GitBranch localBranch;
   private GitRemote remote;
   private String remoteBranch;
-  private boolean setUpstream;
   private List<GitBranch> branchList;
 
   /**
@@ -83,10 +82,7 @@ public class Push implements ICommand, ICommandGUI {
 
   public void onButtonClicked() {
     GUIController c = GUIController.getInstance();
-    PushDialogView pushDialogView = new PushDialogView();
-    if(pushDialogView.isOpen()){
-      c.openDialog(new PushDialogView());
-    }
+    c.openDialog(new PushDialogView());
   }
 
   /**
@@ -114,18 +110,10 @@ public class Push implements ICommand, ICommandGUI {
     this.remoteBranch = remoteBranch;
   }
 
-  /**
-   * Chooses if the local repo should follow the remote repo that was configured in setRemote()
-   * @param setUpstream True if the local repo should follow the remote repo after the push was executed
-   */
-  public void setSetUpstream(boolean setUpstream){
-    this.setUpstream = setUpstream;
-  }
-
   private boolean tryExecute(){
     GitFacade gitFacade = new GitFacade();
     try {
-      gitFacade.pushOperation(remote, localBranch, remoteBranch, setUpstream);
+      gitFacade.pushOperation(remote, localBranch, remoteBranch);
       return true;
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
