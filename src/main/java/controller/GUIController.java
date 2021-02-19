@@ -20,13 +20,16 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+/**
+ * Manages and updates and opens all graphical user interface windows.
+ */
 public class GUIController extends DataObserver {
 
     private static final int ERROR_MESSAGE_WIDTH = 600;
     private static final int ERROR_MESSAGE_HEIGHT = 800;
     private static GUIController INSTANCE;
-    Map<JDialog, IDialogView> dialogMap;
-    Stack<JDialog> dialogStack;
+    private Map<JDialog, IDialogView> dialogMap;
+    private Stack<JDialog> dialogStack;
     private MainWindow window;
 
     private GUIController() {
@@ -45,6 +48,11 @@ public class GUIController extends DataObserver {
 
     }
 
+    /**
+     * Singleton
+     *
+     * @return the Instance of the controller.
+     */
     public static GUIController getInstance() {
         if (INSTANCE == null)
             INSTANCE = new GUIController();
@@ -126,6 +134,11 @@ public class GUIController extends DataObserver {
         }
     }
 
+    /**
+     * Creates the MainWindow.
+     * <p>
+     * Closes any existing MainWindows and instantiates a new one.
+     */
     public void initializeMainWindow() {
         if (this.window != null) {
             this.window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
@@ -192,6 +205,9 @@ public class GUIController extends DataObserver {
     }
 
 
+    /**
+     * Refreshes the GUI.
+     */
     public void update() {
         if (!dialogStack.isEmpty() && dialogMap.get(dialogStack.peek()) != null) {
             dialogMap.get(dialogStack.peek()).update();
@@ -210,6 +226,9 @@ public class GUIController extends DataObserver {
         this.window.open();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void dataChangedListener(DataObservable observable) {
         this.update();

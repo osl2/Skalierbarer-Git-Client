@@ -8,6 +8,9 @@ import levels.Level;
 
 import java.io.File;
 
+/**
+ * Settings Storage
+ */
 public class Settings extends DataObservable {
 
     // Modify settings.PersistencyTest if you add or remove a field!
@@ -42,6 +45,11 @@ public class Settings extends DataObservable {
         return INSTANCE;
     }
 
+    /**
+     * Returns the currently selected Level
+     *
+     * @return current Level
+     */
     public Level getLevel() {
         return level;
     }
@@ -53,11 +61,21 @@ public class Settings extends DataObservable {
         this.level = level;
     }
 
+    /**
+     * Returns the current Author-Data for new Commits
+     *
+     * @return Committer-Identity
+     */
     @JsonIgnore
     public GitAuthor getUser() {
         return new GitData().getUser();
     }
 
+    /**
+     * Sets the committer identity
+     *
+     * @param user Committer-Identity
+     */
     @JsonIgnore
     public void setUser(GitAuthor user) {
         GitFacade facade = new GitFacade();
@@ -66,10 +84,20 @@ public class Settings extends DataObservable {
 
     }
 
+    /**
+     * The currently selected repository
+     *
+     * @return the currently active repository
+     */
     public File getActiveRepositoryPath() {
         return activeRepositoryPath;
     }
 
+    /**
+     * Sets the active repository
+     *
+     * @param activeRepositoryPath the curernt Repository Path
+     */
     public void setActiveRepositoryPath(File activeRepositoryPath) {
         Data.getInstance().storeNewRepositoryPath(activeRepositoryPath);
         if (activeRepositoryPath != this.getActiveRepositoryPath()) {
@@ -79,14 +107,30 @@ public class Settings extends DataObservable {
 
     }
 
+    /**
+     * Should the Tree-View be used?
+     * NOT IMPLEMENTED!
+     *
+     * @return true if tree-view should be used.
+     */
     public boolean showTreeView() {
         return showTreeView;
     }
 
+    /**
+     * Should tooltips be shown?
+     *
+     * @return true if tooltips should be enabled
+     */
     public boolean useTooltips() {
         return useTooltips;
     }
 
+    /**
+     * See {@link #useTooltips()}
+     *
+     * @param useTooltips Should tooltips be shown?
+     */
     public void setUseTooltips(boolean useTooltips) {
         if (useTooltips != this.useTooltips) {
             this.settingsChanged = true;
@@ -94,6 +138,11 @@ public class Settings extends DataObservable {
         this.useTooltips = useTooltips;
     }
 
+    /**
+     * See {@link #showTreeView()}
+     *
+     * @param showTreeView true if tooltips should be enabled
+     */
     public void setShowTreeView(boolean showTreeView) {
         if (showTreeView != this.showTreeView) {
             this.settingsChanged = true;
