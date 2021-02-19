@@ -93,6 +93,7 @@ public class GitBranch {
         MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;
 
         try {
+            Ref ref = GitData.getRepository().exactRef(this.branchName);
             MergeResult mr = GitData.getJGit().merge()
                     .setStrategy(MergeStrategy.RESOLVE)
                     .include(ref)
@@ -112,7 +113,7 @@ public class GitBranch {
 
             return conflictMap;
 
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | IOException e) {
             throw new GitException(e.getMessage());
         }
 
