@@ -82,7 +82,10 @@ public class Commit implements ICommand, ICommandGUI {
     for (GitFile gitFile : stagedFiles){
       message.append(gitFile.getPath().getName() + "\n");
     }
-    JOptionPane.showConfirmDialog(null, message.toString());
+    int commit = JOptionPane.showConfirmDialog(null, message.toString());
+    if (commit != 0){
+      return false;
+    }
 
     if (commitMessage == null
             || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())

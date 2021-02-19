@@ -82,8 +82,9 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        executeCommit(false);
-        c.restoreDefaultView();
+        if (executeCommit(false)){
+          c.restoreDefaultView();
+        }
       }
     });
 
@@ -93,8 +94,9 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        executeCommit(true);
-        c.restoreDefaultView();
+        if (executeCommit(true)){
+          c.restoreDefaultView();
+        }
       }
     });
 
