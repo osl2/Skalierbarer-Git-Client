@@ -11,6 +11,7 @@ import org.eclipse.jgit.transport.PushConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
@@ -23,8 +24,6 @@ import java.util.Set;
  * A class to do operations, that change something in the Git repository.
  */
 public class GitFacade {
-
-  private GitData gitData;
 
   /**
    * Create a new Stash.
@@ -124,6 +123,8 @@ public class GitFacade {
       git = Git.init().setDirectory(path).call();
       Settings settings = Settings.getInstance();
       settings.setActiveRepositoryPath(path);
+      GitData data = new GitData();
+      data.reinitialize();
     } catch (GitAPIException e) {
       return false;
     }
@@ -289,7 +290,7 @@ public class GitFacade {
   }
 
   public boolean revert(GitCommit commit) throws GitException {
-    boolean suc;
+    boolean suc = false;
 
     suc = commit.revert();
     return suc;
