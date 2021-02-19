@@ -58,7 +58,7 @@ public class PushDialogView implements IDialogView {
         int index = remoteComboBox.getSelectedIndex();
         remote = remoteList.get(index);
         //if remote and local branch have been set, setup the remote branch combo box
-        if(remote != null){
+        if(remote != null && localBranch != null){
           setUpRemoteBranchComboBox();
         }
       }
@@ -68,6 +68,7 @@ public class PushDialogView implements IDialogView {
       public void actionPerformed(ActionEvent e) {
         //try to execute push. If successful, close the push dialog view
         if(executePush()){
+
           GUIController.getInstance().closeDialogView();
         }
       }
@@ -253,6 +254,9 @@ public class PushDialogView implements IDialogView {
     push.setSetUpstream(setUpstream);
     boolean success = false;
     success = push.execute();
+    if (success){
+      GUIController.getInstance().setCommandLine(push.getCommandLine());
+    }
     return success;
   }
 

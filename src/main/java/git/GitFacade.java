@@ -260,16 +260,12 @@ public class GitFacade {
       if (!remoteNames.contains(remote.getName())) {
         git.remoteAdd().setName(remote.getName()).setUri(new URIish(remote.getUrl())).call();
       }
-      RefSpec refSpec = new RefSpec();
-      refSpec.setSource(localBranch.getFullName());
-      refSpec.setDestination(remoteBranch.getFullName());
 
       PushConfig pushConfig = new PushConfig();
-
       git.push()
-              .setRemote(remote.getUrl().toString())  //In JGIT uri or name of the remote can be set
+              .setRemote(remote.getName())  //In JGIT uri or name of the remote can be set
               .setCredentialsProvider(provider)
-              .setRefSpecs(refSpec)
+              .setRefSpecs(new RefSpec(localBranch.getName() + ":" + remoteBranch.getName()))
               .call();
       return true;
     } catch (InvalidRemoteException e) {

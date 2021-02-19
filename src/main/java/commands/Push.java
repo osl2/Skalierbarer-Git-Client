@@ -34,6 +34,7 @@ public class Push implements ICommand, ICommandGUI {
     //remote branch does not yet exist, git will automatically create one with the same name as the local branch
     if (remoteBranch == null){
       try {
+        System.out.println("Hello from execute");
         success = facade.pushOperation(remote, localBranch, setUpstream);
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
