@@ -3,13 +3,17 @@ package commands;
 import controller.GUIController;
 import git.GitData;
 import git.GitFacade;
+import git.GitFile;
 import git.GitStatus;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import views.AddCommitView;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Commit implements ICommand, ICommandGUI {
   private String commitMessage;
@@ -53,26 +57,45 @@ public class Commit implements ICommand, ICommandGUI {
    */
   public boolean execute() {
     gitFacade = new GitFacade();
-    //check if staging-area is empty
+    List<GitFile> stagedFiles = new LinkedList<>();
+
+    //get the list of staged files from status
     try {
-      if (gitStatus.getStagedFiles().isEmpty()){
-        GUIController.getInstance().errorHandler("Staging-Area ist leer. Leerer Commit nicht erlaubt!");
-      }
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
+      stagedFiles = gitStatus.getStagedFiles();
     } catch (IOException e) {
-      GUIController.getInstance().errorHandler(e);
+      e.printStackTrace();
+      return false;
+    } catch (GitException e) {
+      e.printStackTrace();
+      return false;
     }
+
+    //check if staging-area is empty
+    if (stagedFiles.isEmpty()){
+      GUIController.getInstance().errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
+      return false;
+    }
+
+    //prepare the confirmation dialog
+    StringBuffer message = new StringBuffer();
+    message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
+    for (GitFile gitFile : stagedFiles){
+      message.append(gitFile.getPath().getName() + "\n");
+    }
+    JOptionPane.showConfirmDialog(null, message.toString());
+
     if (commitMessage == null
             || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
             || commitMessage.equals("")){
       GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
+      return false;
     }
     boolean success = false;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
     } catch (GitException e) {
       GUIController.getInstance().errorHandler(e);
+      return false;
     }
     return success;
   }

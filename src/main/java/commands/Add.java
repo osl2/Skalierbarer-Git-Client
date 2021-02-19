@@ -31,7 +31,6 @@ public class Add implements ICommand, ICommandGUI {
    * @throws GitException if command execution in JGit throws an exception
    */
   public boolean execute() {
-    boolean success = false;
     List<GitFile> stagedFiles = new LinkedList<>();
 
 
@@ -65,7 +64,7 @@ public class Add implements ICommand, ICommandGUI {
       //if file has not been deleted and file is not staged yet, add it to the staging area
       else if (!stagedFiles.contains(unstagedFile)){
         try {
-          success = unstagedFile.add();
+          unstagedFile.add();
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
           return false;
@@ -76,7 +75,7 @@ public class Add implements ICommand, ICommandGUI {
     for (GitFile stagedFile : stagedFiles){
       if (!files.contains(stagedFile)){
         try {
-          success = stagedFile.addUndo();
+          stagedFile.addUndo();
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
           return false;
@@ -84,7 +83,7 @@ public class Add implements ICommand, ICommandGUI {
       }
     }
 
-    return success;
+    return true;
   }
 
 
