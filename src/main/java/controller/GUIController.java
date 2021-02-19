@@ -15,6 +15,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class GUIController extends DataObserver {
@@ -22,9 +25,9 @@ public class GUIController extends DataObserver {
     private static final int ERROR_MESSAGE_WIDTH = 600;
     private static final int ERROR_MESSAGE_HEIGHT = 800;
     private static GUIController INSTANCE;
+    Map<JDialog, IDialogView> dialogMap;
+    Stack<JDialog> dialogStack;
     private MainWindow window;
-    private JDialog currentDialog;
-    private IDialogView currentDialogAnchor;
 
     private GUIController() {
         /* This class is a singleton */
@@ -36,6 +39,9 @@ public class GUIController extends DataObserver {
         // register observer
         Data.getInstance().addDataChangedListener(this);
         Settings.getInstance().addDataChangedListener(this);
+
+        dialogMap = new HashMap<>();
+        dialogStack = new Stack<>();
 
     }
 
@@ -77,7 +83,8 @@ public class GUIController extends DataObserver {
             bufferPanel.setPreferredSize(jTextArea.getPreferredSize());
         }
         bufferPanel.revalidate();
-        JOptionPane.showMessageDialog(this.currentDialog,
+        JDialog currentDialog = dialogStack.peek();
+        JOptionPane.showMessageDialog(currentDialog,
                 bufferPanel,
                 "Fehler",
                 JOptionPane.ERROR_MESSAGE);
@@ -97,8 +104,9 @@ public class GUIController extends DataObserver {
      * Close the open Dialog.
      */
     public void closeDialogView() {
-        this.currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
-        this.currentDialogAnchor = null;
+        JDialog currentDialog = dialogStack.pop();
+        currentDialog.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
+        dialogMap.put(currentDialog, null);
         this.update();
     }
 
@@ -113,8 +121,9 @@ public class GUIController extends DataObserver {
     }
 
     public void initializeMainWindow() {
-        if (this.window != null)
-            this.window.dispatchEvent(new WindowEvent(currentDialog, WindowEvent.WINDOW_CLOSING));
+        if (this.window != null) {
+            this.window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+        }
 
         this.window = new MainWindow();
 
@@ -139,8 +148,9 @@ public class GUIController extends DataObserver {
      * @param listener WindowListener to attach to the dialog
      */
     public void openDialog(IDialogView dialog, WindowListener listener) {
-        this.currentDialog = createDialog(dialog);
-        this.currentDialogAnchor = dialog;
+        JDialog currentDialog = createDialog(dialog);
+        this.dialogStack.push(currentDialog);
+        dialogMap.put(currentDialog, dialog);
         if (listener != null)
             currentDialog.addWindowListener(listener);
 
@@ -177,8 +187,8 @@ public class GUIController extends DataObserver {
 
 
     public void update() {
-        if (this.currentDialogAnchor != null) {
-            this.currentDialogAnchor.update();
+        if (!dialogStack.isEmpty() && dialogMap.get(dialogStack.peek()) != null) {
+            dialogMap.get(dialogStack.peek()).update();
         }
 
         if (this.window != null) {
