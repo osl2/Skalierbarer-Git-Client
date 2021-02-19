@@ -21,7 +21,7 @@ public class GitignoreAdd implements ICommand {
   /**
    * This method calls the jgit StatusCommand.setIgnoreSubmodules() method.
    *
-   * @return
+   * @return true iff Add was successful
    */
   public boolean execute() {
     return false;

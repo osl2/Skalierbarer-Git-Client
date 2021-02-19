@@ -7,7 +7,7 @@ public class GitignoreRemove implements ICommand {
   /**
    * TODO: find JGit internal method that removes files from .gitignore
    *
-   * @return
+   * @return True iff Ignoring the file was successful
    */
   public boolean execute() {
     return false;

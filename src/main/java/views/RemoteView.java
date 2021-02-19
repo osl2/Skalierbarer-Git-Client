@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
 
 public class RemoteView extends JPanel implements IView {
@@ -140,9 +139,7 @@ public class RemoteView extends JPanel implements IView {
 
     urlField.addFocusListener(new FocusAdapter() {
       /**
-       * Invoked when a component gains the keyboard focus.
-       *
-       * @param e
+       * {@inheritDoc}
        */
       @Override
       public void focusGained(FocusEvent e) {
@@ -204,13 +201,7 @@ public class RemoteView extends JPanel implements IView {
     }
 
     /**
-     * Gets the rednered Components
-     * @param list The list, on that the renderer works
-     * @param value The chosen element
-     * @param index The index of the element
-     * @param isSelected What to do if COmponent is selected
-     * @param hasFocus
-     * @return returns the component
+     * {@inheritDoc}
      */
     @Override
     public Component getListCellRendererComponent(final JList list,

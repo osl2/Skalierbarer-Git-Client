@@ -30,7 +30,6 @@ public class Add implements ICommand, ICommandGUI {
    * Performs git add on each GitFile instance separately.
    *
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
-   * @throws GitException if command execution in JGit throws an exception
    */
   public boolean execute() {
     List<GitFile> stagedFiles = new LinkedList<>();
