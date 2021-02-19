@@ -39,7 +39,9 @@ public class RemoteView extends JPanel implements IView {
   private List<GitBranch> branches;
   private Remote remForSetURL = new Remote();
 
-
+  /**
+   * Konstruktor to create RemoteView
+   */
   public RemoteView(){
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
@@ -178,7 +180,10 @@ public class RemoteView extends JPanel implements IView {
     });
   }
 
-
+  /**
+   * Method to grz the RemotePanel
+   * @return RemotePnael for the mainwindow
+   */
   public JPanel getView() {
     return remotePanel;
   }
@@ -186,6 +191,10 @@ public class RemoteView extends JPanel implements IView {
   public void update() {
 
   }
+
+  /**
+   * Renderer for the remoteList
+   */
   private static class RemoteViewRenderer extends JTextArea implements ListCellRenderer {
 
     public RemoteViewRenderer() {
@@ -193,6 +202,15 @@ public class RemoteView extends JPanel implements IView {
       this.setWrapStyleWord(true);
     }
 
+    /**
+     * Gets the rednered Components
+     * @param list The list, on that the renderer works
+     * @param value The chosen element
+     * @param index The index of the element
+     * @param isSelected What to do if COmponent is selected
+     * @param hasFocus
+     * @return returns the component
+     */
     @Override
     public Component getListCellRendererComponent(final JList list,
                                                   final Object value, final int index, final boolean isSelected,
@@ -218,6 +236,12 @@ public class RemoteView extends JPanel implements IView {
 
     }
   }
+
+  /**
+   * Method to get the remoteBranches
+   * @param r the remote
+   * @return true if it works, recursive if the provider was wrong, false if the UsernameDialogView is closed
+   */
   private boolean tryBranches(GitRemote r){
     GitData git = new GitData();
     try {
@@ -234,6 +258,10 @@ public class RemoteView extends JPanel implements IView {
       }
     }
   }
+
+  /**
+   * Method to reload the BRanchField
+   */
   private void reloadBranches(){
     GitRemote act = remotes.get(remoteList.getSelectedIndex());
     nameField.setText(act.getName());

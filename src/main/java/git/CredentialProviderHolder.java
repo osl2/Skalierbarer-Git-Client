@@ -15,6 +15,10 @@ public class CredentialProviderHolder {
         provider = new UsernamePasswordCredentialsProvider("", "");
     }
     private WindowListener windowListener = new WindowListener() {
+        /**
+         * Method to change something
+         * @param e
+         */
         @Override
         public void windowOpened(WindowEvent e) {
             CredentialProviderHolder.getInstance().setActive(false);
