@@ -1,14 +1,15 @@
 package git;
 
 import git.exception.GitException;
-import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.PushConfig;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class to do operations, that change something in the Git repository.
@@ -143,42 +145,6 @@ public class GitFacade {
     return true;
   }
 
-  public boolean fetchRemotes(List<GitRemote> remotes) throws GitException {
-    try {
-      Git jgit = GitData.getJGit();
-      for (int i = 0; i < remotes.size(); i++){
-        if (remotes.get(i).getFetchBranches().size() == 0){
-          jgit.fetch()
-                  .setRemote(remotes.get(i).getName())
-                  .setRefSpecs("refs/heads/*:refs/heads/"
-                          + remotes.get(i).getName() + "/*")
-                  .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
-                  .call();
-        }
-        else {
-          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++){
-            GitRemote actualRemote = remotes.get(i);
-            GitBranch actualBranch = actualRemote.getFetchBranches().get(j);
-            jgit.fetch()
-                    .setRemote(actualRemote.getName())
-                    .setRefSpecs("refs/heads/" + actualBranch.getName()  + ":refs/heads/" + actualRemote.getName() + "/"
-                            + actualBranch.getName())
-                    .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
-                    .call();
-          }
-        }
-      }
-
-    } catch (InvalidRemoteException e) {
-      throw new GitException(e.getMessage());
-    } catch (TransportException e) {
-      throw new GitException(e.getMessage());
-    } catch (GitAPIException e) {
-      throw new GitException(e.getMessage());
-    }
-    return true;
-  }
-
   public boolean setRepositoryPath(File path) {
     throw new AssertionError("not implemented");
   }
@@ -217,8 +183,8 @@ public class GitFacade {
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) {
-    throw new AssertionError("not implemented");
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, boolean setUpstream) throws GitException {
+    return pushOperation(remote, localBranch, localBranch, setUpstream);
   }
 
   /**
@@ -231,8 +197,39 @@ public class GitFacade {
    *               between the local tracking branch and the remote upstream branch
    * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed 
    */
-  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow){
-    throw new AssertionError("not implemented");
+  public boolean pushOperation(GitRemote remote, GitBranch localBranch, GitBranch remoteBranch, boolean follow) throws GitException {
+    try {
+      remote.getUrl();
+      Git git = GitData.getJGit();
+      Repository repository = GitData.getRepository();
+      CredentialProviderHolder credentialProvider = CredentialProviderHolder.getInstance();
+      UsernamePasswordCredentialsProvider provider = credentialProvider.getProvider();
+      Set<String> remoteNames = repository.getRemoteNames();
+      if (!remoteNames.contains(remote.getName())) {
+        git.remoteAdd().setName(remote.getName()).setUri(new URIish(remote.getUrl())).call();
+      }
+      RefSpec refSpec = new RefSpec();
+      refSpec.setSource(localBranch.getFullName());
+      refSpec.setDestination(remoteBranch.getFullName());
+
+      PushConfig pushConfig = new PushConfig();
+
+      git.push()
+          .setRemote(remote.getUrl().toString())  //In JGIT uri or name of the remote can be set
+          .setCredentialsProvider(provider)
+          .setRefSpecs(refSpec)
+          .call();
+      return true;
+    } catch (InvalidRemoteException e) {
+      throw new GitException("Remote war ungültig \n" +
+          "Fehlermeldung: " + e.getMessage());
+    } catch (TransportException e) {
+      throw new GitException("Mit der Internet-Verbindung ist etwas schief gelaufen \n" +
+          "Fehlermeldung: " + e.getMessage());
+    } catch (GitAPIException e) {
+      throw new GitException("Ein Fehler ist aufgetreten \n" +
+          "Fehlermeldung: " + e.getMessage());
+    }
   }
 
 
