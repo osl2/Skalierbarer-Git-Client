@@ -120,6 +120,24 @@ public class MainWindow extends JFrame {
         GUIController.getInstance().update();
     }
 
+    private void openFileListener() {
+        JFileChooser dirChooser = new JFileChooser();
+        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int response = dirChooser.showOpenDialog(this);
+
+        if (response != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File newDirectory = dirChooser.getSelectedFile();
+        if (!(new File(newDirectory, ".git")).isDirectory()) {
+            GUIController.getInstance().errorHandler(dirChooser.getSelectedFile() + " ist kein valides Git Repository");
+            return;
+        }
+
+        changeRepository(newDirectory);
+
+    }
+
     private void createMenubar() {
         JMenuBar bar = new JMenuBar();
         JMenu m1 = new JMenu("Repository");
@@ -134,7 +152,11 @@ public class MainWindow extends JFrame {
             recentlyUsed.add(repo);
         }
 
-        m1.add(new JMenuItem("Öffnen"));
+        JMenuItem openItem = new JMenuItem("Öffnen");
+
+        openItem.addActionListener(l -> openFileListener());
+
+        m1.add(openItem);
         //m1.add(new JMenuItem("Initialisieren")); // removed as it has got it's own button in the gui right now
         //m1.add(new JMenuItem("Klonen")); // Also has a button apparently.
         m1.add(recentlyUsed);
