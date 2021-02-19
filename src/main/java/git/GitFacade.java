@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.util.FS;
 import settings.Settings;
 
 import java.io.File;
