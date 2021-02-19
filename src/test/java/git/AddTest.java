@@ -6,7 +6,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -39,7 +38,7 @@ public class AddTest extends AbstractGitTest{
                 .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
-        List<GitFile> addedFiles = GitStatus.getGitStatus().getAddedFiles();
+        List<GitFile> addedFiles = GitStatus.getInstance().getAddedFiles();
         assertTrue(addedFiles.contains(gitFile2));
 
         //execute add
@@ -47,7 +46,7 @@ public class AddTest extends AbstractGitTest{
 
         //file2 and file3 should now be added, file1 should have been removed from the
         // staging area, list of added files should contain 2 elements
-        addedFiles = GitStatus.getGitStatus().getAddedFiles();
+        addedFiles = GitStatus.getInstance().getAddedFiles();
         assertFalse(addedFiles.contains(gitFile1));
         assertTrue(addedFiles.contains(gitFile2));
         assertTrue(addedFiles.contains(gitFile3));

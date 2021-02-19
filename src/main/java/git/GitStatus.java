@@ -34,7 +34,7 @@ public class GitStatus {
      *
      * @return The unique GitStatus object
      */
-    public static GitStatus getGitStatus() {
+    static GitStatus getInstance() {
         if (gitStatus == null) {
             gitStatus = new GitStatus();
         }

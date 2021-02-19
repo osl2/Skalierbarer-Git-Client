@@ -4,9 +4,7 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -16,7 +14,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import settings.Settings;
 
 import java.io.File;
@@ -154,7 +151,7 @@ public class GitData {
      * @return The singleton status object
      */
     public GitStatus getStatus() {
-        return GitStatus.getGitStatus();
+        return GitStatus.getInstance();
     }
 
     /**
