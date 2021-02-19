@@ -12,8 +12,6 @@ import git.exception.GitException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 public class RemoteView extends JPanel implements IView {
@@ -78,13 +76,7 @@ public class RemoteView extends JPanel implements IView {
           return;
         }
         remForSetURL.setRemote(remotes.get(index));
-        try {
-          URL url = new URL(urlField.getText());
-          remForSetURL.setUrl(url);
-        } catch (MalformedURLException malformedURLException) {
-          GUIController.getInstance().errorHandler("Diese URL ist nicht gültig");
-          return;
-        }
+        remForSetURL.setUrl(urlField.getText());
         if (remForSetURL.execute()) {
           GUIController.getInstance().setCommandLine(remForSetURL.getCommandLine());
           remotes = git.getRemotes();

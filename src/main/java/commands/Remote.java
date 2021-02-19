@@ -6,14 +6,13 @@ import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 
-import java.net.URL;
 import java.util.List;
 
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
   private String subCommandName;
   private String remoteName;
-  private URL url;
+  private String url;
 
   public void setRemoteSubcommand(RemoteSubcommand remoteSubcommand) {
     this.remoteSubcommand = remoteSubcommand;
@@ -115,7 +114,7 @@ public class Remote implements ICommand, ICommandGUI {
     this.remoteName = remoteName;
   }
 
-  public void setUrl(URL url) {
+  public void setUrl(String url) {
     this.url = url;
   }
 

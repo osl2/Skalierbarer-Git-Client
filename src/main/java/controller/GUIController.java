@@ -120,8 +120,10 @@ public class GUIController extends DataObserver {
      * @param commandLine the new text to be shown
      */
     public void setCommandLine(String commandLine) {
-        if (commandLine != null)
+        if (commandLine != null) {
             this.window.setCommandLineText(commandLine);
+            update();
+        }
     }
 
     public void initializeMainWindow() {

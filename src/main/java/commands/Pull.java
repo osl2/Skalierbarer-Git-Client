@@ -9,7 +9,6 @@ import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +117,7 @@ public class Pull implements ICommand, ICommandGUI {
       }
     }
     GUIController.getInstance().closeDialogView();
-    commandLine = remote.getName() + remoteBranch.getName();
+    commandLine = remote.getName() + " " + remoteBranch.getName();
     GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest, getCommandLine()));
     return true;
   }

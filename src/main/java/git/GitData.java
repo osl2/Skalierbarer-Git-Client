@@ -18,8 +18,6 @@ import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -199,11 +197,10 @@ public class GitData {
                 String name = config.getName();
                 String urlString = uris.iterator().next().getPath();
                 URIish uri = config.getURIs().iterator().next();
-                URL url = new URL(uri.toString());
-                gitRemotes.add(new GitRemote(url, user, name));
+                gitRemotes.add(new GitRemote(uri.toString(), user, name));
             }
             return gitRemotes;
-        } catch (GitAPIException | MalformedURLException e) {
+        } catch (GitAPIException e) {
             e.printStackTrace();
             return null;
         }

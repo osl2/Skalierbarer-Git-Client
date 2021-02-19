@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class RemoteAddDialogView implements IDialogView{
     private JPanel panel1;
@@ -46,17 +44,10 @@ public class RemoteAddDialogView implements IDialogView{
                     GUIController.getInstance().errorHandler("Kein Name eingegeben");
                     return;
                 }
-                URL url = null;
-                try {
-                    url = new URL(urlField.getText());
-                } catch (MalformedURLException malformedURLException) {
-                    GUIController.getInstance().errorHandler("Keine gültige URL eingegeben");
-                    return;
-                }
                 Remote rem = new Remote();
                 rem.setRemoteSubcommand(Remote.RemoteSubcommand.ADD);
                 rem.setRemoteName(name);
-                rem.setUrl(url);
+                rem.setUrl(urlField.getText());
                 if (rem.execute()){
                     GUIController.getInstance().setCommandLine(rem.getCommandLine());
                     GUIController.getInstance().closeDialogView();

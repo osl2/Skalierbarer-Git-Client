@@ -18,7 +18,7 @@ import settings.Settings;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
@@ -98,22 +98,22 @@ public class GitFacade {
         throw new AssertionError("not implemented");
     }
 
-  /**
-   * Creates a new Remote in JGit.
-   *
-   * @param name name of the new remote
-   * @param url  Url of the repository
-   * @return true if it is performed successfully, false if something went wrong
-   */
-  public boolean remoteAddOperation(String name, URL url) throws GitException {
-      Git git = GitData.getJGit();
-      try {
-          git.remoteAdd().setName(name).setUri(new URIish(url)).call();
-          return true;
-      } catch (GitAPIException e) {
-          throw new GitException(e.getMessage());
-      }
-  }
+    /**
+     * Creates a new Remote in JGit.
+     *
+     * @param name name of the new remote
+     * @param url  Url of the repository
+     * @return true if it is performed successfully, false if something went wrong
+     */
+    public boolean remoteAddOperation(String name, String url) throws GitException {
+        Git git = GitData.getJGit();
+        try {
+            git.remoteAdd().setName(name).setUri(new URIish(url)).call();
+            return true;
+        } catch (GitAPIException | URISyntaxException e) {
+            throw new GitException(e.getMessage());
+        }
+    }
 
     /**
      * Method to initialize a new git Repositorry on a given path.
@@ -233,8 +233,6 @@ public class GitFacade {
    *
    * @param remote The name of the online repo (must have been preconfigured before)
    * @param localBranch The name of the local branch whose commits should be pushed
-   * @param setUpstream Whether the --upstream flag should be set, i.e. whether a direct connection should be created
-   *                    between the local tracking branch and the remote upstream branch
    * @return True if the push has been successful, false otherwise, e.g. connection to
    *     online repo failed
    */
@@ -249,8 +247,6 @@ public class GitFacade {
    * @param remote       The remote repo the local changes should be pushed to
    * @param localBranch  The local branch whose changes should be pushed
    * @param remoteBranchName The remote branch the changes should be pushed to (already existing)
-   * @param follow       Whether the --set-upstream flag should be set, i.e. whether a direct connection should be created
-   *                     between the local tracking branch and the remote upstream branch
    * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed
    */
   public boolean pushOperation(GitRemote remote, GitBranch localBranch, String remoteBranchName) throws GitException {
@@ -271,15 +267,16 @@ public class GitFacade {
               .setCredentialsProvider(provider)
               .setRefSpecs(new RefSpec( localBranch.getName()+ ":" + remoteBranchName))
               .call();
-      return true;
+        return true;
     } catch (InvalidRemoteException e) {
-      throw new GitException("Remote war ungültig \n" +
-              "Fehlermeldung: " + e.getMessage());
+        throw new GitException("Remote war ungültig \n" +
+                "Fehlermeldung: " + e.getMessage());
     } catch (TransportException e) {
-      throw new GitException();
-    } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler ist aufgetreten \n" +
-              "Fehlermeldung: " + e.getMessage());
+        throw new GitException("Mit der Internet-Verbindung ist etwas schief gelaufen \n" +
+                "Fehlermeldung: " + e.getMessage());
+    } catch (GitAPIException | URISyntaxException e) {
+        throw new GitException("Ein Fehler ist aufgetreten \n" +
+                "Fehlermeldung: " + e.getMessage());
     }
   }
 
