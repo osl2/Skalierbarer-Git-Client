@@ -14,11 +14,8 @@ import java.io.File;
 public class Main {
 
   public static void main(String[] args) {
-    Settings settings = Settings.getInstance();
-    settings.setActiveRepositoryPath(new File("C:\\Users\\rapha\\IdeaProjects\\entwurf"));
     GUIController c = GUIController.getInstance();
     c.openMainWindow();
-    c.openDialog(new PushDialogView());
     // Load Data -> Persistency
     // Todo: Load Plugins -> ???
     // Apply Plugin changes
