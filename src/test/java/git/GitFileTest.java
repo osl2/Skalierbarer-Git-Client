@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +52,7 @@ public class GitFileTest extends AbstractGitTest {
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
     String jGitFile = git.status().call().getAdded().iterator().next();
     assertEquals(gitDataFile, jGitFile);
-    assertTrue(GitStatus.getGitStatus().getAddedFiles().contains(gitFile));
+    assertTrue(GitStatus.getInstance().getAddedFiles().contains(gitFile));
   }
 
   @Test

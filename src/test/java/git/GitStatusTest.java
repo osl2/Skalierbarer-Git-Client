@@ -1,24 +1,17 @@
 package git;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +38,7 @@ public class GitStatusTest extends AbstractGitTest {
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
 
-        List<GitFile> addedPaths = GitStatus.getGitStatus().getAddedFiles();
+        List<GitFile> addedPaths = GitStatus.getInstance().getAddedFiles();
 
         // Sort according to the order of the wrapped files.
         addedPaths.sort(Comparator.comparing(GitFile::getPath));
@@ -120,7 +113,7 @@ public class GitStatusTest extends AbstractGitTest {
         //delete the file. File should now be missing and deleted, but not removed
         file.delete();
         Status status = git.status().call();
-        GitStatus gitStatus = GitStatus.getGitStatus();
+        GitStatus gitStatus = GitStatus.getInstance();
         assertTrue(status.getMissing().contains(file.getName()));
         assertTrue(gitStatus.getMissingFiles().contains(gitFile));
         assertTrue(gitStatus.getDeletedFiles().contains(gitFile));
@@ -167,7 +160,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //get status from JGit and GitStatus instance
         Status status = git.status().call();
-        GitStatus gitStatus = GitStatus.getGitStatus();
+        GitStatus gitStatus = GitStatus.getInstance();
 
         //file1 should be removed, since we called git rm on it
         assertTrue(status.getRemoved().contains(file1.getName()));
@@ -198,7 +191,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //file1 should now be added, file 2 should be untracked
         Status status = git.status().call();
-        GitStatus gitStatus = GitStatus.getGitStatus();
+        GitStatus gitStatus = GitStatus.getInstance();
 
         assertTrue(status.getAdded().contains(file1.getName()));
         assertTrue(gitStatus.getAddedFiles().contains(gitFile1));
@@ -241,7 +234,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //file1 should now be changed, file 2 should be modified
         Status status = git.status().call();
-        GitStatus gitStatus = GitStatus.getGitStatus();
+        GitStatus gitStatus = GitStatus.getInstance();
 
         assertTrue(status.getChanged().contains(file1.getName()));
         assertTrue(gitStatus.getChangedFiles().contains(gitFile1));
@@ -283,7 +276,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //file1 should now be in getChanged, file2 should be in getAdded, both should be in getStaged
         Status status = git.status().call();
-        GitStatus gitStatus = GitStatus.getGitStatus();
+        GitStatus gitStatus = GitStatus.getInstance();
         assertTrue(status.getChanged().contains(file1.getName()));
         assertTrue(status.getAdded().contains(file2.getName()));
         assertTrue(gitStatus.getChangedFiles().contains(gitFile1));
@@ -296,7 +289,7 @@ public class GitStatusTest extends AbstractGitTest {
 
 
     private void reloadFileLists() throws IOException, GitException {
-        gitStatus = GitStatus.getGitStatus();
+        gitStatus = GitStatus.getInstance();
         untrackedFiles = gitStatus.getUntrackedFiles();
         addedFiles = gitStatus.getAddedFiles();
         modifiedFiles = gitStatus.getModifiedFiles();
