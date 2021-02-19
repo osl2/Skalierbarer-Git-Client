@@ -182,8 +182,8 @@ public class PushDialogView implements IDialogView {
     //model.addAll(localBranches);
     for (GitBranch branch : localBranches){
       model.addElement(branch);
-      if (branch.equals(selectedBranch)){
-        model.setSelectedItem(branch);
+      if (branch.getName().compareTo((selectedBranch.getName())) == 0){
+        //model.setSelectedItem(branch);
       }
     }
     localBranchComboBox.setModel(model);
@@ -198,8 +198,8 @@ public class PushDialogView implements IDialogView {
     List<GitRemote> remotes = gitData.getRemotes();
     for (GitRemote remote : remotes){
       model.addElement(remote);
-      if (remote.getName().equals("origin")){
-        model.setSelectedItem(remote);
+      if (remote.getName().compareTo("origin") == 0){
+        //model.setSelectedItem(remote);
       }
     }
     remoteComboBox.setModel(model);
@@ -221,16 +221,16 @@ public class PushDialogView implements IDialogView {
     for (GitBranch remoteBranch : remoteBranches){
       model.addElement(remoteBranch);
       //gibt es schon einen remote upstream branch? Falls nicht, füge lokalen Branch als "Dummy" hinzu
-      if (remoteBranch.getName().equals(localBranch.getName())){
+      if (remoteBranch.getName().compareTo(localBranch.getName()) == 0){
         containsUpStreamBranch = true;
-        model.setSelectedItem(remoteBranch);
+        //model.setSelectedItem(remoteBranch);
       }
     }
 
     //add dummy upstream branch
     if (!containsUpStreamBranch){
       model.addElement(localBranch);
-      model.setSelectedItem(localBranch);
+      //model.setSelectedItem(localBranch);
     }
     remoteBranchComboBox.setModel(model);
   }
@@ -243,7 +243,7 @@ public class PushDialogView implements IDialogView {
     remoteBranchComboBox was only a dummy for the to-be-created upstream branch. So, in case they are equal, set remote
     branch to null 
      */
-    if (remoteBranch.equals(localBranch)){
+    if (remoteBranch.getName().compareTo(localBranch.getName()) == 0){
       push.setRemoteBranch(null);
     }
     else{
