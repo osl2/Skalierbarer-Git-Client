@@ -6,47 +6,75 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * Represents a single author in Git
+ * Represents a single author in Git.
  */
 public class GitAuthor {
-    private String name;
-    private String email;
+  private String name;
+  private String email;
 
-    /* Is only instantiated inside the git Package */
-    @JsonCreator
-    GitAuthor(
-            @JsonProperty("name") String name,
-            @JsonProperty("email") String email) {
-        this.name = name;
-        this.email = email;
-    }
 
-    public String getName() {
-        return name;
-    }
+  /* Is only instantiated inside the git Package */
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  /**
+   * Method to generate an Author by name and email.
+   *
+   * @param name  Name of the author
+   * @param email email of the author
+   */
+  @JsonCreator
+  GitAuthor(
+      @JsonProperty("name") String name,
+      @JsonProperty("email") String email) {
+    this.name = name;
+    this.email = email;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  /**
+   * Method to get the name of the author.
+   *
+   * @return Name of the author
+   */
+  public String getName() {
+    return name;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  /**
+   * Method to set the name of an author.
+   *
+   * @param name name, that the author should get
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GitAuthor)) return false;
-        GitAuthor gitAuthor = (GitAuthor) o;
-        return (name.equals(gitAuthor.name) && email.equals(gitAuthor.email));
-    }
+  /**
+   * Method to get the email of an author.
+   *
+   * @return Email that the author has
+   */
+  public String getEmail() {
+    return email;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, email);
-    }
+  /**
+   * Method to set the email of an author.
+   *
+   * @param email email that the author should get
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof GitAuthor)) return false;
+    GitAuthor gitAuthor = (GitAuthor) o;
+    return (name.equals(gitAuthor.name) && email.equals(gitAuthor.email));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, email);
+  }
 }

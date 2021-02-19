@@ -9,86 +9,136 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Represents a remote in the Git package.
+ */
 public class GitRemote {
-    // This has to be a String as URL is a too restrictive data type refusing to operate on totally valid
-    // git urls.
-    private String url;
-    private String gitUser;
-    private String name;
-    private List<GitBranch> branches;
-    private LinkedList<GitBranch> fetchBranches = new LinkedList<GitBranch>();
+  // This has to be a String as URL is a too restrictive data type
+  // refusing to operate on totally valid git urls.
+  private String url;
+  @SuppressWarnings("unused")
+  private String gitUser;
+  private String name;
+  @SuppressWarnings("unused")
+  private List<GitBranch> branches;
+  private LinkedList<GitBranch> fetchBranches = new LinkedList<>();
 
 
-    /* Is only instantiated inside the git Package */
-    GitRemote(String url, String gitUser, String name) {
-        this.url = url;
-        this.gitUser = gitUser;
-        this.name = name;
+  /* Is only instantiated inside the git Package */
+
+  /**
+   * Method to instantiate a remote by url, User and name.
+   *
+   * @param url     url that the remote should get
+   * @param gitUser user, that the remote has
+   * @param name    name, that the remote has
+   */
+  GitRemote(String url, String gitUser, String name) {
+    this.url = url;
+    this.gitUser = gitUser;
+    this.name = name;
+  }
+
+  /**
+   * Method to get the user of the remote.
+   *
+   * @param gitUser User of the remote
+   */
+  @SuppressWarnings("unused")
+  public void setGitUser(String gitUser) {
+    this.gitUser = gitUser;
+  }
+
+  /**
+   * Method to get the name of the remote.
+   *
+   * @return name of the repository
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Method to set the name of a repository.
+   *
+   * @param name Name that the remote should get
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * Method to get the URL of the remote.
+   *
+   * @return URL of the remote
+   */
+  public String getUrl() {
+    return url;
+  }
+
+  /**
+   * Method to set the URL of the remote.
+   *
+   * @param url URL that the remote should get
+   */
+  @SuppressWarnings("unused")
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  /**
+   * Method to add a branch to the remote.
+   *
+   * @param branch branch that should be added
+   */
+  public void addBranch(GitBranch branch) {
+    // if (!(fetchBranches.contains(branch))) {
+    fetchBranches.add(branch);
+    // }
+  }
+
+  /**
+   * Method to get all branches, that can be fetched.
+   *
+   * @return All branches that can be fetched
+   */
+  public List<GitBranch> getFetchBranches() {
+    return (List<GitBranch>) fetchBranches.clone();
+  }
+
+  /**
+   * Removes the remote from the underlying repository.
+   *
+   * @return true iff successful
+   */
+  public boolean remove() throws GitException {
+    Git git = GitData.getJGit();
+    try {
+      git.remoteRemove().setRemoteName(name).call();
+      return true;
+    } catch (GitAPIException e) {
+      throw new GitException(e.getMessage());
     }
 
-    public void setGitUser(String gitUser) {
-        this.gitUser = gitUser;
-    }
+  }
 
-    public String getName() {
-        return name;
+  /**
+   * Changes the Url of this Repository in JGit.
+   *
+   * @param newUrl the new URL
+   * @return true if it was successfully
+   * @throws GitException if something went wrong.
+   */
+  public boolean setUrlGit(String newUrl) throws GitException {
+    url = newUrl;
+    Git git = GitData.getJGit();
+    try {
+      URIish ur = new URIish(newUrl);
+      git.remoteSetUrl().setRemoteName(name).setRemoteUri(ur).call();
+      return true;
+    } catch (GitAPIException | URISyntaxException e) {
+      throw new GitException(e.getMessage());
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void addBranch(GitBranch branch) {
-        // if (!(fetchBranches.contains(branch))) {
-        fetchBranches.add(branch);
-        // }
-    }
-
-    public List<GitBranch> getFetchBranches() {
-        return (List<GitBranch>) fetchBranches.clone();
-    }
-
-    /**
-     * Removes the remote from the underlying repository
-     *
-     * @return true iff successful
-     */
-    public boolean remove() throws GitException {
-        Git git = GitData.getJGit();
-        try {
-            git.remoteRemove().setRemoteName(name).call();
-            return true;
-        } catch (GitAPIException e) {
-            throw new GitException(e.getMessage());
-        }
-
-    }
-
-    /**
-     * Changes the Url of this Repository in JGit
-     *
-     * @param newUrl the new URL
-     * @return true if it was succesfully
-     * @throws GitException if something went wrong.
-     */
-    public boolean setUrlGit(String newUrl) throws GitException {
-        url = newUrl;
-        Git git = GitData.getJGit();
-        try {
-            URIish ur = new URIish(newUrl);
-            git.remoteSetUrl().setRemoteName(name).setRemoteUri(ur).call();
-            return true;
-        } catch (GitAPIException | URISyntaxException e) {
-            throw new GitException(e.getMessage());
-        }
-    }
+  }
 }
 
