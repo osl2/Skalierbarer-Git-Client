@@ -9,6 +9,7 @@ import java.util.List;
 
 import commands.Push;
 import controller.GUIController;
+import git.CredentialProviderHolder;
 import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
@@ -29,6 +30,7 @@ public class PushDialogView implements IDialogView {
   private GitRemote remote;
   private GitBranch remoteBranch;
   private boolean setUpstream;
+  private boolean open;
 
   public PushDialogView() {
     gitData = new GitData();
@@ -40,6 +42,7 @@ public class PushDialogView implements IDialogView {
       public void actionPerformed(ActionEvent e) {
         JComboBox<GitBranch> source = (JComboBox) e.getSource();
         localBranch = (GitBranch) source.getSelectedItem();
+        //if remote and local branch have been set, setup the remote branch combo box
         if(localBranch != null && remote != null){
           setUpRemoteBranchComboBox();
         }
@@ -50,6 +53,7 @@ public class PushDialogView implements IDialogView {
       public void actionPerformed(ActionEvent e) {
         JComboBox<GitRemote> source = (JComboBox) e.getSource();
         remote = (GitRemote) source.getSelectedItem();
+        //if remote and local branch have been set, setup the remote branch combo box
         if(localBranch != null && remote != null){
           setUpRemoteBranchComboBox();
         }
@@ -72,13 +76,19 @@ public class PushDialogView implements IDialogView {
     pushButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        executePush();
+        //try to execute push. If successful, close the push dialog view
+        if(executePush()){
+          GUIController.getInstance().closeDialogView();
+        }
       }
     });
+
+    //refresh the list of remotes and remote branches. List of remote branches is refreshed every time a new remote is
+    //selected
     refreshButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        //TODO
+        setUpRemoteComboBox();
       }
     });
   }
@@ -123,6 +133,9 @@ public class PushDialogView implements IDialogView {
       remoteBranchComboBox = new JComboBox();
   }
 
+  public boolean isOpen() {
+    return open;
+  }
 
   private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
 
@@ -193,17 +206,22 @@ public class PushDialogView implements IDialogView {
   private void setUpRemoteBranchComboBox(){
     remoteBranchComboBox.setRenderer(new BranchComboBoxRenderer());
     DefaultComboBoxModel<GitBranch> model = new DefaultComboBoxModel<>();
-    List<GitBranch> remoteBranches = gitData.getBranches(remote);
+    GitBranch [] remoteBranches = loadRemoteBranches(remote);
+    if (remoteBranches == null){
+      GUIController.getInstance().errorHandler("Remote Branches konnten nicht geladen werden");
+      return;
+    }
     boolean containsUpStreamBranch = false;
-    for (GitBranch remoteBranch : remoteBranches){
+    for (int i = 0; i < remoteBranches.length; i++){
+      GitBranch remoteBranch = remoteBranches[i];
       model.addElement(remoteBranch);
-      //gibt es schon einen remote upstream branch? Falls nicht, füge local branch als "Dummy" hinzu
+      //gibt es schon einen remote upstream branch? Falls nicht, füge lokalen Branch als "Dummy" hinzu
       if (remoteBranch.getName().equals(localBranch.getName())){
-        //TODO: getName() von GitBranch überprüfen
         containsUpStreamBranch = true;
         model.setSelectedItem(remoteBranch);
       }
     }
+
     //add dummy upstream branch
     if (!containsUpStreamBranch){
       model.addElement(localBranch);
@@ -228,12 +246,32 @@ public class PushDialogView implements IDialogView {
     }
     push.setSetUpstream(setUpstream);
     boolean success = false;
-    try {
-      success = push.execute();
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
-    }
+    success = push.execute();
     return success;
+  }
+
+  private GitBranch[] loadRemoteBranches(GitRemote r){
+
+    return reloadBranches(r);
+
+  }
+
+  private GitBranch[] reloadBranches(GitRemote r){
+    GitData git = new GitData();
+    GitBranch[] ret = null;
+    try {
+      ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+    } catch (GitException e) {
+      CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
+      if (CredentialProviderHolder.getInstance().isActive()){
+        return  loadRemoteBranches(r);
+      }
+      else {
+        open = false;
+      }
+
+    }
+    return ret;
   }
 }
 

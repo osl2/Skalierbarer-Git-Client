@@ -18,18 +18,36 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
-  public boolean execute() throws GitException{
+  public boolean execute(){
     boolean success = false;
     GitFacade facade = new GitFacade();
-    if (localBranch == null || remote == null){
-      throw  new GitException("Kein lokaler Branch oder Remote ausgewählt");
+
+    //check wether local branch and remote have been set
+    if (localBranch == null){
+      GUIController.getInstance().errorHandler("Kein lokaler Branch ausgewählt");
+      return false;
     }
-    //remote branch does not yet exist,
+    else if (remote == null){
+      GUIController.getInstance().errorHandler("Kein Remote ausgewählt");
+      return false;
+    }
+    //remote branch does not yet exist, git will automatically create one with the same name as the local branch
     if (remoteBranch == null){
-      success = facade.pushOperation(remote, localBranch, setUpstream);
+      try {
+        success = facade.pushOperation(remote, localBranch, setUpstream);
+      } catch (GitException e) {
+        GUIController.getInstance().errorHandler(e);
+        return false;
+      }
     }
+    //remote branch already exists
     else{
-      //TODO:
+      try {
+        success = facade.pushOperation(remote, localBranch, remoteBranch, setUpstream);
+      } catch (GitException e) {
+        GUIController.getInstance().errorHandler(e);
+        return false;
+      }
     }
     return success;
   }
@@ -64,7 +82,10 @@ public class Push implements ICommand, ICommandGUI {
 
   public void onButtonClicked() {
     GUIController c = GUIController.getInstance();
-    c.openDialog(new PushDialogView());
+    PushDialogView pushDialogView = new PushDialogView();
+    if(pushDialogView.isOpen()){
+      c.openDialog(new PushDialogView());
+    }
   }
 
   /**
