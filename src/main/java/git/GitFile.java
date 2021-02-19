@@ -40,8 +40,12 @@ public class GitFile {
 
     private String getRelativePath() {
         Path filePath = GitData.getRepository().getWorkTree().toPath().relativize(path.toPath());
-//        return path.toString().replace("\\", "/");
-        return filePath.toString();
+        String toReturn = filePath.toString();
+        if(toReturn.contains("\\")) {
+            toReturn.replace("\\", "/");
+            return toReturn;
+        } else
+            return toReturn;
     }
 
     /**
