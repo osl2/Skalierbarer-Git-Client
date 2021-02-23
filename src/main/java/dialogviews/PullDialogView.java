@@ -9,57 +9,46 @@ import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PullDialogView implements IDialogView {
 
 
-    private JComboBox remoteCombobox;
+    private JComboBox<String> remoteCombobox;
     private JButton refreshButton;
-    private JComboBox branchComboBox;
+    private JComboBox<String> branchComboBox;
     private JButton pullButton;
     private JPanel pullPanel;
     private GitData data;
     private List<GitRemote> listOfRemotes;
-    private List<GitBranch> listOfRemoteBranches = new ArrayList<GitBranch>();
+    private List<GitBranch> listOfRemoteBranches = new ArrayList<>();
     private Pull pull;
 
     public PullDialogView() {
         initPull();
-        remoteCombobox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                listOfRemoteBranches.clear();
-                branchComboBox.removeAllItems();
-                int index = remoteCombobox.getSelectedIndex();
-                if (!nextTry(index)) {
-                    return;
-                }
-                for (int i = 0; i < listOfRemoteBranches.size(); i++) {
-                    branchComboBox.addItem(listOfRemoteBranches.get(i).getName());
-                }
+        remoteCombobox.addActionListener(e -> {
+            listOfRemoteBranches.clear();
+            branchComboBox.removeAllItems();
+            int index = remoteCombobox.getSelectedIndex();
+            if (!nextTry(index)) {
+                return;
+            }
+            for (GitBranch listOfRemoteBranch : listOfRemoteBranches) {
+                branchComboBox.addItem(listOfRemoteBranch.getName());
             }
         });
-        refreshButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refresh();
-                initPull();
-            }
+        refreshButton.addActionListener(e -> {
+            refresh();
+            initPull();
         });
-        pullButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pull = new Pull();
-                int remoteIndex = remoteCombobox.getSelectedIndex();
-                pull.setRemote(listOfRemotes.get(remoteIndex));
-                int branchIndex = branchComboBox.getSelectedIndex();
-                pull.setRemoteBranch(listOfRemoteBranches.get(branchIndex));
-                pull.execute();
-            }
+        pullButton.addActionListener(e -> {
+            pull = new Pull();
+            int remoteIndex = remoteCombobox.getSelectedIndex();
+            pull.setRemote(listOfRemotes.get(remoteIndex));
+            int branchIndex = branchComboBox.getSelectedIndex();
+            pull.setRemoteBranch(listOfRemoteBranches.get(branchIndex));
+            pull.execute();
         });
     }
 
@@ -101,8 +90,7 @@ public class PullDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(500, 200);
-        return dim;
+        return new Dimension(500, 200);
     }
 
     /**
@@ -122,7 +110,7 @@ public class PullDialogView implements IDialogView {
         for (int i = 0; i < listOfRemotes.size(); i++) {
             remoteName[i] = listOfRemotes.get(i).getName();
         }
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(remoteName);
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(remoteName);
         remoteCombobox.setModel(model);
     }
 

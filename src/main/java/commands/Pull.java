@@ -82,7 +82,7 @@ public class Pull implements ICommand, ICommandGUI {
       return false;
     }
     GitFacade facade = new GitFacade();
-    ArrayList<GitRemote> remoteList = new ArrayList<GitRemote>();
+    ArrayList<GitRemote> remoteList = new ArrayList<>();
     remote.addBranch(remoteBranch);
     remoteList.add(remote);
     try {
@@ -102,18 +102,18 @@ public class Pull implements ICommand, ICommandGUI {
     }
     GitBranch master = null;
     GitBranch src = null;
-    for(int i = 0; i < allBranches.size(); i++) {
+    for (GitBranch allBranch : allBranches) {
       // Find fetched branch.
-      if(allBranches.get(i).getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
-        src = allBranches.get(i);
+      if (allBranch.getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
+        src = allBranch;
       }
       // Checks if the fetched branch exists locally.
-      if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
-        dest = allBranches.get(i);
+      if (allBranch.getName().compareTo(remoteBranch.getName()) == 0) {
+        dest = allBranch;
       }
       // Find master branch if this branch was fetched the first time.
-      if(allBranches.get(i).getName().compareTo("master") == 0) {
-        master = allBranches.get(i);
+      if (allBranch.getName().compareTo("master") == 0) {
+        master = allBranch;
       }
     }
     // If fetched branch do not exist locally create new local branch.
@@ -121,9 +121,9 @@ public class Pull implements ICommand, ICommandGUI {
     if(dest == null) {
       try {
         facade.branchOperation(master.getCommit(), remoteBranch.getName());
-        for(int i = 0; i < allBranches.size(); i++) {
-          if(allBranches.get(i).getName().compareTo(remoteBranch.getName()) == 0) {
-            dest = allBranches.get(i);
+        for (GitBranch allBranch : allBranches) {
+          if (allBranch.getName().compareTo(remoteBranch.getName()) == 0) {
+            dest = allBranch;
           }
         }
       } catch (GitException e) {

@@ -11,8 +11,6 @@ import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +22,6 @@ public class PullConflictDialogView implements IDialogView {
   private JButton mergeButton;
   private JTextArea conflictMessage;
   private JPanel pullConflictPanel;
-  private GitBranch src;
-  private GitBranch dest;
-  private String commandLine;
 
   /**
    * DialogWindow Title
@@ -45,8 +40,7 @@ public class PullConflictDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    Dimension dim = new Dimension(400, 200);
-    return dim;
+    return new Dimension(400, 200);
   }
 
   /**
@@ -64,9 +58,6 @@ public class PullConflictDialogView implements IDialogView {
   }
 
   public PullConflictDialogView(GitBranch src, GitBranch dest, String commandLine) {
-    this.src = src;
-    this.dest = dest;
-    this.commandLine = commandLine;
     mergeButton.setEnabled(false);
     rebaseButton.setEnabled(false);
     conflictMessage.setRows(3);
@@ -84,11 +75,11 @@ public class PullConflictDialogView implements IDialogView {
     List<ICommandGUI> mergeCommand = Collections.singletonList(new Merge());
     List<ICommandGUI> rebaseCommand = Collections.singletonList(new Rebase());
     List<ICommandGUI> commandList = Settings.getInstance().getLevel().getCommands();
-    for (int i = 0; i < commandList.size(); i++) {
-      if (Level.iCommandGUIEquals(Collections.singletonList(commandList.get(i)), mergeCommand)) {
+    for (ICommandGUI iCommandGUI : commandList) {
+      if (Level.iCommandGUIEquals(Collections.singletonList(iCommandGUI), mergeCommand)) {
         mergeButton.setEnabled(true);
         merge = true;
-      } else if (Level.iCommandGUIEquals(Collections.singletonList(commandList.get(i)), rebaseCommand)) {
+      } else if (Level.iCommandGUIEquals(Collections.singletonList(iCommandGUI), rebaseCommand)) {
         rebaseButton.setEnabled(true);
         merge = true;
       }
@@ -96,32 +87,21 @@ public class PullConflictDialogView implements IDialogView {
     if (!merge) {
       mergeButton.setEnabled(true);
     }
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GUIController.getInstance().closeDialogView();
+    cancelButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
+    rebaseButton.addActionListener(e -> {
+      GUIController.getInstance().closeDialogView();
+      Rebase rebase = new Rebase(src, dest);
+      boolean success = rebase.execute();
+      if (success) {
+        GUIController.getInstance().setCommandLine("git pull --rebase " + commandLine);
       }
     });
-    rebaseButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GUIController.getInstance().closeDialogView();
-        Rebase rebase = new Rebase(src, dest);
-        boolean success = rebase.execute();
-        if (success) {
-          GUIController.getInstance().setCommandLine("git pull --rebase " + commandLine);
-        }
-      }
-    });
-    mergeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GUIController.getInstance().closeDialogView();
-        Merge merge = new Merge(src, dest);
-        boolean success = merge.execute();
-        if (success) {
-          GUIController.getInstance().setCommandLine("git pull " + commandLine);
-        }
+    mergeButton.addActionListener(e -> {
+      GUIController.getInstance().closeDialogView();
+      Merge merge1 = new Merge(src, dest);
+      boolean success = merge1.execute();
+      if (success) {
+        GUIController.getInstance().setCommandLine("git pull " + commandLine);
       }
     });
   }

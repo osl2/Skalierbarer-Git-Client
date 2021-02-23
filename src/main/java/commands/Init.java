@@ -11,14 +11,8 @@ import java.io.File;
  * pass a {@link File} which represents a path to a local directory.
  */
 public class Init implements ICommand, ICommandGUI {
-  private String errorMessage = "";
   private String commandLine = "";
-  private String commandName = "Init";
-  private String commandDescription = "Der git init Befehl wird verwendet um ein neues git Repository anzulegen." +
-          "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
   private File path = null;
-  private GitFacade facade;
-  private JFileChooser chooser;
 
   /**
    * Sets the path to a directory. In this directory a new git repository will be created
@@ -40,7 +34,7 @@ public class Init implements ICommand, ICommandGUI {
       GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
       return false;
     }
-    facade = new GitFacade();
+    GitFacade facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
     if(!success) {
       GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiert werden.");
@@ -62,21 +56,22 @@ public class Init implements ICommand, ICommandGUI {
    * {@inheritDoc}
    */
   public String getName() {
-    return commandName;
+    return "Init";
   }
 
   /**
    * {@inheritDoc}
    */
   public String getDescription() {
-    return commandDescription;
+    return "Der git init Befehl wird verwendet um ein neues git Repository anzulegen." +
+              "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
   }
 
   /**
    * {@inheritDoc}
    */
   public void onButtonClicked() {
-    chooser = new JFileChooser();
+    JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     int returnVal = chooser.showOpenDialog(null);
     if(returnVal == JFileChooser.APPROVE_OPTION) {

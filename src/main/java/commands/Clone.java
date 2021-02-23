@@ -15,8 +15,6 @@ import java.io.File;
  */
 public class Clone implements ICommand, ICommandGUI {
   private String commandLine = "git clone ";
-  private String commandName = "Clone";
-  private String commandDescription = "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
   private String gitURL;
   private File path;
   private boolean recursive = false;
@@ -62,11 +60,10 @@ public class Clone implements ICommand, ICommandGUI {
         GUIController.getInstance().closeDialogView();
         CredentialProviderHolder.getInstance().changeProvider(true,"");
         GUIController.getInstance().openDialog(new CloneDialogView(gitURL, path, recursive));
-        return false;
       } else {
         GUIController.getInstance().errorHandler(e);
-        return false;
       }
+      return false;
     }
     Settings.getInstance().setActiveRepositoryPath(path);
     commandLine = path.getAbsolutePath() + " " + commandLine + gitURL;
@@ -88,14 +85,14 @@ public class Clone implements ICommand, ICommandGUI {
    * {@inheritDoc}
    */
   public String getName() {
-    return commandName;
+    return "Clone";
   }
 
   /**
    * {@inheritDoc}
    */
   public String getDescription() {
-    return commandDescription;
+    return "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
   }
 
   /**

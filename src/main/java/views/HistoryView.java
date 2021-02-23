@@ -3,12 +3,9 @@ package views;
 import controller.GUIController;
 import git.*;
 import git.exception.GitException;
-import views.filter.AbstractHistoryFilter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -20,28 +17,26 @@ import java.util.Iterator;
 import java.util.List;
 
 public class HistoryView extends JPanel implements IView {
-  private DiffView diffView;
-  private JList commitList;
+  private final DiffView diffView;
+  private JList<String> commitList;
   private JScrollPane commitScrollPane;
-  private JList fileList;
+  private JList<String> fileList;
   private JTextArea commitMessage;
   private JScrollPane fileScrollPane;
   private JPanel historyView;
   private JScrollPane diffPane;
   private JPanel diffPanel;
-  private JTextPane diffText;
-  private GitData data;
+  private final JTextPane diffText;
   private Iterator<GitCommit> iteratorOfCommits;
-  private ArrayList<GitCommit> listOfCommits = new ArrayList<>();
+  private final ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
   private Iterator<GitFile> gitFileIterator;
-  private DefaultListModel fileListModel;
-  private GitBranch branch;
+  private DefaultListModel<String> fileListModel;
   private int maxCommits = 20;
   private int loadedCommits = 0;
   private int maxFiles;
   private int loadedFiles;
-  private DefaultListModel listModel;
+  private final DefaultListModel<String> listModel;
 
 
   public JPanel getView() {
@@ -52,19 +47,17 @@ public class HistoryView extends JPanel implements IView {
 
   }
 
-  private void applyFilter(AbstractHistoryFilter filter) {
-  }
-
   /**
    * Creates the content of the commit list. This is located at
    * the left side of the JPanel.
    */
   public HistoryView() {
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+    diffPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
-    listModel = new DefaultListModel();
+    listModel = new DefaultListModel<>();
     commitList.setModel(listModel);
     commitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     diffView = new DiffView();
@@ -72,16 +65,14 @@ public class HistoryView extends JPanel implements IView {
     diffPanel.add(diffText);
     diffText.setEditable(false);
     applyCellRenderer();
-    data = new GitData();
+    GitData data = new GitData();
     try {
-      branch = data.getSelectedBranch();
+      GitBranch branch = data.getSelectedBranch();
       if (data.getBranches().size() == 0) {
         return;
       }
       iteratorOfCommits = branch.getCommits();
-    } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e.getMessage());
-    } catch (IOException e) {
+    } catch (GitException | IOException e) {
       GUIController.getInstance().errorHandler(e.getMessage());
     }
     addCommits();
@@ -90,11 +81,8 @@ public class HistoryView extends JPanel implements IView {
   }
 
   private void applyCellRenderer() {
-    commitList.setCellRenderer(new HistoryViewRenderer(6));
-    fileList.setCellRenderer(new HistoryViewRenderer(1));
-  }
-
-  public void getFiles(GitCommit commit) {
+    commitList.setCellRenderer(new HistoryViewRenderer<>(6));
+    fileList.setCellRenderer(new HistoryViewRenderer<>(1));
   }
 
   /**
@@ -125,7 +113,7 @@ public class HistoryView extends JPanel implements IView {
                 + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
                 + System.lineSeparator()
                 + activeMessage);
-        fileListModel = new DefaultListModel();
+        fileListModel = new DefaultListModel<>();
         fileList.setModel(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         int width = commitMessage.getWidth();
@@ -164,27 +152,21 @@ public class HistoryView extends JPanel implements IView {
   }
 
   private void addScrollbarListener() {
-    commitScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-      @Override
-      public void adjustmentValueChanged(AdjustmentEvent ae) {
-        int extent = commitScrollPane.getVerticalScrollBar().getModel().getExtent();
-        int max = commitScrollPane.getVerticalScrollBar().getMaximum();
-        if (max == extent + commitScrollPane.getVerticalScrollBar().getModel().getValue()) {
-          maxCommits += 20;
-          addCommits();
-        }
+    commitScrollPane.getVerticalScrollBar().addAdjustmentListener(ae -> {
+      int extent = commitScrollPane.getVerticalScrollBar().getModel().getExtent();
+      int max = commitScrollPane.getVerticalScrollBar().getMaximum();
+      if (max == extent + commitScrollPane.getVerticalScrollBar().getModel().getValue()) {
+        maxCommits += 20;
+        addCommits();
       }
     });
-    fileScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-      @Override
-      public void adjustmentValueChanged(AdjustmentEvent ae) {
-        int extent = fileScrollPane.getVerticalScrollBar().getModel().getExtent();
-        int max = fileScrollPane.getVerticalScrollBar().getMaximum();
-        if (max == extent + fileScrollPane.getVerticalScrollBar().getModel().getValue()) {
-          maxFiles += 50;
-          if (gitFileIterator != null)
-            addFiles();
-        }
+    fileScrollPane.getVerticalScrollBar().addAdjustmentListener(ae -> {
+      int extent = fileScrollPane.getVerticalScrollBar().getModel().getExtent();
+      int max = fileScrollPane.getVerticalScrollBar().getMaximum();
+      if (max == extent + fileScrollPane.getVerticalScrollBar().getModel().getValue()) {
+        maxFiles += 50;
+        if (gitFileIterator != null)
+          addFiles();
       }
     });
   }
@@ -207,8 +189,8 @@ public class HistoryView extends JPanel implements IView {
     }
   }
 
-  private static class HistoryViewRenderer extends JTextArea implements ListCellRenderer {
-    private int minRows;
+  private static class HistoryViewRenderer<String> extends JTextArea implements ListCellRenderer<String> {
+    private final int minRows;
 
     /**
      * Sets the minimal amount of rows required by one list entry. A list entry has to be a String
@@ -229,7 +211,7 @@ public class HistoryView extends JPanel implements IView {
                                                   final Object value, final int index, final boolean isSelected,
                                                   final boolean hasFocus) {
       Color background = Color.WHITE;
-      this.setText((String) value);
+      this.setText((java.lang.String) value);
       // Only the first 6 lines of the commit message should be shown;
       this.setRows(minRows);
       int width = list.getWidth();
