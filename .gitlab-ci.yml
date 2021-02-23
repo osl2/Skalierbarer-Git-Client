@@ -1,5 +1,5 @@
 variables:
-  MAVEN_OPTS: "--no-transfer-progress -Dsonar.projectKey=PSE -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  MAVEN_OPTS: "-Dsonar.projectKey=PSE -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   BUILD_ARTIFACTS: "-Dci.artifactPhase=package"
 
 cache:
@@ -37,7 +37,7 @@ maven_test:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building project with maven"
-    - mvn test
+    - mvn --no-transfer-progress test
     - echo "Generating LOC overview"
     - tokei
   artifacts:
@@ -53,10 +53,9 @@ sonar:
     - maven
   only:
     - master
-    - merge_requests
   script:
-    - mvn verify
-    - mvn -DskipTests sonar:sonar
+    - mvn --no-transfer-progress verify
+    - mvn --no-transfer-progress -DskipTests sonar:sonar
 
 generate_artifacts:
   # A job is always executed within a stage. If no stage is set, it defaults to 'test'
