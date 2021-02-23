@@ -55,6 +55,7 @@ sonar:
     - master
   script:
     - mvn --no-transfer-progress verify
+    - git fetch --unshallow
     - mvn --no-transfer-progress -DskipTests -Dsonar.projectKey=PSE sonar:sonar
 
 generate_artifacts:
