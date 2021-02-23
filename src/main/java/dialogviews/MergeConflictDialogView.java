@@ -249,7 +249,7 @@ public class MergeConflictDialogView implements IDialogView {
                     centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
                 }
             } catch (BadLocationException e) {
-                e.printStackTrace();
+                Logger.getGlobal().warning(e.getMessage());
             }
 
             line++;
