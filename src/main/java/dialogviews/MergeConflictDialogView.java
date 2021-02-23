@@ -12,11 +12,14 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * This View is used to help the user resolve any conflicts during a Merge (or rebase for that matter)
  */
 public class MergeConflictDialogView implements IDialogView {
+    private final GitFile file;
+    private final Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
     private JPanel contentPane;
     private JTextPane leftTextPane;
     private JTextPane centerTextArea;
@@ -24,8 +27,6 @@ public class MergeConflictDialogView implements IDialogView {
     private JLabel leftLabel;
     private JLabel centerLabel;
     private JLabel rightLabel;
-    private final GitFile file;
-    private final Map<Integer, GitChangeConflict> localConflictMap = new HashMap<>();
     @SuppressWarnings("unused")
     private JScrollPane leftScrollbar;
     private JButton buttonLeftAccept;
@@ -57,13 +58,15 @@ public class MergeConflictDialogView implements IDialogView {
         this.okButton.addActionListener(e -> okButtonListener());
         conflicts.forEach(c -> localConflictMap.put(c.getConflictStartLine(), c));
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+        try (BufferedReader br = new BufferedReader(new FileReader(file.getPath()))) {
+
             baseVersion = br.lines().toArray(String[]::new);
             handleNextConflict();
             populatePanels(baseVersion);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
+        } catch (IOException e) {
+            Logger.getGlobal().warning("Couldn't read base file " + file.getPath());
+            GUIController.getInstance().errorHandler("Die Datei " + file.getPath() + " konnte nicht geöffnet werden.");
         }
     }
 
@@ -102,30 +105,25 @@ public class MergeConflictDialogView implements IDialogView {
 
         }
 
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file.getPath(), false));
-            for (int i = 0; i < baseVersion.length; i++) {
-                if (localConflictMap.containsKey(i)) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+            int line = 0;
+            while (line < baseVersion.length) {
+                if (localConflictMap.containsKey(line)) {
                     // Apply changes
-                    bw.write(localConflictMap.get(i).getResult());
-                    i += localConflictMap.get(i).getLength() + 1;
+                    bw.write(localConflictMap.get(line).getResult());
+                    line += localConflictMap.get(line).getLength() + 1;
                 } else {
-                    bw.write(baseVersion[i]);
+                    bw.write(baseVersion[line]);
                     bw.write(System.lineSeparator());
                 }
+                line++;
             }
 
             bw.flush();
-            bw.close();
 
-            try {
-                file.add(); // Add file to the merge commit
-                GUIController.getInstance().closeDialogView();
-            } catch (GitException e) {
-                GUIController.getInstance().errorHandler(e);
-            }
-
-        } catch (IOException e) {
+            file.add(); // Add file to the merge commit
+            GUIController.getInstance().closeDialogView();
+        } catch (IOException | GitException e) {
             GUIController.getInstance().errorHandler(e);
         }
     }
@@ -167,14 +165,13 @@ public class MergeConflictDialogView implements IDialogView {
 
         int newIndex = -1;
         for (Integer possibleKey : this.localConflictMap.keySet()) {
-            if (possibleKey <= this.activeConflictIndex) continue;
-            newIndex = possibleKey;
-            break;
+            if (possibleKey > this.activeConflictIndex) {
+                newIndex = possibleKey;
+                break;
+            }
         }
 
         if (newIndex == -1) {
-            // todo: unlock ok button
-            System.out.println("Conflicts resolved");
             this.okButton.setEnabled(true);
         } else {
             this.activeConflictIndex = newIndex;
@@ -188,65 +185,70 @@ public class MergeConflictDialogView implements IDialogView {
             this.buttonLeftDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINE_OURS));
             this.buttonRightAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_THEIRS));
             this.buttonRightDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINED_THEIRS));
-
-            // todo : Scroll to next conflict
         }
+    }
+
+    private Style getApplicableStyle(StyleContext context, GitChangeConflict conflict) {
+        Style conflictStyle = context.getStyle("conflict");
+        Style activeConflictStyle = context.getStyle("activeConflict");
+        Style resolvedConflictStyle = context.getStyle("resolvedConflict");
+        if (conflict.isResolved()) {
+            return resolvedConflictStyle;
+        }
+        if (conflict.equals(this.getActiveConflict())) {
+            return activeConflictStyle;
+        }
+        return conflictStyle;
     }
 
     private void populatePanels(String[] base) {
         StyleContext style = getStyleContext();
-        Style conflictStyle = style.getStyle("conflict");
-        Style activeConflictStyle = style.getStyle("activeConflict");
-        Style resolvedConflictStyle = style.getStyle("resolvedConflict");
         DefaultStyledDocument leftText = new DefaultStyledDocument(style);
         DefaultStyledDocument rightText = new DefaultStyledDocument(style);
         DefaultStyledDocument centerText = new DefaultStyledDocument(style);
 
-
-        for (int i = 0; i < base.length; i++) {
+        int line = 0;
+        while (line < base.length) {
             try {
-                if (localConflictMap.containsKey(i)) {
-                    GitChangeConflict conflict = localConflictMap.get(i);
-                    Style applicableStyle = (conflict.equals(getActiveConflict())) ? activeConflictStyle : conflictStyle;
+                if (localConflictMap.containsKey(line)) {
+                    GitChangeConflict conflict = localConflictMap.get(line);
+                    Style applicableStyle = getApplicableStyle(style, conflict);
 
-                    if (conflict.isResolved()) {
+                    if (conflict.isResolved() || conflict.getResult() != null) {
                         // Insert resolution in center
-                        applicableStyle = resolvedConflictStyle;
                         centerText.insertString(centerText.getLength(), conflict.getResult(), applicableStyle);
                     } else {
-                        if (conflict.getResult() != null)
-                            centerText.insertString(centerText.getLength(), conflict.getResult(), applicableStyle);
-                        else
-                            centerText.insertString(centerText.getLength(), "----------------", applicableStyle);
+                        centerText.insertString(centerText.getLength(), "----------------", applicableStyle);
                         centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
-
                     }
+
                     leftText.insertString(leftText.getLength(), conflict.getOptionOurs(), applicableStyle);
                     leftText.insertString(leftText.getLength(), System.lineSeparator(), null);
 
                     rightText.insertString(rightText.getLength(), conflict.getOptionTheirs(), applicableStyle);
                     rightText.insertString(rightText.getLength(), System.lineSeparator(), null);
 
-
                     // This file has been deleted in one of two branches
-                    if (i == 0 && conflict.getLength() == -1)
+                    if (line == 0 && conflict.getLength() == -1)
                         break;
 
                     // Skip conflict markers in file
-                    i += localConflictMap.get(i).getLength() + 1;
+                    line += localConflictMap.get(line).getLength() + 1;
 
                 } else {
                     // Append line normally.
-                    leftText.insertString(leftText.getLength(), base[i], null);
+                    leftText.insertString(leftText.getLength(), base[line], null);
                     leftText.insertString(leftText.getLength(), System.lineSeparator(), null);
-                    rightText.insertString(rightText.getLength(), base[i], null);
+                    rightText.insertString(rightText.getLength(), base[line], null);
                     rightText.insertString(rightText.getLength(), System.lineSeparator(), null);
-                    centerText.insertString(centerText.getLength(), base[i], null);
+                    centerText.insertString(centerText.getLength(), base[line], null);
                     centerText.insertString(centerText.getLength(), System.lineSeparator(), null);
                 }
             } catch (BadLocationException e) {
                 e.printStackTrace();
             }
+
+            line++;
         }
 
         this.leftTextPane.setDocument(leftText);
@@ -275,7 +277,6 @@ public class MergeConflictDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        //return new Dimension(1400, 900);
         return contentPane.getPreferredSize();
     }
 
@@ -296,8 +297,6 @@ public class MergeConflictDialogView implements IDialogView {
     @Override
     public void update() {
         populatePanels(baseVersion);
-        // Intentional NOOP.
-        // todo: re-evaluate
     }
 
     private enum ButtonAction {ACCEPT_OURS, ACCEPT_THEIRS, DECLINE_OURS, DECLINED_THEIRS}
