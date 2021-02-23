@@ -207,14 +207,18 @@ public class GitCommit {
         OutputStream out = new ByteArrayOutputStream();
         try {
             GitData data = new GitData();
-            AbstractTreeIterator oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
+            AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+            // If no commit exists in the repository.
+            if(data.getBranches().isEmpty()) {
+                 oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
+            }
             git.diff()
                     .setOldTree(oldTreeIterator)
                     .setNewTree(newTreeIterator)
                     .setPathFilter(filter)
                     .setOutputStream(out)
                     .call();
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | GitException e) {
             e.printStackTrace();
         }
         return out.toString();
