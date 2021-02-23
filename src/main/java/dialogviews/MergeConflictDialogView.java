@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,10 +90,13 @@ public class MergeConflictDialogView implements IDialogView {
     private void okButtonListener() {
         if (localConflictMap.values().stream().anyMatch(GitChangeConflict::isDeleted)) {
             // This file needs to be deleted.
-            if (!file.getPath().delete()) {
+            try {
+                Files.delete(file.getPath().toPath());
+            } catch (IOException e) {
                 GUIController.getInstance().errorHandler(file.getPath().getPath() + " konnte nicht gelöscht werden!");
                 GUIController.getInstance().closeDialogView();
             }
+
 
             try {
                 file.rm(); // Add remove to the merge commit
