@@ -1,5 +1,5 @@
 variables:
-  MAVEN_OPTS: "-Dsonar.projectKey=PSE -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   BUILD_ARTIFACTS: "-Dci.artifactPhase=package"
 
 cache:
@@ -55,7 +55,7 @@ sonar:
     - master
   script:
     - mvn --no-transfer-progress verify
-    - mvn --no-transfer-progress -DskipTests sonar:sonar
+    - mvn --no-transfer-progress -DskipTests -Dsonar.projectKey=PSE sonar:sonar
 
 generate_artifacts:
   # A job is always executed within a stage. If no stage is set, it defaults to 'test'
