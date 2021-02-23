@@ -1,11 +1,30 @@
-# These are the default stages. You don't need to explicitly define them. But you could define any stages you need.
+variables:
+  MAVEN_OPTS: "--no-transfer-progress -Dsonar.projectKey=PSE -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  BUILD_ARTIFACTS: "-Dci.artifactPhase=package"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
 stages:
   - build
   - test
-  - deploy
+  - sonar
+  - package
+
+maven_build:
+  stage: build
+  tags:
+    - maven
+  only:
+    - merge_requests
+    - master
+  script:
+    - mvn --no-transfer-progress compile
 
 # This is the name of the job. You can choose it freely.
-maven_build:
+maven_test:
   # A job is always executed within a stage. If no stage is set, it defaults to 'test'
   stage: test
   # Since we require Maven for this job, we can restrict the job to runners with a certain tag. Of course, we need to configure a runner with the tag maven with a maven installation
@@ -18,13 +37,30 @@ maven_build:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building project with maven"
-    - mvn --no-transfer-progress test
+    - mvn test
     - echo "Generating LOC overview"
     - tokei
+  artifacts:
+    expire_in: 1 day
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+
+sonar:
+  stage: sonar
+  tags:
+    - sonar
+    - maven
+  only:
+    - master
+    - merge_requests
+  script:
+    - mvn verify
+    - mvn -DskipTests sonar:sonar
 
 generate_artifacts:
   # A job is always executed within a stage. If no stage is set, it defaults to 'test'
-  stage: deploy
+  stage: package
   # Since we require Maven for this job, we can restrict the job to runners with a certain tag. Of course, we need to configure a runner with the tag maven with a maven installation
   tags:
     - maven
@@ -34,7 +70,7 @@ generate_artifacts:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building artifacts"
-    - mvn --no-transfer-progress -Dmaven.test.skip=true package
+    - mvn $BUILD_ARTIFACTS -Dmaven.test.skip=true package
   artifacts:
     paths:
       - target/*-SNAPSHOT.jar
