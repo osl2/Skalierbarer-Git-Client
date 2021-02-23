@@ -119,21 +119,31 @@ public class Pull implements ICommand, ICommandGUI {
     // If fetched branch do not exist locally create new local branch.
     // The new created branch is based on the head commit of the master branch.
     if(dest == null) {
-      try {
-        facade.branchOperation(master.getCommit(), remoteBranch.getName());
-        for (GitBranch allBranch : allBranches) {
-          if (allBranch.getName().compareTo(remoteBranch.getName()) == 0) {
-            dest = allBranch;
-          }
-        }
-      } catch (GitException e) {
-        GUIController.getInstance().errorHandler(e);
+      if(master == null) {
         return false;
       }
+      dest = createLocalBranch(master);
     }
     GUIController.getInstance().closeDialogView();
     commandLine = remote.getName() + " " + remoteBranch.getName();
     GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest, getCommandLine()));
     return true;
+  }
+
+  private GitBranch createLocalBranch(GitBranch master) {
+    try {
+      GitData data = new GitData();
+      GitFacade facade = new GitFacade();
+      facade.branchOperation(master.getCommit(), remoteBranch.getName());
+      for (GitBranch allBranch : data.getBranches()) {
+        if (allBranch.getName().compareTo(remoteBranch.getName()) == 0) {
+          return allBranch;
+        }
+      }
+    } catch (GitException e) {
+      GUIController.getInstance().errorHandler(e);
+      return master;
+    }
+    return master;
   }
 }

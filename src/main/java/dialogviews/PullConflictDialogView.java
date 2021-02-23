@@ -54,7 +54,7 @@ public class PullConflictDialogView implements IDialogView {
   }
 
   public void update() {
-
+    // This method is not used because it is not needed.
   }
 
   public PullConflictDialogView(GitBranch src, GitBranch dest, String commandLine) {

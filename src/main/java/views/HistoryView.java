@@ -23,7 +23,7 @@ public class HistoryView extends JPanel implements IView {
   private JList<String> fileList;
   private JTextArea commitMessage;
   private JScrollPane fileScrollPane;
-  private JPanel historyView;
+  private JPanel historyViewPanel;
   private JScrollPane diffPane;
   private JPanel diffPanel;
   private final JTextPane diffText;
@@ -40,11 +40,11 @@ public class HistoryView extends JPanel implements IView {
 
 
   public JPanel getView() {
-    return new HistoryView().historyView;
+    return new HistoryView().historyViewPanel;
   }
 
   public void update() {
-
+    // This method is not used because it is not used.
   }
 
   /**
@@ -68,7 +68,7 @@ public class HistoryView extends JPanel implements IView {
     GitData data = new GitData();
     try {
       GitBranch branch = data.getSelectedBranch();
-      if (data.getBranches().size() == 0) {
+      if (data.getBranches().isEmpty()) {
         return;
       }
       iteratorOfCommits = branch.getCommits();
@@ -189,8 +189,9 @@ public class HistoryView extends JPanel implements IView {
     }
   }
 
-  private static class HistoryViewRenderer<String> extends JTextArea implements ListCellRenderer<String> {
+  private static class HistoryViewRenderer<String> implements ListCellRenderer<String> {
     private final int minRows;
+    private final JTextArea area;
 
     /**
      * Sets the minimal amount of rows required by one list entry. A list entry has to be a String
@@ -202,8 +203,9 @@ public class HistoryView extends JPanel implements IView {
      */
     public HistoryViewRenderer(int minRows) {
       this.minRows = minRows;
-      this.setLineWrap(true);
-      this.setWrapStyleWord(true);
+      area = new JTextArea();
+      area.setLineWrap(true);
+      area.setWrapStyleWord(true);
     }
 
     @Override
@@ -211,21 +213,21 @@ public class HistoryView extends JPanel implements IView {
                                                   final Object value, final int index, final boolean isSelected,
                                                   final boolean hasFocus) {
       Color background = Color.WHITE;
-      this.setText((java.lang.String) value);
-      // Only the first 6 lines of the commit message should be shown;
-      this.setRows(minRows);
+      area.setText((java.lang.String) value);
+      // Only the first 6 lines of the commit message should be shown.
+      area.setRows(minRows);
       int width = list.getWidth();
       if (isSelected) {
         // This color is light blue.
         background = new Color(0xAAD8E6);
       }
-      this.setBackground(background);
+      area.setBackground(background);
       // this is just to activate the JTextAreas internal sizing mechanism
       if (width > 0) {
-        this.setSize(width, Short.MAX_VALUE);
+        area.setSize(width, Short.MAX_VALUE);
       }
-      this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-      return this;
+      area.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+      return area;
 
     }
   }

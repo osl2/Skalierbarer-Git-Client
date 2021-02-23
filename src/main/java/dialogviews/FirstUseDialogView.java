@@ -89,7 +89,7 @@ public class FirstUseDialogView implements IDialogView {
     }
 
     public void update() {
-
+        // This method is not used because it is not needed.
     }
 
 }
