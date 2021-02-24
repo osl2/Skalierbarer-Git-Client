@@ -9,11 +9,13 @@ import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class represents the git pull command. In order to execute you have to
+ * pass a {@link GitRemote} and a remote {@link GitBranch}.
+ */
 public class Pull implements ICommand, ICommandGUI {
   private GitRemote remote;
   private GitBranch remoteBranch;
@@ -40,18 +42,30 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
 
+  /**
+   * {@inheritDoc}
+   */
   public String getCommandLine() {
     return commandLine;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getName() {
     return "Pull";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getDescription() {
     return "Lädt Änderungen aus einem Online-Repo.";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new PullDialogView());
@@ -118,7 +132,7 @@ public class Pull implements ICommand, ICommandGUI {
       }
     }
     GUIController.getInstance().closeDialogView();
-    commandLine = remote.getName() + remoteBranch.getName();
+    commandLine = remote.getName() + " " + remoteBranch.getName();
     GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest, getCommandLine()));
     return true;
   }

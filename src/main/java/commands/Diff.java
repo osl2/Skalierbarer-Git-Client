@@ -7,6 +7,10 @@ import git.GitFile;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This class represents the git diff command. In order to execute the command you have to pass
+ * a {@link GitCommit} and a {@link GitFile} or just a {@link GitFile}.
+ */
 public class Diff implements ICommand {
   private GitCommit activeCommit;
   private GitFile activeFile;

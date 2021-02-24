@@ -2,7 +2,10 @@ package dialogviews;
 
 import commands.Fetch;
 import controller.GUIController;
-import git.*;
+import git.CredentialProviderHolder;
+import git.GitBranch;
+import git.GitData;
+import git.GitRemote;
 import git.exception.GitException;
 
 import javax.swing.*;
@@ -13,8 +16,6 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 public class FetchDialogView implements IDialogView {
 
@@ -29,7 +30,7 @@ public class FetchDialogView implements IDialogView {
 
   public FetchDialogView() {
 
-    final GitData git ;
+    final GitData git;
     git = new GitData();
     fetchTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     this.model = (DefaultTreeModel) this.fetchTree.getModel();
@@ -64,21 +65,21 @@ public class FetchDialogView implements IDialogView {
           GUIController.getInstance().errorHandler("Es muss ein branch oder remote ausgewählt werden");
           return;
         }
-        for (int i = 0; i < selected.length; i++){
+        for (int i = 0; i < selected.length; i++) {
           RefTreeNode node = (RefTreeNode) selected[i].getLastPathComponent();
           node.configureFetch(command);
         }
-          if (command.execute()) {
-            GUIController.getInstance().setCommandLine(command.getCommandLine());
-            GUIController.getInstance().closeDialogView();
-          }
-          else {
-            GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler Aufgetreten");
-          }
+        if (command.execute()) {
+          GUIController.getInstance().setCommandLine(command.getCommandLine());
+          GUIController.getInstance().closeDialogView();
+        } else {
+          GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler Aufgetreten");
+        }
 
       }
     });
   }
+
   private RemoteTreeNode buildRemoteTree(GitRemote r) throws Exception {
     GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
@@ -87,7 +88,7 @@ public class FetchDialogView implements IDialogView {
 
     GitBranch[] branches;
     branches = loadRemoteBranches(r);
-    if (branches == null){
+    if (branches == null) {
       throw new Exception();
     }
     for (int i = 0; i < branches.length; i++) {
@@ -97,11 +98,6 @@ public class FetchDialogView implements IDialogView {
 
     return root;
   }
-  /**
-   * DialogWindow Title
-   *
-   * @return Window Title as String
-   */
 
   private static abstract class RefTreeNode extends DefaultMutableTreeNode {
     public RefTreeNode() {
@@ -155,6 +151,7 @@ public class FetchDialogView implements IDialogView {
       fetch.addBranch(remote, branch);
     }
   }
+
   /**
    * DialogWindow Title
    *
@@ -194,22 +191,22 @@ public class FetchDialogView implements IDialogView {
     return isOpen;
   }
 
-  private GitBranch[] loadRemoteBranches(GitRemote r){
+  private GitBranch[] loadRemoteBranches(GitRemote r) {
 
     return reloadBranches(r);
 
   }
-  private GitBranch[] reloadBranches(GitRemote r){
+
+  private GitBranch[] reloadBranches(GitRemote r) {
     GitData git = new GitData();
     GitBranch[] ret = null;
     try {
-      ret =  git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+      ret = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
-      if (CredentialProviderHolder.getInstance().isActive()){
-        return  loadRemoteBranches(r);
-      }
-      else {
+      if (CredentialProviderHolder.getInstance().isActive()) {
+        return loadRemoteBranches(r);
+      } else {
         isOpen = false;
       }
 

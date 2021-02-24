@@ -48,11 +48,20 @@ public class GitFileTest extends AbstractGitTest {
   @Test
   public void addTest() throws GitException, GitAPIException, IOException {
     GitFile gitFile = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
-    gitFile.add();
+    gitFile.add(); //  adding first file
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
     String jGitFile = git.status().call().getAdded().iterator().next();
     assertEquals(gitDataFile, jGitFile);
     assertTrue(GitStatus.getInstance().getAddedFiles().contains(gitFile));
+    assertTrue(git.status().call().getAdded().contains(gitFile.getPath().getName()));
+    File newFile = new File(repo, "newFolder\\newFile.txt");
+    FileWriter fr = new FileWriter(newFile, true);
+    fr.write("data");
+    fr.close();
+    GitFile toAdd = new GitFile(newFile.getTotalSpace(), newFile);
+    toAdd.add(); //adding second File
+    assertEquals(2, git.status().call().getAdded().size());
+
   }
 
   @Test

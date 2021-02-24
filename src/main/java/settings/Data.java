@@ -1,5 +1,6 @@
 package settings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import commands.*;
 import levels.Level;
 
@@ -15,6 +16,7 @@ public class Data extends DataObservable {
 
     // Modify settings.PersistencyTest if you add or remove a field!
     private LinkedList<Level> levels = new LinkedList<>();
+    @JsonProperty("recentlyOpenedRepositories")
     private LinkedList<File> repoList = new LinkedList<>();
 
     // This layout is necessary so that Jackson can create a correctly instantiated class.
@@ -23,6 +25,11 @@ public class Data extends DataObservable {
             INSTANCE = this;
     }
 
+    /**
+     * Singleton
+     *
+     * @return the only Instance
+     */
     public static Data getInstance() {
         if (INSTANCE == null)
             new Data();
@@ -40,11 +47,10 @@ public class Data extends DataObservable {
         Merge merge = new Merge();
 
         Clone clone = new Clone();
+        Fetch fetch = new Fetch();
         Pull pull = new Pull();
         Push push = new Push();
 
-        GitignoreAdd gitignoreAdd = new GitignoreAdd(null);
-        GitignoreRemove gitignoreRemove = new GitignoreRemove();
         Rebase rebase = new Rebase(null, null);
         Remote remote = new Remote();
         Stash stash = new Stash();
@@ -76,6 +82,7 @@ public class Data extends DataObservable {
                 commands.add(checkout);
                 commands.add(merge);
                 commands.add(clone);
+                commands.add(fetch);
                 commands.add(pull);
                 commands.add(push);
                 break;
@@ -88,6 +95,7 @@ public class Data extends DataObservable {
                 commands.add(checkout);
                 commands.add(merge);
                 commands.add(clone);
+                commands.add(fetch);
                 commands.add(pull);
                 commands.add(push);
                 commands.add(stash);
@@ -119,7 +127,8 @@ public class Data extends DataObservable {
      * @param path path to a new created git repository;
      */
     public void storeNewRepositoryPath(File path) {
-        repoList.add(path);
+        if (!repoList.contains(path))
+            repoList.add(path);
     }
 
     /**

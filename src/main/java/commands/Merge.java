@@ -5,15 +5,18 @@ import dialogviews.MergeConflictDialogView;
 import dialogviews.MergeDialogView;
 import git.GitBranch;
 import git.GitChangeConflict;
+import git.GitData;
 import git.GitFile;
 import git.exception.GitException;
 import org.eclipse.jgit.annotations.NonNull;
+import views.AddCommitView;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
+/**
+ * Represents a Merge-Command
+ */
 public class Merge implements ICommand, ICommandGUI {
     @NonNull
     private GitBranch srcBranch;
@@ -21,23 +24,50 @@ public class Merge implements ICommand, ICommandGUI {
     private GitBranch destBranch;
     private boolean fastForward = true;
 
+    /**
+     * Constructor
+     *
+     * @param src  branch to merge from
+     * @param dest branch to merge into
+     */
     public Merge(@NonNull GitBranch src, @NonNull GitBranch dest) {
         this.srcBranch = src;
         this.destBranch = dest;
     }
 
+    /**
+     * Constructor without parameters. Needs {@link #setSourceBranch(GitBranch)} and
+     * {@link #setDestinationBranch(GitBranch)} before {@link #execute()} may be called.
+     */
     public Merge() {
 
     }
 
+    /**
+     * Enable fast forward?
+     * <p>
+     * Default: true
+     *
+     * @param fastForward fast-forward enabled or disabled
+     */
     public void setFastForward(boolean fastForward) {
         this.fastForward = fastForward;
     }
 
+    /**
+     * Set source Branch
+     *
+     * @param srcBranch branch from which shall be merged
+     */
     public void setSourceBranch(@NonNull GitBranch srcBranch) {
         this.srcBranch = srcBranch;
     }
 
+    /**
+     * Set destination branch
+     *
+     * @param destBranch branch to merge into
+     */
     public void setDestinationBranch(@NonNull GitBranch destBranch) {
         this.destBranch = destBranch;
     }
@@ -81,20 +111,19 @@ public class Merge implements ICommand, ICommandGUI {
         Map<GitFile, List<GitChangeConflict>> conflicts;
         try {
             conflicts = this.srcBranch.merge(this.fastForward);
-            while (conflicts.size() > 0) {
+            if (conflicts.size() > 0) {
                 for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet()) {
                     GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
                             this.destBranch.getName(), this.srcBranch.getName()));
                 }
 
                 // Everything has been resolved. Create Merge-Commit
-                // todo: Currently jgit does that. We should provide the opportunity to change that message in AddCommitView
-                try {
-                    conflicts = this.srcBranch.merge(this.fastForward);
-                } catch (GitException e) {
-                    Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
-                    return false;
+                String message = new GitData().getMergeCommitMessage();
+                if (message == null) {
+                    message = "";
                 }
+                GUIController.getInstance().openView(new AddCommitView(message));
+
             }
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
@@ -133,6 +162,9 @@ public class Merge implements ICommand, ICommandGUI {
         return "Verschmilzt zwei Zweige";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new MergeDialogView());
     }

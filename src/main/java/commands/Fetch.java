@@ -9,8 +9,11 @@ import git.GitRemote;
 import git.exception.GitException;
 
 import java.util.LinkedList;
-import java.util.List;
 
+/**
+ * This class represents the git fetch command. In order to execute the command
+ * you have to pass a list of {@link GitRemote}.
+ */
 public class Fetch implements ICommand, ICommandGUI {
   private String errorMessage;
   private String commandLine;
@@ -34,7 +37,6 @@ public class Fetch implements ICommand, ICommandGUI {
   /**
    * Returns a list containing all remote names.
    *
-   * @return a list with with remote names.
    */
 
   public void addRemote(GitRemote remote){
@@ -89,6 +91,9 @@ public class Fetch implements ICommand, ICommandGUI {
             "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     FetchDialogView dialogView = new FetchDialogView();
     if (dialogView.isOpen()){

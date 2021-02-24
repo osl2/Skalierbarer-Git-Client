@@ -9,6 +9,12 @@ import git.exception.GitException;
 
 import java.io.IOException;
 
+/**
+ * This class represents the git branch operation. With the execute method
+ * you can create a new branch in your underlying git repository. In order to
+ * execute you have to pass the name of the new Branch and the {@link GitCommit}
+ * to start your branch.
+ */
 public class Branch implements ICommand, ICommandGUI {
     private GitCommit commitPointOfBranching;
     private String branchName;

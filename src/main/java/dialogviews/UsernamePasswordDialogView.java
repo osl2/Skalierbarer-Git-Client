@@ -2,17 +2,13 @@ package dialogviews;
 
 import controller.GUIController;
 import git.CredentialProviderHolder;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-public class UsernamePasswordDialogView implements IDialogView{
+public class UsernamePasswordDialogView implements IDialogView {
 
     private JPanel panel1;
     private JPanel UserPwPanel;
@@ -23,6 +19,17 @@ public class UsernamePasswordDialogView implements IDialogView{
     private JLabel pwLabel;
     private JButton breakButton;
     private String name;
+
+    /**
+     * DialogWindow Title
+     *
+     * @return Window Title as String
+     */
+    @Override
+    public String getTitle() {
+        return "Benutzername - " + name;
+    }
+
     public UsernamePasswordDialogView(String name) {
         this.name = name;
         okButton.addActionListener(new ActionListener() {
@@ -36,7 +43,7 @@ public class UsernamePasswordDialogView implements IDialogView{
                 String username = textField1.getText();
                 char[] password = passwordField.getPassword();
                 String pw = "";
-                for (int i = 0; i < password.length; i++){
+                for (int i = 0; i < password.length; i++) {
                     pw += password[i];
                 }
                 CredentialProviderHolder.getInstance().setPassword(pw);
@@ -60,13 +67,13 @@ public class UsernamePasswordDialogView implements IDialogView{
     }
 
     /**
-     * DialogWindow Title
+     * The content Panel containing all contents of the Dialog
      *
-     * @return Window Title as String
+     * @return the shown content
      */
     @Override
-    public String getTitle() {
-        return "Benutzername - " + name;
+    public JPanel getPanel() {
+        return UserPwPanel;
     }
 
     /**
@@ -76,18 +83,8 @@ public class UsernamePasswordDialogView implements IDialogView{
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(400,200);
+        Dimension dim = new Dimension(400, 200);
         return dim;
-    }
-
-    /**
-     * The content Panel containing all contents of the Dialog
-     *
-     * @return the shown content
-     */
-    @Override
-    public JPanel getPanel() {
-        return UserPwPanel;
     }
 
     /**

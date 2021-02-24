@@ -9,12 +9,20 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
+/**
+ * Handles Data-Storage to disk.
+ */
 public class Persistency extends DataObserver {
     private static final String FILENAME_DATA = "data.json";
     private static final String FILENAME_SETTINGS = "settings.json";
     private static final ObjectMapper mapper = new ObjectMapper();
     private static File CONFIG_DIR;
 
+    /**
+     * Constructor
+     *
+     * @throws URISyntaxException when the File's path can not be converted to a valid URI
+     */
     public Persistency() throws URISyntaxException {
         CONFIG_DIR = new File(
                 new File(Persistency.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
@@ -90,6 +98,9 @@ public class Persistency extends DataObserver {
         return this.load(CONFIG_DIR);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void dataChangedListener(DataObservable observable) {
         // We actually don't care who was changed, we just save the current state. Inefficient but easy to implement.

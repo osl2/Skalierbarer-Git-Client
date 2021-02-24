@@ -1,11 +1,30 @@
-# These are the default stages. You don't need to explicitly define them. But you could define any stages you need.
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  BUILD_ARTIFACTS: "-Dci.artifactPhase=package"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
 stages:
   - build
   - test
-  - deploy
+  - sonar
+  - package
+
+maven_build:
+  stage: build
+  tags:
+    - maven
+  only:
+    - merge_requests
+    - master
+  script:
+    - mvn --no-transfer-progress compile
 
 # This is the name of the job. You can choose it freely.
-maven_build:
+maven_test:
   # A job is always executed within a stage. If no stage is set, it defaults to 'test'
   stage: test
   # Since we require Maven for this job, we can restrict the job to runners with a certain tag. Of course, we need to configure a runner with the tag maven with a maven installation
@@ -18,6 +37,44 @@ maven_build:
   # If any of the commands returns a non zero exit code the job fails
   script:
     - echo "Building project with maven"
-    - mvn --no-transfer-progress verify
+    - mvn --no-transfer-progress test
     - echo "Generating LOC overview"
     - tokei
+  artifacts:
+    expire_in: 1 day
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+
+sonar:
+  stage: sonar
+  tags:
+    - sonar
+    - maven
+  only:
+    - master
+  script:
+    - mvn --no-transfer-progress verify
+    - git fetch --unshallow
+    - mvn --no-transfer-progress -DskipTests -Dsonar.projectKey=PSE sonar:sonar
+
+generate_artifacts:
+  # A job is always executed within a stage. If no stage is set, it defaults to 'test'
+  stage: package
+  # Since we require Maven for this job, we can restrict the job to runners with a certain tag. Of course, we need to configure a runner with the tag maven with a maven installation
+  tags:
+    - maven
+  only:
+    - tags
+  # Here you can execute arbitrate terminal commands.
+  # If any of the commands returns a non zero exit code the job fails
+  script:
+    - echo "Building artifacts"
+    - mvn $BUILD_ARTIFACTS -Dmaven.test.skip=true package
+  artifacts:
+    paths:
+      - target/*-SNAPSHOT.jar
+      - target/*-SNAPSHOT-jar-with-dependencies.jar
+      - target/JavaDoc.zip
+    expire_in: 1 month
+

@@ -9,12 +9,12 @@ import git.GitStatus;
 import git.exception.GitException;
 import settings.Settings;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.*;
 
 public class AddCommitView extends JPanel implements IView {
 
@@ -45,7 +45,38 @@ public class AddCommitView extends JPanel implements IView {
   private GitData gitData;
   private Settings settings;
   private static final String DEFAULT_COMMIT_MESSAGE = "Hier die Commit-Nachricht eingeben";
+  private String commitMessage;
 
+
+  public AddCommitView() {
+    this.commitMessage = DEFAULT_COMMIT_MESSAGE;
+  }
+
+  public AddCommitView(String commitMessage) {
+    this.commitMessage = commitMessage;
+  }
+
+  /**
+   * @return The JPanel that holds all the elements in the view
+   */
+  public JPanel getView() {
+
+    buildAddCommitView();
+    return addCommitView;
+  }
+
+  /**
+   * Updates the view. Here: does nothing
+   */
+  public void update() {
+  }
+
+  /**
+   * @return The default commit message that is presented initially in the commit message text area
+   */
+  public static String getDEFAULT_COMMIT_MESSAGE() {
+    return DEFAULT_COMMIT_MESSAGE;
+  }
 
   /*
    * This method is invoked inside getView(). It configures all button listeners as well as the lists of files
@@ -63,7 +94,7 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         //ask whether the user wants to save the files in the staging-area
-        int saveChanges = JOptionPane.showConfirmDialog(null,"Sollen die Änderungen an der Staging-Area gespeichert werden?",
+        int saveChanges = JOptionPane.showConfirmDialog(null, "Sollen die Änderungen an der Staging-Area gespeichert werden?",
                 "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         //if yes or no was selected (else, do nothing)
@@ -82,7 +113,7 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        if (executeCommit(false)){
+        if (executeCommit(false)) {
           c.restoreDefaultView();
         }
       }
@@ -94,7 +125,7 @@ public class AddCommitView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         executeAdd();
-        if (executeCommit(true)){
+        if (executeCommit(true)) {
           c.restoreDefaultView();
         }
       }
@@ -108,8 +139,7 @@ public class AddCommitView extends JPanel implements IView {
       modifiedChangedFiles = gitStatus.getModifiedChangedFiles();
       newFiles = gitStatus.getNewFiles();
       deletedFiles = gitStatus.getDeletedFiles();
-    }
-    catch (GitException | IOException e){
+    } catch (GitException | IOException e) {
       modifiedChangedFiles = new LinkedList<>();
       newFiles = new LinkedList<>();
       deletedFiles = new LinkedList<>();
@@ -122,7 +152,7 @@ public class AddCommitView extends JPanel implements IView {
     setUpFileList(deletedFilesList, deletedFiles);
 
     //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+    commitMessageTextArea.setText(commitMessage);
     //when the user clicks inside the text area, the default message should disappear
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override
@@ -130,7 +160,7 @@ public class AddCommitView extends JPanel implements IView {
         //TODO: geht das noch besser?
         JTextArea source = (JTextArea) e.getSource();
         String newText = "";
-        if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)){
+        if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)) {
           newText = source.getText();
         }
         source.setText(newText);
@@ -138,10 +168,10 @@ public class AddCommitView extends JPanel implements IView {
 
       //if the user has not added any text, restore the default message once the focus disappears
       @Override
-      public void focusLost(FocusEvent e){
+      public void focusLost(FocusEvent e) {
         JTextArea source = (JTextArea) e.getSource();
         String newText = DEFAULT_COMMIT_MESSAGE;
-        if (!source.getText().isEmpty()){
+        if (!source.getText().isEmpty()) {
           newText = source.getText();
         }
         source.setText(newText);
@@ -154,45 +184,10 @@ public class AddCommitView extends JPanel implements IView {
     diffPanel.add(diffView.openDiffView());
   }
 
-  /**
-   *
-   * @return The JPanel that holds all the elements in the view
-   */
-  public JPanel getView() {
-    buildAddCommitView();
-    return addCommitView;
-  }
-
-  /**
-   * Returns the JPanel that holds all the elements in the view, sets the initial text of the commit message
-   * text area to the specified String
-   * @param commitMessage The message that should be presented in the commit message text area
-   * @return The JPanel that holds all the elements in the view
-   */
-  public JPanel getView(String commitMessage){
-    buildAddCommitView();
-    commitMessageTextArea.setText(commitMessage);
-    return addCommitView;
-  }
-
-  /**
-   * Updates the view. Here: does nothing
-   */
-  public void update() {
-  }
-
-  /**
-   *
-   * @return The default commit message that is presented initially in the commit message text area
-   */
-  public static String getDEFAULT_COMMIT_MESSAGE(){
-    return DEFAULT_COMMIT_MESSAGE;
-  }
-
   /*
-  Passes all selected files to the add command and invokes the execution of the command 
+  Passes all selected files to the add command and invokes the execution of the command
    */
-  private boolean executeAdd(){
+  private boolean executeAdd() {
     addCommand = new Add();
     boolean success = false;
 
@@ -212,9 +207,17 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   /*
+  creates the lists in the middle panel which present all files with uncommitted changes. There are three lists
+  which invoke this method: newFilesList, modifiedChangedFilesList and deletedFilesList.
+  This method sets up the list model with the given files and adds a MouseListener to all of them. The mouse listener
+  does two things: 1. it selects/ deselects the checkboxes of each item. 2. it selects one list element at a time whose
+  diff to the current index (e.g. HEAD) is presented in the panel on the right
+   */
+
+  /*
   invokes the commit command when the user clicks on the commit button
    */
-  private boolean executeCommit(boolean amend){
+  private boolean executeCommit(boolean amend) {
     commitCommand = new Commit();
     boolean success = false;
 
@@ -228,15 +231,7 @@ public class AddCommitView extends JPanel implements IView {
     return success;
   }
 
-  /*
-  creates the lists in the middle panel which present all files with uncommitted changes. There are three lists
-  which invoke this method: newFilesList, modifiedChangedFilesList and deletedFilesList.
-  This method sets up the list model with the given files and adds a MouseListener to all of them. The mouse listener
-  does two things: 1. it selects/ deselects the checkboxes of each item. 2. it selects one list element at a time whose
-  diff to the current index (e.g. HEAD) is presented in the panel on the right
-   */
-
-  private void setUpFileList(JList<FileListItem> list, List<GitFile> files){
+  private void setUpFileList(JList<FileListItem> list, List<GitFile> files) {
     //set the renderer that presents each item as a checkbox
     renderer = new FileListRenderer();
     list.setCellRenderer(renderer);
@@ -244,7 +239,7 @@ public class AddCommitView extends JPanel implements IView {
     //fill up the list with the given files
     DefaultListModel<FileListItem> defaultListModel = new DefaultListModel();
     List<FileListItem> fileListItems = new LinkedList<>();
-    for (GitFile file : files){
+    for (GitFile file : files) {
       FileListItem item = new FileListItem(file);
       fileListItems.add(item);
     }
@@ -279,11 +274,11 @@ public class AddCommitView extends JPanel implements IView {
   Iterate over the given list of FileListItems and check which ones have selected state. Return the nested GitFile
   objects of those FileListItems with selected state.
    */
-  private List<GitFile> getSelectedGitFiles(JList<FileListItem> list){
+  private List<GitFile> getSelectedGitFiles(JList<FileListItem> list) {
     List<GitFile> selectedCheckboxes = new LinkedList<>();
-    for (int i = 0; i < list.getModel().getSize(); i++){
+    for (int i = 0; i < list.getModel().getSize(); i++) {
       FileListItem item = (FileListItem) list.getModel().getElementAt(i);
-      if (item.isSelected()){
+      if (item.isSelected()) {
         selectedCheckboxes.add(item.getGitFile());
       }
     }
@@ -297,10 +292,11 @@ public class AddCommitView extends JPanel implements IView {
   private class FileListRenderer implements ListCellRenderer<FileListItem> {
     /**
      * Method that returns a Component that defines the appearance of the list entries
-     * @param list The corresponding list the renderer is set for
-     * @param value The value of the list entry, held by the list model
-     * @param index The index of the list entry in the list
-     * @param isSelected Whether the entry has been selected.
+     *
+     * @param list         The corresponding list the renderer is set for
+     * @param value        The value of the list entry, held by the list model
+     * @param index        The index of the list entry in the list
+     * @param isSelected   Whether the entry has been selected.
      * @param cellHasFocus Whether the specific cell has focus
      * @return Component - in this case, a JCheckbox element
      */
@@ -316,15 +312,14 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setText(value.getGitFile().getPath().getName());
 
       //color staged files in green, unstaged files in red
-      if(value.getGitFile().isStaged()){
+      if (value.getGitFile().isStaged()) {
         checkBox.setForeground(Color.GREEN);
-      }
-      else{
+      } else {
         checkBox.setForeground(Color.RED);
       }
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
-      if (cellHasFocus){
+      if (cellHasFocus) {
         checkBox.setBackground(Color.LIGHT_GRAY);
       }
       return checkBox;
@@ -347,7 +342,7 @@ public class AddCommitView extends JPanel implements IView {
      * the list item is initially set to be selected.
      * @param gitFile
      */
-    FileListItem(GitFile gitFile){
+    FileListItem(GitFile gitFile) {
       this.gitFile = gitFile;
       this.i = i;
       this.isSelected = gitFile.isStaged();
@@ -356,21 +351,21 @@ public class AddCommitView extends JPanel implements IView {
     /*
      * Returns the selection state of the item
      */
-    boolean isSelected(){
+    boolean isSelected() {
       return isSelected;
     }
 
     /*
      * Setter for the selection state. When the user clicks on a list entry, its selection state will change
      */
-    void setSelected(boolean isSelected){
+    void setSelected(boolean isSelected) {
       this.isSelected = isSelected;
     }
 
     /*
      * Method to retrieve the GitFile instance that is encapsulated in the list item
      */
-    GitFile getGitFile(){
+    GitFile getGitFile() {
       return gitFile;
     }
 

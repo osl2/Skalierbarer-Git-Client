@@ -35,10 +35,10 @@ public class PullDialogView implements IDialogView {
                 listOfRemoteBranches.clear();
                 branchComboBox.removeAllItems();
                 int index = remoteCombobox.getSelectedIndex();
-                if(!nextTry(index)) {
+                if (!nextTry(index)) {
                     return;
                 }
-                for(int i = 0; i < listOfRemoteBranches.size(); i++) {
+                for (int i = 0; i < listOfRemoteBranches.size(); i++) {
                     branchComboBox.addItem(listOfRemoteBranches.get(i).getName());
                 }
             }
@@ -69,24 +69,13 @@ public class PullDialogView implements IDialogView {
             return true;
         } catch (GitException gitException) {
             CredentialProviderHolder.getInstance().changeProvider(true, listOfRemotes.get(index).getName());
-            if(CredentialProviderHolder.getInstance().isActive()) {
+            if (CredentialProviderHolder.getInstance().isActive()) {
                 return nextTry(index);
             } else {
                 CredentialProviderHolder.getInstance().setActive(true);
                 return false;
             }
         }
-    }
-
-    private void initPull() {
-        data = new GitData();
-        listOfRemotes = data.getRemotes();
-        String[] remoteName = new String[listOfRemotes.size()];
-        for(int i = 0; i < listOfRemotes.size(); i++) {
-            remoteName[i] = listOfRemotes.get(i).getName();
-        }
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(remoteName);
-        remoteCombobox.setModel(model);
     }
 
     private void refresh() {
@@ -126,7 +115,19 @@ public class PullDialogView implements IDialogView {
         return pullPanel;
     }
 
+    private void initPull() {
+        data = new GitData();
+        listOfRemotes = data.getRemotes();
+        String[] remoteName = new String[listOfRemotes.size()];
+        for (int i = 0; i < listOfRemotes.size(); i++) {
+            remoteName[i] = listOfRemotes.get(i).getName();
+        }
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(remoteName);
+        remoteCombobox.setModel(model);
+    }
+
     public void update() {
 
     }
+
 }

@@ -133,7 +133,7 @@ public class MergeConflictDialogView implements IDialogView {
     private void buttonListener(GitChangeConflict c, ButtonAction btnAction) {
         switch (btnAction) {
             case ACCEPT_OURS:
-                c.accecptOurs();
+                c.acceptOurs();
                 buttonLeftAccept.setEnabled(false);
                 // fall through
             case DECLINE_OURS:

@@ -33,62 +33,6 @@ public class RevertDialogView implements IDialogView {
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     private DefaultTreeModel model;
 
-    public RevertDialogView() {
-        GitData testGit = new GitData();
-        try {
-            if (testGit.getBranches().size() == 0){
-                GUIController.getInstance().errorHandler("Es existiert kein Commit");
-                GUIController.getInstance().closeDialogView();
-                return;
-            }
-        } catch (GitException e) {
-            GUIController.getInstance().errorHandler(e);
-            GUIController.getInstance().closeDialogView();
-        }
-        this.revertTree.addTreeSelectionListener(loadMoreListener());
-        try {
-            final GitData git;
-            git = new GitData();
-            revertTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            this.model = (DefaultTreeModel) this.revertTree.getModel();
-
-            // Build branch-tree
-            git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
-
-            this.revertTree.setRootVisible(false);
-            model.setRoot(root);
-
-        } catch (GitException e) {
-            GUIController.getInstance().errorHandler(e);
-        }
-        revertButton.addActionListener(new ActionListener() {
-            /**
-             * Invoked when an action occurs.
-             *
-             * @param e the event to be processed
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Revert rev = new Revert();
-                TreePath path = revertTree.getSelectionPath();
-                if (path == null){
-                    GUIController.getInstance().errorHandler("Es wurde nichts ausgewählt");
-                    return;
-                }
-                RefTreeNode node = (RefTreeNode) path.getLastPathComponent();
-                node.configureRevert(rev);
-                if (rev.getChosenCommit() == null){
-                    GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt sein.");
-                    return;
-                }
-                else if (rev.execute()) {
-                    GUIController.getInstance().setCommandLine(rev.getCommandLine());
-                    GUIController.getInstance().closeDialogView();
-                }
-            }
-        });
-    }
-
     private BranchTreeNode buildBranchTree(GitBranch b) {
         BranchTreeNode root = new BranchTreeNode(b);
         Iterator<GitCommit> iter = null;
@@ -166,6 +110,61 @@ public class RevertDialogView implements IDialogView {
     private void createUIComponents() {
         this.revertTree = new JTree(this.root);
         this.revertTree.addTreeSelectionListener(loadMoreListener());
+    }
+
+    public RevertDialogView() {
+        GitData testGit = new GitData();
+        try {
+            if (testGit.getBranches().size() == 0) {
+                GUIController.getInstance().errorHandler("Es existiert kein Commit");
+                GUIController.getInstance().closeDialogView();
+                return;
+            }
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            GUIController.getInstance().closeDialogView();
+        }
+        this.revertTree.addTreeSelectionListener(loadMoreListener());
+        try {
+            final GitData git;
+            git = new GitData();
+            revertTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            this.model = (DefaultTreeModel) this.revertTree.getModel();
+
+            // Build branch-tree
+            git.getBranches().stream().map(this::buildBranchTree).forEach(root::add);
+
+            this.revertTree.setRootVisible(false);
+            model.setRoot(root);
+
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
+        revertButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Revert rev = new Revert();
+                TreePath path = revertTree.getSelectionPath();
+                if (path == null) {
+                    GUIController.getInstance().errorHandler("Es wurde nichts ausgewählt");
+                    return;
+                }
+                RefTreeNode node = (RefTreeNode) path.getLastPathComponent();
+                node.configureRevert(rev);
+                if (rev.getChosenCommit() == null) {
+                    GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt sein.");
+                    return;
+                } else if (rev.execute()) {
+                    GUIController.getInstance().setCommandLine(rev.getCommandLine());
+                    GUIController.getInstance().closeDialogView();
+                }
+            }
+        });
     }
 
     private static abstract class RefTreeNode extends DefaultMutableTreeNode {

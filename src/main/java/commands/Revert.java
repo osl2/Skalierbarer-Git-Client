@@ -7,6 +7,10 @@ import git.GitCommit;
 import git.GitFacade;
 import git.exception.GitException;
 
+/**
+ * This class represents the git revert command. In order to execute you have to
+ * pass a {@link GitCommit} to revert.
+ */
 public class Revert implements ICommand, ICommandGUI {
   private GitCommit chosenCommit;
   /**
@@ -53,6 +57,9 @@ public class Revert implements ICommand, ICommandGUI {
     return "Macht Änderungen eines ausgewählten Commits rückgängig";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new RevertDialogView());
   }

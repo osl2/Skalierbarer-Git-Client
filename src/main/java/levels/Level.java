@@ -14,6 +14,13 @@ public class Level {
     private final int id; //For comparing
     private List<ICommandGUI> commands;
 
+    /**
+     * Constructor
+     *
+     * @param name     Name of the level
+     * @param commands List of allowed Commands
+     * @param id       ID used for sorting, higher means lower in lists
+     */
     @JsonCreator
     public Level(@JsonProperty("name") String name,
                  @JsonProperty("commands") List<ICommandGUI> commands,
@@ -61,7 +68,16 @@ public class Level {
         return id == level.id && name.equals(level.name) && iCommandGUIEquals(commands, level.commands);
     }
 
-    private boolean iCommandGUIEquals(List<ICommandGUI> a, List<ICommandGUI> b) {
+    /**
+     * Compares two lists of {@link commands.ICommandGUI} interfaces
+     * <p>
+     * Returns true if both interfaces contain the same classes.
+     *
+     * @param a list A
+     * @param b list B
+     * @return true if equal
+     */
+    public static boolean iCommandGUIEquals(List<ICommandGUI> a, List<ICommandGUI> b) {
         return a.stream()
                 .allMatch( // for all Commands in a
                         e -> b.stream()

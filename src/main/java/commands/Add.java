@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * This class represents the git add command. In order to execute this command
+ * the user has to pass a list of GitFiles.
+ */
 public class Add implements ICommand, ICommandGUI {
   private List<GitFile> files;
   private GitStatus gitStatus;
@@ -26,7 +30,6 @@ public class Add implements ICommand, ICommandGUI {
    * Performs git add on each GitFile instance separately.
    *
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
-   * @throws GitException if command execution in JGit throws an exception
    */
   public boolean execute() {
     List<GitFile> stagedFiles = new LinkedList<>();
@@ -89,8 +92,8 @@ public class Add implements ICommand, ICommandGUI {
 
 
   /**
-   * Takes a list of files that should be added to the staging area
-   * @param files
+   * Takes a list of files that should be added to the staging area.
+   * @param files a list of GitFiles to add to the staging area.
    */
   public void addFiles(List<GitFile> files){
     this.files.addAll(files);

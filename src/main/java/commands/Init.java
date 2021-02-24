@@ -2,13 +2,14 @@ package commands;
 
 import controller.GUIController;
 import git.GitFacade;
-import settings.Data;
-import settings.Settings;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.List;
 
+/**
+ * This class represents the git init command. In order to execute you have
+ * pass a {@link File} which represents a path to a local directory.
+ */
 public class Init implements ICommand, ICommandGUI {
   private String errorMessage = "";
   private String commandLine = "";
@@ -32,14 +33,8 @@ public class Init implements ICommand, ICommandGUI {
   }
 
   /**
-   * Returns the paths to all local git repositorys.
-   *
-   * @return a list containing all paths to the local repositorys.
+   * {@inheritDoc}
    */
-  public List<String> getRepositorys() {
-    return null;
-  }
-
   public boolean execute() {
     if(path == null) {
       GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
@@ -48,32 +43,38 @@ public class Init implements ICommand, ICommandGUI {
     facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
     if(!success) {
-      GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiertw werden.");
+      GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiert werden.");
       return false;
     }
     // Create the git commandLine input to execute this command.
-    commandLine = path.getAbsolutePath() + " git init";
-    Data.getInstance().storeNewRepositoryPath(path);
-    Settings.getInstance().setActiveRepositoryPath(path);
+    commandLine = "git init";
     return true;
   }
 
-  public String getErrorMessage() {
-    return null;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   public String getCommandLine() {
     return commandLine;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getName() {
     return commandName;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String getDescription() {
     return commandDescription;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

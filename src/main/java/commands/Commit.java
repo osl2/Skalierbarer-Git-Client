@@ -6,15 +6,17 @@ import git.GitFacade;
 import git.GitFile;
 import git.GitStatus;
 import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
 import views.AddCommitView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * This class represents the git commit command. In order to execute this command
+ * at least one file has to be in the staging area and a Commit message has to be passed.
+ */
 public class Commit implements ICommand, ICommandGUI {
   private String commitMessage;
   private boolean amend;
@@ -50,7 +52,6 @@ public class Commit implements ICommand, ICommandGUI {
    * Method to execute the command.
    *
    * @return true, if the command has been executed successfully
-   * @throws GitException if the staging-area is empty, if the commit message is missing or if the internal
    * execution of the command in JGit throws an exception
    */
   public boolean execute() {
@@ -71,7 +72,7 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     //check if staging-area is empty
-    if (stagedFiles.isEmpty()){
+    if (stagedFiles.isEmpty() && gitData.getMergeCommitMessage() == null) {
       GUIController.getInstance().errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
       return false;
     }
@@ -132,6 +133,9 @@ public class Commit implements ICommand, ICommandGUI {
             "Staging-Area und der angegebenen Commit-Nachricht";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void onButtonClicked() {
     //do nothing, since there is no commit button
   }
