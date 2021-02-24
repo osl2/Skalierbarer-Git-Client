@@ -13,14 +13,13 @@ import views.AddCommitView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Represents a Merge-Command
  */
 public class Merge implements ICommand, ICommandGUI {
-    @NonNull
     private GitBranch srcBranch;
-    @NonNull
     private GitBranch destBranch;
     private boolean fastForward = true;
 
@@ -73,28 +72,6 @@ public class Merge implements ICommand, ICommandGUI {
     }
 
     /**
-     * Method to get an array of the conflicts that happen during the merge.
-     *
-     * @return List of the conflicts that happen
-     */
-    public List<GitChangeConflict> getConflicts() {
-        // todo kann weg?
-        return null;
-    }
-
-    /**
-     * This function needs to be called to make sure that all conflicts are resolved before {@link #execute()}
-     * can succeed.
-     * <p>
-     * If necessary a MergeDialogView will be opened to interact with the user.
-     */
-    public void resolveConflicts() {
-        // todo: das wurde auch anders gelöst -> kann weg?
-        // Open GUI or another way to make sure all conflicts are resolved.
-        // Probably a good point for dependency injection in the future.
-    }
-
-    /**
      * Method to execute the command.
      * Different to the definition in {@link ICommand} this function may be called again after resolving conflicts
      * iff the last execution ended in conflicts. To continue the "failed" merge.
@@ -102,6 +79,10 @@ public class Merge implements ICommand, ICommandGUI {
      * @return true, if the command has been executed successfully
      */
     public boolean execute() {
+        if (this.srcBranch == null || this.destBranch == null) {
+            Logger.getGlobal().warning("Source or Destination of Merge was NULL");
+            return false;
+        }
         if (this.srcBranch == this.destBranch) {
             // We cannot merge a branch into itself.
             GUIController.getInstance().errorHandler("Quell- und Zielzweig können nicht der selbe sein");
@@ -148,6 +129,7 @@ public class Merge implements ICommand, ICommandGUI {
      *
      * @return The name of the command
      */
+    @Override
     public String getName() {
         return "Merge";
     }
@@ -158,6 +140,7 @@ public class Merge implements ICommand, ICommandGUI {
      *
      * @return description as a Sting
      */
+    @Override
     public String getDescription() {
         return "Verschmilzt zwei Zweige";
     }
