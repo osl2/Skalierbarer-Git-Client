@@ -209,7 +209,7 @@ public class GitCommit {
             GitData data = new GitData();
             AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
             // If no commit exists in the repository.
-            if(data.getBranches().isEmpty()) {
+            if(!data.getBranches().isEmpty()) {
                  oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
             }
             git.diff()
