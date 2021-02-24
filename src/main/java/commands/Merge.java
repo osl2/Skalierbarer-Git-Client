@@ -145,9 +145,7 @@ public class Merge implements ICommand, ICommandGUI {
         return "Verschmilzt zwei Zweige";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new MergeDialogView());
     }
