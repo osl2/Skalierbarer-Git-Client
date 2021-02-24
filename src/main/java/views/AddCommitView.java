@@ -199,7 +199,7 @@ public class AddCommitView extends JPanel implements IView {
     filesToBeAdded.addAll(getSelectedGitFiles(deletedFilesList));
 
     //pass all selected GitFiles to add
-    addCommand.addFiles(filesToBeAdded);
+    addCommand.setFiles(filesToBeAdded);
 
     //execute git add
     success = addCommand.execute();
