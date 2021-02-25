@@ -13,9 +13,7 @@ import java.lang.reflect.InvocationTargetException;
  * Deserializer for ICommandGUI instances.
  */
 public class ICommandDeserializer extends StdDeserializer<ICommandGUI> {
-    /**
-     * {@inheritDoc}
-     */
+
     protected ICommandDeserializer(Class<?> vc) {
         super(vc);
     }
@@ -28,9 +26,7 @@ public class ICommandDeserializer extends StdDeserializer<ICommandGUI> {
         this(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public ICommandGUI deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
