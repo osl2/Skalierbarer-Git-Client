@@ -10,7 +10,6 @@ import views.AddCommitView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,9 +19,6 @@ import java.util.List;
 public class Commit implements ICommand, ICommandGUI {
   private String commitMessage;
   private boolean amend;
-  private GitFacade gitFacade;
-  private GitStatus gitStatus;
-  private GitData gitData;
 
   /**
    * Constructor of the commit command. The amend option must be set explicitly in order to amend the last commit
@@ -55,19 +51,16 @@ public class Commit implements ICommand, ICommandGUI {
    * execution of the command in JGit throws an exception
    */
   public boolean execute() {
-    gitData = new GitData();
-    this.gitStatus = gitData.getStatus();
-    gitFacade = new GitFacade();
-    List<GitFile> stagedFiles = new LinkedList<>();
+    GitData gitData = new GitData();
+    GitStatus gitStatus= gitData.getStatus();
+    GitFacade gitFacade = new GitFacade();
+    List<GitFile> stagedFiles;
 
     //get the list of staged files from status
     try {
       stagedFiles = gitStatus.getStagedFiles();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    } catch (GitException e) {
-      e.printStackTrace();
+    } catch (GitException | IOException e) {
+      GUIController.getInstance().errorHandler(e);
       return false;
     }
 
@@ -78,10 +71,11 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     //prepare the confirmation dialog
-    StringBuffer message = new StringBuffer();
+    StringBuilder message = new StringBuilder();
     message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
     for (GitFile gitFile : stagedFiles){
-      message.append(gitFile.getPath().getName() + "\n");
+      message.append(gitFile.getPath().getName());
+      message.append("\n");
     }
     int commit = JOptionPane.showConfirmDialog(null, message.toString());
     if (commit != 0){
@@ -94,7 +88,7 @@ public class Commit implements ICommand, ICommandGUI {
       GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
       return false;
     }
-    boolean success = false;
+    boolean success;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
     } catch (GitException e) {
