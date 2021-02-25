@@ -83,7 +83,7 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     if (commitMessage == null
-            || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
+            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
             || commitMessage.equals("")){
       GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
       return false;
