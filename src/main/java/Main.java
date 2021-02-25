@@ -19,7 +19,7 @@ public class Main {
             Settings settings = Settings.getInstance();
             Data data = Data.getInstance();
             c.openDialog(new FirstUseDialogView());
-            settings.setLevel(data.getLevels().getFirst());
+            settings.setLevel(data.getLevels().get(0));
 
             persistency.save();
         }

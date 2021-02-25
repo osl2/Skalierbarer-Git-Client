@@ -14,10 +14,8 @@ import java.util.List;
 public class Data extends DataObservable {
     private static Data INSTANCE;
 
-    // Modify settings.PersistencyTest if you add or remove a field!
-    private LinkedList<Level> levels = new LinkedList<>();
     @JsonProperty("recentlyOpenedRepositories")
-    private LinkedList<File> repoList = new LinkedList<>();
+    private final LinkedList<File> repoList = new LinkedList<>();
 
     // This layout is necessary so that Jackson can create a correctly instantiated class.
     private Data() {
@@ -136,7 +134,7 @@ public class Data extends DataObservable {
      *
      * @return immutable ordered List of all possible levels in the current configuration
      */
-    public LinkedList<Level> getLevels() {
+    public List<Level> getLevels() {
         LinkedList<Level> levelLinkedList = new LinkedList<>();
         LinkedList<ICommandGUI> commands1 = getCommandList(1);
         LinkedList<ICommandGUI> commands2 = getCommandList(2);
@@ -150,7 +148,7 @@ public class Data extends DataObservable {
         levelLinkedList.add(levelTwo);
         levelLinkedList.add(levelThree);
         levelLinkedList.add(levelFour);
-        levels = levelLinkedList;
+        // Modify settings.PersistencyTest if you add or remove a field!
         return levelLinkedList;
     }
 }

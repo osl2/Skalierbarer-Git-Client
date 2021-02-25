@@ -8,7 +8,7 @@ import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.LinkedList;
+import java.util.List;
 
 public class SettingsDialogView implements IDialogView {
     private JPanel settingsPanel;
@@ -19,7 +19,7 @@ public class SettingsDialogView implements IDialogView {
     private JCheckBox treeViewCheckbox;
     private JButton saveButton;
     private GitAuthor author;
-    private LinkedList<Level> levels;
+    private List<Level> levels;
     private JButton cancelButton;
 
     /**
