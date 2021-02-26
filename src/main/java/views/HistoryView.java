@@ -6,8 +6,6 @@ import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,7 +75,7 @@ public class HistoryView extends JPanel implements IView {
     }
     addCommits();
     addScrollbarListener();
-    addMouseListeners();
+    addListSelectionListeners();
   }
 
   private void applyCellRenderer() {
@@ -88,66 +86,58 @@ public class HistoryView extends JPanel implements IView {
   /**
    * Adds mouseListeners to the commitList and the fileList.
    */
-  private void addMouseListeners() {
-    commitList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        super.mousePressed(e);
-        maxFiles = 50;
-        loadedFiles = 0;
-        diffView.setNotVisible();
-        int index = commitList.getSelectedIndex();
-        if (index < 0) {
-          return;
-        }
-        GitCommit selectedCommit = listOfCommits.get(index);
-        String activeMessage = selectedCommit.getMessage();
-        GitAuthor author = selectedCommit.getAuthor();
-        String name = author.getName();
-        String eMail = author.getEmail();
-        Date date = selectedCommit.getDate();
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy, hh:mm:ss");
-        String commitDate = format.format(date);
-        commitMessage.setText("Autor: " + name + System.lineSeparator()
-                + "E-Mail: " + eMail + System.lineSeparator()
-                + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
-                + System.lineSeparator()
-                + activeMessage);
-        fileListModel = new DefaultListModel<>();
-        fileList.setModel(fileListModel);
-        fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        int width = commitMessage.getWidth();
-        commitMessage.setVisible(true);
-        if (width > 0) {
-          commitMessage.setSize(width, Short.MAX_VALUE);
-        }
-        commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        commitMessage.setLineWrap(true);
-        commitMessage.setWrapStyleWord(true);
-        try {
-          listOfFiles = selectedCommit.getChangedFiles();
-        } catch (IOException ioException) {
-          GUIController.getInstance().errorHandler(ioException);
-          return;
-        }
-        gitFileIterator = listOfFiles.iterator();
-        addFiles();
+  private void addListSelectionListeners() {
+    commitList.addListSelectionListener(e -> {
+      maxFiles = 50;
+      loadedFiles = 0;
+      diffView.setNotVisible();
+      int index = commitList.getSelectedIndex();
+      if (index < 0) {
+        return;
       }
+      GitCommit selectedCommit = listOfCommits.get(index);
+      String activeMessage = selectedCommit.getMessage();
+      GitAuthor author = selectedCommit.getAuthor();
+      String name = author.getName();
+      String eMail = author.getEmail();
+      Date date = selectedCommit.getDate();
+      DateFormat format = new SimpleDateFormat("dd/MM/yyyy, hh:mm:ss");
+      String commitDate = format.format(date);
+      commitMessage.setText("Autor: " + name + System.lineSeparator()
+              + "E-Mail: " + eMail + System.lineSeparator()
+              + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
+              + System.lineSeparator()
+              + activeMessage);
+      fileListModel = new DefaultListModel<>();
+      fileList.setModel(fileListModel);
+      fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      int width = commitMessage.getWidth();
+      commitMessage.setVisible(true);
+      if (width > 0) {
+        commitMessage.setSize(width, Short.MAX_VALUE);
+      }
+      commitMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+      commitMessage.setLineWrap(true);
+      commitMessage.setWrapStyleWord(true);
+      try {
+        listOfFiles = selectedCommit.getChangedFiles();
+      } catch (IOException ioException) {
+        GUIController.getInstance().errorHandler(ioException);
+        return;
+      }
+      gitFileIterator = listOfFiles.iterator();
+      addFiles();
     });
-    fileList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        super.mousePressed(e);
-        int fileIndex = fileList.getSelectedIndex();
-        int commitIndex = commitList.getSelectedIndex();
-        if (fileIndex < 0 || commitIndex < 0) {
-          return;
-        }
-        GitFile file = listOfFiles.get(fileIndex);
-        GitCommit commit = listOfCommits.get(commitIndex);
-        diffView.setDiff(commit, file);
-        diffText.setCaretPosition(0);
+    fileList.addListSelectionListener(e -> {
+      int fileIndex = fileList.getSelectedIndex();
+      int commitIndex = commitList.getSelectedIndex();
+      if (fileIndex < 0 || commitIndex < 0) {
+        return;
       }
+      GitFile file = listOfFiles.get(fileIndex);
+      GitCommit commit = listOfCommits.get(commitIndex);
+      diffView.setDiff(commit, file);
+      diffText.setCaretPosition(0);
     });
   }
 
