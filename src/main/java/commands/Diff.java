@@ -85,10 +85,9 @@ public class Diff implements ICommand {
    */
   public String[] diffGit() {
     if(!validDiffCommit && !validDiffFile) {
-      String[] out = new String[]{""};
-      return out;
+      return new String[]{""};
     }
-    ArrayList<String> lines = new ArrayList<String>();
+    ArrayList<String> lines = new ArrayList<>();
     activeDiff.lines().forEach(lines::add);
     // Cut of the upper part of the diff and begin with the changed lines count.
     int startLine = 5;
