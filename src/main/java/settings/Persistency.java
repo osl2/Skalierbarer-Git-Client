@@ -16,7 +16,7 @@ public class Persistency extends DataObserver {
     private static final String FILENAME_DATA = "data.json";
     private static final String FILENAME_SETTINGS = "settings.json";
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static File CONFIG_DIR;
+    private final File configDir;
 
     /**
      * Constructor
@@ -24,16 +24,14 @@ public class Persistency extends DataObserver {
      * @throws URISyntaxException when the File's path can not be converted to a valid URI
      */
     public Persistency() throws URISyntaxException {
-        CONFIG_DIR = new File(
+        configDir = new File(
                 new File(Persistency.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
                         .getParentFile(), // Obtain the folder containing the current JAR
                 "config"
         );
 
-        if (!CONFIG_DIR.exists()) {
-            if (!CONFIG_DIR.mkdir()) {
-                Logger.getGlobal().warning("Could not create config directory " + CONFIG_DIR.toString());
-            }
+        if (!configDir.exists() && !configDir.mkdir()) {
+            Logger.getGlobal().warning("Could not create config directory");
         }
 
         // Pretty-Print
@@ -67,7 +65,7 @@ public class Persistency extends DataObserver {
      * {@link #load(File)}
      */
     public boolean save() {
-        return this.save(CONFIG_DIR);
+        return this.save(configDir);
     }
 
     /**
@@ -94,13 +92,10 @@ public class Persistency extends DataObserver {
     /**
      * {@link #load(File)}
      */
-    public boolean load() throws IOException {
-        return this.load(CONFIG_DIR);
+    public boolean load() {
+        return this.load(configDir);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void dataChangedListener(DataObservable observable) {
         // We actually don't care who was changed, we just save the current state. Inefficient but easy to implement.
