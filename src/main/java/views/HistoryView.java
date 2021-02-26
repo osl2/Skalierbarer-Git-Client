@@ -24,6 +24,7 @@ public class HistoryView extends JPanel implements IView {
   private JPanel historyViewPanel;
   private JScrollPane diffPane;
   private JPanel diffPanel;
+  @SuppressWarnings("unused")
   private JScrollPane commitMessageScrollPane;
   private final JTextPane diffText;
   private Iterator<GitCommit> iteratorOfCommits;
@@ -53,7 +54,7 @@ public class HistoryView extends JPanel implements IView {
   public HistoryView() {
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     diffPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-    commitMessageScrollPane.setMinimumSize(new Dimension(680, 60));
+    // To set the size
     commitMessage.setText(System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
@@ -111,6 +112,7 @@ public class HistoryView extends JPanel implements IView {
               + "Datum: " + commitDate + " Uhr" + System.lineSeparator()
               + System.lineSeparator()
               + activeMessage);
+      commitMessage.setCaretPosition(0);
       fileListModel = new DefaultListModel<>();
       fileList.setModel(fileListModel);
       fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
