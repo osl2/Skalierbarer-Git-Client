@@ -55,47 +55,55 @@ public class Commit implements ICommand, ICommandGUI {
     GitStatus gitStatus= gitData.getStatus();
     GitFacade gitFacade = new GitFacade();
     List<GitFile> stagedFiles;
+    GUIController controller = GUIController.getInstance();
 
     //get the list of staged files from status
     try {
       stagedFiles = gitStatus.getStagedFiles();
     } catch (GitException | IOException e) {
-      GUIController.getInstance().errorHandler(e);
+      controller.errorHandler(e);
       return false;
     }
 
-    //check if staging-area is empty
-    if (stagedFiles.isEmpty() && gitData.getMergeCommitMessage() == null) {
-      GUIController.getInstance().errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
-      return false;
+
+    //empty staging area is only allowed for merge and amend
+    if (stagedFiles.isEmpty()){
+      if (gitData.getMergeCommitMessage() == null && !amend) {
+        controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
+        return false;
+      }
     }
 
-    //prepare the confirmation dialog
-    StringBuilder message = new StringBuilder();
-    message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
-    for (GitFile gitFile : stagedFiles){
-      message.append(gitFile.getPath().getName());
-      message.append("\n");
+    else {
+      //prepare the confirmation dialog
+      StringBuilder message = new StringBuilder();
+      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
+      for (GitFile gitFile : stagedFiles){
+        message.append(gitFile.getPath().getName());
+        message.append("\n");
+      }
+      int commit = JOptionPane.showConfirmDialog(null, message.toString(),
+              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      if (commit != 0){
+        return false;
+      }
     }
-    int commit = JOptionPane.showConfirmDialog(null, message.toString(),
-            "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-    if (commit != 0){
-      return false;
-    }
+
 
     if (commitMessage == null
             || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
             || commitMessage.equals("")){
-      GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
+      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
       return false;
     }
     boolean success;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
     } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
+      controller.errorHandler(e);
       return false;
     }
+
     return success;
   }
 

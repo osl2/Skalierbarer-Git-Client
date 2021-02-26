@@ -47,15 +47,21 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> deletedFilesList;
   @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
+  private List<JList<FileListItem>> statusList;
+  private boolean amend;
 
 
   public AddCommitView() {
+    statusList = new LinkedList<>();
+    statusList.add(newFilesList);
+    statusList.add(modifiedChangedFilesList);
+    statusList.add(deletedFilesList);
 
     //if cancelButton was pressed, open confirmation dialog whether current state of staging-area should be saved
     cancelButton.addActionListener(e -> {
       boolean close = true;
-      if (!getFilesToBeAdded().isEmpty()){
-        //ask whether the user wants to save the files in the staging-area
+      //ask whether the user wants to save his/her changes in the staging-area (if existent)
+      if (!(getFilesToBeAdded().isEmpty() && getFilesToBeRestored().isEmpty())){
         int saveChanges = JOptionPane.showConfirmDialog(null, "Sollen die Änderungen an der Staging-Area gespeichert werden?",
                 "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -76,19 +82,17 @@ public class AddCommitView extends JPanel implements IView {
 
     //if commit Button was pressed, perform git add and git commit and restore default view if successful
     commitButton.addActionListener(e -> {
+      amend = false;
       executeAdd();
-      if (executeCommit(false)) {
-        GUIController.getInstance().restoreDefaultView();
-      }
+      executeCommit();
     });
 
 
     //if amend button was pressed, perform git commit --amend and restore default view if successful
     amendButton.addActionListener(e -> {
+      amend = true;
       executeAdd();
-      if (executeCommit(true)) {
-        GUIController.getInstance().restoreDefaultView();
-      }
+      executeCommit();
     });
 
 
@@ -98,7 +102,6 @@ public class AddCommitView extends JPanel implements IView {
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(FocusEvent e) {
-        //TODO: geht das noch besser?
         JTextArea source = (JTextArea) e.getSource();
         String newText = "";
         if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)) {
@@ -152,42 +155,30 @@ public class AddCommitView extends JPanel implements IView {
   private void executeAdd() {
     Add addCommand = new Add();
 
+
     //pass all selected GitFiles to add
-    List<GitFile> filesToBeAdded = getFilesToBeAdded();
-    addCommand.setFiles(filesToBeAdded);
+    addCommand.setFilesToBeAdded(getFilesToBeAdded());
+    addCommand.setFilesToBeRestored(getFilesToBeRestored());
 
     //execute git add
     addCommand.execute();
 
   }
 
-  private List<GitFile> getFilesToBeAdded(){
-    List<GitFile> filesToBeAdded = new LinkedList<>();
-
-    //iterate over all three lists and extract the items with selected state
-    filesToBeAdded.addAll(getSelectedGitFiles(newFilesList));
-    filesToBeAdded.addAll(getSelectedGitFiles(modifiedChangedFilesList));
-    filesToBeAdded.addAll(getSelectedGitFiles(deletedFilesList));
-
-    return filesToBeAdded;
-  }
-
-
-
   /*
   invokes the commit command when the user clicks on the commit button
    */
-  private boolean executeCommit(boolean amend) {
+  private void executeCommit() {
     Commit commitCommand = new Commit();
-    boolean success;
 
     //set amend and commit message
     commitCommand.setAmend(amend);
     commitCommand.setCommitMessage(commitMessageTextArea.getText());
 
     //execute git commit
-    success = commitCommand.execute();
-    return success;
+    if (commitCommand.execute()){
+      GUIController.getInstance().restoreDefaultView();
+    }
   }
 
   /*
@@ -243,20 +234,23 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   /*
-  Iterate over the given list of FileListItems and check which ones have selected state. Return the nested GitFile
+  Iterate over all jlists in the status panel and check which FileListItems have selected state. Return the nested GitFile
   objects of those FileListItems with selected state.
    */
-  private List<GitFile> getSelectedGitFiles(JList<FileListItem> list) {
+  private List<GitFile> getSelectedGitFiles() {
     List<GitFile> selectedCheckboxes = new LinkedList<>();
-    for (int i = 0; i < list.getModel().getSize(); i++) {
-      FileListItem item = list.getModel().getElementAt(i);
-      if (item.isSelected()) {
-        selectedCheckboxes.add(item.getGitFile());
+    for (JList<FileListItem> list : statusList){
+      for (int i = 0; i < list.getModel().getSize(); i++) {
+        FileListItem item = list.getModel().getElementAt(i);
+        if (item.isSelected()) {
+          selectedCheckboxes.add(item.getGitFile());
+        }
       }
     }
     return selectedCheckboxes;
   }
 
+  @SuppressWarnings("unused")
   private void createUIComponents() {
     GitData data = new GitData();
     GitStatus gitStatus = data.getStatus();
@@ -269,15 +263,55 @@ public class AddCommitView extends JPanel implements IView {
       deletedFiles = gitStatus.getDeletedFiles();
     } catch (IOException | GitException e) {
       GUIController controller = GUIController.getInstance();
+      //this is very bad for our view, go back to default view and show error message 
       controller.restoreDefaultView();
       controller.errorHandler(e);
-      //TODO: was passiert mit dem Fenster?
     }
     newFilesList = setUpFileList(newFiles);
     modifiedChangedFilesList = setUpFileList(modifiedChangedFiles);
     deletedFilesList = setUpFileList(deletedFiles);
   }
 
+  /*
+Get all files that are currently unstaged and have been selected by the user to be added
+ */
+  private List<GitFile> getFilesToBeAdded() {
+
+    List<GitFile> filesToBeAdded = new LinkedList<>();
+    for (GitFile fileToBeAdded : getSelectedGitFiles()){
+      if (!getStagedFiles().contains(fileToBeAdded)){
+        filesToBeAdded.add(fileToBeAdded);
+      }
+    }
+    return filesToBeAdded;
+  }
+
+  /*
+  Get all files that are currently staged and have been deselected by the user
+   */
+  private List<GitFile> getFilesToBeRestored(){
+
+
+    List<GitFile> filesToBeRestored = new LinkedList<>();
+    for (GitFile fileToBeRestored : getStagedFiles()){
+      if (!getSelectedGitFiles().contains(fileToBeRestored)){
+        filesToBeRestored.add(fileToBeRestored);
+      }
+    }
+    return filesToBeRestored;
+  }
+
+  private List<GitFile> getStagedFiles(){
+    GitData data = new GitData();
+    GitStatus gitStatus = data.getStatus();
+    List<GitFile> stagedFiles = new LinkedList<>();
+    try {
+      stagedFiles = gitStatus.getStagedFiles();
+    } catch (IOException | GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return stagedFiles;
+  }
 
   /*
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle

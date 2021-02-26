@@ -31,7 +31,7 @@ public class AddTest extends AbstractGitTest{
         List<GitFile> files = new LinkedList<>();
         files.add(gitFile2);
         files.add(gitFile3);
-        add.setFiles(files);
+        add.setFilesToBeAdded(files);
 
         //add file1 and file2 manually
         git.add()
