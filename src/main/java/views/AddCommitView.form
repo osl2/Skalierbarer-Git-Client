@@ -91,7 +91,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="5b6a8" class="javax.swing.JList" binding="modifiedChangedFilesList">
+              <component id="5b6a8" class="javax.swing.JList" binding="modifiedChangedFilesList" custom-create="true">
                 <constraints/>
                 <properties/>
               </component>
@@ -116,7 +116,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="88c4d" class="javax.swing.JList" binding="newFilesList">
+              <component id="88c4d" class="javax.swing.JList" binding="newFilesList" custom-create="true">
                 <constraints/>
                 <properties/>
               </component>
@@ -141,7 +141,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="f3a42" class="javax.swing.JList" binding="deletedFilesList">
+              <component id="f3a42" class="javax.swing.JList" binding="deletedFilesList" custom-create="true">
                 <constraints/>
                 <properties/>
               </component>

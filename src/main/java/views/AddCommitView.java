@@ -19,78 +19,63 @@ public class AddCommitView extends JPanel implements IView {
 
   public static final String DEFAULT_COMMIT_MESSAGE = "Hier Commit-Nachricht eingeben";
   private JPanel contentPanel;
+  @SuppressWarnings("unused")
   private JPanel commitMessagePanel;
   private JTextArea commitMessageTextArea;
+  @SuppressWarnings("unused")
   private JPanel buttonPanel;
   private JButton cancelButton;
   private JButton commitButton;
   private JButton amendButton;
+  @SuppressWarnings("unused")
   private JPanel statusPanel;
   private JPanel diffPanel;
+  @SuppressWarnings("unused")
   private DiffView diffView;
+  @SuppressWarnings("unused")
   private JScrollPane modifiedChangedFilesScrollPane;
   private JList<FileListItem> modifiedChangedFilesList;
+  @SuppressWarnings("unused")
   private JTextField modifiedChangedFilesTextField;
+  @SuppressWarnings("unused")
   private JScrollPane newFilesScrollPane;
   private JList<FileListItem> newFilesList;
+  @SuppressWarnings("unused")
   private JTextField newFilesTextField;
+  @SuppressWarnings("unused")
   private JTextField deletedFilesTextField;
   private JList<FileListItem> deletedFilesList;
+  @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
-  private String commitMessage;
+  private JButton button1;
 
 
   public AddCommitView() {
-    this.commitMessage = DEFAULT_COMMIT_MESSAGE;
-  }
-
-  public AddCommitView(String commitMessage) {
-    this.commitMessage = commitMessage;
-  }
-
-  /**
-   * @return The JPanel that holds all the elements in the view
-   */
-  public JPanel getView() {
-
-    buildAddCommitView();
-    return contentPanel;
-  }
-
-  /**
-   * Updates the view.
-   */
-  public void update() {
-    //does nothing
-    //TODO: weg?
-  }
-
-  /*
-   * This method is invoked inside getView(). It configures all button listeners as well as the lists of files
-   * with uncommitted changes in the middle status panel. It sets up the diff panel and on the left and the
-   * text area for commit messages on the right.
-   */
-  private void buildAddCommitView() {
-    GitData gitData = new GitData();
-    GitStatus gitStatus = gitData.getStatus();
 
     //if cancelButton was pressed, open confirmation dialog whether current state of staging-area should be saved
     cancelButton.addActionListener(e -> {
-      //ask whether the user wants to save the files in the staging-area
-      int saveChanges = JOptionPane.showConfirmDialog(null, "Sollen die Änderungen an der Staging-Area gespeichert werden?",
-              "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+      boolean close = true;
+      if (!getFilesToBeAdded().isEmpty()){
+        //ask whether the user wants to save the files in the staging-area
+        int saveChanges = JOptionPane.showConfirmDialog(null, "Sollen die Änderungen an der Staging-Area gespeichert werden?",
+                "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-      //if yes or no was selected (else, do nothing)
-      if (saveChanges != 2) {
-        //if yes was selected, perform git add on the files. Restore default view to close AddCommitView
+        //if Yes was selected, perform git add on the files
         if (saveChanges == 0) {
           executeAdd();
         }
+        //do not restore default view if user selected Cancel
+        else if (saveChanges == 2){
+          close = false;
+        }
+      }
+      if(close){
         GUIController.getInstance().restoreDefaultView();
       }
+
     });
 
-    //if commit Button was pressed, perform git add and git commit and restore default view
+    //if commit Button was pressed, perform git add and git commit and restore default view if successful
     commitButton.addActionListener(e -> {
       executeAdd();
       if (executeCommit(false)) {
@@ -99,7 +84,7 @@ public class AddCommitView extends JPanel implements IView {
     });
 
 
-    //if amend button was pressed, perform git commit --amend
+    //if amend button was pressed, perform git commit --amend and restore default view if successful
     amendButton.addActionListener(e -> {
       executeAdd();
       if (executeCommit(true)) {
@@ -107,28 +92,9 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
-    //set up the list for newly creates, modified and deleted files with the data from GitStatus
-    List<GitFile> modifiedChangedFiles;
-    List<GitFile> newFiles;
-    List<GitFile> deletedFiles;
-    try {
-      modifiedChangedFiles = gitStatus.getModifiedChangedFiles();
-      newFiles = gitStatus.getNewFiles();
-      deletedFiles = gitStatus.getDeletedFiles();
-    } catch (GitException | IOException e) {
-      modifiedChangedFiles = new LinkedList<>();
-      newFiles = new LinkedList<>();
-      deletedFiles = new LinkedList<>();
-      GUIController.getInstance().errorHandler(e);
-    }
-
-    //set up renderer, listeners and data model for all lists
-    setUpFileList(newFilesList, newFiles);
-    setUpFileList(modifiedChangedFilesList, modifiedChangedFiles);
-    setUpFileList(deletedFilesList, deletedFiles);
 
     //set the default text of the commit message text area
-    commitMessageTextArea.setText(commitMessage);
+    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
     //when the user clicks inside the text area, the default message should disappear
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override
@@ -154,10 +120,31 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+
     //set up the diff view
     diffView = new DiffView();
     diffPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     diffPanel.add(diffView.openDiffView());
+  }
+
+  public AddCommitView(String commitMessage) {
+    this();
+    commitMessageTextArea.setText(commitMessage);
+  }
+
+  /**
+   * @return The JPanel that holds all the elements in the view
+   */
+  public JPanel getView() {
+    return contentPanel;
+  }
+
+  /**
+   * Updates the view.
+   */
+  public void update() {
+    //does nothing
+    //TODO: weg?
   }
 
   /*
@@ -166,14 +153,8 @@ public class AddCommitView extends JPanel implements IView {
   private void executeAdd() {
     Add addCommand = new Add();
 
-    List<GitFile> filesToBeAdded = new LinkedList<>();
-
-    //iterate over all three lists and extract the items with selected state
-    filesToBeAdded.addAll(getSelectedGitFiles(newFilesList));
-    filesToBeAdded.addAll(getSelectedGitFiles(modifiedChangedFilesList));
-    filesToBeAdded.addAll(getSelectedGitFiles(deletedFilesList));
-
     //pass all selected GitFiles to add
+    List<GitFile> filesToBeAdded = getFilesToBeAdded();
     addCommand.setFiles(filesToBeAdded);
 
     //execute git add
@@ -181,13 +162,18 @@ public class AddCommitView extends JPanel implements IView {
 
   }
 
-  /*
-  creates the lists in the middle panel which present all files with uncommitted changes. There are three lists
-  which invoke this method: newFilesList, modifiedChangedFilesList and deletedFilesList.
-  This method sets up the list model with the given files and adds a MouseListener to all of them. The mouse listener
-  does two things: 1. it selects/ deselects the checkboxes of each item. 2. it selects one list element at a time whose
-  diff to the current index (e.g. HEAD) is presented in the panel on the right
-   */
+  private List<GitFile> getFilesToBeAdded(){
+    List<GitFile> filesToBeAdded = new LinkedList<>();
+
+    //iterate over all three lists and extract the items with selected state
+    filesToBeAdded.addAll(getSelectedGitFiles(newFilesList));
+    filesToBeAdded.addAll(getSelectedGitFiles(modifiedChangedFilesList));
+    filesToBeAdded.addAll(getSelectedGitFiles(deletedFilesList));
+
+    return filesToBeAdded;
+  }
+
+
 
   /*
   invokes the commit command when the user clicks on the commit button
@@ -205,24 +191,34 @@ public class AddCommitView extends JPanel implements IView {
     return success;
   }
 
-  private void setUpFileList(JList<FileListItem> list, List<GitFile> files) {
+  /*
+  creates the lists in the middle panel which present all files with uncommitted changes. There are three lists
+  which invoke this method: newFilesList, modifiedChangedFilesList and deletedFilesList.
+  This method sets up the list model with the given files and adds a MouseListener to all of them. The mouse listener
+  does two things: 1. it selects/ deselects the checkboxes of each item. 2. it selects one list element at a time whose
+  diff to the current index (e.g. HEAD) is presented in the panel on the right
+  */
+  private JList<FileListItem> setUpFileList(List<GitFile> files) {
+    FileListItem [] values = new FileListItem[files.size()];
+    int i = 0;
+
+    for (GitFile gitFile : files){
+      assert i < values.length;
+      values[i] = new FileListItem(gitFile);
+      i++;
+    }
+
+    JList<FileListItem> list = new JList<>(values);
+
     //set the renderer that presents each item as a checkbox
     FileListRenderer renderer = new FileListRenderer();
     list.setCellRenderer(renderer);
 
-    //fill up the list with the given files
-    DefaultListModel<FileListItem> defaultListModel = new DefaultListModel<>();
-    List<FileListItem> fileListItems = new LinkedList<>();
-    for (GitFile file : files) {
-      FileListItem item = new FileListItem(file);
-      fileListItems.add(item);
-    }
-    defaultListModel.addAll(fileListItems);
-    list.setModel(defaultListModel);
-
     //only one element can be chosen at a time
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    //Mouse Listener for Checkboxes. Selected files are being marked for git add
+    //Mouse for Checkboxes. Selected files are being marked for git add
+
+    /*
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
@@ -242,6 +238,9 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+     */
+
+    return list;
   }
 
   /*
@@ -258,6 +257,28 @@ public class AddCommitView extends JPanel implements IView {
     }
     return selectedCheckboxes;
   }
+
+  private void createUIComponents() {
+    GitData data = new GitData();
+    GitStatus gitStatus = data.getStatus();
+    List<GitFile> newFiles = new LinkedList<>();
+    List<GitFile> modifiedChangedFiles = new LinkedList<>();
+    List<GitFile> deletedFiles = new LinkedList<>();
+    try{
+      newFiles = gitStatus.getNewFiles();
+      modifiedChangedFiles = gitStatus.getModifiedChangedFiles();
+      deletedFiles = gitStatus.getDeletedFiles();
+    } catch (IOException | GitException e) {
+      GUIController controller = GUIController.getInstance();
+      controller.restoreDefaultView();
+      controller.errorHandler(e);
+      //TODO: was passiert mit dem Fenster?
+    }
+    newFilesList = setUpFileList(newFiles);
+    modifiedChangedFilesList = setUpFileList(modifiedChangedFiles);
+    deletedFilesList = setUpFileList(deletedFiles);
+  }
+
 
   /*
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
