@@ -77,7 +77,8 @@ public class Commit implements ICommand, ICommandGUI {
       message.append(gitFile.getPath().getName());
       message.append("\n");
     }
-    int commit = JOptionPane.showConfirmDialog(null, message.toString());
+    int commit = JOptionPane.showConfirmDialog(null, message.toString(),
+            "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (commit != 0){
       return false;
     }

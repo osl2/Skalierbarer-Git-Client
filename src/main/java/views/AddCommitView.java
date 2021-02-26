@@ -47,7 +47,6 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> deletedFilesList;
   @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
-  private JButton button1;
 
 
   public AddCommitView() {
@@ -180,7 +179,7 @@ public class AddCommitView extends JPanel implements IView {
    */
   private boolean executeCommit(boolean amend) {
     Commit commitCommand = new Commit();
-    boolean success = false;
+    boolean success;
 
     //set amend and commit message
     commitCommand.setAmend(amend);
@@ -218,7 +217,7 @@ public class AddCommitView extends JPanel implements IView {
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     //Mouse for Checkboxes. Selected files are being marked for git add
 
-    /*
+
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
@@ -238,7 +237,7 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
-     */
+
 
     return list;
   }
