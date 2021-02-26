@@ -10,13 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * This dialog is used to select the Branch which should be merged into the current branch.
  */
 public class MergeDialogView implements IDialogView {
 
-    private Merge merge;
     private JComboBox<GitBranch> fromComboBox;
     private JButton okButton;
     private JButton abortButton;
@@ -24,39 +24,29 @@ public class MergeDialogView implements IDialogView {
     private JLabel toLabel;
     private JLabel toValueLabel;
     private JPanel contentPane;
-    private GitData data;
+    private final GitData data;
 
     public MergeDialogView() {
-        try {
-            this.data = new GitData();
-            GitBranch selectedBranch = data.getSelectedBranch();
-            this.fromLabel.setText("Von");
-            this.toLabel.setText("Auf");
-            this.okButton.setText("Merge");
-            this.abortButton.setText("Abbrechen");
-            this.toValueLabel.setText(selectedBranch.getName());
+        this.data = new GitData();
 
-            this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
-            this.okButton.addActionListener(this::okButtonListener);
+        this.fromLabel.setText("Von");
+        this.toLabel.setText("Auf");
+        this.okButton.setText("Merge");
+        this.abortButton.setText("Abbrechen");
 
-            DefaultComboBoxModel<GitBranch> cbModel = new DefaultComboBoxModel<>();
-
-            data.getBranches().stream()
-                    .filter(b -> !b.equals(selectedBranch)) // dont allow merging into itself
-                    .forEach(cbModel::addElement);
-
-            fromComboBox.setRenderer((jList, gitBranch, i, b, b1) -> {
-                if (gitBranch != null)
-                    return new JLabel(gitBranch.getName());
-                else
-                    return new JLabel("");
-            });
-            fromComboBox.setModel(cbModel);
+        this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
+        this.okButton.addActionListener(this::okButtonListener);
 
 
-        } catch (GitException | IOException e) {
-            GUIController.getInstance().errorHandler(e);
-        }
+        fromComboBox.setRenderer((jList, gitBranch, i, b, b1) -> {
+            if (gitBranch != null)
+                return new JLabel(gitBranch.getName());
+            else
+                return new JLabel("");
+        });
+
+        // To update the branch list
+        update();
 
 
     }
@@ -72,8 +62,10 @@ public class MergeDialogView implements IDialogView {
                 GUIController.getInstance().errorHandler("Es müssen zwei Branches ausgewählt werden");
                 return;
             }
+
+            // Close Merge Dialog as the user interaction for this view is complete
             GUIController.getInstance().closeDialogView();
-            this.merge = new Merge((GitBranch) fromComboBox.getSelectedItem(), data.getSelectedBranch());
+            Merge merge = new Merge((GitBranch) fromComboBox.getSelectedItem(), data.getSelectedBranch());
             if (!merge.execute()) {
                 GUIController.getInstance().errorHandler("Merge fehlgeschlagen");
             }
@@ -112,7 +104,24 @@ public class MergeDialogView implements IDialogView {
         return this.contentPane;
     }
 
+    @Override
     public void update() {
+        DefaultComboBoxModel<GitBranch> cbModel = new DefaultComboBoxModel<>();
+        try {
+            GitBranch selectedBranch = data.getSelectedBranch();
+            data.getBranches().stream()
+                    .filter(b -> !b.equals(selectedBranch)) // dont allow merging into itself
+                    .forEach(cbModel::addElement);
+            fromComboBox.setModel(cbModel);
+            this.toValueLabel.setText(selectedBranch.getName());
+
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler("Der aktuelle Branch konnte nicht ausgelesen werden.");
+            Logger.getGlobal().warning(e.getMessage());
+        } catch (IOException e) {
+            GUIController.getInstance().errorHandler("Die Liste der Branches konnte nicht abgefragt werden.");
+            Logger.getGlobal().warning(e.getMessage());
+        }
 
     }
 }
