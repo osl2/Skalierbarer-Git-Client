@@ -5,23 +5,12 @@ variables:
 cache:
   paths:
     - .m2/repository/
-    - target/
 
 stages:
   - build
   - test
   - sonar
   - package
-
-maven_build:
-  stage: build
-  tags:
-    - maven
-  only:
-    - merge_requests
-    - master
-  script:
-    - mvn --no-transfer-progress compile
 
 # This is the name of the job. You can choose it freely.
 maven_test:
@@ -52,7 +41,7 @@ sonar:
     - sonar
     - maven
   only:
-    - master
+    - schedules
   script:
     - mvn --no-transfer-progress verify
     - git fetch --unshallow
