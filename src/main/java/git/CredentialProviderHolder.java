@@ -11,7 +11,7 @@ import java.awt.event.WindowListener;
  * Class which creates the CredentialProvider
  */
 public class CredentialProviderHolder {
-    private static CredentialProviderHolder INSTANCE = null;
+    private static CredentialProviderHolder instance = null;
     private String username;
     private String password;
     private boolean isActive = true;
@@ -68,10 +68,10 @@ public class CredentialProviderHolder {
      * @return Returns the Instance of the CredentialProvider
      */
     public static CredentialProviderHolder getInstance(){
-        if (INSTANCE == null){
-            INSTANCE = new CredentialProviderHolder();
+        if (instance == null){
+            instance = new CredentialProviderHolder();
         }
-        return INSTANCE;
+        return instance;
     }
 
 
