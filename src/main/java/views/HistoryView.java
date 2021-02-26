@@ -24,6 +24,7 @@ public class HistoryView extends JPanel implements IView {
   private JPanel historyViewPanel;
   private JScrollPane diffPane;
   private JPanel diffPanel;
+  private JScrollPane commitMessageScrollPane;
   private final JTextPane diffText;
   private Iterator<GitCommit> iteratorOfCommits;
   private final ArrayList<GitCommit> listOfCommits = new ArrayList<>();
@@ -52,6 +53,8 @@ public class HistoryView extends JPanel implements IView {
   public HistoryView() {
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     diffPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+    commitMessageScrollPane.setMinimumSize(new Dimension(680, 60));
+    commitMessage.setText(System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
