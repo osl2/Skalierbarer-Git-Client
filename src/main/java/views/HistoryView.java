@@ -14,6 +14,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Creates the lower part of the {@link MainWindow}. It shows all Commits of
+ * the active Branch of the active git Repository on the left side. The first Commit shown is
+ * the latest one. In the middle are the committed files of the selected Commit.
+ * On top of the right side is the full commit message and the author of the selected Commit.
+ * Below is the difference between the selected file and the former version of the file.
+ */
 public class HistoryView extends JPanel implements IView {
   private final DiffView diffView;
   private JList<String> commitList;
@@ -38,13 +45,18 @@ public class HistoryView extends JPanel implements IView {
   private int loadedFiles;
   private final DefaultListModel<String> listModel;
 
-
+  /**
+   * {@inheritDoc}
+   */
   public JPanel getView() {
     return new HistoryView().historyViewPanel;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void update() {
-    // This method is not used because it is not used.
+    // This method is not used because it is not needed.
   }
 
   /**
