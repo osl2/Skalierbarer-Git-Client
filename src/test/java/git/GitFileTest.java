@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GitFileTest extends AbstractGitTest {
+class GitFileTest extends AbstractGitTest {
 
   File fileNotStaged;
 
@@ -46,7 +46,7 @@ public class GitFileTest extends AbstractGitTest {
   }
 
   @Test
-  public void addTest() throws GitException, GitAPIException, IOException {
+  void addTest() throws GitException, GitAPIException, IOException {
     GitFile gitFile = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
     gitFile.add(); //  adding first file
     String gitDataFile = gitData.getStatus().getAddedFiles().iterator().next().getPath().getName();
@@ -65,7 +65,7 @@ public class GitFileTest extends AbstractGitTest {
   }
 
   @Test
-  public void addUndoTest() throws GitException, IOException, GitAPIException {
+  void addUndoTest() throws GitException, GitAPIException {
     GitFile gitFile = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
     git.add().addFilepattern(repo.toPath().relativize(fileNotStaged.toPath()).toString()).call();
     Status status = git.status().call();
