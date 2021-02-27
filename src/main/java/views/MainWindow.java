@@ -22,6 +22,7 @@ public class MainWindow extends JFrame {
     private JPanel buttonPanel;
     // Replacable panel
     private JPanel viewPanel;
+    @SuppressWarnings("unused")
     private JPanel headPanel;
     private JTextField commandLineTextField;
     private JLabel branchLabel;
@@ -99,6 +100,7 @@ public class MainWindow extends JFrame {
         newButton.setToolTipText(toolTip);
         newButton.addActionListener(listener);
         this.buttonPanel.add(newButton);
+        this.buttonPanel.repaint();
     }
 
     /**
