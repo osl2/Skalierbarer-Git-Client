@@ -23,8 +23,7 @@ public class Push implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    */
   public boolean execute(){
-    boolean success = false;
-    GitFacade facade = new GitFacade();
+    boolean success;
 
     //check wether local branch and remote have been set
     if (localBranch == null){
@@ -38,20 +37,19 @@ public class Push implements ICommand, ICommandGUI {
     //remote branch does not yet exist, git will automatically create one with the same name as the local branch
     if (remoteBranch == null){
       remoteBranch = localBranch.getName();
-        success = tryExecute();
+      success = tryExecute();
     }
     //remote branch already exists
     else{
-        if (getBanches() == false){
-          return false;
+      if (!getBanches()){
+        return false;
+      }
+      for (GitBranch branch : branchList){
+        if (branch.getName().compareTo(remoteBranch) == 0){
+          GUIController.getInstance().errorHandler("Es exitiert bereits ein anderer Branch mit diesem namen");
         }
-        for (int i = 0; i < branchList.size(); i++){
-          if (branchList.get(i).getName().compareTo(remoteBranch) == 0){
-            GUIController.getInstance().errorHandler("Es exitiert bereits ein anderer Branch mit diesem namen");
-            success = false;
-          }
-        }
-        success = tryExecute();
+      }
+      success = tryExecute();
     }
     return success;
   }
