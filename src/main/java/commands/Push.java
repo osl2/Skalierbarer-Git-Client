@@ -51,6 +51,9 @@ public class Push implements ICommand, ICommandGUI {
       }
       success = tryExecute();
     }
+    if(success) {
+      GUIController.getInstance().setCommandLine(getCommandLine());
+    }
     return success;
   }
 
@@ -61,7 +64,7 @@ public class Push implements ICommand, ICommandGUI {
    * on the command line
    */
   public String getCommandLine() {
-    return "git push " + remote + " " + localBranch;
+    return "git push " + remote.getName() + " " + localBranch.getName();
   }
 
   /**
