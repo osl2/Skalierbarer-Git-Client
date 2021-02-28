@@ -11,9 +11,7 @@ import java.io.IOException;
  * Serializer for ICommandGUI instances for Jackson.
  */
 public class ICommandSerializer extends StdSerializer<ICommandGUI> {
-    /**
-     * {@inheritDoc}
-     */
+
     protected ICommandSerializer(Class<ICommandGUI> t) {
         super(t);
     }
@@ -26,9 +24,7 @@ public class ICommandSerializer extends StdSerializer<ICommandGUI> {
         this(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void serialize(ICommandGUI iCommand, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {

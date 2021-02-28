@@ -41,7 +41,7 @@ public class FirstUseDialogView implements IDialogView {
             // make sure it is initialized.
             GitData data = new GitData();
             data.reinitialize();
-            boolean successConfig = config.execute();
+            config.execute();
             if (!successInit) {
                 return;
             }
@@ -89,7 +89,7 @@ public class FirstUseDialogView implements IDialogView {
     }
 
     public void update() {
-
+        // This method is not used because it is not needed.
     }
 
 }

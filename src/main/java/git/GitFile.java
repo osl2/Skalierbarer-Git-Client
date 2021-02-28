@@ -16,7 +16,7 @@ public class GitFile {
   private long size;
   private File path;
   private boolean ignored;
-  private boolean staged = false;
+  private boolean staged;
   private boolean deleted;
 
   /**
@@ -55,18 +55,18 @@ public class GitFile {
 
   /**
    * Method to get the relative path to the repository.
-   * If the operating System returns backslashs they are replaced by slashes.
+   * <p><b>WARNING</b>: All File-Separator Characters are replaced by "/"
+   * so this function is OS agnostic in its return value.</p>
    *
-   * @return relative path as a string
+   * @return relative path as a String
    */
   public String getRelativePath() {
     Path filePath = GitData.getRepository().getWorkTree().toPath().relativize(path.toPath());
     String toReturn = filePath.toString();
-    if (toReturn.contains("\\")) {
-      toReturn.replace(File.separator, "/");
-      return toReturn;
-    } else
-      return toReturn;
+    if (!File.separator.equals("/")) {
+      toReturn = toReturn.replace(File.separator, "/");
+    }
+    return toReturn;
   }
 
   /**
@@ -178,9 +178,6 @@ public class GitFile {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -189,9 +186,6 @@ public class GitFile {
     return Objects.equals(path, gitFile.path);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public int hashCode() {
     return Objects.hash(path);

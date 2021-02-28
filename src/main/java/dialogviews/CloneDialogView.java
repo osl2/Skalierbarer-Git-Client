@@ -5,8 +5,6 @@ import controller.GUIController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 public class CloneDialogView implements IDialogView {
@@ -32,38 +30,27 @@ public class CloneDialogView implements IDialogView {
     }
 
     private void addActionlistener() {
-        chooseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int returnVal = chooser.showOpenDialog(cloneDialog);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    path = chooser.getSelectedFile();
-                }
+        chooseButton.addActionListener(e -> {
+            chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnVal = chooser.showOpenDialog(cloneDialog);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                path = chooser.getSelectedFile();
             }
         });
-        cloneButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clone = new Clone();
-                clone.setGitURL(remoteField.getText());
-                clone.cloneRecursive(recursiveCheckBox.isSelected());
-                clone.setDestination(path);
-                boolean success = false;
-                success = clone.execute();
-                if (success) {
-                    GUIController.getInstance().setCommandLine(clone.getCommandLine());
-                    GUIController.getInstance().closeDialogView();
-                }
-            }
-        });
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        cloneButton.addActionListener(e -> {
+            clone = new Clone();
+            clone.setGitURL(remoteField.getText());
+            clone.cloneRecursive(recursiveCheckBox.isSelected());
+            clone.setDestination(path);
+            boolean success;
+            success = clone.execute();
+            if (success) {
+                GUIController.getInstance().setCommandLine(clone.getCommandLine());
                 GUIController.getInstance().closeDialogView();
             }
         });
+        cancelButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
     }
 
     /**
@@ -83,8 +70,7 @@ public class CloneDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(500, 400);
-        return dim;
+        return new Dimension(500, 400);
     }
 
     /**
@@ -98,7 +84,7 @@ public class CloneDialogView implements IDialogView {
     }
 
     public void update() {
-
+        // This method is not used because it is not needed.
     }
 
 }
