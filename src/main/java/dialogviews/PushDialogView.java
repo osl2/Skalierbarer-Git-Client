@@ -15,12 +15,12 @@ import java.util.List;
 public class PushDialogView implements IDialogView {
 
     private JPanel contentPane;
-    private JComboBox<String> remoteComboBox;
+    private JComboBox<GitRemote> remoteComboBox;
     private JButton pushButton;
     @SuppressWarnings("unused")
     private JPanel remotePanel;
     private JButton refreshButton;
-    private JComboBox<String> localBranchComboBox;
+    private JComboBox<GitBranch> localBranchComboBox;
     private JTextField selectedRemoteBranchTextfield;
     @SuppressWarnings("unused")
     private JTextField remoteTextField;
@@ -30,21 +30,19 @@ public class PushDialogView implements IDialogView {
     private JTextField remoteBranchTextField;
     @SuppressWarnings("unused")
     private JPanel localBranchPanel;
-    private GitBranch localBranch;
-    private List<GitBranch> localBranches;
-    private List<GitRemote> remoteList;
 
     public PushDialogView() {
         //fill local branch combobox and remote combobox with values
         setUpLocalBranchComboBox();
         setUpRemoteComboBox();
         //set text of the remote branch textfield: remote branch equals selected local branch
-        selectedRemoteBranchTextfield.setText(localBranches.get(localBranchComboBox.getSelectedIndex()).getName());
+        GitBranch selectedLocalBranch = (GitBranch) localBranchComboBox.getSelectedItem();
+        if (selectedLocalBranch != null) {
+            selectedRemoteBranchTextfield.setText(selectedLocalBranch.getName());
+        }
 
         localBranchComboBox.addActionListener(e -> {
-            //TODO: combobox enthält Strings
-            int index = localBranchComboBox.getSelectedIndex();
-            localBranch = localBranches.get(index);
+            GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
             if (localBranch != null){
                 selectedRemoteBranchTextfield.setText(localBranch.getName());
             }
@@ -91,7 +89,7 @@ public class PushDialogView implements IDialogView {
     }
 
     public void update() {
-        //TODO
+
     }
 
     @SuppressWarnings("unused")
@@ -104,29 +102,31 @@ public class PushDialogView implements IDialogView {
      */
     private void setUpLocalBranchComboBox() {
         GitData gitData = new GitData();
+        List<GitBranch> localBranches;
         try {
             localBranches = gitData.getBranches();
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
             return;
         }
-        GitBranch selectedBranch;
+        GitBranch checkedOutBranch;
         try {
-            selectedBranch = gitData.getSelectedBranch();
+            checkedOutBranch = gitData.getSelectedBranch();
         } catch (IOException e) {
             GUIController.getInstance().errorHandler(e);
             return;
         }
-        int count = 0;
         for (GitBranch branch : localBranches) {
+            localBranchComboBox.addItem(branch);
             //add all local branches to the combobox
-            localBranchComboBox.addItem(branch.getName());
+            //localBranchComboBox.addItem(branch.getName());
             //select by default the currently checked out branch
-            if (branch.getName().compareTo((selectedBranch.getName())) == 0) {
-                localBranchComboBox.setSelectedIndex(count);
+            if (branch.getName().compareTo((checkedOutBranch.getName())) == 0) {
+                localBranchComboBox.setSelectedItem(branch);
             }
-            count++;
         }
+
+        localBranchComboBox.setRenderer(new BranchComboBoxRenderer());
     }
 
     /*
@@ -134,38 +134,47 @@ public class PushDialogView implements IDialogView {
      */
     private void setUpRemoteComboBox() {
         GitData gitData = new GitData();
-        remoteList = gitData.getRemotes();
         //clear up the combobox
         remoteComboBox.removeAllItems();
-        int count = 0;
-        for (GitRemote gitRemote : remoteList) {
+        for (GitRemote gitRemote : gitData.getRemotes()) {
             //add all remotes in the list to the combo box
-            remoteComboBox.addItem(gitRemote.getName());
+            remoteComboBox.addItem(gitRemote);
             // select origin by default
             if (gitRemote.getName().compareTo("origin") == 0) {
-                remoteComboBox.setSelectedIndex(count);
+                remoteComboBox.setSelectedItem(gitRemote);
             }
-            count++;
         }
+
+        remoteComboBox.setRenderer(new RemoteComboBoxRenderer());
     }
 
     private boolean executePush() {
-        GitRemote remote = remoteList.get(remoteComboBox.getSelectedIndex());
-        localBranch = localBranches.get(localBranchComboBox.getSelectedIndex());
         Push push = new Push();
-        push.setLocalBranch(localBranch);
-        push.setRemote(remote);
+        push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
+        push.setRemote((GitRemote) remoteComboBox.getSelectedItem());
 
+        //TODO: wollen wir auch push auf anderen Branch unterstützen? sonst direkt in push ändern
         push.setRemoteBranch(null);
 
-        boolean success = push.execute();
-        if (success) {
-            GUIController.getInstance().setCommandLine(push.getCommandLine());
-        }
-        return success;
+        return push.execute();
     }
 
 
+    private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
+            this.setText(value.getName());
+            return this;
+        }
+    }
+
+    private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote> {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
+            this.setText(value.getName());
+            return this;
+        }
+    }
 }
 
 
