@@ -45,13 +45,10 @@ public class GitCommit {
 
     private void initializeCommit() {
         if (revCommit.getRawBuffer() == null) {
-            RevWalk revWalk = new RevWalk(GitData.getRepository());
-            try {
+            try (RevWalk revWalk = new RevWalk(GitData.getRepository())){
                 revWalk.parseHeaders(this.revCommit);
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                revWalk.dispose();
             }
         }
     }
