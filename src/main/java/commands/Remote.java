@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
-  private String subCommandName;
+  //private String subCommandName;
   private String remoteName;
   private String url;
 
@@ -47,9 +47,9 @@ public class Remote implements ICommand, ICommandGUI {
   public String getCommandLine() {
     String ret = "";
     switch (remoteSubcommand){
-      case ADD: ret =  "git remote add " + remoteName + " " + url.toString();
+      case ADD: ret =  "git remote add " + remoteName + " " + url;
       break;
-      case SET_URL: ret = "git remote set-url " + remote.getName() + " " + url.toString();
+      case SET_URL: ret = "git remote set-url " + remote.getName() + " " + url;
       break;
       case REMOVE: ret = "git remote rm " + remote.getName();
       break;
@@ -87,8 +87,8 @@ public class Remote implements ICommand, ICommandGUI {
         GitFacade gitFacade = new GitFacade();
         GitData gitData = new GitData();
         List<GitRemote> remoteList = gitData.getRemotes();
-        for (int i = 0; i < remoteList.size(); i++){
-          if (remoteList.get(i).getName().compareTo(remoteName) == 0){
+        for (GitRemote gitRemote : remoteList) {
+          if (gitRemote.getName().compareTo(remoteName) == 0) {
             GUIController.getInstance().errorHandler("Ein Remote mit diesem namen existiert bereits");
             return false;
           }
@@ -138,13 +138,6 @@ public class Remote implements ICommand, ICommandGUI {
     this.url = url;
   }
 
-  /**
-   * Return the active {@link RemoteSubcommand}.
-   * @return the {@link RemoteSubcommand}.
-   */
-  public RemoteSubcommand getRemoteSubcommand() {
-    return remoteSubcommand;
-  }
 
   /**
    * This subcommands indicate which git remote operation is needed.

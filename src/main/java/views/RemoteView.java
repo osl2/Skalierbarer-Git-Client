@@ -10,6 +10,8 @@ import git.GitRemote;
 import git.exception.GitException;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -18,14 +20,14 @@ public class RemoteView extends JPanel implements IView {
   private JPanel panel1;
   private JPanel remotePanel;
   private JScrollPane remotePane;
-  private JList remoteList;
+  private JList<GitRemote> remoteList;
   private JButton removeButton;
   private JTextField nameField;
   private JTextField urlField;
   private JLabel nameLabel;
   private JLabel urlLabel;
   private JPanel buttonPanel;
-  private JButton hinzufügenButton;
+  private JButton addButton;
   private JLabel branchLabel;
   private JScrollPane branchPane;
   private JTextArea branchArea;
@@ -34,7 +36,7 @@ public class RemoteView extends JPanel implements IView {
   private JPanel buttonPanel2;
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
-  private Remote remForSetURL = new Remote();
+  private final Remote remForSetURL = new Remote();
 
   /**
    * Konstruktor to create RemoteView
@@ -43,7 +45,7 @@ public class RemoteView extends JPanel implements IView {
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
     remotes = git.getRemotes();
-    DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
+    DefaultListModel<GitRemote> model = new DefaultListModel<>();
     for (int i = 0; i < remotes.size(); i++) {
       model.add(i, remotes.get(i));
     }
@@ -80,7 +82,7 @@ public class RemoteView extends JPanel implements IView {
         if (remForSetURL.execute()) {
           GUIController.getInstance().setCommandLine(remForSetURL.getCommandLine());
           remotes = git.getRemotes();
-          DefaultListModel<GitRemote> newModel = new DefaultListModel<GitRemote>();
+          DefaultListModel<GitRemote> newModel = new DefaultListModel<>();
           for (int i = 0; i < remotes.size(); i++) {
             newModel.add(i, remotes.get(i));
 
@@ -94,7 +96,7 @@ public class RemoteView extends JPanel implements IView {
 
       }
     });
-    hinzufügenButton.addActionListener(new ActionListener() {
+    addButton.addActionListener(new ActionListener() {
       /**
        * Invoked when an action occurs.
        *
@@ -105,30 +107,6 @@ public class RemoteView extends JPanel implements IView {
         GUIController.getInstance().openDialog(new RemoteAddDialogView());
       }
     });
-    remoteList.addMouseListener(new MouseAdapter() {
-      /**
-       * {@inheritDoc}
-       *
-       * @param e
-       */
-      @Override
-      public void mousePressed(MouseEvent e) {
-        int index = remoteList.getSelectedIndex();
-        GitRemote act = remotes.get(index);
-        nameField.setText(act.getName());
-        urlField.setText(act.getUrl().toString());
-        if (tryBranches(act) == false) {
-          GUIController.getInstance().openView(new RemoteView());
-          return;
-        }
-        String set = "";
-        for (int i = 0; i < branches.size(); i++) {
-          set = set + branches.get(i).getName() + System.lineSeparator();
-        }
-        branchArea.setText(set);
-      }
-    });
-
     urlField.addFocusListener(new FocusAdapter() {
       /**
        * {@inheritDoc}
@@ -166,6 +144,29 @@ public class RemoteView extends JPanel implements IView {
           urlField.setText("");
           branchArea.setText("");
         }
+      }
+    });
+    remoteList.addListSelectionListener(new ListSelectionListener() {
+      /**
+       * Called whenever the value of the selection changes.
+       *
+       * @param e the event that characterizes the change.
+       */
+      @Override
+      public void valueChanged(ListSelectionEvent e) {
+        int index = remoteList.getSelectedIndex();
+        GitRemote act = remotes.get(index);
+        nameField.setText(act.getName());
+        urlField.setText(act.getUrl().toString());
+        if (tryBranches(act) == false) {
+          GUIController.getInstance().openView(new RemoteView());
+          return;
+        }
+        String set = "";
+        for (int i = 0; i < branches.size(); i++) {
+          set = set + branches.get(i).getName() + System.lineSeparator();
+        }
+        branchArea.setText(set);
       }
     });
   }
