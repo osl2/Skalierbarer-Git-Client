@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class Remote implements ICommand, ICommandGUI {
   private GitRemote remote;
-  //private String subCommandName;
   private String remoteName;
   private String url;
 
