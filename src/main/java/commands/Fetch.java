@@ -15,11 +15,7 @@ import java.util.LinkedList;
  * you have to pass a list of {@link GitRemote}.
  */
 public class Fetch implements ICommand, ICommandGUI {
-  private String errorMessage;
-  private String commandLine;
-  private String commandName;
-  private String commandDescription;
-  private LinkedList<GitRemote> remotes = new LinkedList<GitRemote>();
+  private final LinkedList<GitRemote> remotes = new LinkedList<>();
 
   /**
    * Executes the "git fetch" command. Can only be used after setRemotes was called once.
@@ -27,8 +23,7 @@ public class Fetch implements ICommand, ICommandGUI {
    * @return True, if it is successfully executed false if not
    */
   public boolean execute()  {
-    GitFacade facade = new GitFacade();
-    boolean suc = false;
+    boolean suc;
       suc = tryFetch();
     return suc;
   }
@@ -40,13 +35,13 @@ public class Fetch implements ICommand, ICommandGUI {
    */
 
   public void addRemote(GitRemote remote){
-    if(remotes.contains(remote) == false) {
+    if(!remotes.contains(remote)) {
       remotes.add(remote);
     }
   }
 
   public void addBranch(GitRemote remote, GitBranch branch) {
-    if (remotes.contains(remote) == false){
+    if (!remotes.contains(remote)){
       remotes.add(remote);
     }
     remote.addBranch(branch);
@@ -58,18 +53,17 @@ public class Fetch implements ICommand, ICommandGUI {
    *     git command to display on the command line
    */
   public String getCommandLine() {
-      String out = "";
-      for (int i = 0; i < remotes.size(); i++){
-        if (remotes.get(i).getFetchBranches() == null){
-          out = out + "git fetch " + remotes.get(i).getName() + System.lineSeparator();
-        }
-        else {
-          for (int j = 0; j < remotes.get(i).getFetchBranches().size(); j++) {
-            out = out + "git fetch " + remotes.get(i).getName() + " " + remotes.get(i).getFetchBranches().get(j).getName() + System.lineSeparator();
-          }
+      StringBuilder out = new StringBuilder();
+    for (GitRemote remote : remotes) {
+      if (remote.getFetchBranches() == null) {
+        out.append("git fetch ").append(remote.getName()).append(System.lineSeparator());
+      } else {
+        for (int j = 0; j < remote.getFetchBranches().size(); j++) {
+          out.append("git fetch ").append(remote.getName()).append(" ").append(remote.getFetchBranches().get(j).getName()).append(System.lineSeparator());
         }
       }
-      return out;
+    }
+      return out.toString();
   }
 
   /**
