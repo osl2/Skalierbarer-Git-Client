@@ -22,9 +22,9 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute(){
-    boolean success = false;
-    GitFacade facade = new GitFacade();
+    boolean success;
 
     //check wether local branch and remote have been set
     if (localBranch == null){
@@ -38,20 +38,20 @@ public class Push implements ICommand, ICommandGUI {
     //remote branch does not yet exist, git will automatically create one with the same name as the local branch
     if (remoteBranch == null){
       remoteBranch = localBranch.getName();
-        success = tryExecute();
+      success = tryExecute();
     }
     //remote branch already exists
     else{
-        if (getBanches() == false){
+      if (!getBranches()){
+        return false;
+      }
+      for (GitBranch branch : branchList){
+        if (branch.getName().compareTo(remoteBranch) == 0){
+          GUIController.getInstance().errorHandler("Es existiert bereits ein anderer Branch mit diesem Namen");
           return false;
         }
-        for (int i = 0; i < branchList.size(); i++){
-          if (branchList.get(i).getName().compareTo(remoteBranch) == 0){
-            GUIController.getInstance().errorHandler("Es exitiert bereits ein anderer Branch mit diesem namen");
-            success = false;
-          }
-        }
-        success = tryExecute();
+      }
+      success = tryExecute();
     }
     return success;
   }
@@ -62,8 +62,9 @@ public class Push implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding git command to display
    * on the command line
    */
+  @Override
   public String getCommandLine() {
-    return "git push " + remote + " " + localBranch;
+    return "git push " + remote.getName() + " " + localBranch.getName();
   }
 
   /**
@@ -71,6 +72,7 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
+  @Override
   public String getName() {
     return "Push";
   }
@@ -80,12 +82,14 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return description as a Sting
    */
+  @Override
   public String getDescription() {
     return "Lädt die lokalen Einbuchungen aus dem aktuellen Branch in das Online-Verzeichnis hoch";
   }
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     GUIController c = GUIController.getInstance();
     c.openDialog(new PushDialogView());
@@ -132,7 +136,7 @@ public class Push implements ICommand, ICommandGUI {
       }
     }
   }
-  private boolean getBanches(){
+  private boolean getBranches(){
     GitData git = new GitData();
     try {
       branchList = git.getBranches(remote);
@@ -140,7 +144,7 @@ public class Push implements ICommand, ICommandGUI {
     } catch (GitException e){
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
       if (CredentialProviderHolder.getInstance().isActive()){
-        return getBanches();
+        return getBranches();
       }
       else {
         CredentialProviderHolder.getInstance().setActive(true);
