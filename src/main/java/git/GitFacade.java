@@ -134,7 +134,7 @@ public class GitFacade {
     return true;
   }
 
-  public boolean cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
+  public void cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
     try {
       Git.cloneRepository()
           .setURI(gitUrl)
@@ -150,10 +150,9 @@ public class GitFacade {
     } catch (GitAPIException | JGitInternalException e) {
       throw new GitException("Folgender Fehler ist aufgetreten: " + e.getMessage());
     }
-    return true;
   }
 
-  public boolean fetchRemotes(List<GitRemote> remotes) throws GitException {
+  public void  fetchRemotes(List<GitRemote> remotes) throws GitException {
     try {
       Git jgit = GitData.getJGit();
        for (GitRemote gitRemote : remotes) {
@@ -180,10 +179,9 @@ public class GitFacade {
     } catch (GitAPIException e) {
       throw new GitException(e.getMessage());
     }
-    return true;
   }
 
-  public boolean setRepositoryPath(File path) {
+  public void setRepositoryPath(File path) {
     Settings settings = Settings.getInstance();
     GitData data = new GitData();
     if (RepositoryCache.FileKey.isGitRepository(path, FS.DETECTED)) {
@@ -192,7 +190,6 @@ public class GitFacade {
       initializeRepository(path);
     }
     data.reinitialize();
-    return true;
   }
 
   /**

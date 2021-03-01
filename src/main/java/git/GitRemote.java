@@ -92,9 +92,7 @@ public class GitRemote {
    * @param branch branch that should be added
    */
   public void addBranch(GitBranch branch) {
-    // if (!(fetchBranches.contains(branch))) {
     fetchBranches.add(branch);
-    // }
   }
 
   /**
@@ -102,8 +100,10 @@ public class GitRemote {
    *
    * @return All branches that can be fetched
    */
+  @SuppressWarnings("unchecked")
   public List<GitBranch> getFetchBranches() {
-    return (List<GitBranch>) fetchBranches.clone();
+    Object cloned = fetchBranches.clone();
+    return (List<GitBranch>) cloned;
   }
 
   /**
