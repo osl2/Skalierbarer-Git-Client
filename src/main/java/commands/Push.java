@@ -51,9 +51,6 @@ public class Push implements ICommand, ICommandGUI {
       }
       success = tryExecute();
     }
-    if(success) {
-      GUIController.getInstance().setCommandLine(getCommandLine());
-    }
     return success;
   }
 

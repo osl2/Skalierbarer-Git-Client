@@ -155,8 +155,13 @@ public class PushDialogView implements IDialogView {
 
         //TODO: wollen wir auch push auf anderen Branch unterstützen? sonst direkt in push ändern
         push.setRemoteBranch(null);
+        boolean success = push.execute();
 
-        return push.execute();
+        //set command line if push was successful
+        if(success){
+            GUIController.getInstance().setCommandLine(push.getCommandLine());
+        }
+        return success;
     }
 
 
