@@ -15,7 +15,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-
+@SuppressWarnings("unused")
 public class RemoteView extends JPanel implements IView {
   private JPanel panel1;
   private JPanel remotePanel;
@@ -135,7 +135,7 @@ public class RemoteView extends JPanel implements IView {
         if (retRemote.execute()) {
           GUIController.getInstance().setCommandLine(retRemote.getCommandLine());
           remotes = git.getRemotes();
-          DefaultListModel<GitRemote> model = new DefaultListModel<GitRemote>();
+          DefaultListModel<GitRemote> model = new DefaultListModel<>();
           for (int i = 0; i < remotes.size(); i++) {
             model.add(i, remotes.get(i));
           }
@@ -157,16 +157,16 @@ public class RemoteView extends JPanel implements IView {
         int index = remoteList.getSelectedIndex();
         GitRemote act = remotes.get(index);
         nameField.setText(act.getName());
-        urlField.setText(act.getUrl().toString());
-        if (tryBranches(act) == false) {
+        urlField.setText(act.getUrl());
+        if (!tryBranches(act)) {
           GUIController.getInstance().openView(new RemoteView());
           return;
         }
-        String set = "";
-        for (int i = 0; i < branches.size(); i++) {
-          set = set + branches.get(i).getName() + System.lineSeparator();
+        StringBuilder set = new StringBuilder();
+        for (GitBranch branch : branches) {
+          set.append(branch.getName()).append(System.lineSeparator());
         }
-        branchArea.setText(set);
+        branchArea.setText(set.toString());
       }
     });
   }
@@ -212,39 +212,50 @@ public class RemoteView extends JPanel implements IView {
   private void reloadBranches() {
     GitRemote act = remotes.get(remoteList.getSelectedIndex());
     nameField.setText(act.getName());
-    urlField.setText(act.getUrl().toString());
-    if (tryBranches(act) == false) {
+    urlField.setText(act.getUrl());
+    if (!tryBranches(act)) {
       GUIController.getInstance().openView(new RemoteView());
       return;
     }
-    String set = "";
-    for (int i = 0; i < branches.size(); i++) {
-      set = set + branches.get(i).getName() + System.lineSeparator();
+    StringBuilder set = new StringBuilder();
+    for (GitBranch branch : branches) {
+      set.append(branch.getName()).append(System.lineSeparator());
     }
-    branchArea.setText(set);
+    branchArea.setText(set.toString());
   }
 
   /**
    * Renderer for the remoteList
    */
-  private static class RemoteViewRenderer extends JTextArea implements ListCellRenderer {
+  private static class RemoteViewRenderer extends JTextArea implements ListCellRenderer<GitRemote> {
 
     public RemoteViewRenderer() {
       this.setLineWrap(true);
       this.setWrapStyleWord(true);
     }
-
     /**
-     * {@inheritDoc}
+     * Return a component that has been configured to display the specified
+     * value. That component's <code>paint</code> method is then called to
+     * "render" the cell.  If it is necessary to compute the dimensions
+     * of a list because the list cells do not have a fixed size, this method
+     * is called to generate a component on which <code>getPreferredSize</code>
+     * can be invoked.
+     *
+     * @param list         The JList we're painting.
+     * @param value        The value returned by list.getModel().getElementAt(index).
+     * @param index        The cells index.
+     * @param isSelected   True if the specified cell was selected.
+     * @param cellHasFocus True if the specified cell has the focus.
+     * @return A component whose paint() method will render the specified value.
+     * @see JList
+     * @see ListSelectionModel
+     * @see ListModel
      */
     @Override
-    public Component getListCellRendererComponent(final JList list,
-                                                  final Object value, final int index, final boolean isSelected,
-                                                  final boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
       Color background = Color.WHITE;
-      GitRemote act = (GitRemote) value;
-      String name = act.getName();
-      String url = act.getUrl().toString();
+      String name = value.getName();
+      String url = value.getUrl();
       this.setText(name + System.lineSeparator() + System.lineSeparator() + url);
       // Only the first 6 lines of the commit message should be shown;
       int width = list.getWidth();

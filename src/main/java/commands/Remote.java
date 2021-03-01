@@ -6,7 +6,6 @@ import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 import views.RemoteView;
-
 import java.util.List;
 
 /**
