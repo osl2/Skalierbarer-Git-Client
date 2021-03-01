@@ -56,10 +56,10 @@ public class Fetch implements ICommand, ICommandGUI {
       StringBuilder out = new StringBuilder();
     for (GitRemote remote : remotes) {
       if (remote.getFetchBranches() == null) {
-        out.append("git fetch ").append(remote.getName()).append(System.lineSeparator());
+        out.append("git fetch ").append(remote.getName());
       } else {
         for (int j = 0; j < remote.getFetchBranches().size(); j++) {
-          out.append("git fetch ").append(remote.getName()).append(" ").append(remote.getFetchBranches().get(j).getName()).append(System.lineSeparator());
+          out.append(System.lineSeparator()).append("git fetch ").append(remote.getName()).append(" ").append(remote.getFetchBranches().get(j).getName());
         }
       }
     }
