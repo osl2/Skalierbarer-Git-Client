@@ -160,7 +160,7 @@ public class AddCommitView extends JPanel implements IView {
     addCommand.setFilesToBeAdded(getFilesToBeAdded());
     addCommand.setFilesToBeRestored(getFilesToBeRestored());
 
-    //execute git add and set command line 
+    //execute git add and set command line
     if (addCommand.execute()){
       GUIController.getInstance().setCommandLine(addCommand.getCommandLine());
     }
