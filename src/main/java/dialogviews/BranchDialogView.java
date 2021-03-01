@@ -18,18 +18,21 @@ import java.util.List;
 /**
  * Class of the DialogView from the command branch
  */
-@SuppressWarnings("unused")
 public class BranchDialogView implements IDialogView {
     private List<GitBranch> branches;
     private final LinkedList<GitCommit> commits = new LinkedList<>();
+    @SuppressWarnings("unused")
     private JPanel panel1;
     private JPanel BranchPanel;
     private JComboBox<String> branchComboBox;
     private JComboBox<String> commitComboBox;
     private JTextField nameField;
     private JButton branchButton;
+    @SuppressWarnings("unused")
     private JLabel branchLabel;
+    @SuppressWarnings("unused")
     private JLabel commitLabel;
+    @SuppressWarnings("unused")
     private JLabel nameLabel;
 
     /**
