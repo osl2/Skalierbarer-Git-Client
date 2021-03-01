@@ -9,16 +9,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class UsernamePasswordDialogView implements IDialogView {
-
+    @SuppressWarnings("unused")
     private JPanel panel1;
     private JPanel UserPwPanel;
     private JTextField textField1;
     private JPasswordField passwordField;
+    @SuppressWarnings("unused")
     private JLabel userNameLabel;
     private JButton okButton;
+    @SuppressWarnings("unused")
     private JLabel pwLabel;
     private JButton breakButton;
-    private String name;
+    private final String name;
 
     /**
      * DialogWindow Title
@@ -42,11 +44,12 @@ public class UsernamePasswordDialogView implements IDialogView {
             public void actionPerformed(ActionEvent e) {
                 String username = textField1.getText();
                 char[] password = passwordField.getPassword();
-                String pw = "";
-                for (int i = 0; i < password.length; i++) {
-                    pw += password[i];
+                StringBuilder pw = new StringBuilder();
+                for (char c : password) {
+                    pw.append(c);
                 }
-                CredentialProviderHolder.getInstance().setPassword(pw);
+                // Configures the Variables of the ProviderHolder
+                CredentialProviderHolder.getInstance().setPassword(pw.toString());
                 CredentialProviderHolder.getInstance().setUsername(username);
                 CredentialProviderHolder.getInstance().setActive(true);
                 GUIController.getInstance().closeDialogView();
@@ -83,8 +86,7 @@ public class UsernamePasswordDialogView implements IDialogView {
      */
     @Override
     public Dimension getDimension() {
-        Dimension dim = new Dimension(400, 200);
-        return dim;
+        return new Dimension(400, 200);
     }
 
     /**
