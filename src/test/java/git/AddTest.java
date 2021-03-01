@@ -28,10 +28,16 @@ public class AddTest extends AbstractGitTest{
 
         //prepare add command to add file2 and file3
         Add add = new Add();
-        List<GitFile> files = new LinkedList<>();
-        files.add(gitFile2);
-        files.add(gitFile3);
-        add.addFiles(files);
+        List<GitFile> filesToBeAdded = new LinkedList<>();
+        List<GitFile> filesToBeRestored = new LinkedList<>();
+
+        //this is done internally by add commit view. Selected files that are not staged yet are added to filesToBeAdded,
+        //unselected files that are staged are added to filesToBeRestored
+        filesToBeAdded.add(gitFile2);
+        filesToBeAdded.add(gitFile3);
+        filesToBeRestored.add(gitFile1);
+        add.setFilesToBeAdded(filesToBeAdded);
+        add.setFilesToBeRestored(filesToBeRestored);
 
         //add file1 and file2 manually
         git.add()

@@ -10,7 +10,6 @@ import views.AddCommitView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,9 +19,6 @@ import java.util.List;
 public class Commit implements ICommand, ICommandGUI {
   private String commitMessage;
   private boolean amend;
-  private GitFacade gitFacade;
-  private GitStatus gitStatus;
-  private GitData gitData;
 
   /**
    * Constructor of the commit command. The amend option must be set explicitly in order to amend the last commit
@@ -55,52 +51,59 @@ public class Commit implements ICommand, ICommandGUI {
    * execution of the command in JGit throws an exception
    */
   public boolean execute() {
-    gitData = new GitData();
-    this.gitStatus = gitData.getStatus();
-    gitFacade = new GitFacade();
-    List<GitFile> stagedFiles = new LinkedList<>();
+    GitData gitData = new GitData();
+    GitStatus gitStatus= gitData.getStatus();
+    GitFacade gitFacade = new GitFacade();
+    List<GitFile> stagedFiles;
+    GUIController controller = GUIController.getInstance();
 
     //get the list of staged files from status
     try {
       stagedFiles = gitStatus.getStagedFiles();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    } catch (GitException e) {
-      e.printStackTrace();
+    } catch (GitException | IOException e) {
+      controller.errorHandler(e);
       return false;
     }
 
-    //check if staging-area is empty
-    if (stagedFiles.isEmpty() && gitData.getMergeCommitMessage() == null) {
-      GUIController.getInstance().errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
-      return false;
+
+    //empty staging area is only allowed for merge and amend
+    if (stagedFiles.isEmpty()){
+      if (gitData.getMergeCommitMessage() == null && !amend) {
+        controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
+        return false;
+      }
     }
 
-    //prepare the confirmation dialog
-    StringBuffer message = new StringBuffer();
-    message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
-    for (GitFile gitFile : stagedFiles){
-      message.append(gitFile.getPath().getName() + "\n");
+    else {
+      //prepare the confirmation dialog
+      StringBuilder message = new StringBuilder();
+      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
+      for (GitFile gitFile : stagedFiles){
+        message.append(gitFile.getPath().getName());
+        message.append("\n");
+      }
+      int commit = JOptionPane.showConfirmDialog(null, message.toString(),
+              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      if (commit != 0){
+        return false;
+      }
     }
-    int commit = JOptionPane.showConfirmDialog(null, message.toString());
-    if (commit != 0){
-      return false;
-    }
+
 
     if (commitMessage == null
-            || commitMessage.equals(AddCommitView.getDEFAULT_COMMIT_MESSAGE())
+            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
             || commitMessage.equals("")){
-      GUIController.getInstance().errorHandler("Ungültige Commit-Nachricht eingegeben");
+      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
       return false;
     }
-    boolean success = false;
+    boolean success;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
     } catch (GitException e) {
-      GUIController.getInstance().errorHandler(e);
+      controller.errorHandler(e);
       return false;
     }
+
     return success;
   }
 

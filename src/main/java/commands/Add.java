@@ -17,12 +17,12 @@ import java.util.List;
  * the user has to pass a list of GitFiles.
  */
 public class Add implements ICommand, ICommandGUI {
-  private List<GitFile> files;
-  private GitStatus gitStatus;
-  private GitData gitData;
+  private List<GitFile> filesToBeAdded;
+  private List<GitFile> filesToBeRestored;
 
   public Add(){
-    files = new LinkedList<>();
+    filesToBeAdded = new LinkedList<>();
+    filesToBeRestored = new LinkedList<>();
   }
 
 
@@ -32,71 +32,47 @@ public class Add implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
    */
   public boolean execute() {
-    List<GitFile> stagedFiles = new LinkedList<>();
-    gitData = new GitData();
-    gitStatus = gitData.getStatus();
+    GitData gitData = new GitData();
 
-      //get all the staged files
     try {
-      stagedFiles = gitStatus.getStagedFiles();
+
+      //perform add for all files that have been selected by the user
+      for (GitFile fileToBeAdded : filesToBeAdded){
+        //distinction is necessary, because git add does not worked for files that have been deleted
+        if (fileToBeAdded.isDeleted()){
+          fileToBeAdded.rm();
+        }
+        else {
+          fileToBeAdded.add();
+        }
+      }
+
+      //perform add undo for all files that have been deselected
+      for (GitFile fileToBeRestored : filesToBeRestored){
+        fileToBeRestored.addUndo();
+      }
     } catch (GitException e) {
       GUIController.getInstance().errorHandler(e);
       return false;
-    } catch (IOException e) {
-      GUIController.getInstance().errorHandler(e);
-      return false;
     }
-
-    //add files that are not in the staging-area yet
-    for (GitFile unstagedFile : files){
-      /*
-      determine whether the file might have been deleted. In this case, call rm() on the GitFile to remove it from the
-      list of uncommitted changes. Note: This is a workaround for the fact that manually deleted files cannot be added
-      anymore and therefore appear in the status forever
-       */
-      if (unstagedFile.isDeleted()){
-        try {
-          unstagedFile.rm();
-        } catch (GitException e) {
-          e.printStackTrace();
-          return false;
-        }
-      }
-
-      //if file has not been deleted and file is not staged yet, add it to the staging area
-      else if (!stagedFiles.contains(unstagedFile)){
-        try {
-          unstagedFile.add();
-        } catch (GitException e) {
-          GUIController.getInstance().errorHandler(e);
-          return false;
-        }
-      }
-    }
-    //remove files that were added to the staging-area earlier but were marked by the user to restage them
-    for (GitFile stagedFile : stagedFiles){
-      if (!files.contains(stagedFile)){
-        try {
-          stagedFile.addUndo();
-        } catch (GitException e) {
-          GUIController.getInstance().errorHandler(e);
-          return false;
-        }
-      }
-    }
-
     return true;
   }
 
 
-
-
   /**
    * Takes a list of files that should be added to the staging area.
-   * @param files a list of GitFiles to add to the staging area.
+   * @param filesToBeAdded a list of GitFiles to add to the staging area.
    */
-  public void addFiles(List<GitFile> files){
-    this.files.addAll(files);
+  public void setFilesToBeAdded(List<GitFile> filesToBeAdded){
+    this.filesToBeAdded = filesToBeAdded;
+  }
+
+  /**
+   * Takes a list of files that should be removed from the staging area
+   * @param filesToBeRestored a list of GitFiles to remove from the staging area
+   */
+  public void setFilesToBeRestored(List<GitFile> filesToBeRestored){
+    this.filesToBeRestored = filesToBeRestored;
   }
 
 
@@ -108,9 +84,10 @@ public class Add implements ICommand, ICommandGUI {
    *     git command to display on the command line
    */
   public String getCommandLine() {
-    StringBuffer cl = new StringBuffer("git add ");
-    for (GitFile file : files){
-      cl.append(file.getPath().getPath() + " ");
+    StringBuilder cl = new StringBuilder("git add ");
+    for (GitFile file : filesToBeAdded){
+      cl.append(file.getPath());
+      cl.append(" ");
     }
     return cl.toString();
   }
@@ -137,5 +114,6 @@ public class Add implements ICommand, ICommandGUI {
     GUIController controller = GUIController.getInstance();
     controller.openView(new AddCommitView());
   }
+
 
 }
