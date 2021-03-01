@@ -41,12 +41,13 @@ public class Push implements ICommand, ICommandGUI {
     }
     //remote branch already exists
     else{
-      if (!getBanches()){
+      if (!getBranches()){
         return false;
       }
       for (GitBranch branch : branchList){
         if (branch.getName().compareTo(remoteBranch) == 0){
-          GUIController.getInstance().errorHandler("Es exitiert bereits ein anderer Branch mit diesem namen");
+          GUIController.getInstance().errorHandler("Es existiert bereits ein anderer Branch mit diesem Namen");
+          return false;
         }
       }
       success = tryExecute();
@@ -130,7 +131,7 @@ public class Push implements ICommand, ICommandGUI {
       }
     }
   }
-  private boolean getBanches(){
+  private boolean getBranches(){
     GitData git = new GitData();
     try {
       branchList = git.getBranches(remote);
@@ -138,7 +139,7 @@ public class Push implements ICommand, ICommandGUI {
     } catch (GitException e){
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
       if (CredentialProviderHolder.getInstance().isActive()){
-        return getBanches();
+        return getBranches();
       }
       else {
         CredentialProviderHolder.getInstance().setActive(true);
