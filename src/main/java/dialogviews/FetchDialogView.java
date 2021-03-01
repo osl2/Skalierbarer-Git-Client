@@ -1,5 +1,4 @@
 package dialogviews;
-
 import commands.Fetch;
 import controller.GUIController;
 import git.CredentialProviderHolder;
@@ -7,7 +6,6 @@ import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
 import git.exception.GitException;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -20,24 +18,27 @@ import java.awt.event.ActionListener;
 public class FetchDialogView implements IDialogView {
 
   private JPanel FetchPanel;
+  @SuppressWarnings("unused")
   private JScrollPane treeScrollPanel;
   private JTree fetchTree;
   private JButton fetchButton;
+  @SuppressWarnings("unused")
   private JPanel bottomPanel;
-  private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-  private DefaultTreeModel model;
   private boolean isOpen = true;
 
+  /**
+   * Constructor to create a new Instance
+   */
   public FetchDialogView() {
-
     final GitData git;
     git = new GitData();
     fetchTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-    this.model = (DefaultTreeModel) this.fetchTree.getModel();
+    DefaultTreeModel model = (DefaultTreeModel) this.fetchTree.getModel();
     // Build branch-tree
 
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     for (GitRemote gitRemote : git.getRemotes()) {
-      RemoteTreeNode remoteTreeNode = null;
+      RemoteTreeNode remoteTreeNode;
 
       try {
         remoteTreeNode = buildRemoteTree(gitRemote);
@@ -50,7 +51,6 @@ public class FetchDialogView implements IDialogView {
 
     this.fetchTree.setRootVisible(false);
     model.setRoot(root);
-    // Todo: localize
     fetchButton.addActionListener(new ActionListener() {
       /**
        * Invoked when an action occurs.
@@ -59,16 +59,18 @@ public class FetchDialogView implements IDialogView {
        */
       @Override
       public void actionPerformed(ActionEvent e) {
+        // Gets the selcted Branches and remotes
         TreePath[] selected = fetchTree.getSelectionPaths();
         Fetch command = new Fetch();
         if (selected == null) {
           GUIController.getInstance().errorHandler("Es muss ein branch oder remote ausgewählt werden");
           return;
         }
-        for (int i = 0; i < selected.length; i++) {
-          RefTreeNode node = (RefTreeNode) selected[i].getLastPathComponent();
+        for (TreePath treePath : selected) {
+          RefTreeNode node = (RefTreeNode) treePath.getLastPathComponent();
           node.configureFetch(command);
         }
+        // If executes change commandline and close dialogview
         if (command.execute()) {
           GUIController.getInstance().setCommandLine(command.getCommandLine());
           GUIController.getInstance().closeDialogView();
@@ -81,18 +83,14 @@ public class FetchDialogView implements IDialogView {
   }
 
   private RemoteTreeNode buildRemoteTree(GitRemote r) throws Exception {
-    GitData git = null;
     RemoteTreeNode root = new RemoteTreeNode(r);
-
-    git = new GitData();
-
     GitBranch[] branches;
     branches = loadRemoteBranches(r);
     if (branches == null) {
       throw new Exception();
     }
-    for (int i = 0; i < branches.length; i++) {
-      BranchTreeNode node = new BranchTreeNode(branches[i], r);
+    for (GitBranch branch : branches) {
+      BranchTreeNode node = new BranchTreeNode(branch, r);
       root.add(node);
     }
 
@@ -113,15 +111,27 @@ public class FetchDialogView implements IDialogView {
       this.remote = remote;
     }
 
+    /**
+     * Gets the remote this node holds
+     * @return remote this node holds
+     */
     public GitRemote getRemote() {
       return remote;
     }
 
+    /**
+     * Gets the string-representation of this class
+     * @return string-representation
+     */
     @Override
     public String toString() {
       return remote.getName();
     }
 
+    /**
+     * Configures a fetch command
+     * @param fetch the fetch command, on which the operation is executed
+     */
     @Override
     void configureFetch(Fetch fetch) {
       fetch.addRemote(remote);
@@ -136,16 +146,27 @@ public class FetchDialogView implements IDialogView {
       this.branch = branch;
       this.remote = remote;
     }
-
+    /**
+     * Gets the string-representation of this class
+     * @return string-representation
+     */
     @Override
     public String toString() {
       return branch.getName();
     }
 
+    /**
+     * Method to get the branch of this node
+     * @return GitBranch
+     */
     public GitBranch getBranch() {
       return branch;
     }
 
+    /**
+     * Configures a fetch command
+     * @param fetch the fetch command, on which the operation is executed
+     */
     @Override
     void configureFetch(Fetch fetch) {
       fetch.addBranch(remote, branch);
@@ -169,8 +190,7 @@ public class FetchDialogView implements IDialogView {
    */
   @Override
   public Dimension getDimension() {
-    Dimension dim = new Dimension(800, 600);
-    return dim;
+    return new Dimension(800, 600);
   }
 
   /**
@@ -187,6 +207,10 @@ public class FetchDialogView implements IDialogView {
 
   }
 
+  /**
+   * Returns if this window can be opened
+   * @return true if its possible false else
+   */
   public boolean isOpen() {
     return isOpen;
   }
@@ -201,7 +225,7 @@ public class FetchDialogView implements IDialogView {
     GitData git = new GitData();
     GitBranch[] ret = null;
     try {
-      ret = git.getBranches(r).toArray(new GitBranch[git.getBranches(r).size()]);
+      ret = git.getBranches(r).toArray(new GitBranch[0]);
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, r.getName());
       if (CredentialProviderHolder.getInstance().isActive()) {

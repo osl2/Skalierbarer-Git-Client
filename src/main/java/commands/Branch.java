@@ -2,12 +2,9 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.BranchDialogView;
-import git.GitBranch;
 import git.GitCommit;
 import git.GitFacade;
 import git.exception.GitException;
-
-import java.io.IOException;
 
 /**
  * This class represents the git branch operation. With the execute method
