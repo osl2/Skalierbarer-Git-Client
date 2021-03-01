@@ -23,7 +23,7 @@ public class CredentialProviderHolder {
         username = "";
         password = "";
     }
-    private WindowListener windowListener = new WindowListener() {
+    private final WindowListener windowListener = new WindowListener() {
         /**
          * {@inheritDoc}
          */
@@ -91,9 +91,6 @@ public class CredentialProviderHolder {
     public void changeProvider(boolean needProv, String nameForProof){
         if (needProv) {
             GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof),windowListener);
-        }
-        else {
-            return;
         }
     }
 
