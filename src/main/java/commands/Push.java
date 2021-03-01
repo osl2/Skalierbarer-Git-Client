@@ -22,6 +22,7 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute(){
     boolean success;
 
@@ -61,6 +62,7 @@ public class Push implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding git command to display
    * on the command line
    */
+  @Override
   public String getCommandLine() {
     return "git push " + remote.getName() + " " + localBranch.getName();
   }
@@ -70,6 +72,7 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
+  @Override
   public String getName() {
     return "Push";
   }
@@ -79,12 +82,14 @@ public class Push implements ICommand, ICommandGUI {
    *
    * @return description as a Sting
    */
+  @Override
   public String getDescription() {
     return "Lädt die lokalen Einbuchungen aus dem aktuellen Branch in das Online-Verzeichnis hoch";
   }
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     GUIController c = GUIController.getInstance();
     c.openDialog(new PushDialogView());

@@ -88,8 +88,9 @@ public class PushDialogView implements IDialogView {
         return this.contentPane;
     }
 
+    @Override
     public void update() {
-
+        //TODO
     }
 
     @SuppressWarnings("unused")
