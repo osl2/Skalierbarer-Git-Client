@@ -14,24 +14,31 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-@SuppressWarnings("unused")
 public class RemoteView extends JPanel implements IView {
+  @SuppressWarnings("unused")
   private JPanel panel1;
   private JPanel remotePanel;
+  @SuppressWarnings("unused")
   private JScrollPane remotePane;
   private JList<GitRemote> remoteList;
   private JButton removeButton;
   private JTextField nameField;
   private JTextField urlField;
+  @SuppressWarnings("unused")
   private JLabel nameLabel;
+  @SuppressWarnings("unused")
   private JLabel urlLabel;
+  @SuppressWarnings("unused")
   private JPanel buttonPanel;
   private JButton addButton;
+  @SuppressWarnings("unused")
   private JLabel branchLabel;
+  @SuppressWarnings("unused")
   private JScrollPane branchPane;
   private JTextArea branchArea;
   private JButton safeButton;
   private JButton deleteButton;
+  @SuppressWarnings("unused")
   private JPanel buttonPanel2;
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
