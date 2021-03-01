@@ -81,7 +81,7 @@ public class RemoteView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         int index = remoteList.getSelectedIndex();
-        // If no remote is selected start an error-Message
+        // If no remote is selected show an error-Message
         if (index < 0) {
           GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
           return;
