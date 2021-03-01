@@ -66,8 +66,7 @@ public class HistoryView extends JPanel implements IView {
   public HistoryView() {
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     diffPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-    // To set the size
-    commitMessage.setText(System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
+    commitMessage.setRows(6);
     commitMessage.setEnabled(false);
     commitMessage.setVisible(false);
     commitMessage.setDisabledTextColor(Color.BLACK);
