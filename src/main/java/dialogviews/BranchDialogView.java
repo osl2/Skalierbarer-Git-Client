@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Class of the DialogView from the command branch
  */
+@SuppressWarnings("unused")
 public class BranchDialogView implements IDialogView {
     private List<GitBranch> branches;
     private final LinkedList<GitCommit> commits = new LinkedList<>();
@@ -132,7 +133,7 @@ public class BranchDialogView implements IDialogView {
     /**
      * ListCellrenderer for the commitCombobox
      */
-    private static class BranchDialogRenderer extends JTextArea implements ListCellRenderer {
+    private static class BranchDialogRenderer extends JTextArea implements ListCellRenderer<String> {
         /**
          * Constructor for a new instance
          */
@@ -142,20 +143,27 @@ public class BranchDialogView implements IDialogView {
         }
 
         /**
-         * Method to get the rendered component
-         * @param list The list of the normal Components
-         * @param value the value of the component
-         * @param index the index of the component
-         * @param isSelected if the component is selected
-         * @param hasFocus if the component has focus
-         * @return the new Component
+         * Return a component that has been configured to display the specified
+         * value. That component's <code>paint</code> method is then called to
+         * "render" the cell.  If it is necessary to compute the dimensions
+         * of a list because the list cells do not have a fixed size, this method
+         * is called to generate a component on which <code>getPreferredSize</code>
+         * can be invoked.
+         *
+         * @param list         The JList we're painting.
+         * @param value        The value returned by list.getModel().getElementAt(index).
+         * @param index        The cells index.
+         * @param isSelected   True if the specified cell was selected.
+         * @param cellHasFocus True if the specified cell has the focus.
+         * @return A component whose paint() method will render the specified value.
+         * @see JList
+         * @see ListSelectionModel
+         * @see ListModel
          */
         @Override
-        public Component getListCellRendererComponent(final JList list,
-                                                      final Object value, final int index, final boolean isSelected,
-                                                      final boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
             Color background = Color.WHITE;
-            this.setText((String) value);
+            this.setText(value);
             int width = list.getWidth();
             if (isSelected) {
                 // This color is light blue.
@@ -166,7 +174,6 @@ public class BranchDialogView implements IDialogView {
             this.setSize(width, Short.MAX_VALUE);
             this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             return this;
-
         }
     }
 
@@ -185,7 +192,9 @@ public class BranchDialogView implements IDialogView {
             GUIController.getInstance().errorHandler(gitException);
         }
         int count = 0;
-        while (it.hasNext()) {
+        while (true) {
+            assert it != null;
+            if (!it.hasNext()) break;
             commits.add(count, it.next());
             count++;
         }
