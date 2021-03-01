@@ -1,5 +1,4 @@
 package dialogviews;
-
 import commands.Revert;
 import controller.GUIController;
 import git.GitBranch;
@@ -18,7 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Iterator;
-
+@SuppressWarnings("unused")
 public class RevertDialogView implements IDialogView {
 
 
@@ -38,15 +37,15 @@ public class RevertDialogView implements IDialogView {
         Iterator<GitCommit> iter = null;
         try {
             iter = b.getCommits();
-        } catch (GitException e) {
-            GUIController.getInstance().errorHandler(e);
-        } catch (IOException e) {
+        } catch (GitException | IOException e) {
             GUIController.getInstance().errorHandler(e);
         }
         int i = 0;
-        while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
-            CommitTreeNode node = new CommitTreeNode(iter.next());
-            root.add(node);
+        if (iter != null) {
+            while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
+                CommitTreeNode node = new CommitTreeNode(iter.next());
+                root.add(node);
+            }
         }
 
         // We ran into our load maximum but the iterator had more nodes.
@@ -107,7 +106,7 @@ public class RevertDialogView implements IDialogView {
         };
 
     }
-
+    @SuppressWarnings("BoundFieldAssignment")
     private void createUIComponents() {
         this.revertTree = new JTree(this.root);
         this.revertTree.addTreeSelectionListener(loadMoreListener());
@@ -159,7 +158,6 @@ public class RevertDialogView implements IDialogView {
                 node.configureRevert(rev);
                 if (rev.getChosenCommit() == null) {
                     GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt sein.");
-                    return;
                 } else if (rev.execute()) {
                     GUIController.getInstance().setCommandLine(rev.getCommandLine());
                     GUIController.getInstance().closeDialogView();
