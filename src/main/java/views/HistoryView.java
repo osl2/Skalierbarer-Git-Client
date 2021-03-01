@@ -22,7 +22,7 @@ import java.util.List;
  * Below is the difference between the selected file and the former version of the file.
  */
 public class HistoryView extends JPanel implements IView {
-  private final DiffView diffView;
+  private DiffView diffView;
   private JList<String> commitList;
   private JScrollPane commitScrollPane;
   private JList<String> fileList;
@@ -33,21 +33,22 @@ public class HistoryView extends JPanel implements IView {
   private JPanel diffPanel;
   @SuppressWarnings("unused")
   private JScrollPane commitMessageScrollPane;
-  private final JTextPane diffText;
+  private JTextPane diffText;
   private Iterator<GitCommit> iteratorOfCommits;
   private final ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
   private Iterator<GitFile> gitFileIterator;
   private DefaultListModel<String> fileListModel;
-  private int maxCommits = 20;
-  private int loadedCommits = 0;
+  private int maxCommits;
+  private int loadedCommits;
   private int maxFiles;
   private int loadedFiles;
-  private final DefaultListModel<String> listModel;
+  private DefaultListModel<String> listModel;
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public JPanel getView() {
     return new HistoryView().historyViewPanel;
   }
@@ -55,8 +56,9 @@ public class HistoryView extends JPanel implements IView {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void update() {
-    // This method is not used because it is not needed.
+    buildHistoryView();
   }
 
   /**
@@ -64,6 +66,13 @@ public class HistoryView extends JPanel implements IView {
    * the left side of the JPanel.
    */
   public HistoryView() {
+    buildHistoryView();
+  }
+
+  private void buildHistoryView() {
+    maxCommits = 20;
+    loadedCommits = 0;
+    listOfCommits.clear();
     commitScrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     diffPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     commitMessage.setRows(6);
