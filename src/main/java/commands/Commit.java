@@ -103,9 +103,7 @@ public class Commit implements ICommand, ICommandGUI {
       controller.errorHandler(e);
       return false;
     }
-    if(success) {
-      GUIController.getInstance().setCommandLine(getCommandLine());
-    }
+
     return success;
   }
 

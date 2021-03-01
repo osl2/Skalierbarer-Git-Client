@@ -32,17 +32,18 @@ public class Add implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
    */
   public boolean execute() {
-    boolean success = false;
+    GitData gitData = new GitData();
+
     try {
 
       //perform add for all files that have been selected by the user
       for (GitFile fileToBeAdded : filesToBeAdded){
         //distinction is necessary, because git add does not worked for files that have been deleted
         if (fileToBeAdded.isDeleted()){
-          success = fileToBeAdded.rm();
+          fileToBeAdded.rm();
         }
         else {
-          success = fileToBeAdded.add();
+          fileToBeAdded.add();
         }
       }
 
@@ -54,10 +55,7 @@ public class Add implements ICommand, ICommandGUI {
       GUIController.getInstance().errorHandler(e);
       return false;
     }
-    if(success) {
-      GUIController.getInstance().setCommandLine(getCommandLine());
-    }
-    return success;
+    return true;
   }
 
 
