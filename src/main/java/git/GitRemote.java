@@ -21,7 +21,7 @@ public class GitRemote {
   private String name;
   @SuppressWarnings("unused")
   private List<GitBranch> branches;
-  private LinkedList<GitBranch> fetchBranches = new LinkedList<>();
+  private final LinkedList<GitBranch> fetchBranches = new LinkedList<>();
 
 
   /* Is only instantiated inside the git Package */

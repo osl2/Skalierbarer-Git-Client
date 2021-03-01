@@ -8,7 +8,6 @@ import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
 import git.exception.GitException;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -39,11 +38,13 @@ public class RemoteView extends JPanel implements IView {
   private final Remote remForSetURL = new Remote();
 
   /**
-   * Konstruktor to create RemoteView
+   * Constructor to create RemoteView
    */
   public RemoteView() {
+    //Set the subcommand to set the Url to inactive
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
+    // Gets the remotes of the repo and shows them in the List
     remotes = git.getRemotes();
     DefaultListModel<GitRemote> model = new DefaultListModel<>();
     for (int i = 0; i < remotes.size(); i++) {
@@ -52,7 +53,7 @@ public class RemoteView extends JPanel implements IView {
     remoteList.setCellRenderer(new RemoteViewRenderer());
     remoteList.setModel(model);
 
-
+   //ActtionListener to go back to the Mainwindow
     removeButton.addActionListener(new ActionListener() {
       /**
        * Invoked when an action occurs.
@@ -73,6 +74,7 @@ public class RemoteView extends JPanel implements IView {
       @Override
       public void actionPerformed(ActionEvent e) {
         int index = remoteList.getSelectedIndex();
+        // If no remote is selected start an error-Message
         if (index < 0) {
           GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
           return;
