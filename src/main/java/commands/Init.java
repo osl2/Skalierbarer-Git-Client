@@ -2,6 +2,8 @@ package commands;
 
 import controller.GUIController;
 import git.GitFacade;
+import settings.Data;
+import settings.Settings;
 
 import javax.swing.*;
 import java.io.File;
@@ -31,16 +33,19 @@ public class Init implements ICommand, ICommandGUI {
    */
   @Override
   public boolean execute() {
-    if(path == null) {
-      GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
+    if (path == null) {
+      GUIController.getInstance().errorHandler("Es wurde kein Pfad zu einem Ordner übergeben.");
       return false;
     }
     GitFacade facade = new GitFacade();
     boolean success = facade.initializeRepository(path);
-    if(!success) {
+    if (!success) {
       GUIController.getInstance().errorHandler("Es konnte am übergebenen Pfad kein git Repository initialisiert werden.");
       return false;
     }
+    // Set active repository
+    Settings.getInstance().setActiveRepositoryPath(path);
+    Data.getInstance().storeNewRepositoryPath(path);
     // Create the git commandLine input to execute this command.
     commandLine = "git init";
     return true;
@@ -79,8 +84,13 @@ public class Init implements ICommand, ICommandGUI {
     JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     int returnVal = chooser.showOpenDialog(null);
-    if(returnVal == JFileChooser.APPROVE_OPTION) {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       path = chooser.getSelectedFile();
     }
+    boolean success = execute();
+    if (!success) {
+      return;
+    }
+    GUIController.getInstance().setCommandLine(this.getCommandLine());
   }
 }

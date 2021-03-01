@@ -4,8 +4,6 @@ import commands.Config;
 import commands.Init;
 import controller.GUIController;
 import git.GitData;
-import settings.Data;
-import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,9 +30,6 @@ public class FirstUseDialogView implements IDialogView {
             config = new Config();
             config.setName(name);
             config.setEMail(eMail);
-            // Set active repository
-            Settings.getInstance().setActiveRepositoryPath(path);
-            Data.getInstance().storeNewRepositoryPath(path);
             init = new Init();
             init.setPathToRepository(path);
             boolean successInit = init.execute();
