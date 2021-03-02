@@ -50,12 +50,18 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> deletedFilesList;
   @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
+  private JScrollPane diffScrollPane;
+  private JTextPane diffTextPane;
   private List<JList<FileListItem>> statusList;
   private boolean amend;
 
 
   public AddCommitView() {
-    buildView();
+    //provide the statusList with all three types of lists
+    statusList = new LinkedList<>();
+    statusList.add(newFilesList);
+    statusList.add(modifiedChangedFilesList);
+    statusList.add(deletedFilesList);
 
     //if cancelButton was pressed, open confirmation dialog whether current state of staging-area should be saved
     cancelButton.addActionListener(e -> {
@@ -97,6 +103,8 @@ public class AddCommitView extends JPanel implements IView {
       executeCommit();
     });
 
+    //set the default text of the commit message text area
+    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
     //when the user clicks inside the text area, the default message should disappear
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override
@@ -122,21 +130,7 @@ public class AddCommitView extends JPanel implements IView {
     });
 
 
-    //set up the diff view
-    diffView = new DiffView();
-    diffPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    diffPanel.add(diffView.openDiffView());
-  }
 
-  private void buildView() {
-    //provide the statusList with all three types of lists
-    statusList = new LinkedList<>();
-    statusList.add(newFilesList);
-    statusList.add(modifiedChangedFilesList);
-    statusList.add(deletedFilesList);
-
-    //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
   }
 
 
@@ -159,7 +153,8 @@ public class AddCommitView extends JPanel implements IView {
   @Override
   public void update() {
     createUIComponents();
-    buildView();
+    //set the default text of the commit message text area
+    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
   }
 
   /*
@@ -286,6 +281,10 @@ public class AddCommitView extends JPanel implements IView {
     newFilesList = setUpFileList(newFiles);
     modifiedChangedFilesList = setUpFileList(modifiedChangedFiles);
     deletedFilesList = setUpFileList(deletedFiles);
+
+    //set up the diff view
+    diffView = new DiffView();
+    diffTextPane = diffView.openDiffView();
   }
 
   /*
