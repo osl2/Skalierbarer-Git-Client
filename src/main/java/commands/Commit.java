@@ -113,6 +113,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding git command
    *     to display on the command line
    */
+  @Override
   public String getCommandLine() {
     return "git commit " + (amend ? "--amend " : "") + "-m\" ";
   }
@@ -122,6 +123,7 @@ public class Commit implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
+  @Override
   public String getName() {
     return null;
   }
@@ -131,6 +133,7 @@ public class Commit implements ICommand, ICommandGUI {
    *
    * @return description as a String
    */
+  @Override
   public String getDescription() {
     return "Erstellt eine neue Einbuchungen mit den Änderungen aus der " +
             "Staging-Area und der angegebenen Commit-Nachricht";
@@ -139,6 +142,7 @@ public class Commit implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     //do nothing, since there is no commit button
   }
