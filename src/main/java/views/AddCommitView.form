@@ -63,6 +63,7 @@
                 <constraints/>
                 <properties>
                   <enabled value="true"/>
+                  <lineWrap value="true"/>
                   <minimumSize width="10" height="170"/>
                   <opaque value="true"/>
                   <preferredSize width="400" height="500"/>
