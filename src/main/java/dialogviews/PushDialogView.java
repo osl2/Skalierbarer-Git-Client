@@ -32,14 +32,7 @@ public class PushDialogView implements IDialogView {
     private JPanel localBranchPanel;
 
     public PushDialogView() {
-        //fill local branch combobox and remote combobox with values
-        setUpLocalBranchComboBox();
-        setUpRemoteComboBox();
-        //set text of the remote branch textfield: remote branch equals selected local branch
-        GitBranch selectedLocalBranch = (GitBranch) localBranchComboBox.getSelectedItem();
-        if (selectedLocalBranch != null) {
-            selectedRemoteBranchTextfield.setText(selectedLocalBranch.getName());
-        }
+        loadDialog();
 
         localBranchComboBox.addActionListener(e -> {
             GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
@@ -56,6 +49,17 @@ public class PushDialogView implements IDialogView {
 
         //refresh the list of remotes and remote branches.
         refreshButton.addActionListener(e -> setUpRemoteComboBox());
+    }
+
+    private void loadDialog() {
+        //fill local branch combobox and remote combobox with values
+        setUpLocalBranchComboBox();
+        setUpRemoteComboBox();
+        //set text of the remote branch textfield: remote branch equals selected local branch
+        GitBranch selectedLocalBranch = (GitBranch) localBranchComboBox.getSelectedItem();
+        if (selectedLocalBranch != null) {
+            selectedRemoteBranchTextfield.setText(selectedLocalBranch.getName());
+        }
     }
 
     /**
@@ -90,7 +94,7 @@ public class PushDialogView implements IDialogView {
 
     @Override
     public void update() {
-        //TODO
+        loadDialog();
     }
 
     @SuppressWarnings("unused")
@@ -118,9 +122,8 @@ public class PushDialogView implements IDialogView {
             return;
         }
         for (GitBranch branch : localBranches) {
-            localBranchComboBox.addItem(branch);
             //add all local branches to the combobox
-            //localBranchComboBox.addItem(branch.getName());
+            localBranchComboBox.addItem(branch);
             //select by default the currently checked out branch
             if (branch.getName().compareTo((checkedOutBranch.getName())) == 0) {
                 localBranchComboBox.setSelectedItem(branch);
@@ -154,7 +157,6 @@ public class PushDialogView implements IDialogView {
         push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
         push.setRemote((GitRemote) remoteComboBox.getSelectedItem());
 
-        //TODO: wollen wir auch push auf anderen Branch unterstützen? sonst direkt in push ändern
         push.setRemoteBranch(null);
         boolean success = push.execute();
 
