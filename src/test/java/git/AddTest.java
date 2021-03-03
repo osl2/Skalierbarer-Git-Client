@@ -69,7 +69,7 @@ class AddTest extends AbstractGitTest {
     }
 
     @Test
-    void getFilesToBeAddedTest() throws IOException, GitAPIException, GitException {
+    void getFilesStatusChangedTest() throws IOException, GitAPIException, GitException {
         File file1 = new File(repo, "file1");
         File file2 = new File(repo, "file2");
         File file3 = new File(repo, "file3");
@@ -98,15 +98,11 @@ class AddTest extends AbstractGitTest {
         assertTrue(GitStatus.getInstance().getStagedFiles().contains(gitFile2));
 
 
-        /*get files to be added and files to be restored. Files to be added should not be staged yet but should have been
-        selected by the user. Files to be restored should be staged but should have not been selected by the user
+        /*get files whose status changed. Status of a file can have either changed because the file was selected by the
+        user and therefore added, or because the file was deselected and therefore unstaged
          */
-        assertFalse(add.getFilesToBeAdded().contains(gitFile1));
-        assertFalse(add.getFilesToBeAdded().contains(gitFile2));
-        assertTrue(add.getFilesToBeAdded().contains(gitFile3));
-
-        assertTrue(add.getFilesToBeRestored().contains(gitFile1));
-        assertFalse(add.getFilesToBeRestored().contains(gitFile2));
-        assertFalse(add.getFilesToBeRestored().contains(gitFile3));
+        assertTrue(add.getFilesStatusChanged().contains(gitFile1));
+        assertFalse(add.getFilesStatusChanged().contains(gitFile2));
+        assertTrue(add.getFilesStatusChanged().contains(gitFile3));
     }
 }

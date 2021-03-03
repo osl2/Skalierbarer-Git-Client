@@ -105,15 +105,14 @@ public class Add implements ICommand, ICommandGUI {
     controller.openView(new AddCommitView());
   }
 
-  /**
+  /*
    * This method returns only files that have not yet been staged but were marked by the user to add them to the staging area.
    * The list returned does not contain already staged files.
    * This method is public because it is used by AddCommitView to restore the former state when the user closes the view and
    * does not wish to save his/her changes to the staging-area.
    *
-   * @return A list of files that should be added with the next execute().
    */
-  public List<GitFile> getFilesToBeAdded() {
+  private List<GitFile> getFilesToBeAdded() {
     GitData data = new GitData();
     List<GitFile> stagedFiles;
     try {
@@ -132,14 +131,13 @@ public class Add implements ICommand, ICommandGUI {
     return filesToBeAdded;
   }
 
-  /**
+  /*
    * This method returns all files that were added to the staging area earlier but have now been de-selected by the user
    * This method is public because it is used by AddCommitView to restore the former state when the user closes the view and
    * does not wish to save his/her changes to the staging-area.
    *
-   * @return A list of files that should be removed from the staging-area with the next execute()
    */
-  public List<GitFile> getFilesToBeRestored() {
+  private List<GitFile> getFilesToBeRestored() {
     GitData data = new GitData();
     List<GitFile> stagedFiles;
     try {
@@ -157,6 +155,19 @@ public class Add implements ICommand, ICommandGUI {
       }
     }
     return filesToBeRestored;
+  }
+
+  /**
+   * This method returns all files whose status has changed. The status of a file can change either because the file
+   * was selected by the user and therefore added to the staging-area or because the file was deselected by the user
+   * and therefore unstaged
+   * @return A list of files whose status will be staged once execute() is called
+   */
+  public List<GitFile> getFilesStatusChanged(){
+    List<GitFile> filesStatusChanged = new LinkedList<>();
+    filesStatusChanged.addAll(getFilesToBeAdded());
+    filesStatusChanged.addAll(getFilesToBeRestored());
+    return filesStatusChanged;
   }
 
 
