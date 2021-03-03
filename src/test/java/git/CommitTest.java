@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -181,7 +182,7 @@ class CommitTest extends AbstractGitTest {
 
         //modify file and call git add
         FileOutputStream out = new FileOutputStream(file);
-        out.write(new String("Test").getBytes(StandardCharsets.UTF_8));
+        out.write(("Test").getBytes(StandardCharsets.UTF_8));
         out.close();
         git.add()
                 .addFilepattern(repo.toPath().relativize(file.toPath()).toString())
@@ -195,19 +196,37 @@ class CommitTest extends AbstractGitTest {
         assertTrue(commit2.execute());
 
         //total number of commits should be 1, file content should have changed
-        RevCommit revCommit = git.log().call().iterator().next();
+        Iterator<RevCommit> iterator = git.log().call().iterator();
+        //get the most recent commit.
+        RevCommit revCommit = iterator.next();
         RevTree revTree = revCommit.getTree();
-        int count = 0;
+
+        //count the total number of commits including the one already seen
+        int numCommits = 1;
+        while (iterator.hasNext()) {
+            iterator.next();
+            numCommits++;
+        }
+        //total number of commits should be five (4 from initialization + 1 new), not 6
+        assertEquals(5, numCommits);
+
         String path = "";
+        //count the files in that commit
+        int numFilesInCommit = 0;
+        //walk through all files in that commit. Should only be one file.
         try (TreeWalk treeWalk = new TreeWalk(repository)) {
             treeWalk.reset(revTree);
             while (treeWalk.next()) {
-                count++;
+                numFilesInCommit++;
+                //memorize path
                 path = treeWalk.getPathString();
             }
         }
-        assertEquals(1, count);
+        assertEquals(1, numFilesInCommit);
+        //path should equal file.getName()
         assertEquals(0, path.compareTo(file.getName()));
+
+        //compare content of the committed file. It should equal the updated file's content
         String separator = File.separator.compareTo("\\") == 0 ? "\\" : "/";
         String absolutePath = repo + separator + path;
         File committedFile = new File(absolutePath);
@@ -240,30 +259,39 @@ class CommitTest extends AbstractGitTest {
                 .call();
         assertFalse(git.status().call().isClean());
 
+
         //initialize a second commit instance and set amend to true
         Commit commit2 = new Commit();
         commit2.setCommitMessage("Test message");
         commit2.setAmend(true);
         assertTrue(commit2.execute());
 
-        //total number of commits should be 1, this commit should contain both files
-        RevCommit revCommit = git.log().call().iterator().next();
+        //look at the first commit, it should contain both files
+        Iterator<RevCommit> iterator = git.log().call().iterator();
+        RevCommit revCommit = iterator.next();
         RevTree revTree = revCommit.getTree();
-        int numCommits = 0;
         List<String> committedFilesPathList = new LinkedList<>();
         try (TreeWalk treeWalk = new TreeWalk(repository)) {
             treeWalk.reset(revTree);
             while (treeWalk.next()) {
-                numCommits++;
                 committedFilesPathList.add(treeWalk.getPathString());
             }
         }
-        //one commit in total
-        assertEquals(1, numCommits);
-        //two changed files in this commit
+        //this commit should contain 2 files that should match file and file2
         assertEquals(2, committedFilesPathList.size());
         assertEquals(0, committedFilesPathList.get(0).compareTo(file.getName()));
         assertEquals(0, committedFilesPathList.get(1).compareTo(file2.getName()));
+
+        //count the total number of commits including the one already seen
+        int numCommits = 1;
+        while (iterator.hasNext()) {
+            iterator.next();
+            numCommits++;
+        }
+
+        //five commits in total
+        assertEquals(5, numCommits);
+
 
     }
 
