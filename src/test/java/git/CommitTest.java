@@ -3,9 +3,11 @@ package git;
 import commands.Commit;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -19,6 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CommitTest extends AbstractGitTest {
     private File file;
+
+    @BeforeAll
+    private void setAuthor() throws IOException {
+        StoredConfig config = GitData.getRepository().getConfig();
+        config.setString("user", null, "name", "TestUser");
+        config.setString("user", null, "email", "123@web.de");
+        config.save();
+
+    }
 
     private void addFile() throws IOException, GitAPIException {
         //create new file
