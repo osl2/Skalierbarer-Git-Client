@@ -91,7 +91,7 @@ public class Commit implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
-    return "git commit " + (amend ? "--amend " : "") + "-m\" ";
+    return "git commit " + (amend ? "--amend " : "") + "-m\"" + commitMessage + "\"";
   }
 
   /**
