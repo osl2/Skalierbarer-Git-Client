@@ -18,9 +18,11 @@ import org.mockito.Spy;
 import java.awt.event.WindowListener;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 
 class CredentialProviderHolderTest {
@@ -44,6 +46,8 @@ class CredentialProviderHolderTest {
 
   @BeforeEach
   protected void beforeEach() {
+    controller = GUIController.getInstance();
+    MockitoAnnotations.initMocks(this);
     credentialProviderHolder = CredentialProviderHolder.getInstance();
     credentialProviderHolder.setPassword("password");
     credentialProviderHolder.setUsername("username");
@@ -58,15 +62,15 @@ class CredentialProviderHolderTest {
   }
 
   @Test
-  public void setUsernameTest() {
+   void setUsernameTest() {
     assertEquals(new UsernamePasswordCredentialsProvider("username", "password").hashCode(), credentialProviderHolder.getProvider().hashCode());
     credentialProviderHolder.setUsername("newUsername");
     assertEquals(new UsernamePasswordCredentialsProvider("newUsername", "Password").hashCode(), credentialProviderHolder.getProvider().hashCode());
   }
 
   @Test
-  public void setActiveTest() {
-    assertEquals(false, credentialProviderHolder.isActive());
+   void setActiveTest() {
+    assertFalse(credentialProviderHolder.isActive());
     credentialProviderHolder.setActive(true);
     assertTrue(credentialProviderHolder.isActive());
 
