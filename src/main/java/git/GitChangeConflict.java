@@ -20,9 +20,9 @@ public class GitChangeConflict {
   private static final String CONFLICT_MARKER_END = ">>>>>>> ";
   private final IndexDiff.StageState state;
   private String optionOurs;
-  private GitFile gitFile;
+  private final GitFile gitFile;
   private String optionTheirs;
-  private int startLine;
+  private final int startLine;
   private boolean resolved = false;
   private String result;
   private boolean deleted;
@@ -74,8 +74,7 @@ public class GitChangeConflict {
       case BOTH_MODIFIED:
         // Multiple Conflicts possible. We need to parse in file conflict markers.
         File f = gitFile.getPath();
-        try {
-          BufferedReader br = new BufferedReader(new FileReader(f));
+        try (BufferedReader br = new BufferedReader(new FileReader(f))){
           int i = 0;
           String line;
           while ((line = br.readLine()) != null) {
@@ -100,9 +99,7 @@ public class GitChangeConflict {
    * @param startIndex Index, on witch it should be started
    */
   private void populateOptions(int startIndex) {
-    try {
-      BufferedReader br = new BufferedReader(new FileReader(gitFile.getPath()));
-
+    try (BufferedReader br = new BufferedReader(new FileReader(gitFile.getPath()))){
       if (state == IndexDiff.StageState.DELETED_BY_THEM) {
         this.optionOurs = br.lines().collect(Collectors.joining(System.lineSeparator()));
         this.optionTheirs = "DELETED";

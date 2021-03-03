@@ -13,8 +13,8 @@ import java.util.Objects;
  * Represents a GitFile in the program.
  */
 public class GitFile {
-  private long size;
-  private File path;
+  private final long size;
+  private final File path;
   private boolean ignored;
   private boolean staged;
   private boolean deleted;
@@ -74,6 +74,7 @@ public class GitFile {
    *
    * @param ignored Whether the file should be added to the .gitignore or be removed from it
    */
+  @SuppressWarnings("unused")
   public void setIgnored(boolean ignored) {
     this.ignored = ignored;
   }
@@ -82,8 +83,9 @@ public class GitFile {
    * Method to get, if the file is ignored.
    *
    * @return true if file has not been added to the index and file
-   *     path matches a pattern in the .gitignore file
+   * path matches a pattern in the .gitignore file
    */
+  @SuppressWarnings("unused")
   public boolean isIgnoredNotInIndex() {
     return ignored;
   }
@@ -110,7 +112,7 @@ public class GitFile {
   }
 
   /**
-   * Determinates if the file is deleted.
+   * Determines if the file is deleted.
    *
    * @return True if the file does not exist in the workspace anymore
    */
@@ -149,29 +151,25 @@ public class GitFile {
   /**
    * Adds a remove operation for that file to the staging area.
    *
-   * @return True if the file was successfully marked as removed.
    * @throws GitException if a file could not be marked as removed.
    */
-  public boolean rm() throws GitException {
+  public void rm() throws GitException {
     Git git = GitData.getJGit();
     try {
       git.rm().addFilepattern(this.getRelativePath()).call();
     } catch (GitAPIException e) {
       throw new GitException("File could not be removed in Git");
     }
-    return true;
   }
 
   /**
    * Removes file from the staging-area, thereby performing git restore --staged file.
-   *
-   * @return True if the file was removed from the staging area successfully
    */
-  public boolean addUndo() throws GitException {
+
+  public void addUndo() throws GitException {
     Git git = GitData.getJGit();
     try {
       git.reset().addPath(this.getRelativePath()).call();
-      return true;
     } catch (GitAPIException e) {
       throw new GitException("File not found in Git");
 

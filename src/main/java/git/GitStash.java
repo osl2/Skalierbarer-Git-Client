@@ -56,7 +56,6 @@ public class GitStash {
     this.date = Date.from(instant);
 
     Repository repository;
-    Git git;
     File path = Settings.getInstance().getActiveRepositoryPath();
     List<GitFile> changedFiles = new ArrayList<>();
     try {
@@ -67,15 +66,23 @@ public class GitStash {
       } else {
         builder.setWorkTree(path);
       }
-      //builder.setGitDir(path);
       repository = builder.build();
-      git = Git.open(path);
+      try (Git git = Git.open(path)) {
 
-      ObjectId commit1 = revCommit.getId();
-      ObjectId commit2 = parent.getId();
+        ObjectId commit1 = revCommit.getId();
+        ObjectId commit2 = parent.getId();
+        changedFiles = getChangedFiles(repository, commit1, commit2, git);
 
-      ObjectReader reader = repository.newObjectReader();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    changes = changedFiles;
+  }
 
+  private List<GitFile> getChangedFiles(Repository repository, ObjectId commit1, ObjectId commit2, Git git){
+    List<GitFile> changedFiles = new ArrayList<>();
+    try (ObjectReader reader = repository.newObjectReader()) {
       CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
       oldTreeIter.reset(reader, commit1);
       CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
@@ -88,15 +95,11 @@ public class GitStash {
         int size = (int) changed.getTotalSpace();
         changedFiles.add(new GitFile(size, changed));
       }
-
     } catch (IOException | GitAPIException e) {
       e.printStackTrace();
-      @SuppressWarnings("unused")
-      List<GitFile> changes = new ArrayList<>();
     }
-    changes = changedFiles;
+    return changedFiles;
   }
-
   /**
    * Method to get the changes, that are made in the stash.
    *

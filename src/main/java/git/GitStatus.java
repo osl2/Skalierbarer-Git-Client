@@ -16,8 +16,11 @@ import java.util.Set;
  * To ensure there is only one status element, this class implements the Singleton pattern
  */
 public class GitStatus {
+  private static final String ERROR_MESSAGE = "Fehlermeldung: ";
+  private static final String GITAPIEXCEPTION_MESSAGE = "Ein Fehler in Git ist aufgetreten \n";
 
   private static GitStatus gitStatus = null;
+
 
   /**
    * The constructor is private to ensure there is only one GitStatus object at a time.
@@ -44,7 +47,7 @@ public class GitStatus {
    * @return a list of files added to the index, not in HEAD
    * @see GitFile
    */
-  public List<GitFile> getAddedFiles() throws GitException, IOException {
+  public List<GitFile> getAddedFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> filesAddedJgit;
@@ -68,7 +71,7 @@ public class GitStatus {
    *
    * @return a list of files that have changed from HEAD to index
    */
-  public List<GitFile> getChangedFiles() throws IOException, GitException {
+  public List<GitFile> getChangedFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> jgitFiles;
@@ -79,8 +82,8 @@ public class GitStatus {
       }
       return changedGitFiles;
     } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+      throw new GitException(GITAPIEXCEPTION_MESSAGE
+          + ERROR_MESSAGE + e.getMessage());
     }
 
   }
@@ -93,15 +96,14 @@ public class GitStatus {
    *
    * @return a list of files modified on disk relative to the index
    */
-  public List<GitFile> getModifiedFiles() throws IOException, GitException {
+  public List<GitFile> getModifiedFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> modifiedJgit = git.status().call().getModified();
-      List<GitFile> modifiedGitFiles = toGitFile(modifiedJgit);
-      return modifiedGitFiles;
+      return toGitFile(modifiedJgit);
     } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+      throw new GitException(GITAPIEXCEPTION_MESSAGE
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -110,15 +112,14 @@ public class GitStatus {
    *
    * @return list of files that are not ignored, and not in the index
    */
-  public List<GitFile> getUntrackedFiles() throws IOException, GitException {
+  public List<GitFile> getUntrackedFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> untracked = git.status().call().getUntracked();
-      List<GitFile> untrackedGitFiles = toGitFile(untracked);
-      return untrackedGitFiles;
+      return toGitFile(untracked);
     } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+      throw new GitException(GITAPIEXCEPTION_MESSAGE
+          + ERROR_MESSAGE + e.getMessage());
     }
 
   }
@@ -127,12 +128,11 @@ public class GitStatus {
    * Method to get a list of removed Files in repository directory.
    *
    * @return A list of files that are known to the index but have been removed and added to the
-   *     staging area (what you get if you call git rm on an existing file or if you delete the
-   *     file manually and call git add afterwards=
-   * @throws IOException  Thrown by toGitFile
+   * staging area (what you get if you call git rm on an existing file or if you delete the
+   * file manually and call git add afterwards=
    * @throws GitException If the status could not be obtained from JGit
    */
-  public List<GitFile> getRemovedFiles() throws IOException, GitException {
+  public List<GitFile> getRemovedFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> removed = git.status().call().getRemoved();
@@ -143,8 +143,8 @@ public class GitStatus {
       }
       return removedFiles;
     } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+      throw new GitException(GITAPIEXCEPTION_MESSAGE
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -152,11 +152,10 @@ public class GitStatus {
    * Method to get a list of files, that are deleted manually in the repository.
    *
    * @return A list of files that have been deleted manually, therefore do not appear in the
-   *     working directory anymore (but are still present in the index)
-   * @throws IOException  if the filesystem returns an error
+   * working directory anymore (but are still present in the index)
    * @throws GitException if the parsing of the Git data fails
    */
-  public List<GitFile> getMissingFiles() throws IOException, GitException {
+  public List<GitFile> getMissingFiles() throws GitException {
     try {
       Git git = GitData.getJGit();
       Set<String> missing = git.status().call().getMissing();
@@ -166,13 +165,13 @@ public class GitStatus {
       }
       return missingFiles;
     } catch (GitAPIException e) {
-      throw new GitException("Ein Fehler in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+      throw new GitException(GITAPIEXCEPTION_MESSAGE
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
 
-  private List<GitFile> toGitFile(Set<String> jgitFiles) throws IOException {
+  private List<GitFile> toGitFile(Set<String> jgitFiles) {
     File repoPath = GitData.getRepository().getWorkTree();
     List<GitFile> gitFiles = new ArrayList<>();
     for (String file : jgitFiles) {

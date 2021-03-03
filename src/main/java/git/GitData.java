@@ -32,6 +32,7 @@ public class GitData {
 
   private static org.eclipse.jgit.api.Git git;
   private static Repository repository;
+  private static final String ERROR_MESSAGE = "Fehlermeldung: ";
 
   /**
    * Method to initialize GitData, it is accessible in the whole project.
@@ -90,9 +91,10 @@ public class GitData {
     if (!mergeFile.exists() || mergeFile.isDirectory()) {
       return null;
     }
-    try {
-      return new BufferedReader(new FileReader(mergeFile)).lines().collect(Collectors.joining(System.lineSeparator()));
-    } catch (FileNotFoundException e) {
+    try (BufferedReader br = new BufferedReader(new FileReader(mergeFile))){
+      return br.lines().collect(Collectors.joining(System.lineSeparator()));
+
+    } catch (IOException e) {
       return null;
     }
 
@@ -101,7 +103,7 @@ public class GitData {
   /**
    * Method to initalize the Repoistory.
    */
-  private void initializeRepository() {
+  private static void initializeRepository() {
     Settings settings = Settings.getInstance();
     File path = settings.getActiveRepositoryPath();
     try {
@@ -111,12 +113,11 @@ public class GitData {
         builder.setGitDir(path);
       else
         builder.setWorkTree(path);
-      //builder.setGitDir(path);
       repository = builder.build();
       git = Git.open(path);
     } catch (IOException e) {
       Logger.getGlobal().warning("Beim Öffnen des Git-Repositorys ist etwas schief gelaufen "
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -142,11 +143,11 @@ public class GitData {
       allCommits = git.log().all().call();
       return new CommitIterator(allCommits);
     } catch (NoHeadException e) {
-      throw new GitException("Der Head wurde nicht gefunden"
-          + "\n Fehlermeldung: " + e.getMessage());
+      throw new GitException("Der Head wurde nicht gefunden \n"
+          + ERROR_MESSAGE + e.getMessage());
     } catch (GitAPIException e) {
       throw new GitException("Eine nicht genauer spezifizierte Fehlermeldung in Git ist aufgetreten \n"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -164,16 +165,16 @@ public class GitData {
       return new CommitIterator(allCommits);
     } catch (NoHeadException e) {
       throw new GitException("Der Head wurde nicht gefunden \n"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     } catch (IncorrectObjectTypeException e) {
       throw new GitException("Mit Git ist etwas Schiefgelaufen \n"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     } catch (AmbiguousObjectException | MissingObjectException e) {
       throw new GitException("Mit den internen Objekten ist etwas schief gelaufen \n"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     } catch (GitAPIException e) {
       throw new GitException("Mit Git ist etwas nicht genauer spezifiziertes schief gelaufen \n"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     } catch (NullPointerException e) {
       // Apparently JGIT throws a NPE if a branch does not have a commit to reference.
       // e.g. after initializing a repository.
@@ -187,6 +188,7 @@ public class GitData {
    *
    * @return A list of all Stashes
    */
+  @SuppressWarnings("unused")
   public List<GitStash> getStashes() {
     try {
       StashListCommand stashListCommand = new StashListCommand(repository);
@@ -198,7 +200,7 @@ public class GitData {
       return gitStashes;
     } catch (GitAPIException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -226,14 +228,14 @@ public class GitData {
         List<URIish> uris = config.getURIs();
         String user = uris.iterator().next().getUser();
         String name = config.getName();
-        String urlString = uris.iterator().next().getPath();
         URIish uri = config.getURIs().iterator().next();
         gitRemotes.add(new GitRemote(uri.toString(), user, name));
       }
       return gitRemotes;
     } catch (GitAPIException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>() {
+      };
     }
   }
 
@@ -252,7 +254,7 @@ public class GitData {
       return gitBranches;
     } catch (GitAPIException e) {
       throw new GitException("Mit Git ist etwas schief gelaufen"
-          + "Fehlermeldung: " + e.getMessage());
+          + ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -264,12 +266,12 @@ public class GitData {
    */
   public List<GitBranch> getBranches(GitRemote remote) throws GitException {
     Collection<Ref> refs;
-    List<GitBranch> branches = new ArrayList<GitBranch>();
+    List<GitBranch> branches = new ArrayList<>();
 
     try {
       refs = Git.lsRemoteRepository()
           .setHeads(true)
-          .setRemote(remote.getUrl().toString())
+          .setRemote(remote.getUrl())
           .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
           .call();
       for (Ref ref : refs) {
@@ -278,8 +280,6 @@ public class GitData {
     } catch (GitAPIException e) {
       throw new GitException();
     }
-
-    //Collections.sort(branches);
 
     return branches;
   }

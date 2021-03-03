@@ -2,7 +2,6 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.Ref;
@@ -110,7 +109,7 @@ public class GitBranch {
 
     try {
       Ref ref = GitData.getRepository().exactRef(this.branchName);
-      MergeResult mr = GitData.getJGit().merge()
+      GitData.getJGit().merge()
           .setStrategy(MergeStrategy.RESOLVE)
           .include(ref)
           .setCommit(true)
@@ -132,12 +131,19 @@ public class GitBranch {
     } catch (GitAPIException | IOException e) {
       throw new GitException(e.getMessage());
     }
-
-    //return null;
   }
 
   @Override
+  public int hashCode(){
+    return branchName.hashCode();
+  }
+
+
+  @Override
   public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
     if (o.getClass() == this.getClass()) {
       GitBranch toCheck = (GitBranch) o;
       return toCheck.getCommit().equals(this.getCommit()) && toCheck.getFullName().equals(this.getFullName());
