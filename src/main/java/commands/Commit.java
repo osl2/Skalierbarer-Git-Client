@@ -57,12 +57,16 @@ public class Commit implements ICommand, ICommandGUI {
     GUIController controller = GUIController.getInstance();
     GitData gitData = new GitData();
 
+    //amending is only possible if commit history is not empty
+    if (amend && !isCommitHistoryEmpty()) {
+      controller.errorHandler("Es ist noch kein Commit vorhanden, der rückgängig gemacht werden kann!");
+      return false;
+    }
+
     //empty staging area is only allowed for merge and amend
-    if (getStagedFiles().isEmpty()){
-      if (gitData.getMergeCommitMessage() == null && !amend) {
-        controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
-        return false;
-      }
+    if (getStagedFiles().isEmpty() && gitData.getMergeCommitMessage() == null && !amend) {
+      controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
+      return false;
     }
 
 
@@ -91,7 +95,7 @@ public class Commit implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
-    return "git commit " + (amend ? "--amend " : "") + "-m\" ";
+    return "git commit " + (amend ? "--amend " : "") + "-m\"" + commitMessage + "\"";
   }
 
   /**
@@ -137,5 +141,16 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     return stagedFiles;
+  }
+
+  private boolean isCommitHistoryEmpty() {
+    GitData gitData = new GitData();
+    boolean commitHistoryEmpty = false;
+    try {
+      commitHistoryEmpty = gitData.getCommits().hasNext();
+    } catch (IOException | GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return commitHistoryEmpty;
   }
 }

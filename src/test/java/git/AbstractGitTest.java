@@ -69,7 +69,6 @@ public abstract class AbstractGitTest {
         git.getRepository().getConfig().save();
         repository = git.getRepository();
 
-        git.checkout().setName("refs/heads/master").call();
     }
 
 }
