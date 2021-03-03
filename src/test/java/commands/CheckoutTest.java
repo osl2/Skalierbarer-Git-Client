@@ -4,8 +4,11 @@ import controller.GUIController;
 import git.*;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
 
 import java.io.IOException;
@@ -19,12 +22,19 @@ class CheckoutTest extends AbstractGitTest {
     private static final String TEST_BRANCH = "testBranch";
     static GUIControllerTestable guiControllerTestable;
     Checkout checkout;
+    static MockedStatic<GUIController> mockedController;
 
     @BeforeAll
     static void setup() {
         guiControllerTestable = new GUIControllerTestable();
-        mockStatic(GUIController.class).when(GUIController::getInstance).thenReturn(guiControllerTestable);
+        mockedController = mockStatic(GUIController.class);
+        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
         guiControllerTestable.resetTestStatus();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        mockedController.close();
     }
 
     @Override
@@ -83,7 +93,7 @@ class CheckoutTest extends AbstractGitTest {
 
     @Test
     void errorsAreShownToUserTest() throws GitAPIException, GitException, IOException {
-        mockConstruction(GitFacade.class, (mock, context) -> {
+        MockedConstruction<GitFacade> gitFacadeMockedConstruction = mockConstruction(GitFacade.class, (mock, context) -> {
             when(mock.checkout(any(GitBranch.class))).thenThrow(new GitException());
             when(mock.checkout(any(GitCommit.class))).thenThrow(new GitException());
         });
@@ -103,5 +113,6 @@ class CheckoutTest extends AbstractGitTest {
         checkout.execute();
         assertTrue(guiControllerTestable.errorHandlerECalled || guiControllerTestable.errorHandlerMSGCalled);
 
+        gitFacadeMockedConstruction.close();
     }
 }
