@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Class of the DialogView from the command branch
@@ -46,7 +47,7 @@ public class BranchDialogView implements IDialogView {
             GitData gitData = new GitData();
             branches = gitData.getBranches();
         } catch (GitException e) {
-            e.printStackTrace();
+            Logger.getGlobal().warning(e.getMessage());
         }
         for (GitBranch branch : branches) {
             branchComboBox.addItem(branch.getName());

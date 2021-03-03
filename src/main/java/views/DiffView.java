@@ -10,6 +10,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.util.logging.Logger;
 
 public class DiffView implements IDiffView {
   private final Diff diff = new Diff();
@@ -69,19 +70,19 @@ public class DiffView implements IDiffView {
         try {
           doc.insertString(doc.getLength(), s + System.lineSeparator(), addLine);
         } catch (BadLocationException e) {
-          e.printStackTrace();
+          Logger.getGlobal().warning(e.getMessage());
         }
       } else if (s.substring(0, 1).compareTo("-") == 0) {
         try {
           doc.insertString(doc.getLength(), s + System.lineSeparator(), removeLine);
         } catch (BadLocationException e) {
-          e.printStackTrace();
+          Logger.getGlobal().warning(e.getMessage());
         }
       } else {
         try {
           doc.insertString(doc.getLength(), s + System.lineSeparator(), normalLine);
         } catch (BadLocationException e) {
-          e.printStackTrace();
+          Logger.getGlobal().warning(e.getMessage());
         }
       }
     }
