@@ -32,6 +32,7 @@ public class AddCommitView extends JPanel implements IView {
   private JButton amendButton;
   @SuppressWarnings("unused")
   private JPanel statusPanel;
+  @SuppressWarnings("unused")
   private JPanel diffPanel;
   @SuppressWarnings("unused")
   private DiffView diffView;
@@ -50,7 +51,9 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> deletedFilesList;
   @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
+  @SuppressWarnings("unused")
   private JScrollPane diffScrollPane;
+  @SuppressWarnings("unused")
   private JTextPane diffTextPane;
   private List<JList<FileListItem>> statusList;
   private boolean amend;
