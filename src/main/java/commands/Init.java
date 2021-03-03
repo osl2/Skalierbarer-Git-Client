@@ -13,7 +13,7 @@ import java.io.File;
  * pass a {@link File} which represents a path to a local directory.
  */
 public class Init implements ICommand, ICommandGUI {
-  private String commandLine = "";
+  private String commandLine;
   private File path = null;
 
   /**
@@ -72,8 +72,8 @@ public class Init implements ICommand, ICommandGUI {
    */
   @Override
   public String getDescription() {
-    return "Der git init Befehl wird verwendet um ein neues git Repository anzulegen." +
-              "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
+    return "Der git init Befehl wird verwendet um ein neues git Repository anzulegen. " +
+            "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
   }
 
   /**
