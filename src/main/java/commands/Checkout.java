@@ -7,14 +7,11 @@ import git.GitCommit;
 import git.GitFacade;
 import git.exception.GitException;
 
-import java.lang.annotation.Inherited;
-
 /**
  * This class represents the git checkout command. In order to execute this command
  * you have to pass the {@link GitBranch} or the {@link GitCommit} you want to checkout.
  */
 public class Checkout implements ICommand, ICommandGUI {
-    private String errorMessage;
     private GitBranch branch;
     private GitCommit commit;
 
@@ -26,22 +23,19 @@ public class Checkout implements ICommand, ICommandGUI {
     public boolean execute() {
         GitFacade facade = new GitFacade();
         if (branch != null) {
-            this.errorMessage = "";
             try {
                 return facade.checkout(branch);
             } catch (GitException e) {
                 GUIController.getInstance().errorHandler(e);
             }
         } else if (commit != null) {
-            this.errorMessage = "";
             try {
                 return facade.checkout(commit);
             } catch (GitException e) {
                 GUIController.getInstance().errorHandler(e);
             }
         }
-        //todo: lokalisierung
-        this.errorMessage = "Weder Zweig noch Einbuchung ausgewählt.";
+        GUIController.getInstance().errorHandler("Weder Zweig noch Einbuchung ausgewählt.");
         return false;
     }
 
@@ -67,7 +61,6 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return The name of the command
      */
     public String getName() {
-        // TODO: lokalisierung
         return "Checkout";
     }
 
@@ -77,7 +70,6 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return description as a String
      */
     public String getDescription() {
-        // TODO: lokalisierung
         return "Wechselt auf einen anderen Zweig / eine andere Einbuchung";
     }
 

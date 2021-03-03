@@ -15,9 +15,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 /**
@@ -29,14 +29,15 @@ public class GUIController extends DataObserver {
     private static final int ERROR_MESSAGE_HEIGHT = 800;
     private static GUIController INSTANCE;
     private Map<JDialog, IDialogView> dialogMap;
-    private Stack<JDialog> dialogStack;
+    private ArrayDeque<JDialog> dialogStack;
     private MainWindow window;
 
-    private GUIController() {
+    protected GUIController() {
         /* This class is a singleton */
 
         // Install FlatLaf light style
-        FlatLightLaf.install();
+        if (!GraphicsEnvironment.isHeadless())
+            FlatLightLaf.install();
 
 
         // register observer
@@ -44,7 +45,7 @@ public class GUIController extends DataObserver {
         Settings.getInstance().addDataChangedListener(this);
 
         dialogMap = new HashMap<>();
-        dialogStack = new Stack<>();
+        dialogStack = new ArrayDeque<>();
 
     }
 
@@ -226,9 +227,6 @@ public class GUIController extends DataObserver {
         this.window.open();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void dataChangedListener(DataObservable observable) {
         this.update();
