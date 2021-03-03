@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -150,7 +151,7 @@ public class GitChangeConflict {
 
 
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
     }
   }
 

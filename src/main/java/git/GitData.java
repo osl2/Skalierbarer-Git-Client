@@ -17,7 +17,10 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -199,7 +202,7 @@ public class GitData {
       }
       return gitStashes;
     } catch (GitAPIException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
       return new ArrayList<>();
     }
   }
@@ -233,7 +236,7 @@ public class GitData {
       }
       return gitRemotes;
     } catch (GitAPIException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
       return new ArrayList<>() {
       };
     }

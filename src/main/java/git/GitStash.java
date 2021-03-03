@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * The class GitStash represents a Stash in the project.
@@ -75,7 +76,7 @@ public class GitStash {
 
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
     }
     changes = changedFiles;
   }
@@ -96,7 +97,7 @@ public class GitStash {
         changedFiles.add(new GitFile(size, changed));
       }
     } catch (IOException | GitAPIException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
     }
     return changedFiles;
   }

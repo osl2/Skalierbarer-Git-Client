@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Represents a git-branch in this program.
@@ -90,7 +91,7 @@ public class GitBranch {
       RevCommit revCommit = revWalk.parseCommit(r.getObjectId());
       head = new GitCommit(revCommit);
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger.getGlobal().warning(e.getMessage());
     } finally {
       revWalk.dispose();
     }

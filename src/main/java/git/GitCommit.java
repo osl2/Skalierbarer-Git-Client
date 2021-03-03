@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -37,24 +38,50 @@ public class GitCommit {
 
     /**
      * Creates a new GitCommit with the given RevCommit.
+     *
      * @param revCommit given RevCommit to create the GitCommit.
      */
     GitCommit(RevCommit revCommit) {
         this.revCommit = revCommit;
     }
 
-    private void initializeCommit() {
-        if (revCommit.getRawBuffer() == null) {
-            try (RevWalk revWalk = new RevWalk(GitData.getRepository())){
-                revWalk.parseHeaders(this.revCommit);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    /**
+     * Generates the difference between the index (current HEAD position) and the working directory.
+     *
+     * @param file the file you want to get the git diff.
+     * @return String representation of the git diff.
+     */
+    public static String getDiff(GitFile file) throws IOException {
+        Git git = GitData.getJGit();
+        AbstractTreeIterator newTreeIterator;
+        TreeFilter filter = pathFilter(file);
+        if (file.isStaged()) {
+            newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
+        } else {
+            newTreeIterator = new FileTreeIterator(git.getRepository());
         }
+        OutputStream out = new ByteArrayOutputStream();
+        try {
+            GitData data = new GitData();
+            AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+            if (!data.getBranches().isEmpty()) {
+                oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
+            }
+            git.diff()
+                    .setOldTree(oldTreeIterator)
+                    .setNewTree(newTreeIterator)
+                    .setPathFilter(filter)
+                    .setOutputStream(out)
+                    .call();
+        } catch (GitAPIException | GitException e) {
+            Logger.getGlobal().warning(e.getMessage());
+        }
+        return out.toString();
     }
 
     /**
      * The author of this Commit.
+     *
      * @return the author.
      */
     public GitAuthor getAuthor() {
@@ -150,19 +177,30 @@ public class GitCommit {
     /**
      * The JGit representation of the GitCommit. This method should only be
      * visible in the git package.
+     *
      * @return the RevCommit this GitCommit is based on.
      */
     RevCommit getRevCommit() {
         return this.revCommit;
     }
 
-            /**
-             * Generates the difference between the given file this commit and the one passed.
-             *
-             * @param other the other commit, if you want to compare to the empty git repository set other to null.
-             * @param file the file you want to get the git diff.
-             * @return String representation of the diff.
-             */
+    private void initializeCommit() {
+        if (revCommit.getRawBuffer() == null) {
+            try (RevWalk revWalk = new RevWalk(GitData.getRepository())) {
+                revWalk.parseHeaders(this.revCommit);
+            } catch (IOException e) {
+                Logger.getGlobal().warning(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Generates the difference between the given file this commit and the one passed.
+     *
+     * @param other the other commit, if you want to compare to the empty git repository set other to null.
+     * @param file  the file you want to get the git diff.
+     * @return String representation of the diff.
+     */
     public String getDiff(GitCommit other, GitFile file) throws IOException {
         Git git = GitData.getJGit();
         AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
@@ -182,40 +220,7 @@ public class GitCommit {
                     .setOutputStream(out)
                     .call();
         } catch (GitAPIException e) {
-            e.printStackTrace();
-        }
-        return out.toString();
-    }
-
-    /**
-     * Generates the difference between the index (current HEAD position) and the working directory.
-     * @param file the file you want to get the git diff.
-     * @return String representation of the git diff.
-     */
-    public static String getDiff(GitFile file) throws IOException {
-        Git git = GitData.getJGit();
-        AbstractTreeIterator newTreeIterator;
-        TreeFilter filter = pathFilter(file);
-        if (file.isStaged()) {
-            newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
-        } else {
-            newTreeIterator = new FileTreeIterator(git.getRepository());
-        }
-        OutputStream out = new ByteArrayOutputStream();
-        try {
-            GitData data = new GitData();
-            AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
-            if(!data.getBranches().isEmpty()) {
-                 oldTreeIterator = getCanonicalTreeParser(data.getSelectedBranch().getCommit().getRevCommit(), git);
-            }
-            git.diff()
-                    .setOldTree(oldTreeIterator)
-                    .setNewTree(newTreeIterator)
-                    .setPathFilter(filter)
-                    .setOutputStream(out)
-                    .call();
-        } catch (GitAPIException | GitException e) {
-            e.printStackTrace();
+            Logger.getGlobal().warning(e.getMessage());
         }
         return out.toString();
     }
