@@ -58,7 +58,7 @@ public class Commit implements ICommand, ICommandGUI {
     GitData gitData = new GitData();
 
     //amending is only possible if commit history is not empty
-    if (amend && isCommitHistoryEmpty()) {
+    if (amend && !isCommitHistoryEmpty()) {
       controller.errorHandler("Es ist noch kein Commit vorhanden, der rückgängig gemacht werden kann!");
       return false;
     }
