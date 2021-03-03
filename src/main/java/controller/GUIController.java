@@ -32,7 +32,7 @@ public class GUIController extends DataObserver {
     private Stack<JDialog> dialogStack;
     private MainWindow window;
 
-    private GUIController() {
+    protected GUIController() {
         /* This class is a singleton */
 
         // Install FlatLaf light style
