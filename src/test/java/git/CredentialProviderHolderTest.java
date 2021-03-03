@@ -62,6 +62,7 @@ class CredentialProviderHolderTest {
     Mockito.verify(controller, times(0))
         .openDialog(any(UsernamePasswordDialogView.class), any(WindowListener.class));
     credentialProviderHolder.changeProvider(true, "nameForProof");
+    controller = GUIController.getInstance();
     Mockito.verify(controller).openDialog(eq(new UsernamePasswordDialogView("nameForProof")), any(WindowListener.class));
   }
 }
