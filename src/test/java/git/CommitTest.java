@@ -8,14 +8,31 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommitTest extends AbstractGitTest {
+    private File file;
+
+    private void addFile() throws IOException, GitAPIException {
+        //create new file
+        file = new File(repo, "file");
+        new FileOutputStream(file).close();
+        GitFile gitFile = new GitFile(file.getTotalSpace(), file);
+
+        //add file
+        git.add()
+                .addFilepattern(repo.toPath().relativize(file.toPath()).toString())
+                .call();
+        Status status = git.status().call();
+        Set<String> addedFiles = status.getAdded();
+        assert addedFiles.contains(file.getName());
+    }
 
     /*
      * Create a new Commit instance, set amend and commit message.
@@ -39,7 +56,7 @@ class CommitTest extends AbstractGitTest {
     @Test
     void getNameTest() {
         Commit commit = new Commit();
-        assertTrue(commit.getName() == null);
+        assertNull(commit.getName());
     }
 
     @Test
@@ -52,19 +69,7 @@ class CommitTest extends AbstractGitTest {
 
     @Test
     void executeTest() throws IOException, GitAPIException {
-        //create new file
-        File file = new File(repo, "file");
-        new FileOutputStream(file).close();
-        GitFile gitFile = new GitFile(file.getTotalSpace(), file);
-
-        //add file
-        git.add()
-                .addFilepattern(repo.toPath().relativize(file.toPath()).toString())
-                .call();
-        Status status = git.status().call();
-        Set<String> addedFiles = status.getAdded();
-        assertTrue(addedFiles.contains(file.getName()));
-
+        addFile();
         Commit commit = new Commit();
         commit.setCommitMessage("Test");
 
@@ -72,8 +77,8 @@ class CommitTest extends AbstractGitTest {
         assertTrue(commit.execute());
 
         //file should no longer be added and status should be clean
-        status = git.status().call();
-        addedFiles = status.getAdded();
+        Status status = git.status().call();
+        Set<String> addedFiles = status.getAdded();
         assertFalse(addedFiles.contains(file.getName()));
         assertTrue(status.isClean());
 
@@ -91,6 +96,175 @@ class CommitTest extends AbstractGitTest {
         }
         assertEquals(1, count);
         assertEquals(0, path.compareTo(file.getName()));
+    }
+
+    @Test
+    void emptyCommitShouldFail() {
+        Commit commit = new Commit();
+        commit.setCommitMessage("Test");
+        assertFalse(commit.execute());
+    }
+
+    //this test should fail if there was no former commit to amend
+    @Test
+    void emptyCommitAmendEmptyCommitHistoryShouldFail() {
+        Commit commit = new Commit();
+        commit.setCommitMessage("Test");
+        commit.setAmend(true);
+        assertFalse(commit.execute());
+    }
+
+    @Test
+    void emptyCommitAmendShouldSucceed() throws IOException, GitAPIException {
+        addFile();
+        Commit commit1 = new Commit();
+        commit1.setCommitMessage("Test");
+        assertTrue(commit1.execute());
+
+        //staging area should now be empty
+        assertTrue(git.status().call().isClean());
+
+        //perform empty commit
+        Commit commit2 = new Commit();
+        commit2.setCommitMessage("Amend test");
+        commit2.setAmend(true);
+        assertTrue(commit2.execute());
+    }
+
+    @Test
+    void emptyCommitMessageShouldFail() throws IOException, GitAPIException {
+        addFile();
+        Commit commit = new Commit();
+        assertFalse(commit.execute());
+    }
+
+    @Test
+    void commitAmendTestDifferentMessage() throws GitAPIException, IOException {
+        addFile();
+        Commit commit1 = new Commit();
+        commit1.setCommitMessage("Test message 1");
+
+        //command should be executed successfully
+        assertTrue(commit1.execute());
+
+        //initialize a second commit instance with a new message
+        Commit commit2 = new Commit();
+        commit2.setCommitMessage("Test message 2");
+        commit2.setAmend(true);
+        assertTrue(commit2.execute());
+
+        //total number of commits should be 1, commit message should have changed
+        RevCommit revCommit = git.log().call().iterator().next();
+        assertEquals(0, revCommit.getFullMessage().compareTo("Test message 2"));
+        RevTree revTree = revCommit.getTree();
+        int count = 0;
+        String path = "";
+        try (TreeWalk treeWalk = new TreeWalk(repository)) {
+            treeWalk.reset(revTree);
+            while (treeWalk.next()) {
+                count++;
+                path = treeWalk.getPathString();
+            }
+        }
+        assertEquals(1, count);
+        assertEquals(0, path.compareTo(file.getName()));
+    }
+
+    @Test
+    void commitAmendTestModifiedFile() throws GitAPIException, IOException {
+        addFile();
+        Commit commit1 = new Commit();
+        commit1.setCommitMessage("Test message");
+
+        //command should be executed successfully
+        assertTrue(commit1.execute());
+
+        //modify file and call git add
+        FileOutputStream out = new FileOutputStream(file);
+        out.write(new String("Test").getBytes(StandardCharsets.UTF_8));
+        out.close();
+        git.add()
+                .addFilepattern(repo.toPath().relativize(file.toPath()).toString())
+                .call();
+        assertFalse(git.status().call().isClean());
+
+        //initialize a second commit instance and set amend to true
+        Commit commit2 = new Commit();
+        commit2.setCommitMessage("Test message");
+        commit2.setAmend(true);
+        assertTrue(commit2.execute());
+
+        //total number of commits should be 1, file content should have changed
+        RevCommit revCommit = git.log().call().iterator().next();
+        RevTree revTree = revCommit.getTree();
+        int count = 0;
+        String path = "";
+        try (TreeWalk treeWalk = new TreeWalk(repository)) {
+            treeWalk.reset(revTree);
+            while (treeWalk.next()) {
+                count++;
+                path = treeWalk.getPathString();
+            }
+        }
+        assertEquals(1, count);
+        assertEquals(0, path.compareTo(file.getName()));
+        String separator = File.separator.compareTo("\\") == 0 ? "\\" : "/";
+        String absolutePath = repo + separator + path;
+        File committedFile = new File(absolutePath);
+        assertTrue(committedFile.exists());
+        BufferedReader reader = new BufferedReader(new FileReader(committedFile));
+        StringBuilder content = new StringBuilder();
+        String input;
+        while ((input = reader.readLine()) != null) {
+            content.append(input);
+        }
+        reader.close();
+        assertEquals(0, content.toString().compareTo("Test"));
+    }
+
+    @Test
+    void commitAmendTestTwoFiles() throws GitAPIException, IOException {
+        addFile();
+        Commit commit1 = new Commit();
+        commit1.setCommitMessage("Test message");
+
+        //command should be executed successfully
+        assertTrue(commit1.execute());
+
+        //add new file
+        File file2 = new File(repo, "file2");
+        new FileOutputStream(file2).close();
+        GitFile gitFile = new GitFile(file2.getTotalSpace(), file2);
+        git.add()
+                .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
+                .call();
+        assertFalse(git.status().call().isClean());
+
+        //initialize a second commit instance and set amend to true
+        Commit commit2 = new Commit();
+        commit2.setCommitMessage("Test message");
+        commit2.setAmend(true);
+        assertTrue(commit2.execute());
+
+        //total number of commits should be 1, this commit should contain both files
+        RevCommit revCommit = git.log().call().iterator().next();
+        RevTree revTree = revCommit.getTree();
+        int numCommits = 0;
+        List<String> committedFilesPathList = new LinkedList<>();
+        try (TreeWalk treeWalk = new TreeWalk(repository)) {
+            treeWalk.reset(revTree);
+            while (treeWalk.next()) {
+                numCommits++;
+                committedFilesPathList.add(treeWalk.getPathString());
+            }
+        }
+        //one commit in total
+        assertEquals(1, numCommits);
+        //two changed files in this commit
+        assertEquals(2, committedFilesPathList.size());
+        assertEquals(0, committedFilesPathList.get(0).compareTo(file.getName()));
+        assertEquals(0, committedFilesPathList.get(1).compareTo(file2.getName()));
+
     }
 
 
