@@ -8,8 +8,8 @@ import git.GitStatus;
 import git.exception.GitException;
 import views.AddCommitView;
 
-import javax.swing.*;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -51,40 +51,16 @@ public class Commit implements ICommand, ICommandGUI {
    * execution of the command in JGit throws an exception
    */
   public boolean execute() {
-    GitData gitData = new GitData();
-    GitStatus gitStatus= gitData.getStatus();
+
+
     GitFacade gitFacade = new GitFacade();
-    List<GitFile> stagedFiles;
     GUIController controller = GUIController.getInstance();
-
-    //get the list of staged files from status
-    try {
-      stagedFiles = gitStatus.getStagedFiles();
-    } catch (GitException | IOException e) {
-      controller.errorHandler(e);
-      return false;
-    }
-
+    GitData gitData = new GitData();
 
     //empty staging area is only allowed for merge and amend
-    if (stagedFiles.isEmpty()){
+    if (getStagedFiles().isEmpty()){
       if (gitData.getMergeCommitMessage() == null && !amend) {
         controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
-        return false;
-      }
-    }
-
-    else {
-      //prepare the confirmation dialog
-      StringBuilder message = new StringBuilder();
-      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
-      for (GitFile gitFile : stagedFiles){
-        message.append(gitFile.getPath().getName());
-        message.append("\n");
-      }
-      int commit = JOptionPane.showConfirmDialog(null, message.toString(),
-              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      if (commit != 0){
         return false;
       }
     }
@@ -145,5 +121,21 @@ public class Commit implements ICommand, ICommandGUI {
   @Override
   public void onButtonClicked() {
     //do nothing, since there is no commit button
+  }
+
+  private List<GitFile> getStagedFiles(){
+    GitData gitData = new GitData();
+    GitStatus gitStatus= gitData.getStatus();
+    List<GitFile> stagedFiles;
+
+    //get the list of staged files from status
+    try {
+      stagedFiles = gitStatus.getStagedFiles();
+    } catch (GitException | IOException e) {
+      GUIController.getInstance().errorHandler(e);
+      stagedFiles = new LinkedList<>();
+    }
+
+    return stagedFiles;
   }
 }
