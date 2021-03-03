@@ -1,6 +1,9 @@
 package git;
 
 import commands.Commit;
+import git.exception.GitException;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,6 +33,17 @@ class CommitTest extends AbstractGitTest {
         config.setString("user", null, "email", "123@web.de");
         config.save();
 
+    }
+
+    private void resetRepo() throws IOException, GitAPIException, GitException, URISyntaxException {
+        git.close();
+        FileUtils.deleteDirectory(repo);
+        FileUtils.forceMkdir(repo);
+        Git.init().setDirectory(repo).setBare(false).call();
+        Git git = Git.open(repo);
+        git.close();
+
+        init();
     }
 
     private void addFile() throws IOException, GitAPIException {
@@ -116,9 +131,9 @@ class CommitTest extends AbstractGitTest {
         assertFalse(commit.execute());
     }
 
-    //this test should fail if there was no former commit to amend
     @Test
-    void emptyCommitAmendEmptyCommitHistoryShouldFail() {
+    void amendEmptyCommitHistoryShouldFail() throws URISyntaxException, GitAPIException, GitException, IOException {
+        resetRepo();
         Commit commit = new Commit();
         commit.setCommitMessage("Test");
         commit.setAmend(true);
