@@ -36,7 +36,6 @@ class CommitTest extends AbstractGitTest {
     }
 
     private void resetRepo() throws IOException, GitAPIException, GitException, URISyntaxException {
-        git.close();
         FileUtils.deleteDirectory(repo);
         FileUtils.forceMkdir(repo);
         Git.init().setDirectory(repo).setBare(false).call();
