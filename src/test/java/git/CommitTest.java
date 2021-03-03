@@ -7,7 +7,7 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommitTest extends AbstractGitTest {
     private File file;
 
-    @BeforeAll
-    private void setAuthor() throws IOException {
-        StoredConfig config = GitData.getRepository().getConfig();
+    @BeforeEach
+    void setAuthor() throws IOException {
+        StoredConfig config = git.getRepository().getConfig();
         config.setString("user", null, "name", "TestUser");
         config.setString("user", null, "email", "123@web.de");
         config.save();
@@ -35,7 +35,6 @@ class CommitTest extends AbstractGitTest {
         //create new file
         file = new File(repo, "file");
         new FileOutputStream(file).close();
-        GitFile gitFile = new GitFile(file.getTotalSpace(), file);
 
         //add file
         git.add()
@@ -264,7 +263,6 @@ class CommitTest extends AbstractGitTest {
         //add new file
         File file2 = new File(repo, "file2");
         new FileOutputStream(file2).close();
-        GitFile gitFile = new GitFile(file2.getTotalSpace(), file2);
         git.add()
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
