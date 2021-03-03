@@ -10,7 +10,10 @@ import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class AddCommitView extends JPanel implements IView {
   private JButton amendButton;
   @SuppressWarnings("unused")
   private JPanel statusPanel;
+  @SuppressWarnings("unused")
   private JPanel diffPanel;
   @SuppressWarnings("unused")
   private DiffView diffView;
@@ -47,11 +51,15 @@ public class AddCommitView extends JPanel implements IView {
   private JList<FileListItem> deletedFilesList;
   @SuppressWarnings("unused")
   private JScrollPane deletedFilesScrollPane;
+  @SuppressWarnings("unused")
+  private JScrollPane diffScrollPane;
+  @SuppressWarnings("unused")
+  private JTextPane diffTextPane;
   private List<JList<FileListItem>> statusList;
   private boolean amend;
 
-
   public AddCommitView() {
+    //provide the statusList with all three types of lists
     statusList = new LinkedList<>();
     statusList.add(newFilesList);
     statusList.add(modifiedChangedFilesList);
@@ -61,7 +69,7 @@ public class AddCommitView extends JPanel implements IView {
     cancelButton.addActionListener(e -> {
       boolean close = true;
       //ask whether the user wants to save his/her changes in the staging-area (if existent)
-      if (!(getFilesToBeAdded().isEmpty() && getFilesToBeRestored().isEmpty())){
+      if (!getFilesStatusChanged().isEmpty()) {
         int saveChanges = JOptionPane.showConfirmDialog(null, "Sollen die Änderungen an der Staging-Area gespeichert werden?",
                 "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -70,7 +78,7 @@ public class AddCommitView extends JPanel implements IView {
           executeAdd();
         }
         //do not restore default view if user selected Cancel
-        else if (saveChanges == 2){
+        else if (saveChanges == 2) {
           close = false;
         }
       }
@@ -94,7 +102,6 @@ public class AddCommitView extends JPanel implements IView {
       executeAdd();
       executeCommit();
     });
-
 
     //set the default text of the commit message text area
     commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
@@ -123,11 +130,9 @@ public class AddCommitView extends JPanel implements IView {
     });
 
 
-    //set up the diff view
-    diffView = new DiffView();
-    diffPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    diffPanel.add(diffView.openDiffView());
+
   }
+
 
   public AddCommitView(String commitMessage) {
     this();
@@ -137,6 +142,7 @@ public class AddCommitView extends JPanel implements IView {
   /**
    * @return The JPanel that holds all the elements in the view
    */
+  @Override
   public JPanel getView() {
     return contentPanel;
   }
@@ -144,9 +150,11 @@ public class AddCommitView extends JPanel implements IView {
   /**
    * Updates the view.
    */
+  @Override
   public void update() {
-    //does nothing
-    //TODO: weg?
+    createUIComponents();
+    //set the default text of the commit message text area
+    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
   }
 
   /*
@@ -157,11 +165,10 @@ public class AddCommitView extends JPanel implements IView {
 
 
     //pass all selected GitFiles to add
-    addCommand.setFilesToBeAdded(getFilesToBeAdded());
-    addCommand.setFilesToBeRestored(getFilesToBeRestored());
+    addCommand.setFiles(getSelectedGitFiles());
 
     //execute git add and set command line
-    if (addCommand.execute()){
+    if (addCommand.execute()) {
       GUIController.getInstance().setCommandLine(addCommand.getCommandLine());
     }
 
@@ -171,6 +178,23 @@ public class AddCommitView extends JPanel implements IView {
   invokes the commit command when the user clicks on the commit button
    */
   private void executeCommit() {
+
+    //if staging area is not empty, show confirmation dialog
+    List<GitFile> stagedFiles = getStagedFiles();
+    if (!stagedFiles.isEmpty()) {
+      StringBuilder message = new StringBuilder();
+      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
+      for (GitFile gitFile : stagedFiles) {
+        message.append(gitFile.getPath().getName());
+        message.append("\n");
+      }
+      int confirmation = JOptionPane.showConfirmDialog(null, message.toString(),
+              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      if (confirmation != 0) {
+        return;
+      }
+    }
+
     Commit commitCommand = new Commit();
 
     //set amend and commit message
@@ -178,11 +202,35 @@ public class AddCommitView extends JPanel implements IView {
     commitCommand.setCommitMessage(commitMessageTextArea.getText());
 
     //execute git commit
-    if (commitCommand.execute()){
+    if (commitCommand.execute()) {
       GUIController controller = GUIController.getInstance();
       controller.setCommandLine(commitCommand.getCommandLine());
       controller.restoreDefaultView();
     }
+  }
+
+  /*
+   * Get all files whose status changed from Add, depending on the currently selected files
+   */
+  private List<GitFile> getFilesStatusChanged() {
+    Add add = new Add();
+    add.setFiles(getSelectedGitFiles());
+    return add.getFilesStatusChanged();
+  }
+
+  /*
+  Get all files that are currently in the staging area
+   */
+  private List<GitFile> getStagedFiles() {
+    GitData gitData = new GitData();
+    GitStatus gitStatus = gitData.getStatus();
+    List<GitFile> stagedFiles = new LinkedList<>();
+    try {
+      stagedFiles = gitStatus.getStagedFiles();
+    } catch (IOException | GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return stagedFiles;
   }
 
   /*
@@ -193,7 +241,7 @@ public class AddCommitView extends JPanel implements IView {
   diff to the current index (e.g. HEAD) is presented in the panel on the right
   */
   private JList<FileListItem> setUpFileList(List<GitFile> files) {
-    FileListItem [] values = new FileListItem[files.size()];
+    FileListItem[] values = new FileListItem[files.size()];
     int i = 0;
 
     for (GitFile gitFile : files){
@@ -274,47 +322,10 @@ public class AddCommitView extends JPanel implements IView {
     newFilesList = setUpFileList(newFiles);
     modifiedChangedFilesList = setUpFileList(modifiedChangedFiles);
     deletedFilesList = setUpFileList(deletedFiles);
-  }
 
-  /*
-Get all files that are currently unstaged and have been selected by the user to be added
- */
-  private List<GitFile> getFilesToBeAdded() {
-
-    List<GitFile> filesToBeAdded = new LinkedList<>();
-    for (GitFile fileToBeAdded : getSelectedGitFiles()){
-      if (!getStagedFiles().contains(fileToBeAdded)){
-        filesToBeAdded.add(fileToBeAdded);
-      }
-    }
-    return filesToBeAdded;
-  }
-
-  /*
-  Get all files that are currently staged and have been deselected by the user
-   */
-  private List<GitFile> getFilesToBeRestored(){
-
-
-    List<GitFile> filesToBeRestored = new LinkedList<>();
-    for (GitFile fileToBeRestored : getStagedFiles()){
-      if (!getSelectedGitFiles().contains(fileToBeRestored)){
-        filesToBeRestored.add(fileToBeRestored);
-      }
-    }
-    return filesToBeRestored;
-  }
-
-  private List<GitFile> getStagedFiles(){
-    GitData data = new GitData();
-    GitStatus gitStatus = data.getStatus();
-    List<GitFile> stagedFiles = new LinkedList<>();
-    try {
-      stagedFiles = gitStatus.getStagedFiles();
-    } catch (IOException | GitException e) {
-      GUIController.getInstance().errorHandler(e);
-    }
-    return stagedFiles;
+    //set up the diff view
+    diffView = new DiffView();
+    diffTextPane = diffView.openDiffView();
   }
 
   /*
@@ -398,6 +409,7 @@ Get all files that are currently unstaged and have been selected by the user to 
     GitFile getGitFile() {
       return gitFile;
     }
+
 
   }
 
