@@ -2,6 +2,7 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import settings.Settings;
 
@@ -53,20 +54,35 @@ public class GitFile {
     return this.path;
   }
 
-  /**
+  /*
    * Method to get the relative path to the repository.
    * <p><b>WARNING</b>: All File-Separator Characters are replaced by "/"
    * so this function is OS agnostic in its return value.</p>
    *
-   * @return relative path as a String
    */
-  public String getRelativePath() {
+  protected String getRelativePath() {
     Path filePath = GitData.getRepository().getWorkTree().toPath().relativize(path.toPath());
     String toReturn = filePath.toString();
     if (!File.separator.equals("/")) {
       toReturn = toReturn.replace(File.separator, "/");
     }
     return toReturn;
+  }
+
+  /**
+   * Returns the relative path to the repository
+   * Replaces the internal relative path that uses "/" as separator with the OS-dependent relative path.
+   * This method is neccessary to display the correct paths in the command line
+   *
+   * @return The OS-dependent relative path
+   */
+  public String getSystemDependentRelativePath() {
+    String relativePath = getRelativePath();
+    //transform the internal relative path back to the system-dependent path
+    if (File.separator.compareTo("/") != 0) {
+      relativePath = relativePath.replace("/", File.separator);
+    }
+    return relativePath;
   }
 
   /**
@@ -137,9 +153,11 @@ public class GitFile {
   public boolean add() throws GitException {
     Git git = GitData.getJGit();
     try {
-      git.add().addFilepattern(this.getRelativePath()).call();
-      assert git.status().call().getAdded().contains(this.getRelativePath());
-      assert !git.status().call().getAdded().isEmpty();
+      String relativePath = this.getRelativePath();
+      git.add().addFilepattern(relativePath).call();
+      Status status = git.status().call();
+      //If file was added, it should now be added. If file was deleted, it should now be removed
+      assert status.getAdded().contains(relativePath) || status.getRemoved().contains(relativePath);
       return true;
     } catch (GitAPIException e) {
       throw new GitException("File not found in Git");

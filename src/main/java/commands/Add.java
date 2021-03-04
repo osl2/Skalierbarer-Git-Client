@@ -74,7 +74,7 @@ public class Add implements ICommand, ICommandGUI {
   public String getCommandLine() {
     StringBuilder cl = new StringBuilder("git add ");
     for (GitFile file : getFilesToBeAdded()) {
-      cl.append(file.getPath());
+      cl.append(file.getSystemDependentRelativePath());
       cl.append(" ");
     }
     return cl.toString();
