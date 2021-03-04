@@ -1,39 +1,16 @@
 package commands;
 
-import controller.GUIController;
-import git.AbstractGitTest;
 import git.GitBranch;
 import git.GitCommit;
 import git.exception.GitException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import util.GUIControllerTestable;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
-class BranchTest extends AbstractGitTest {
-
-  static GUIControllerTestable guiControllerTestable;
-  static MockedStatic<GUIController> mockedController;
-
-  @BeforeAll
-  static void setup() {
-    guiControllerTestable = new GUIControllerTestable();
-    mockedController = mockStatic(GUIController.class);
-    mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-    guiControllerTestable.resetTestStatus();
-  }
-
-  @AfterAll
-  static void tearDown() {
-    mockedController.close();
-  }
+class BranchTest extends AbstractCommandTest {
 
   @Test
   void testExecute() throws GitException {
