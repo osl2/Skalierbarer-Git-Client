@@ -54,7 +54,9 @@ class GitFileTest extends AbstractGitTest {
     assertEquals(gitDataFile, jGitFile);
     assertTrue(GitStatus.getInstance().getAddedFiles().contains(gitFile));
     assertTrue(git.status().call().getAdded().contains(gitFile.getPath().getName()));
-    File newFile = new File(repo, "newFolder\\newFile.txt");
+    File newFolder = new File(repo, "newFolder");
+    assertTrue(newFolder.mkdir());
+    File newFile = new File(newFolder.getPath(), "newFile.txt");
     FileWriter fr = new FileWriter(newFile, true);
     fr.write("data");
     fr.close();

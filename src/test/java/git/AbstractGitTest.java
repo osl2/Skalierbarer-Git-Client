@@ -28,9 +28,23 @@ public abstract class AbstractGitTest {
     protected Repository repository;
     protected Settings settings;
 
+    protected boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (String child : children) {
+                boolean success = deleteDir(new File(dir, child));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        return dir.delete(); // The directory is empty now and can be deleted.
+    }
+
     @BeforeEach
     protected void beforeEach() throws GitAPIException, IOException, GitException, URISyntaxException {
-        FileUtils.deleteDirectory(repo);
+        deleteDir(repo);
         FileUtils.forceMkdir(repo);
         setupRepo();
 
