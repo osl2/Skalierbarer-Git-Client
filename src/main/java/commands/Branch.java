@@ -22,6 +22,7 @@ public class Branch implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
+    @Override
     public boolean execute() {
         GitFacade jgit = new GitFacade();
         boolean suc = false;
@@ -42,6 +43,7 @@ public class Branch implements ICommand, ICommandGUI {
      *
      * @return Returns command for Commandline
      */
+    @Override
     public String getCommandLine() {
         return "git branch " + branchName + " " + commitPointOfBranching.getHashAbbrev();
     }
@@ -51,6 +53,7 @@ public class Branch implements ICommand, ICommandGUI {
      *
      * @return Returns the name of the command
      */
+    @Override
     public String getName() {
         return "Branch";
     }
@@ -60,6 +63,7 @@ public class Branch implements ICommand, ICommandGUI {
      *
      * @return Returns a Description of what the command is doing
      */
+    @Override
     public String getDescription() {
         return "Erstellt einen neuen Änderungszweig an entsprechender Stelle";
     }
@@ -67,6 +71,7 @@ public class Branch implements ICommand, ICommandGUI {
     /**
      * OnClick handler for the GUI button representation.
      */
+    @Override
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new BranchDialogView());
     }

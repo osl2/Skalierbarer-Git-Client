@@ -41,6 +41,7 @@ public class FilterDialogView implements IDialogView {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void update() {
 
     }

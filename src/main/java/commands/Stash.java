@@ -20,6 +20,7 @@ public class Stash implements ICommand, ICommandGUI {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean execute() {
         return false;
     }
@@ -36,6 +37,7 @@ public class Stash implements ICommand, ICommandGUI {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCommandLine() {
         return null;
     }
@@ -43,6 +45,7 @@ public class Stash implements ICommand, ICommandGUI {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "Stash";
     }
@@ -50,6 +53,7 @@ public class Stash implements ICommand, ICommandGUI {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return "Open Stash UI";
     }
@@ -57,6 +61,7 @@ public class Stash implements ICommand, ICommandGUI {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onButtonClicked() {
 
     }

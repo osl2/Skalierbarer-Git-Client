@@ -20,6 +20,7 @@ public class Checkout implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
+    @Override
     public boolean execute() {
         GitFacade facade = new GitFacade();
         if (branch != null) {
@@ -46,6 +47,7 @@ public class Checkout implements ICommand, ICommandGUI {
      * @return Returns a String representation of the corresponding git command to
      * display on the command line
      */
+    @Override
     public String getCommandLine() {
         if (branch != null)
             return "git checkout -b " + branch.getName();
@@ -60,6 +62,7 @@ public class Checkout implements ICommand, ICommandGUI {
      *
      * @return The name of the command
      */
+    @Override
     public String getName() {
         return "Checkout";
     }
@@ -69,6 +72,7 @@ public class Checkout implements ICommand, ICommandGUI {
      *
      * @return description as a String
      */
+    @Override
     public String getDescription() {
         return "Wechselt auf einen anderen Zweig / eine andere Einbuchung";
     }
@@ -76,6 +80,7 @@ public class Checkout implements ICommand, ICommandGUI {
     /**
      * OnClick handler for the GUI button representation.
      */
+    @Override
     public void onButtonClicked() {
         GUIController.getInstance().openDialog(new CheckoutDialogView());
     }

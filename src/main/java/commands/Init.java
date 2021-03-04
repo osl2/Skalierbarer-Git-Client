@@ -29,6 +29,7 @@ public class Init implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean execute() {
     if(path == null) {
       GUIController.getInstance().errorHandler( "Es wurde kein Pfad zu einem Ordner übergeben.");
@@ -48,6 +49,7 @@ public class Init implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getCommandLine() {
     return commandLine;
   }
@@ -55,6 +57,7 @@ public class Init implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getName() {
     return "Init";
   }
@@ -62,6 +65,7 @@ public class Init implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getDescription() {
     return "Der git init Befehl wird verwendet um ein neues git Repository anzulegen." +
               "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
@@ -70,6 +74,7 @@ public class Init implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

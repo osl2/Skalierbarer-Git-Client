@@ -27,6 +27,7 @@ public class DiffView implements IDiffView {
   }
 
 
+  @Override
   public JTextPane openDiffView() {
     return pane;
   }
@@ -38,12 +39,14 @@ public class DiffView implements IDiffView {
    * @param activeCommit is the commit to compare to its previous version.
    * @param file is a the File of the given commit.
    */
+  @Override
   public void setDiff(GitCommit activeCommit, GitFile file) {
     diff.setDiffCommit(activeCommit, file);
     diff.execute();
     writeDiff();
   }
 
+  @Override
   public void setDiff(GitFile file) {
     diff.setDiffFile(file);
     diff.execute();

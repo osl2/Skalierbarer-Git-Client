@@ -38,6 +38,7 @@ public class Rebase implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute() {
     return false;
   }
@@ -49,6 +50,7 @@ public class Rebase implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding
    * git command to display on the command line
    */
+  @Override
   public String getCommandLine() {
     return null;
   }
@@ -58,6 +60,7 @@ public class Rebase implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
+  @Override
   public String getName() {
     return null;
   }
@@ -67,6 +70,7 @@ public class Rebase implements ICommand, ICommandGUI {
    *
    * @return description as a Sting
    */
+  @Override
   public String getDescription() {
     return null;
   }
@@ -74,6 +78,7 @@ public class Rebase implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
   }
 }

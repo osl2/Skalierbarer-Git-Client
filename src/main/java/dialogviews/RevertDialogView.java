@@ -91,6 +91,7 @@ public class RevertDialogView implements IDialogView {
     /**
      * method that is called to update the dialog view.
      */
+    @Override
     public void update() {
 
     }

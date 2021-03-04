@@ -8,11 +8,15 @@ import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
 import git.exception.GitException;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.List;
 public class RemoteView extends JPanel implements IView {
   @SuppressWarnings("unused")
@@ -180,6 +184,7 @@ public class RemoteView extends JPanel implements IView {
     });
   }
 
+  @Override
   public void update() {
 
   }
@@ -189,6 +194,7 @@ public class RemoteView extends JPanel implements IView {
    *
    * @return RemotePnael for the mainwindow
    */
+  @Override
   public JPanel getView() {
     return remotePanel;
   }

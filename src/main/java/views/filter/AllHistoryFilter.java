@@ -9,6 +9,7 @@ import views.HistoryView;
  */
 public class AllHistoryFilter extends AbstractHistoryFilter {
 
+    @Override
     protected boolean isMatch(GitCommit commit) {
         /* TODO: Naive implementation; make faster */
         return true;

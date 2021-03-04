@@ -6,6 +6,7 @@ import git.GitFacade;
 import git.GitRemote;
 import git.exception.GitException;
 import views.RemoteView;
+
 import java.util.List;
 
 /**
@@ -42,6 +43,7 @@ public class Remote implements ICommand, ICommandGUI {
    *
    * @return Returns command for Commandline
    */
+  @Override
   public String getCommandLine() {
     String ret = "";
     switch (remoteSubcommand){
@@ -60,6 +62,7 @@ public class Remote implements ICommand, ICommandGUI {
    *
    * @return Returns the name of the command
    */
+  @Override
   public String getName(){return "Remote";}
 
   /**
@@ -67,11 +70,13 @@ public class Remote implements ICommand, ICommandGUI {
    *
    * @return Returns a Description of what the command is doing
    */
+  @Override
   public String getDescription(){return "Möglichkeit die Onlinerepositories hinzuzufügen und zu verwalten";}
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean execute() {
     switch (remoteSubcommand) {
       case SET_URL:
@@ -116,6 +121,7 @@ public class Remote implements ICommand, ICommandGUI {
    * This method is not abstract, since there is only one Remote button. When this button is clicked, it calls
    * onButtonClicked() on Remote and opens the RemoteView
    */
+  @Override
   public void onButtonClicked(){
     GUIController.getInstance().openView(new RemoteView());
   }

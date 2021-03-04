@@ -78,6 +78,7 @@ public class Merge implements ICommand, ICommandGUI {
      *
      * @return true, if the command has been executed successfully
      */
+    @Override
     public boolean execute() {
         if (this.srcBranch == null || this.destBranch == null) {
             Logger.getGlobal().warning("Source or Destination of Merge was NULL");
@@ -120,6 +121,7 @@ public class Merge implements ICommand, ICommandGUI {
      * @return Returns a String representation of the corresponding git command to
      * display on the command line
      */
+    @Override
     public String getCommandLine() {
         return "git merge " + srcBranch.getName();
     }

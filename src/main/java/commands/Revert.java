@@ -2,7 +2,6 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.RevertDialogView;
-import git.GitBranch;
 import git.GitCommit;
 import git.GitFacade;
 import git.exception.GitException;
@@ -18,6 +17,7 @@ public class Revert implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute() {
     boolean suc = false;
     GitFacade gitFac = new GitFacade();
@@ -35,6 +35,7 @@ public class Revert implements ICommand, ICommandGUI {
    *
    * @return Returns command for Commandline
    */
+  @Override
   public String getCommandLine() {
     return " git revert " + chosenCommit.getHashAbbrev();
   }
@@ -44,6 +45,7 @@ public class Revert implements ICommand, ICommandGUI {
    *
    * @return Returns the name of the command
    */
+  @Override
   public String getName() {
     return "Revert";
   }
@@ -53,6 +55,7 @@ public class Revert implements ICommand, ICommandGUI {
    *
    * @return Returns a Description of what the command is doing
    */
+  @Override
   public String getDescription() {
     return "Macht Änderungen eines ausgewählten Commits rückgängig";
   }
@@ -60,6 +63,7 @@ public class Revert implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new RevertDialogView());
   }

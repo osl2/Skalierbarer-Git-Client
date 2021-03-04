@@ -97,6 +97,7 @@ public class SettingsDialogView implements IDialogView {
         return settingsPanel;
     }
 
+    @Override
     public void update() {
 
     }

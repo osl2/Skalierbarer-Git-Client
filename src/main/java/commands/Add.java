@@ -28,6 +28,7 @@ public class Add implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
    */
+  @Override
   public boolean execute() {
     try {
 

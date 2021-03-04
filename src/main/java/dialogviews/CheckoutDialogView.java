@@ -132,6 +132,7 @@ public class CheckoutDialogView implements IDialogView {
     /**
      * This method updates the Dialog, in this case it will reload the Branches and commits.
      */
+    @Override
     public void update() {
         this.model.setRoot(generateTree());
     }
