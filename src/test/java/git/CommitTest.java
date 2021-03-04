@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
+import views.AddCommitView;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -181,7 +182,7 @@ class CommitTest extends AbstractGitTest {
     }
 
     @Test
-    void emptyCommitMessageShouldFail() throws IOException, GitAPIException {
+    void noCommitMessageShouldFail() throws IOException, GitAPIException {
         addFile();
         Commit commit = new Commit();
         assertFalse(commit.execute());
@@ -346,6 +347,22 @@ class CommitTest extends AbstractGitTest {
         assertEquals(5, numCommits);
 
 
+    }
+
+    @Test
+    void defaultCommitMessageShouldFail() throws IOException, GitAPIException {
+        addFile();
+        Commit commit = new Commit();
+        commit.setCommitMessage(AddCommitView.DEFAULT_COMMIT_MESSAGE);
+        assertFalse(commit.execute());
+    }
+
+    @Test
+    void emptyCommitMessageShouldFail() throws IOException, GitAPIException {
+        addFile();
+        Commit commit = new Commit();
+        commit.setCommitMessage("");
+        assertFalse(commit.execute());
     }
 
 
