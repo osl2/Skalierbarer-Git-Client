@@ -15,6 +15,7 @@ public class HistoryAuthorFilter extends AbstractHistoryFilter {
         this.author = author;
     }
 
+    @Override
     protected boolean isMatch(GitCommit commit) {
         return commit.getAuthor().equals(this.author);
     }

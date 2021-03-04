@@ -45,6 +45,7 @@ public class Pull implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getCommandLine() {
     return commandLine;
   }
@@ -52,6 +53,7 @@ public class Pull implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getName() {
     return "Pull";
   }
@@ -59,6 +61,7 @@ public class Pull implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getDescription() {
     return "Lädt Änderungen aus einem Online-Repo.";
   }
@@ -76,6 +79,7 @@ public class Pull implements ICommand, ICommandGUI {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute() {
     if(remote == null || remoteBranch == null) {
       GUIController.getInstance().errorHandler("Es muss ein Remote und ein Branch auf dem Remote übergeben werden.");

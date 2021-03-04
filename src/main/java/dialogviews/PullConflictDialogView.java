@@ -53,6 +53,7 @@ public class PullConflictDialogView implements IDialogView {
     return pullConflictPanel;
   }
 
+  @Override
   public void update() {
     // This method is not used because it is not needed.
   }

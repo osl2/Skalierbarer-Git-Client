@@ -47,6 +47,7 @@ public class Clone implements ICommand, ICommandGUI {
     this.recursive= recursive;
   }
 
+  @Override
   public boolean execute() {
     if(path == null || gitURL == null) {
       GUIController.getInstance().errorHandler("Es muss eine url angegeben und ein lokaler Pfad ausgewählt werden.");
@@ -77,6 +78,7 @@ public class Clone implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getCommandLine() {
     return commandLine;
   }
@@ -84,6 +86,7 @@ public class Clone implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getName() {
     return "Clone";
   }
@@ -91,6 +94,7 @@ public class Clone implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String getDescription() {
     return "Mit diesem Befehl kann ein entferntes git repository geklont werden.";
   }
@@ -98,6 +102,7 @@ public class Clone implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new CloneDialogView());
   }

@@ -24,6 +24,7 @@ public class Diff implements ICommand {
    *
    * @return true, if the command has been executed successfully
    */
+  @Override
   public boolean execute() {
     if((commit && activeCommit == null) || activeFile == null) {
       GUIController.getInstance().errorHandler( "Es muss ein GitCommit und ein GitFile " +

@@ -83,6 +83,7 @@ public class CloneDialogView implements IDialogView {
         return cloneDialog;
     }
 
+    @Override
     public void update() {
         // This method is not used because it is not needed.
     }

@@ -50,6 +50,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return true, if the command has been executed successfully
    * execution of the command in JGit throws an exception
    */
+  @Override
   public boolean execute() {
 
 

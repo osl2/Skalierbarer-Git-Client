@@ -1,4 +1,5 @@
 package dialogviews;
+
 import commands.Fetch;
 import controller.GUIController;
 import git.CredentialProviderHolder;
@@ -6,6 +7,7 @@ import git.GitBranch;
 import git.GitData;
 import git.GitRemote;
 import git.exception.GitException;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -203,6 +205,7 @@ public class FetchDialogView implements IDialogView {
     return FetchPanel;
   }
 
+  @Override
   public void update() {
 
   }

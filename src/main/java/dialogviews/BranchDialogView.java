@@ -135,6 +135,7 @@ public class BranchDialogView implements IDialogView {
         return BranchPanel;
     }
 
+    @Override
     public void update() {
 
     }

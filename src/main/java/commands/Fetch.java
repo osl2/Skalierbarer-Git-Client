@@ -22,6 +22,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @return True, if it is successfully executed false if not
    */
+  @Override
   public boolean execute()  {
     boolean suc;
       suc = tryFetch();
@@ -52,6 +53,7 @@ public class Fetch implements ICommand, ICommandGUI {
    * @return Returns a String representation of the corresponding
    *     git command to display on the command line
    */
+  @Override
   public String getCommandLine() {
       StringBuilder out = new StringBuilder();
     for (GitRemote remote : remotes) {
@@ -71,6 +73,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @return The name of the command
    */
+  @Override
   public String getName() {
     return "Fetch";
   }
@@ -80,6 +83,7 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    * @return description as a Sting
    */
+  @Override
   public String getDescription() {
     return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories" +
             "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
@@ -88,6 +92,7 @@ public class Fetch implements ICommand, ICommandGUI {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void onButtonClicked() {
     FetchDialogView dialogView = new FetchDialogView();
     if (dialogView.isOpen()){
