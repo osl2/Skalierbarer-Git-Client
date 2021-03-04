@@ -40,9 +40,7 @@ class BranchDialogViewTest extends AbstractGitTest {
   @Test
   void testBranchDialogView() throws GitException {
     BranchDialogView branchD = new BranchDialogView();
-    JFrame frame = new JFrame(branchD.getTitle());
-    frame.setSize(branchD.getDimension());
-    frame.add(branchD.getPanel());
+    JPanel frame = branchD.getPanel();
     JTextField textField;
     textField = (JTextField) getChildByName(frame, "nameField");
     assertNotNull(textField);
