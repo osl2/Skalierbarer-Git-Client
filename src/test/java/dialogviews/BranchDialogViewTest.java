@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static dialogviews.FindComponents.getChildByName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -18,19 +17,20 @@ class BranchDialogViewTest extends AbstractCommandTest {
 
   @Test
   void testBranchDialogView() throws GitException {
+    FindComponents find = new FindComponents();
     BranchDialogView branchD = new BranchDialogView();
     JPanel frame = branchD.getPanel();
     JTextField textField;
-    textField = (JTextField) getChildByName(frame, "nameField");
+    textField = (JTextField) find.getChildByName(frame, "nameField");
     assertNotNull(textField);
     textField.setText("NeuerBranch");
-    JComboBox branchComboBox = (JComboBox) getChildByName(frame, "branchComboBox");
+    JComboBox branchComboBox = (JComboBox) find.getChildByName(frame, "branchComboBox");
     assertNotNull(branchComboBox);
     branchComboBox.setSelectedIndex(0);
-    JComboBox commitComboBox = (JComboBox) getChildByName(frame, "commitComboBox");
+    JComboBox commitComboBox = (JComboBox) find.getChildByName(frame, "commitComboBox");
     assertNotNull(commitComboBox);
     commitComboBox.setSelectedIndex(0);
-    JButton branchButton = (JButton) getChildByName(frame, "branchButton");
+    JButton branchButton = (JButton) find.getChildByName(frame, "branchButton");
     assertNotNull(branchButton);
     branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
     GitData data = new GitData();
