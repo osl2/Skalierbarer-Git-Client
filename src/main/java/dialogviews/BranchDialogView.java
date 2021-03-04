@@ -36,10 +36,15 @@ public class BranchDialogView implements IDialogView {
     @SuppressWarnings("unused")
     private JLabel nameLabel;
 
+
     /**
      * Constructor for a new Instance
      */
     public BranchDialogView() {
+        branchComboBox.setName("branchComboBox");
+        commitComboBox.setName("commitComboBox");
+        nameField.setName("nameField");
+        branchButton.setName("branchButton");
         commitComboBox.setRenderer(new BranchDialogRenderer());
         commitComboBox.setMaximumRowCount(6);
         // Adds the existing branches to the comboBox
