@@ -207,7 +207,9 @@ public class GitFacade {
       GitAuthor author = settings.getUser();
       Git jgit = GitData.getJGit();
       jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail())
-          .setAmend(amend).call();
+              .setSign(false) // Currently we have no provider support to allow signatures. Therefore we force them to false
+              // See Issue !17
+              .setAmend(amend).call();
       return true;
     } catch (GitAPIException e) {
       throw new GitException("Mit dem Commit ist etwas schief gelaufen: \n " +
