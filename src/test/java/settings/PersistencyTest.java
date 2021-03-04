@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-public class PersistencyTest extends AbstractGitTest {
+class PersistencyTest extends AbstractGitTest {
     @TempDir
     static File config;
     Data data;
@@ -28,13 +28,13 @@ public class PersistencyTest extends AbstractGitTest {
         settings.setUser(gitData.getCommits().next().getAuthor());
         settings.setShowTreeView(false);
         settings.setUseTooltips(true);
-        FileUtils.deleteDirectory(config);
+        deleteDir(config);
         FileUtils.forceMkdir(config);
         new Persistency().save(config);
     }
 
     @Test
-    public void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, URISyntaxException {
+    void singletonsAreCreatedCorrectlyTest() throws IllegalAccessException, URISyntaxException {
         // The Instance fields are private, so we should not be able to set them. We use reflection to still do that.
         // This should create new instances when we try to get another Settings or Data instance.
         FieldUtils.writeField(settings, "INSTANCE", null, true);

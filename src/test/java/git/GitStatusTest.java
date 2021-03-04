@@ -15,15 +15,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GitStatusTest extends AbstractGitTest {
+class GitStatusTest extends AbstractGitTest {
     private List<GitFile> untrackedFiles;
     private List<GitFile> addedFiles;
     private List<GitFile> modifiedFiles;
     private List<GitFile> changedFiles;
-    private GitStatus gitStatus;
 
     @Test
-    public void getAddedFilesReturnsCorrectPathsTest() throws IOException, GitAPIException, GitException {
+    void getAddedFilesReturnsCorrectPathsTest() throws IOException, GitAPIException, GitException {
         File file1 = new File(repo, "file1");
         File subdir = new File(repo, "subdir");
         FileUtils.forceMkdir(subdir);
@@ -33,9 +32,14 @@ public class GitStatusTest extends AbstractGitTest {
         new FileOutputStream(file1).close();
         new FileOutputStream(file2).close();
 
+        String filePattern2 = repo.toPath().relativize(file2.toPath()).toString();
+        if (!File.separator.equals("/")) {
+            filePattern2 = filePattern2.replace(File.separator, "/");
+        }
+
         git.add()
                 .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
-                .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
+                .addFilepattern(filePattern2)
                 .call();
 
         List<GitFile> addedPaths = GitStatus.getInstance().getAddedFiles();
@@ -49,7 +53,7 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
     @Test
-    public void untrackedAddedFileStateTest() throws IOException, GitException, GitAPIException {
+    void untrackedAddedFileStateTest() throws IOException, GitException, GitAPIException {
         File file = new File(repo, "file");
         new FileOutputStream(file).close();
         GitFile gitFile = new GitFile(file.getTotalSpace(), file);
@@ -70,7 +74,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //perform further changes, gitFile should now be both MODIFIED and ADDED
         FileOutputStream out = new FileOutputStream(file);
-        out.write(new String("Test").getBytes(StandardCharsets.UTF_8));
+        out.write(("Test").getBytes(StandardCharsets.UTF_8));
 
         reloadFileLists();
         assertFalse(untrackedFiles.contains(gitFile));
@@ -89,7 +93,7 @@ public class GitStatusTest extends AbstractGitTest {
         assertFalse(changedFiles.contains(gitFile));
 
         //modify and add file, should now be CHANGED
-        out.write(new String("TestTest").getBytes(StandardCharsets.UTF_8));
+        out.write(("TestTest").getBytes(StandardCharsets.UTF_8));
         out.close();
         git.add().addFilepattern(repo.toPath().relativize(file.toPath()).toString()).call();
 
@@ -101,7 +105,7 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
     @Test
-    public void missingRemovedDeletedFilesTest() throws IOException, GitAPIException, GitException {
+    void missingRemovedDeletedFilesTest() throws IOException, GitAPIException, GitException {
 
         //create new file, add and commit it
         File file = new File(repo, "file");
@@ -111,7 +115,7 @@ public class GitStatusTest extends AbstractGitTest {
         git.commit().setMessage("Test").call();
 
         //delete the file. File should now be missing and deleted, but not removed
-        file.delete();
+        assertTrue(file.delete());
         Status status = git.status().call();
         GitStatus gitStatus = GitStatus.getInstance();
         assertTrue(status.getMissing().contains(file.getName()));
@@ -139,10 +143,9 @@ public class GitStatusTest extends AbstractGitTest {
                 gitStatus.getRemovedFiles().size() + gitStatus.getMissingFiles().size());
     }
 
-   
 
     @Test
-    public void deletedFilesTest() throws IOException, GitAPIException, GitException {
+    void deletedFilesTest() throws IOException, GitAPIException, GitException {
         //make two files, add and commit them, delete one, remove the other
         File file1 = new File(repo, "file1");
         File file2 = new File(repo, "file2");
@@ -156,7 +159,7 @@ public class GitStatusTest extends AbstractGitTest {
         git.commit().setMessage("Test").call();
 
         git.rm().addFilepattern(repo.toPath().relativize(file1.toPath()).toString()).call();
-        file2.delete();
+        assertTrue(file2.delete());
 
         //get status from JGit and GitStatus instance
         Status status = git.status().call();
@@ -178,7 +181,7 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
     @Test
-    public void newFilesTest() throws IOException, GitException, GitAPIException {
+    void newFilesTest() throws IOException, GitException, GitAPIException {
         //make two files, add one of them
         File file1 = new File(repo, "file1");
         File file2 = new File(repo, "file2");
@@ -208,7 +211,7 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
     @Test
-    public void modifiedFilesTest() throws IOException, GitAPIException, GitException {
+    void modifiedFilesTest() throws IOException, GitAPIException, GitException {
         //make two files, add and commit them
         File file1 = new File(repo, "file1");
         File file2 = new File(repo, "file2");
@@ -250,7 +253,7 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
     @Test
-    public void getStagedFilesTest() throws IOException, GitAPIException, GitException {
+    void getStagedFilesTest() throws IOException, GitAPIException, GitException {
         //make two files, add and commit file1
         File file1 = new File(repo, "file1");
         File file2 = new File(repo, "file2");
@@ -264,7 +267,7 @@ public class GitStatusTest extends AbstractGitTest {
 
         //modify file1
         FileOutputStream out  = new FileOutputStream(file1);
-        out.write(new String("Test").getBytes(StandardCharsets.UTF_8));
+        out.write(("Test").getBytes(StandardCharsets.UTF_8));
         out.close();
 
         //add file1
@@ -288,8 +291,8 @@ public class GitStatusTest extends AbstractGitTest {
     }
 
 
-    private void reloadFileLists() throws IOException, GitException {
-        gitStatus = GitStatus.getInstance();
+    private void reloadFileLists() throws GitException {
+        GitStatus gitStatus = GitStatus.getInstance();
         untrackedFiles = gitStatus.getUntrackedFiles();
         addedFiles = gitStatus.getAddedFiles();
         modifiedFiles = gitStatus.getModifiedFiles();
