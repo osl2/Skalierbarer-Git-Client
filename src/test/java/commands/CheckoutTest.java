@@ -1,15 +1,13 @@
 package commands;
 
-import controller.GUIController;
-import git.*;
+import git.GitBranch;
+import git.GitCommit;
+import git.GitData;
+import git.GitFacade;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
-import util.GUIControllerTestable;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,24 +16,9 @@ import java.util.Iterator;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CheckoutTest extends AbstractGitTest {
+class CheckoutTest extends AbstractCommandTest {
     private static final String TEST_BRANCH = "testBranch";
-    static GUIControllerTestable guiControllerTestable;
     Checkout checkout;
-    static MockedStatic<GUIController> mockedController;
-
-    @BeforeAll
-    static void setup() {
-        guiControllerTestable = new GUIControllerTestable();
-        mockedController = mockStatic(GUIController.class);
-        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-        guiControllerTestable.resetTestStatus();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        mockedController.close();
-    }
 
     @Override
     public void init() throws IOException, GitAPIException, GitException, URISyntaxException {
