@@ -11,6 +11,7 @@ import org.junit.jupiter.api.io.TempDir;
 import settings.Settings;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -59,16 +60,33 @@ public abstract class AbstractGitTest {
     protected void setupRepo() throws GitAPIException, IOException {
         Git.init().setDirectory(repo).setBare(false).call();
         Git git = Git.open(repo);
-        // All commits are empty and contain no changes. This needs to change if further testcases check data.
+        File textFile = new File(repo.getPath() + "/textFile.txt");
+        FileWriter fr = new FileWriter(textFile, true);
+        fr.write("data 1");
+        fr.flush();
 
-        for (String[] data : COMMIT_DATA) {
-            git.commit()
-                    .setCommitter(data[0], data[1])
-                    .setSign(false)
-                    .setMessage(data[2])
-                    .call();
-        }
+        git.add().addFilepattern(textFile.getName()).call();
+        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
+                .setMessage("Commit 1").call();
 
+        fr.write("data 2");
+        fr.flush();
+
+        git.add().addFilepattern(textFile.getName()).call();
+        git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
+                .setMessage("Commit 2").call();
+
+        fr.write("Neuer Inhalt des Files");
+        fr.flush();
+
+        git.add().addFilepattern(textFile.getName()).call();
+        git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
+                .setMessage("Commit 3").call();
+        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
+                .setMessage("Commit 4").call();
+
+        fr.write("Nicht gestaged");
+        fr.close();
         git.close();
     }
 

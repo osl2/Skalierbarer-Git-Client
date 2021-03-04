@@ -1,12 +1,9 @@
 package git;
 
 import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,41 +11,6 @@ import java.util.Iterator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GitDiffTest extends AbstractGitTest {
-
-  @Override
-  protected void setupRepo() throws GitAPIException, IOException {
-    Git.init().setDirectory(repo).setBare(false).call();
-    Git git = Git.open(repo);
-    File textFile = new File(repo.getPath() + "/textFile.txt");
-    FileWriter fr = new FileWriter(textFile, true);
-    fr.write("data 1");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 1").call();
-
-    fr.write("data 2");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-            .setMessage("Commit 2").call();
-
-    fr.write("Neuer Inhalt des Files");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-            .setMessage("Commit 3").call();
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 4").call();
-
-    fr.write("Nicht gestaged");
-    fr.close();
-    git.close();
-  }
-
 
   @Test
   public void getDiffTest() throws IOException, GitException {
