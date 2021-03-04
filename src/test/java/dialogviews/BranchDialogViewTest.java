@@ -13,14 +13,14 @@ import util.GUIControllerTestable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.List;
 
 import static dialogviews.FindComponents.getChildByName;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mockStatic;
 
-public class BranchDialogViewTest extends AbstractGitTest {
+class BranchDialogViewTest extends AbstractGitTest {
   static GUIControllerTestable guiControllerTestable;
   static MockedStatic<GUIController> mockedController;
 
@@ -38,26 +38,26 @@ public class BranchDialogViewTest extends AbstractGitTest {
   }
 
   @Test
-  public void testBranchDialogView() throws GitException, IOException {
+  void testBranchDialogView() throws GitException {
     BranchDialogView branchD = new BranchDialogView();
     JFrame frame = new JFrame(branchD.getTitle());
     frame.setSize(branchD.getDimension());
     frame.add(branchD.getPanel());
     JTextField textField;
     textField = (JTextField) getChildByName(frame, "nameField");
-    assertTrue(textField != null);
+    assertNotNull(textField);
     textField.setText("NeuerBranch");
     JComboBox branchComboBox = (JComboBox) getChildByName(frame, "branchComboBox");
-    assertTrue(branchComboBox != null);
+    assertNotNull(branchComboBox);
     branchComboBox.setSelectedIndex(0);
     JComboBox commitComboBox = (JComboBox) getChildByName(frame, "commitComboBox");
-    assertTrue(commitComboBox != null);
+    assertNotNull(commitComboBox);
     commitComboBox.setSelectedIndex(0);
     JButton branchButton = (JButton) getChildByName(frame, "branchButton");
-    assertTrue(branchButton != null);
+    assertNotNull(branchButton);
     branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
     GitData data = new GitData();
     List<GitBranch> b = data.getBranches();
-    assertTrue(b.size() == 2);
+    assertEquals(2, b.size());
   }
 }
