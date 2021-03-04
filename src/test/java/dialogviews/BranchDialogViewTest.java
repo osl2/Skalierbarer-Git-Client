@@ -12,11 +12,11 @@ import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 
+import static dialogviews.FindComponents.getChildByName;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 
@@ -35,23 +35,6 @@ public class BranchDialogViewTest extends AbstractGitTest {
   @AfterAll
   static void tearDown() {
     mockedController.close();
-  }
-
-  private static Component getChildByName(Component parent, String child) {
-    if (child.equals(parent.getName())) {
-      return parent;
-    }
-    if (parent instanceof Container) {
-      Component[] allChildren = (parent instanceof JMenu) ? ((JMenu) parent).getMenuComponents() : ((Container) parent).getComponents();
-
-      for (int i = 0; i < allChildren.length; i++) {
-        Component children = getChildByName(allChildren[i], child);
-        if (children != null) {
-          return children;
-        }
-      }
-    }
-    return null;
   }
 
   @Test
