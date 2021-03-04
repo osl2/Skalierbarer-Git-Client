@@ -116,7 +116,7 @@ public class Pull implements ICommand, ICommandGUI {
         dest = allBranch;
       }
       // Find master branch if this branch was fetched the first time.
-      if (allBranch.getFullName().compareTo("refs/heads/" + remote.getName() + "/" + remoteBranch.getName()) == 0) {
+      if (allBranch.getFullName().compareTo("refs/remotes/" + remote.getName() + "/" + remoteBranch.getName()) == 0) {
         localBranch = allBranch;
       }
     }

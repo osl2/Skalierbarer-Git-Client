@@ -158,18 +158,18 @@ public class GitFacade {
        for (GitRemote gitRemote : remotes) {
         if (gitRemote.getFetchBranches().isEmpty()) {
           jgit.fetch()
-              .setRemote(gitRemote.getName())
-              .setRefSpecs("refs/heads/*:refs/heads/"
-                  + gitRemote.getName() + "/*")
+                  .setRemote(gitRemote.getName())
+                  .setRefSpecs("refs/heads/*:refs/remotes/"
+                          + gitRemote.getName() + "/*")
               .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
               .call();
         } else {
           for (int j = 0; j < gitRemote.getFetchBranches().size(); j++) {
             GitBranch actualBranch = gitRemote.getFetchBranches().get(j);
             jgit.fetch()
-                .setRemote(gitRemote.getName())
-                .setRefSpecs("refs/heads/" + actualBranch.getName() + ":refs/heads/" + gitRemote.getName() + "/"
-                    + actualBranch.getName())
+                    .setRemote(gitRemote.getName())
+                    .setRefSpecs("refs/heads/" + actualBranch.getName() + ":refs/remotes/" + gitRemote.getName() + "/"
+                            + actualBranch.getName())
                 .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
                 .call();
           }
