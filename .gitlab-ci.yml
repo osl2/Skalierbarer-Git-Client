@@ -27,6 +27,7 @@ maven_test:
   script:
     - echo "Building project with maven"
     - mvn --no-transfer-progress test
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' target/site/jacoco/jacoco.csv
     - echo "Generating LOC overview"
     - tokei
   artifacts:
