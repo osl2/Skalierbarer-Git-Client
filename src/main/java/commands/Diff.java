@@ -86,7 +86,7 @@ public class Diff implements ICommand {
    */
   public String[] diffGit() {
     if (!validDiff) {
-      return new String[]{""};
+      return new String[]{};
     }
     ArrayList<String> lines = new ArrayList<>();
     activeDiff.lines().forEach(lines::add);

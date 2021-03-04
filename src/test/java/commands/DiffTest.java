@@ -57,8 +57,7 @@ class DiffTest extends AbstractCommandTest {
   void testInvalidInput() {
     assertFalse(diff.execute());
     assertTrue(guiControllerTestable.errorHandlerMSGCalled);
-    assertEquals(1, diff.diffGit().length);
-    assertEquals("", diff.diffGit()[0]);
+    assertEquals(0, diff.diffGit().length);
   }
 
   @Test
