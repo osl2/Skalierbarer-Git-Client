@@ -1,15 +1,10 @@
 package dialogviews;
 
-import controller.GUIController;
-import git.AbstractGitTest;
+import commands.AbstractCommandTest;
 import git.GitBranch;
 import git.GitData;
 import git.exception.GitException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import util.GUIControllerTestable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,24 +13,8 @@ import java.util.List;
 import static dialogviews.FindComponents.getChildByName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mockStatic;
 
-class BranchDialogViewTest extends AbstractGitTest {
-  static GUIControllerTestable guiControllerTestable;
-  static MockedStatic<GUIController> mockedController;
-
-  @BeforeAll
-  static void setup() {
-    guiControllerTestable = new GUIControllerTestable();
-    mockedController = mockStatic(GUIController.class);
-    mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-    guiControllerTestable.resetTestStatus();
-  }
-
-  @AfterAll
-  static void tearDown() {
-    mockedController.close();
-  }
+class BranchDialogViewTest extends AbstractCommandTest {
 
   @Test
   void testBranchDialogView() throws GitException {
