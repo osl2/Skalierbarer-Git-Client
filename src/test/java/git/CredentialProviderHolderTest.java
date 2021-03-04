@@ -1,33 +1,37 @@
 package git;
 
 import controller.GUIController;
-import dialogviews.UsernamePasswordDialogView;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-
-import java.awt.event.WindowListener;
+import org.mockito.MockedStatic;
+import util.GUIControllerTestable;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mockStatic;
 
 class CredentialProviderHolderTest {
 
+  static MockedStatic<GUIController> mockedController;
+  private static GUIControllerTestable guiControllerTestable;
   CredentialProviderHolder credentialProviderHolder;
-  @Spy
-  GUIController controller;
 
+  @BeforeAll
+  static void setup() {
+    guiControllerTestable = new GUIControllerTestable();
+    mockedController = mockStatic(GUIController.class);
+    mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
+    guiControllerTestable.resetTestStatus();
+  }
+
+  @AfterAll
+  static void tearDown() {
+    mockedController.close();
+  }
 
   @BeforeEach
   protected void beforeEach() {
-    controller = GUIController.getInstance();
-    MockitoAnnotations.initMocks(this);
     credentialProviderHolder = CredentialProviderHolder.getInstance();
     credentialProviderHolder.setPassword("password");
     credentialProviderHolder.setUsername("username");
@@ -35,21 +39,21 @@ class CredentialProviderHolderTest {
   }
 
   @Test
-   void setPasswordTest() {
-    assertEquals(new UsernamePasswordCredentialsProvider("username", "password").hashCode(), credentialProviderHolder.getProvider().hashCode());
+  void setPasswordTest() {
+    int hash = credentialProviderHolder.getProvider().hashCode();
     credentialProviderHolder.setPassword("newPassword");
-    assertEquals(new UsernamePasswordCredentialsProvider("username", "newPassword").hashCode(), credentialProviderHolder.getProvider().hashCode());
+    assertNotEquals(hash, credentialProviderHolder.getProvider().hashCode());
   }
 
   @Test
-   void setUsernameTest() {
-    assertEquals(new UsernamePasswordCredentialsProvider("username", "password").hashCode(), credentialProviderHolder.getProvider().hashCode());
+  void setUsernameTest() {
+    int hash = credentialProviderHolder.getProvider().hashCode();
     credentialProviderHolder.setUsername("newUsername");
-    assertEquals(new UsernamePasswordCredentialsProvider("newUsername", "Password").hashCode(), credentialProviderHolder.getProvider().hashCode());
+    assertNotEquals(hash, credentialProviderHolder.getProvider().hashCode());
   }
 
   @Test
-   void setActiveTest() {
+  void setActiveTest() {
     assertFalse(credentialProviderHolder.isActive());
     credentialProviderHolder.setActive(true);
     assertTrue(credentialProviderHolder.isActive());
@@ -59,10 +63,8 @@ class CredentialProviderHolderTest {
   @Test
   void changeProviderTest() {
     credentialProviderHolder.changeProvider(false, "nameForProof");
-    Mockito.verify(controller, times(0))
-        .openDialog(any(UsernamePasswordDialogView.class), any(WindowListener.class));
+    assertFalse(guiControllerTestable.openDialogWithListenerCalled);
     credentialProviderHolder.changeProvider(true, "nameForProof");
-    controller = GUIController.getInstance();
-    Mockito.verify(controller).openDialog(eq(new UsernamePasswordDialogView("nameForProof")), any(WindowListener.class));
+    assertTrue(guiControllerTestable.openDialogWithListenerCalled);
   }
 }
