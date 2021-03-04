@@ -64,7 +64,8 @@ public class Push implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
-    return "git push " + remote.getName() + " " + localBranch.getName();
+    return "git push " + remote.getName() + " " + localBranch.getName() +
+            (remoteBranch.compareTo(localBranch.getName()) != 0 ? ":" + remoteBranch : "");
   }
 
   /**
@@ -99,8 +100,12 @@ public class Push implements ICommand, ICommandGUI {
    * Sets the local branch that should be pushed to the online repo
    * @param localBranch The local branch whose commits should be pushed
    */
-  public void setLocalBranch(GitBranch localBranch){
+  public void setLocalBranch(GitBranch localBranch) {
     this.localBranch = localBranch;
+    //remote branch defaults to local branch if not set
+    if (remoteBranch == null && localBranch != null) {
+      remoteBranch = localBranch.getName();
+    }
   }
 
   /**
@@ -127,6 +132,11 @@ public class Push implements ICommand, ICommandGUI {
    */
   private boolean tryExecute() {
     GitFacade gitFacade = new GitFacade();
+
+    if (remote == null || localBranch == null) {
+      GUIController.getInstance().errorHandler("Kein Remote oder lokaler Branch ausgewählt");
+      return false;
+    }
     try {
       gitFacade.pushOperation(remote, localBranch, remoteBranch);
       return true;

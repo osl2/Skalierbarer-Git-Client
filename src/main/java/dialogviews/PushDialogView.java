@@ -167,7 +167,7 @@ public class PushDialogView implements IDialogView {
         push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
         push.setRemote((GitRemote) remoteComboBox.getSelectedItem());
 
-        push.setRemoteBranch(null);
+        push.setRemoteBranch(selectedRemoteBranchTextfield.getText());
         boolean success = push.execute();
 
         //set command line if push was successful
