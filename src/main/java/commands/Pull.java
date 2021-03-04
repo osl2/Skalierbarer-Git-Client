@@ -104,7 +104,7 @@ public class Pull implements ICommand, ICommandGUI {
       GUIController.getInstance().errorHandler(e);
       return false;
     }
-    GitBranch master = null;
+    GitBranch localBranch = null;
     GitBranch src = null;
     for (GitBranch allBranch : allBranches) {
       // Find fetched branch.
@@ -116,17 +116,17 @@ public class Pull implements ICommand, ICommandGUI {
         dest = allBranch;
       }
       // Find master branch if this branch was fetched the first time.
-      if (allBranch.getName().compareTo("master") == 0) {
-        master = allBranch;
+      if (allBranch.getFullName().compareTo("refs/heads/" + remote.getName() + "/" + remoteBranch.getName()) == 0) {
+        localBranch = allBranch;
       }
     }
     // If fetched branch do not exist locally create new local branch.
     // The new created branch is based on the head commit of the master branch.
     if(dest == null) {
-      if(master == null) {
+      if (localBranch == null) {
         return false;
       }
-      dest = createLocalBranch(master);
+      dest = createLocalBranch(localBranch);
     }
     GUIController.getInstance().closeDialogView();
     commandLine = remote.getName() + " " + remoteBranch.getName();
