@@ -199,14 +199,8 @@ public class AddCommitView extends JPanel implements IView {
     //if staging area is not empty, show confirmation dialog
     List<GitFile> stagedFiles = getStagedFiles();
     if (!stagedFiles.isEmpty()) {
-      StringBuilder message = new StringBuilder();
-      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
-      for (GitFile gitFile : stagedFiles) {
-        message.append(gitFile.getPath().getName());
-        message.append("\n");
-      }
-      int confirmation = JOptionPane.showConfirmDialog(null, message.toString(),
-              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int confirmation = JOptionPane.showConfirmDialog(null, getCommitConfirmationPane(stagedFiles), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE);
       if (confirmation != 0) {
         return;
       }
@@ -248,6 +242,21 @@ public class AddCommitView extends JPanel implements IView {
       GUIController.getInstance().errorHandler(e);
     }
     return stagedFiles;
+  }
+
+  private JScrollPane getCommitConfirmationPane(List<GitFile> stagedFiles) {
+    StringBuilder message = new StringBuilder();
+    message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
+    for (GitFile gitFile : stagedFiles) {
+      message.append(gitFile.getPath().getName());
+      message.append("\n");
+    }
+    JTextArea textArea = new JTextArea(message.toString());
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    textArea.setLineWrap(true);
+    scrollPane.setPreferredSize(new Dimension(500, 200));
+    scrollPane.setMaximumSize(new Dimension(500, 200));
+    return scrollPane;
   }
 
   /*
