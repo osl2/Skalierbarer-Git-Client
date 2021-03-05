@@ -9,7 +9,7 @@ import git.exception.GitException;
 import views.AddCommitView;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,7 +138,7 @@ public class Commit implements ICommand, ICommandGUI {
       stagedFiles = gitStatus.getStagedFiles();
     } catch (GitException | IOException e) {
       GUIController.getInstance().errorHandler(e);
-      stagedFiles = new LinkedList<>();
+      stagedFiles = new ArrayList<>();
     }
 
     return stagedFiles;
