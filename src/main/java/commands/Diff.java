@@ -3,7 +3,6 @@ package commands;
 import controller.GUIController;
 import git.GitCommit;
 import git.GitFile;
-import git.exception.GitException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,13 +90,16 @@ public class Diff implements ICommand {
     }
     ArrayList<String> lines = new ArrayList<>();
     activeDiff.lines().forEach(lines::add);
+    if (lines.size() < 4) {
+      return new String[]{};
+    }
     // Cut of the upper part of the diff and begin with the changed lines count.
     int startLine = 5;
-    if(lines.get(4).substring(0, 2).compareTo("@@") == 0) {
+    if (lines.get(4).substring(0, 2).compareTo("@@") == 0) {
       startLine = 4;
     }
     String[] output = new String[lines.size() - startLine];
-    for(int i = startLine; i < lines.size(); i++) {
+    for (int i = startLine; i < lines.size(); i++) {
       output[i - startLine] = lines.get(i);
     }
     return output;
