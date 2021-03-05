@@ -14,7 +14,7 @@ import java.util.List;
  * indicate which command should be executed.
  */
 public class Remote implements ICommand, ICommandGUI {
-  private GitRemote remote;
+  private GitRemote gitRemote;
   private String remoteName;
   private String url;
 
@@ -31,11 +31,11 @@ public class Remote implements ICommand, ICommandGUI {
   /**
    * Method to set tue current remote repository.
    *
-   * @param remote The remote repository on which the command should be executed
+   * @param gitRemote The remote repository on which the command should be executed
    *               (getName, getURL, setName, setURL, remove)
    */
-  public void setRemote(GitRemote remote){
-    this.remote = remote;
+  public void setRemote(GitRemote gitRemote){
+    this.gitRemote = gitRemote;
   }
 
   /**
@@ -45,14 +45,15 @@ public class Remote implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
-    String ret = "";
+    String ret ;
     switch (remoteSubcommand){
       case ADD: ret =  "git remote add " + remoteName + " " + url;
       break;
-      case SET_URL: ret = "git remote set-url " + remote.getName() + " " + url;
+      case SET_URL: ret = "git remote set-url " + gitRemote.getName() + " " + url;
       break;
-      case REMOVE: ret = "git remote rm " + remote.getName();
+      case REMOVE: ret = "git remote rm " + gitRemote.getName();
       break;
+      default: ret = null;
     }
     return ret;
   }
@@ -81,7 +82,7 @@ public class Remote implements ICommand, ICommandGUI {
     switch (remoteSubcommand) {
       case SET_URL:
         try {
-          return remote.setUrlGit(url);
+          return gitRemote.setUrl(url);
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);
           return false;
@@ -90,8 +91,8 @@ public class Remote implements ICommand, ICommandGUI {
         GitFacade gitFacade = new GitFacade();
         GitData gitData = new GitData();
         List<GitRemote> remoteList = gitData.getRemotes();
-        for (GitRemote gitRemote : remoteList) {
-          if (gitRemote.getName().compareTo(remoteName) == 0) {
+        for (GitRemote gitRemoteNew : remoteList) {
+          if (gitRemoteNew.getName().compareTo(remoteName) == 0) {
             GUIController.getInstance().errorHandler("Ein Remote mit diesem namen existiert bereits");
             return false;
           }
@@ -105,7 +106,7 @@ public class Remote implements ICommand, ICommandGUI {
 
       case REMOVE:
         try {
-          remote.remove();
+          gitRemote.remove();
           return true;
         } catch (GitException e) {
           GUIController.getInstance().errorHandler(e);

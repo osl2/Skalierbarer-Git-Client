@@ -77,16 +77,6 @@ public class GitRemote {
   }
 
   /**
-   * Method to set the URL of the remote.
-   *
-   * @param url URL that the remote should get
-   */
-  @SuppressWarnings("unused")
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  /**
    * Method to add a branch to the remote.
    *
    * @param branch branch that should be added
@@ -129,7 +119,7 @@ public class GitRemote {
    * @return true if it was successfully
    * @throws GitException if something went wrong.
    */
-  public boolean setUrlGit(String newUrl) throws GitException {
+  public boolean setUrl(String newUrl) throws GitException {
     url = newUrl;
     Git git = GitData.getJGit();
     try {
