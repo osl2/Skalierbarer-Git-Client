@@ -56,6 +56,9 @@ public class AddCommitView extends JPanel implements IView {
   private JScrollPane diffScrollPane;
   @SuppressWarnings("unused")
   private JTextPane diffTextPane;
+  private JCheckBox modifiedChangedFilesCheckBox;
+  private JCheckBox newFilesCheckBox;
+  private JCheckBox deletedFilesCheckBox;
   private final JList<FileListItem>[] statusListArray;
   private boolean amend;
 
@@ -132,8 +135,24 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+    modifiedChangedFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(modifiedChangedFilesList, selected);
+    });
+
+    newFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(newFilesList, selected);
+    });
     setNameComponents();
 
+    deletedFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(deletedFilesList, selected);
+    });
   }
 
 
@@ -357,6 +376,16 @@ public class AddCommitView extends JPanel implements IView {
     //set up the diff view
     diffView = new DiffView();
     diffTextPane = diffView.openDiffView();
+  }
+
+  private void selectAll(JList<FileListItem> list, boolean select) {
+
+    for (int i = 0; i < list.getModel().getSize(); i++) {
+      FileListItem item = list.getModel().getElementAt(i);
+      item.setSelected(select);
+    }
+    //repaint list
+    list.repaint();
   }
 
   /*
