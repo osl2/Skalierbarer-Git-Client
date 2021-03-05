@@ -1,5 +1,6 @@
 package git;
 
+import commands.AbstractCommandTest;
 import commands.Commit;
 import controller.GUIController;
 import git.exception.GitException;
@@ -11,8 +12,6 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -28,25 +27,12 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
-class CommitTest extends AbstractGitTest {
+class CommitTest extends AbstractCommandTest {
     private File file;
     static GUIControllerTestable guiControllerTestable;
     static MockedStatic<GUIController> mockedController;
 
-    @BeforeAll
-    static void setup() {
-        guiControllerTestable = new GUIControllerTestable();
-        mockedController = mockStatic(GUIController.class);
-        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-        guiControllerTestable.resetTestStatus();
-    }
-
-    @AfterAll
-    static void closeControllerMock() {
-        mockedController.close();
-    }
 
     @BeforeEach
     void setAuthor() throws IOException {
