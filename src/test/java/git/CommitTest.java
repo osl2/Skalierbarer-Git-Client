@@ -137,10 +137,13 @@ class CommitTest extends AbstractGitTest {
             treeWalk.reset(revTree);
             while (treeWalk.next()) {
                 count++;
-                path = treeWalk.getPathString();
+                String correct = treeWalk.getPathString();
+                if (correct.compareTo(file.getName()) == 0) {
+                    path = treeWalk.getPathString();
+                }
             }
         }
-        assertEquals(1, count);
+        assertEquals(2, count);
         assertEquals(0, path.compareTo(file.getName()));
     }
 
@@ -209,10 +212,13 @@ class CommitTest extends AbstractGitTest {
             treeWalk.reset(revTree);
             while (treeWalk.next()) {
                 count++;
-                path = treeWalk.getPathString();
+                String correct = treeWalk.getPathString();
+                if (correct.compareTo(file.getName()) == 0) {
+                    path = treeWalk.getPathString();
+                }
             }
         }
-        assertEquals(1, count);
+        assertEquals(2, count);
         assertEquals(0, path.compareTo(file.getName()));
     }
 
@@ -264,10 +270,13 @@ class CommitTest extends AbstractGitTest {
             while (treeWalk.next()) {
                 numFilesInCommit++;
                 //memorize path
-                path = treeWalk.getPathString();
+                String correct = treeWalk.getPathString();
+                if (correct.compareTo(file.getName()) == 0) {
+                    path = treeWalk.getPathString();
+                }
             }
         }
-        assertEquals(1, numFilesInCommit);
+        assertEquals(2, numFilesInCommit);
         //path should equal file.getName()
         assertEquals(0, path.compareTo(file.getName()));
 
@@ -322,7 +331,7 @@ class CommitTest extends AbstractGitTest {
             }
         }
         //this commit should contain 2 files that should match file and file2
-        assertEquals(2, committedFilesPathList.size());
+        assertEquals(3, committedFilesPathList.size());
         assertEquals(0, committedFilesPathList.get(0).compareTo(file.getName()));
         assertEquals(0, committedFilesPathList.get(1).compareTo(file2.getName()));
 

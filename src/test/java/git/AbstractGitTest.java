@@ -28,6 +28,7 @@ public abstract class AbstractGitTest {
     protected Git git;
     protected Repository repository;
     protected Settings settings;
+    protected File textFile;
 
     protected boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
@@ -60,33 +61,31 @@ public abstract class AbstractGitTest {
     protected void setupRepo() throws GitAPIException, IOException {
         Git.init().setDirectory(repo).setBare(false).call();
         Git git = Git.open(repo);
-        File textFile = new File(repo.getPath() + "/textFile.txt");
+        textFile = new File(repo.getPath() + "/textFile.txt");
         FileWriter fr = new FileWriter(textFile, true);
         fr.write("data 1");
         fr.flush();
 
         git.add().addFilepattern(textFile.getName()).call();
-        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-                .setMessage("Commit 1").call();
+        git.commit().setCommitter(COMMIT_DATA[0][0], COMMIT_DATA[0][1]).setSign(false)
+                .setMessage(COMMIT_DATA[0][2]).call();
 
         fr.write("data 2");
         fr.flush();
 
         git.add().addFilepattern(textFile.getName()).call();
-        git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-                .setMessage("Commit 2").call();
+        git.commit().setCommitter(COMMIT_DATA[1][0], COMMIT_DATA[1][1]).setSign(false)
+                .setMessage(COMMIT_DATA[1][2]).call();
 
         fr.write("Neuer Inhalt des Files");
-        fr.flush();
+        fr.close();
 
         git.add().addFilepattern(textFile.getName()).call();
-        git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-                .setMessage("Commit 3").call();
-        git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-                .setMessage("Commit 4").call();
+        git.commit().setCommitter(COMMIT_DATA[2][0], COMMIT_DATA[2][1]).setSign(false)
+                .setMessage(COMMIT_DATA[2][2]).call();
+        git.commit().setCommitter(COMMIT_DATA[3][0], COMMIT_DATA[3][1]).setSign(false)
+                .setMessage(COMMIT_DATA[3][2]).call();
 
-        fr.write("Nicht gestaged");
-        fr.close();
         git.close();
     }
 

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class HistoryViewTest extends AbstractCommandTest {
@@ -27,6 +28,6 @@ public class HistoryViewTest extends AbstractCommandTest {
     commitList.setSelectedIndex(2);
     fileList.setSelectedIndex(0);
     assertNotEquals("", commitMessage.getText());
-    assertEquals("", diffText.getText());
+    assertNotEquals("", diffText.getText());
   }
 }
