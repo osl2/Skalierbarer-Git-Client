@@ -246,7 +246,12 @@ public class AddCommitView extends JPanel implements IView {
 
     for (GitFile gitFile : files){
       assert i < values.length;
-      values[i] = new FileListItem(gitFile);
+      try {
+        values[i] = new FileListItem(gitFile);
+      } catch (GitException e) {
+        GUIController.getInstance().errorHandler(e);
+        //TODO
+      }
       i++;
     }
 
@@ -355,10 +360,15 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setText(value.getGitFile().getPath().getName());
 
       //color staged files in green, unstaged files in red
-      if (value.getGitFile().isStaged()) {
-        checkBox.setForeground(Color.GREEN);
-      } else {
-        checkBox.setForeground(Color.RED);
+      try {
+        if (value.getGitFile().isStaged()) {
+          checkBox.setForeground(Color.GREEN);
+        } else {
+          checkBox.setForeground(Color.RED);
+        }
+      } catch (GitException e) {
+        GUIController.getInstance().errorHandler(e);
+        //TODO
       }
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
@@ -384,7 +394,7 @@ public class AddCommitView extends JPanel implements IView {
      * the list item is initially set to be selected.
      * @param gitFile
      */
-    FileListItem(GitFile gitFile) {
+    FileListItem(GitFile gitFile) throws GitException {
       this.gitFile = gitFile;
       this.isSelected = gitFile.isStaged();
     }

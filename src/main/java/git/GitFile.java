@@ -16,9 +16,6 @@ import java.util.Objects;
 public class GitFile {
   private final long size;
   private final File path;
-  private boolean ignored;
-  private boolean staged;
-  private boolean deleted;
 
   /**
    * Method to generate a new GitFile, can only be instantiated in the git-package.
@@ -33,7 +30,6 @@ public class GitFile {
     }
     this.size = size;
     this.path = path;
-    this.staged = false;
   }
 
   /**
@@ -86,64 +82,38 @@ public class GitFile {
   }
 
   /**
-   * Adds or removes the file from the .gitignore.
-   *
-   * @param ignored Whether the file should be added to the .gitignore or be removed from it
-   */
-  @SuppressWarnings("unused")
-  public void setIgnored(boolean ignored) {
-    this.ignored = ignored;
-  }
-
-  /**
-   * Method to get, if the file is ignored.
-   *
-   * @return true if file has not been added to the index and file
-   * path matches a pattern in the .gitignore file
-   */
-  @SuppressWarnings("unused")
-  public boolean isIgnoredNotInIndex() {
-    return ignored;
-  }
-
-  /**
    * Method to check if a file is staged.
    *
    * @return True if the file is in the staging-area, false otherwise
+   * @throws GitException If status could not be obtained from JGit
    */
-  public boolean isStaged() {
-    return staged;
+  public boolean isStaged() throws GitException {
+    Status status = getStatus();
+    if (status != null) {
+      return status.getAdded().contains(this.getRelativePath())
+              || status.getChanged().contains(this.getRelativePath())
+              || status.getRemoved().contains(this.getRelativePath());
+    } else {
+      return false;
+    }
   }
 
   /**
-   * Sets the internal state 'staged' to true if the file is in the staging area (added or changed),
-   * false otherwise. Called by GitStatus when GitFile is created. This method is necessary for git
-   * diff
-   *
-   * @param staged Whether the file is in the staging-area
-   * @see GitCommit#getDiff(GitFile)
-   */
-  public void setStaged(boolean staged) {
-    this.staged = staged;
-  }
-
-  /**
-   * Determines if the file is deleted.
+   * Determines if the file has been deleted
    *
    * @return True if the file does not exist in the workspace anymore
+   * @throws GitException If status could not be obtained from JGit
    */
-  public boolean isDeleted() {
-    return deleted;
+  public boolean isDeleted() throws GitException {
+    Status status = getStatus();
+    if (status != null) {
+      return status.getMissing().contains(this.getRelativePath())
+              || status.getRemoved().contains(this.getRelativePath());
+    } else {
+      return false;
+    }
   }
 
-  /**
-   * Sets the internal state of the file to 'deleted' if its nested File object does not exist.
-   *
-   * @param deleted Whether the file has been deleted
-   */
-  public void setDeleted(boolean deleted) {
-    this.deleted = deleted;
-  }
 
   /**
    * Adds the file to the staging-area, thereby performing git add.
@@ -194,6 +164,16 @@ public class GitFile {
     }
   }
 
+  private Status getStatus() throws GitException {
+    Status status;
+    try {
+      status = GitData.getJGit().status().call();
+    } catch (GitAPIException e) {
+      throw new GitException("Status konnte nicht geladen werden!");
+    }
+    return status;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -206,4 +186,5 @@ public class GitFile {
   public int hashCode() {
     return Objects.hash(path);
   }
+
 }

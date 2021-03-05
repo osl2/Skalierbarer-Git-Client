@@ -51,14 +51,17 @@ public class GitCommit {
      * @param file the file you want to get the git diff.
      * @return String representation of the git diff.
      */
-    public static String getDiff(GitFile file) throws IOException {
+    public static String getDiff(GitFile file) throws IOException, GitException {
         Git git = GitData.getJGit();
         AbstractTreeIterator newTreeIterator;
         TreeFilter filter = pathFilter(file);
-        if (file.isStaged()) {
+        //file must not be deleted, otherwise there is no diff
+        if (file.isStaged() && !file.isDeleted()) {
             newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
-        } else {
+        } else if (!file.isStaged()) {
             newTreeIterator = new FileTreeIterator(git.getRepository());
+        } else {
+            return "";
         }
         OutputStream out = new ByteArrayOutputStream();
         try {

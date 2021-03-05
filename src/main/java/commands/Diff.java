@@ -3,6 +3,7 @@ package commands;
 import controller.GUIController;
 import git.GitCommit;
 import git.GitFile;
+import git.exception.GitException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class Diff implements ICommand {
     if(!commit) {
       try {
         activeDiff = GitCommit.getDiff(activeFile);
-      } catch (IOException e) {
+      } catch (IOException | GitException e) {
         GUIController.getInstance().errorHandler(e);
         return false;
       }
