@@ -28,7 +28,7 @@ public class CredentialProviderHolder {
 
         @Override
         public void windowClosing(WindowEvent e) {
-
+        //Is not needed for this dialogview
         }
 
         /**
@@ -41,19 +41,22 @@ public class CredentialProviderHolder {
 
         @Override
         public void windowIconified(WindowEvent e) {
-
+        // Is not needed for the dialogview
         }
 
         @Override
         public void windowDeiconified(WindowEvent e) {
+            // Is not needed for the dialogview
         }
 
         @Override
         public void windowActivated(WindowEvent e) {
+            // Is not needed for the dialogview
         }
 
         @Override
         public void windowDeactivated(WindowEvent e) {
+            // Is not needed for the dialogview
         }
     };
 
