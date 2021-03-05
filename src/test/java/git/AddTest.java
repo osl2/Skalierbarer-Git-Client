@@ -1,6 +1,5 @@
 package git;
 
-import commands.AbstractCommandTest;
 import commands.Add;
 import controller.GUIController;
 import git.exception.GitException;
@@ -19,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
-class AddTest extends AbstractCommandTest {
+class AddTest extends AbstractGitTest {
     @Test
     void executeAddTest() throws IOException, GitAPIException, GitException {
         File file1 = new File(repo, "file1");

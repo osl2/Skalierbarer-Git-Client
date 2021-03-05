@@ -1,7 +1,5 @@
-package git;
+package commands;
 
-import commands.AbstractCommandTest;
-import commands.Commit;
 import controller.GUIController;
 import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
