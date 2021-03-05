@@ -33,7 +33,7 @@ public class HistoryView extends JPanel implements IView {
   private JPanel diffPanel;
   @SuppressWarnings("unused")
   private JScrollPane commitMessageScrollPane;
-  private JTextPane diffText;
+  private JTextPane diffText = new JTextPane();
   private Iterator<GitCommit> iteratorOfCommits;
   private final ArrayList<GitCommit> listOfCommits = new ArrayList<>();
   private List<GitFile> listOfFiles;
@@ -59,6 +59,17 @@ public class HistoryView extends JPanel implements IView {
   @Override
   public void update() {
     buildHistoryView();
+  }
+
+  /**
+   * This method is needed in order to execute the GUI tests successfully.
+   * Do not change otherwise tests might fail.
+   */
+  private void setNameComponents() {
+    commitList.setName("commitList");
+    fileList.setName("fileList");
+    diffText.setName("diffText");
+    commitMessage.setName("commitMessage");
   }
 
   /**
@@ -100,6 +111,7 @@ public class HistoryView extends JPanel implements IView {
     addCommits();
     addScrollbarListener();
     addListSelectionListeners();
+    setNameComponents();
   }
 
   private void applyCellRenderer() {

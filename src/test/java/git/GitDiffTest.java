@@ -1,8 +1,6 @@
 package git;
 
 import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -13,53 +11,18 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GitDiffTest extends AbstractGitTest {
-
-  @Override
-  protected void setupRepo() throws GitAPIException, IOException {
-    Git.init().setDirectory(repo).setBare(false).call();
-    Git git = Git.open(repo);
-    File textFile = new File(repo.getPath() + "/textFile.txt");
-    FileWriter fr = new FileWriter(textFile, true);
-    fr.write("data 1");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 1").call();
-
-    fr.write("data 2");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-            .setMessage("Commit 2").call();
-
-    fr.write("Neuer Inhalt des Files");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-            .setMessage("Commit 3").call();
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 4").call();
-
-    fr.write("Nicht gestaged");
-    fr.close();
-    git.close();
-  }
-
+class GitDiffTest extends AbstractGitTest {
 
   @Test
-  public void getDiffTest() throws IOException, GitException {
+  void getDiffTest() throws IOException, GitException {
     Iterator<GitCommit> commits = gitData.getCommits();
     GitCommit commit;
-    while(commits.hasNext()) {
+    while (commits.hasNext()) {
       GitCommit commitselect = commits.next();
-      if(commitselect.getMessage().equals("Commit 1")) {
+      if (commitselect.getMessage().equals("Commit 1")) {
         commit = commitselect;
         String out = commit.getDiff(null, commit.getChangedFiles().get(0));
-        ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String> lines = new ArrayList<>();
         out.lines().forEach(lines::add);
         assertEquals("@@ -0,0 +1 @@", lines.get(5));
         assertEquals("+data 1", lines.get(6));
@@ -84,7 +47,10 @@ public class GitDiffTest extends AbstractGitTest {
   }
 
   @Test
-  public void getDiffWorkingDirectory() throws IOException {
+  void getDiffWorkingDirectory() throws IOException {
+    FileWriter fr = new FileWriter(textFile, true);
+    fr.write("Nicht gestaged");
+    fr.close();
     String out = GitCommit.getDiff(new GitFile(20, new File(repo, "/textFile.txt")));
     ArrayList<String> lines = new ArrayList<String>();
     out.lines().forEach(lines::add);
