@@ -10,11 +10,11 @@ import util.GUIControllerTestable;
 import static org.mockito.Mockito.mockStatic;
 
 public abstract class AbstractCommandTest extends AbstractGitTest {
-    static GUIControllerTestable guiControllerTestable;
-    static MockedStatic<GUIController> mockedController;
+    protected static GUIControllerTestable guiControllerTestable;
+    protected static MockedStatic<GUIController> mockedController;
 
     @BeforeAll
-    static void setup() {
+    protected static void setup() {
         guiControllerTestable = new GUIControllerTestable();
         mockedController = mockStatic(GUIController.class);
         mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
@@ -22,7 +22,7 @@ public abstract class AbstractCommandTest extends AbstractGitTest {
     }
 
     @AfterAll
-    static void tearDown() {
+    protected static void tearDown() {
         mockedController.close();
     }
 
