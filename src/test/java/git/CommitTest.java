@@ -53,17 +53,15 @@ class CommitTest extends AbstractGitTest {
 
     @BeforeEach
     void initialize() {
-        /*
-        StoredConfig config = git.getRepository().getConfig();
-        config.setString("user", null, "name", "TestUser");
-        config.setString("user", null, "email", "tester@example.com");
-        config.save();
-
-         */
-
         commit = new Commit();
         file = new File(repo, "file");
 
+    }
+
+    @Override
+    public void init() throws URISyntaxException, GitAPIException, GitException, IOException {
+        super.init();
+        settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
     }
 
     private void resetRepo() throws IOException, GitAPIException, GitException, URISyntaxException {
@@ -74,7 +72,6 @@ class CommitTest extends AbstractGitTest {
         git.close();
 
         init();
-        settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
     }
 
     private void addEmptyFile(File file) throws IOException, GitAPIException {
