@@ -88,7 +88,7 @@ class CommitTest extends AbstractGitTest {
     }
 
     private void commit() throws GitAPIException {
-        git.commit().setMessage(COMMIT_MESSAGE).call();
+        git.commit().setMessage(COMMIT_MESSAGE).setCommitter("TestUser", "tester@example.com").call();
         Iterator<RevCommit> commitIterator = git.log().call().iterator();
         assertTrue(git.status().call().isClean());
         assertTrue(commitIterator.hasNext());
