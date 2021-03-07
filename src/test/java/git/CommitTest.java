@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -53,11 +52,14 @@ class CommitTest extends AbstractGitTest {
     }
 
     @BeforeEach
-    void setAuthor() throws IOException {
+    void initialize() {
+        /*
         StoredConfig config = git.getRepository().getConfig();
         config.setString("user", null, "name", "TestUser");
         config.setString("user", null, "email", "tester@example.com");
         config.save();
+
+         */
 
         commit = new Commit();
         file = new File(repo, "file");
@@ -72,6 +74,7 @@ class CommitTest extends AbstractGitTest {
         git.close();
 
         init();
+        settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
     }
 
     private void addEmptyFile(File file) throws IOException, GitAPIException {
@@ -270,10 +273,10 @@ class CommitTest extends AbstractGitTest {
         commit();
 
         //initialize a second commit instance with a new message
-        Commit commit2 = new Commit();
-        commit2.setCommitMessage(COMMIT_AMEND_MESSAGE);
-        commit2.setAmend(true);
-        assertTrue(commit2.execute());
+        Commit amendCommit = new Commit();
+        amendCommit.setCommitMessage(COMMIT_AMEND_MESSAGE);
+        amendCommit.setAmend(true);
+        assertTrue(amendCommit.execute());
 
         //get the most recent commit
         RevCommit latestCommit = git.log().call().iterator().next();
