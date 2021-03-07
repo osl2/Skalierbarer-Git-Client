@@ -4,6 +4,8 @@ import commands.Add;
 import controller.GUIController;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
@@ -12,29 +14,54 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
 class AddTest extends AbstractGitTest {
-    @Test
-    void executeAddTest() throws IOException, GitAPIException, GitException {
-        File file1 = new File(repo, "file1");
-        File file2 = new File(repo, "file2");
+    private File file1;
+    private File file2;
+    private GitFile gitFile1;
+    private GitFile gitFile2;
+    private GitFile gitFile3;
+    private Add add;
+    private List<GitFile> files;
+    private GUIControllerTestable guiControllerTestable;
+    private MockedStatic<GUIController> mockedController;
+
+    @BeforeEach
+    void setup() throws IOException {
+        file1 = new File(repo, "file1");
+        file2 = new File(repo, "file2");
         File file3 = new File(repo, "file3");
         new FileOutputStream(file1).close();
         new FileOutputStream(file2).close();
         new FileOutputStream(file3).close();
-        GitFile gitFile1 = new GitFile(file1.getTotalSpace(), file1);
-        GitFile gitFile2 = new GitFile(file2.getTotalSpace(), file2);
-        GitFile gitFile3 = new GitFile(file3.getTotalSpace(), file3);
+        gitFile1 = new GitFile(file1.getTotalSpace(), file1);
+        gitFile2 = new GitFile(file2.getTotalSpace(), file2);
+        gitFile3 = new GitFile(file3.getTotalSpace(), file3);
 
-        //prepare add command to add file2 and file3
-        Add add = new Add();
-        List<GitFile> files = new LinkedList<>();
+        add = new Add();
+        files = new ArrayList<>();
 
+        //set up GUI Controller mockup
+        guiControllerTestable = new GUIControllerTestable();
+        mockedController = mockStatic(GUIController.class);
+        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
+        guiControllerTestable.resetTestStatus();
+
+    }
+
+    @AfterEach
+    @Override
+    void tearDown() {
+        super.tearDown();
+        mockedController.close();
+    }
+
+    @Test
+    void executeAddTest() throws GitAPIException, GitException {
         files.add(gitFile2);
         files.add(gitFile3);
         add.setFiles(files);
@@ -63,21 +90,7 @@ class AddTest extends AbstractGitTest {
 
     @Test
     void getFilesStatusChangedTest() throws IOException, GitAPIException, GitException {
-        File file1 = new File(repo, "file1");
-        File file2 = new File(repo, "file2");
-        File file3 = new File(repo, "file3");
-        new FileOutputStream(file1).close();
-        new FileOutputStream(file2).close();
-        new FileOutputStream(file3).close();
-        GitFile gitFile1 = new GitFile(file2.getTotalSpace(), file1);
-        GitFile gitFile2 = new GitFile(file2.getTotalSpace(), file2);
-        GitFile gitFile3 = new GitFile(file3.getTotalSpace(), file3);
-
-        //prepare add command to add file2 and file3
-        Add add = new Add();
-
         //configure add command with file2 and file3 that have been selected
-        List<GitFile> files = new LinkedList<>();
         files.add(gitFile2);
         files.add(gitFile3);
         add.setFiles(files);
@@ -103,75 +116,58 @@ class AddTest extends AbstractGitTest {
     }
 
     @Test
-    void addDeletedFileTest() throws IOException, GitAPIException {
-        File file = new File(repo, "file");
-        new FileOutputStream(file).close();
+    void addDeletedFileTest() throws GitAPIException {
         git.add()
-                .addFilepattern(repo.toPath().relativize(file.toPath()).toString())
+                .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
                 .call();
-        assertTrue(git.status().call().getAdded().contains(file.getName()));
-        git.commit().setCommitter("TestUser", "123@web.de").setMessage("Test message").call();
-        assertFalse(git.status().call().getAdded().contains(file.getName()));
+        assertTrue(git.status().call().getAdded().contains(file1.getName()));
+        git.commit().setCommitter("TestUser", "Tester@example.com").setMessage("Test message").call();
+        assertFalse(git.status().call().getAdded().contains(file1.getName()));
 
         //delete file. File should be missing but not removed, because it was deleted manually
-        assertTrue(file.delete());
-        assertTrue(git.status().call().getMissing().contains(file.getName()));
-        assertFalse(git.status().call().getRemoved().contains(file.getName()));
+        assertTrue(file1.delete());
+        assertTrue(git.status().call().getMissing().contains(file1.getName()));
+        assertFalse(git.status().call().getRemoved().contains(file1.getName()));
 
         //prepare add command to add deleted file
-        Add add = new Add();
-        GitFile gitFile = new GitFile(file.getTotalSpace(), file);
-        gitFile.setDeleted(true);
-        List<GitFile> files = new LinkedList<>();
-        files.add(gitFile);
+        //TODO: setDeleted() kommt noch weg, wenn Änderung zu GitFile durch ist
+        gitFile1.setDeleted(true);
+        files.add(gitFile1);
         add.setFiles(files);
         assertTrue(add.execute());
 
         //file should now be removed
-        assertFalse(git.status().call().getMissing().contains(file.getName()));
-        assertTrue(git.status().call().getRemoved().contains(file.getName()));
+        assertFalse(git.status().call().getMissing().contains(file1.getName()));
+        assertTrue(git.status().call().getRemoved().contains(file1.getName()));
     }
 
     @Test
     void getCommandLineTest() {
-        File file1 = new File(repo, "file1");
-        File file2 = new File(repo, "file2");
         File dir = new File(repo, "dir");
         assert dir.mkdir();
-        File file3 = new File(dir, "file3");
-        GitFile gitFile1 = new GitFile(file1.getTotalSpace(), file1);
-        GitFile gitFile2 = new GitFile(file2.getTotalSpace(), file2);
-        GitFile gitFile3 = new GitFile(file3.getTotalSpace(), file3);
-        Add add = new Add();
-        List<GitFile> files = new ArrayList<>();
+        File nestedFile = new File(dir, "nestedFile");
+        GitFile nestedGitFile = new GitFile(nestedFile.getTotalSpace(), nestedFile);
         files.add(gitFile1);
         files.add(gitFile2);
-        files.add(gitFile3);
+        files.add(nestedGitFile);
         add.setFiles(files);
         String commandLine = add.getCommandLine();
         String separator = File.separator.compareTo("/") == 0 ? "/" : "\\";
-        assertEquals(0, commandLine.compareTo("git add file1 file2 dir" + separator + "file3 "));
+        assertEquals(0, commandLine.compareTo("git add file1 file2 dir" + separator + "nestedFile "));
     }
 
     @Test
     void getDescriptionTest() {
         Add add = new Add();
-        assertEquals(0, add.getDescription().compareTo("Fügt Dateien zur Staging-Area hinzu"));
+        assertNotNull(add.getDescription());
     }
 
     @Test
     void onButtonClickedTest() {
-        Add add = new Add();
-        GUIControllerTestable guiControllerTestable = new GUIControllerTestable();
-        MockedStatic<GUIController> mockedController = mockStatic(GUIController.class);
-        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-        guiControllerTestable.resetTestStatus();
         add.onButtonClicked();
 
         //on button clicked should have opened AddCommitView
         assertTrue(guiControllerTestable.openViewCalled);
-
-        mockedController.close();
 
     }
 }
