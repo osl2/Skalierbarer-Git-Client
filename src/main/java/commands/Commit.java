@@ -1,10 +1,7 @@
 package commands;
 
 import controller.GUIController;
-import git.GitData;
-import git.GitFacade;
-import git.GitFile;
-import git.GitStatus;
+import git.*;
 import git.exception.GitException;
 import views.AddCommitView;
 
@@ -59,9 +56,24 @@ public class Commit implements ICommand, ICommandGUI {
     GitData gitData = new GitData();
 
     //amending is only possible if commit history is not empty
-    if (amend && !isCommitHistoryEmpty()) {
+    if (amend && isCommitHistoryEmpty()) {
       controller.errorHandler("Es ist noch kein Commit vorhanden, der rückgängig gemacht werden kann!");
       return false;
+    }
+
+    //commit message must not be empty or the default commit message set by ACV
+    if (commitMessage == null
+            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
+            || commitMessage.equals("")) {
+      /*only in case of amend: if commit message was not set by the user, take the message from the last commit
+      (requires the commit history not to be empty)
+       */
+      if (amend) {
+        commitMessage = getLastCommitMessage();
+      } else {
+        controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
+        return false;
+      }
     }
 
     //empty staging area is only allowed for merge and amend
@@ -70,13 +82,6 @@ public class Commit implements ICommand, ICommandGUI {
       return false;
     }
 
-
-    if (commitMessage == null
-            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
-            || commitMessage.equals("")){
-      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
-      return false;
-    }
     boolean success;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
@@ -128,9 +133,12 @@ public class Commit implements ICommand, ICommandGUI {
     //do nothing, since there is no commit button
   }
 
-  private List<GitFile> getStagedFiles(){
+  /*
+  Returns a list of staged files from the current status
+   */
+  private List<GitFile> getStagedFiles() {
     GitData gitData = new GitData();
-    GitStatus gitStatus= gitData.getStatus();
+    GitStatus gitStatus = gitData.getStatus();
     List<GitFile> stagedFiles;
 
     //get the list of staged files from status
@@ -144,14 +152,35 @@ public class Commit implements ICommand, ICommandGUI {
     return stagedFiles;
   }
 
+  /*
+  Determines whether the commit history is empty
+   */
   private boolean isCommitHistoryEmpty() {
     GitData gitData = new GitData();
     boolean commitHistoryEmpty = false;
     try {
-      commitHistoryEmpty = gitData.getCommits().hasNext();
+      commitHistoryEmpty = !gitData.getCommits().hasNext();
     } catch (IOException | GitException e) {
       GUIController.getInstance().errorHandler(e);
     }
     return commitHistoryEmpty;
+  }
+
+  /*
+  Returns the commit message from the last commit. This is necessary for --amend.
+   */
+  private String getLastCommitMessage() {
+    assert !isCommitHistoryEmpty();
+    GitData data = new GitData();
+    String lastCommitMessage = "";
+    try {
+      GitCommit lastCommit = data.getCommits().next();
+      if (lastCommit != null) {
+        lastCommitMessage = lastCommit.getMessage();
+      }
+    } catch (IOException | GitException e) {
+      GUIController.getInstance().errorHandler(e);
+    }
+    return lastCommitMessage;
   }
 }
