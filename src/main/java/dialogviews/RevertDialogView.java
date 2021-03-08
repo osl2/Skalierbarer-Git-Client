@@ -14,8 +14,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -119,7 +117,6 @@ public class RevertDialogView implements IDialogView {
 
     }
     @SuppressWarnings("unused")
-    @SuppressWarnings("BoundFieldAssignment")
     private void createUIComponents() {
         //noinspection BoundFieldAssignment
         this.revertTree = new JTree(this.root);
