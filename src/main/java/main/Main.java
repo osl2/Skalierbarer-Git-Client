@@ -1,16 +1,17 @@
+package main;
+
 import controller.GUIController;
 import dialogviews.FirstUseDialogView;
 import settings.Data;
 import settings.Persistency;
 import settings.Settings;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 
 
 public class Main {
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws URISyntaxException {
         Persistency persistency = new Persistency();
         boolean settingsLoaded = persistency.load();
         GUIController c = GUIController.getInstance();
@@ -27,8 +28,5 @@ public class Main {
         c.initializeMainWindow();
         c.restoreDefaultView();
         c.openMainWindow();
-    }
-
-    public static void restart(String commandLine) {
     }
 }

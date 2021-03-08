@@ -8,6 +8,7 @@ import git.GitData;
 import git.exception.GitException;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -26,17 +27,17 @@ public class CheckoutDialogView implements IDialogView {
     private JButton abortButton;
     private GitData git;
     private JButton okButton;
+    @SuppressWarnings("unused")
     private JPanel bottomPanel;
     private DefaultTreeModel model;
 
     public CheckoutDialogView() {
         git = new GitData();
-        // Todo: localize
         this.abortButton.setText("Abbrechen");
         this.okButton.setText("Ok");
 
         this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
-        this.okButton.addActionListener(this::OkButtonHandler);
+        this.okButton.addActionListener(this::okButtonHandler);
 
         this.model = (DefaultTreeModel) this.tree1.getModel();
         this.tree1.setRootVisible(false);
@@ -81,7 +82,7 @@ public class CheckoutDialogView implements IDialogView {
         return root;
     }
 
-    private void OkButtonHandler(ActionEvent e) {
+    private void okButtonHandler(ActionEvent e) {
         TreePath selected = tree1.getSelectionPath();
         if (selected == null) {
             GUIController.getInstance().errorHandler("Es muss ein Zweig / eine Einbuchung ausgewählt werden");
@@ -137,25 +138,26 @@ public class CheckoutDialogView implements IDialogView {
         this.model.setRoot(generateTree());
     }
 
-    private TreeSelectionListener loadMoreListener() {
+    private TreeSelectionListener nodeChangedListener() {
         return treeSelectionEvent -> {
-            // todo: Come up with a better way of loading more nodes
-            if (treeSelectionEvent.getPath().getLastPathComponent() instanceof LoadMoreNode) {
-                LoadMoreNode node = (LoadMoreNode) treeSelectionEvent.getPath().getLastPathComponent();
-                node.loadMoreItems();
-
-            }
+            RefTreeNode node = (RefTreeNode) treeSelectionEvent.getPath().getLastPathComponent();
+            node.onSelectListener(treeSelectionEvent);
         };
 
     }
 
+    @SuppressWarnings("unused")
     private void createUIComponents() {
         this.tree1 = new JTree();
-        this.tree1.addTreeSelectionListener(loadMoreListener());
+        this.tree1.addTreeSelectionListener(nodeChangedListener());
     }
 
-    private static abstract class RefTreeNode extends DefaultMutableTreeNode {
+    private abstract static class RefTreeNode extends DefaultMutableTreeNode {
         public RefTreeNode() {
+        }
+
+        protected void onSelectListener(TreeSelectionEvent e) {
+            // NO OP
         }
 
         abstract void configureCheckout(Checkout checkout);
@@ -205,7 +207,7 @@ public class CheckoutDialogView implements IDialogView {
         }
     }
 
-    private static class LoadMoreNode extends DefaultMutableTreeNode {
+    private static class LoadMoreNode extends RefTreeNode {
 
         Iterator<GitCommit> iterator;
         DefaultTreeModel model;
@@ -215,7 +217,9 @@ public class CheckoutDialogView implements IDialogView {
             this.model = model;
         }
 
-        void loadMoreItems() {
+        @Override
+        protected void onSelectListener(TreeSelectionEvent e) {
+            super.onSelectListener(e);
             int i = 0;
             while (i++ < LOAD_MORE_DEPTH && iterator.hasNext()) {
                 parent.insert(new CommitTreeNode(iterator.next()), parent.getChildCount());
@@ -227,12 +231,16 @@ public class CheckoutDialogView implements IDialogView {
             }
 
             model.reload(oldParent);
-
         }
 
         @Override
         public String toString() {
             return "Load " + LOAD_MORE_DEPTH + " more";
+        }
+
+        @Override
+        void configureCheckout(Checkout checkout) {
+            throw new AssertionError("This node should not be selectable");
         }
     }
 
