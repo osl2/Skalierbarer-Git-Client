@@ -4,6 +4,7 @@ import commands.Config;
 import commands.Init;
 import controller.GUIController;
 import git.GitData;
+import settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,15 +33,14 @@ public class FirstUseDialogView implements IDialogView {
             config.setEMail(eMail);
             init = new Init();
             init.setPathToRepository(path);
-            boolean successInit = init.execute();
-            // make sure it is initialized.
-            GitData data = new GitData();
-            data.reinitialize();
-            config.execute();
-            if (!successInit) {
-                return;
+            if (init.execute()) {
+                Settings.getInstance().setActiveRepositoryPath(path);
+                // make sure it is initialized.
+                GitData data = new GitData();
+                data.reinitialize();
+                config.execute();
+                GUIController.getInstance().closeDialogView();
             }
-            GUIController.getInstance().closeDialogView();
         });
         // Opens a new JFileChooser to set a path to a directory.
         chooseButton.addActionListener(e -> {
