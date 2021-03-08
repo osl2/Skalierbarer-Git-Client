@@ -61,7 +61,8 @@ public class GitBranch {
     if (this.branchName.startsWith("refs/heads/"))
       return this.branchName.substring("refs/heads/".length());
     else if (this.branchName.startsWith("refs/remotes/")) {
-      return this.branchName.substring("refs/remotes/".length());
+      String[] refParts = this.branchName.split("/");
+      return this.branchName.substring("refs/remotes/".length() + refParts[2].length() + 1);
     } else
       return this.branchName;
   }
