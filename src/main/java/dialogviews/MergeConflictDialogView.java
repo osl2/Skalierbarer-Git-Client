@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This View is used to help the user resolve any conflicts during a Merge (or rebase for that matter)
@@ -57,6 +58,10 @@ public class MergeConflictDialogView implements IDialogView {
         this.rightLabel.setText(titleTheirs);
         this.centerLabel.setText("Result");
         this.okButton.addActionListener(e -> okButtonListener());
+        this.buttonLeftAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_OURS));
+        this.buttonLeftDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINE_OURS));
+        this.buttonRightAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_THEIRS));
+        this.buttonRightDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINED_THEIRS));
         conflicts.forEach(c -> localConflictMap.put(c.getConflictStartLine(), c));
 
         try (BufferedReader br = new BufferedReader(new FileReader(file.getPath()))) {
@@ -136,7 +141,6 @@ public class MergeConflictDialogView implements IDialogView {
         switch (btnAction) {
             case ACCEPT_OURS:
                 c.acceptOurs();
-                buttonLeftAccept.setEnabled(false);
                 // fall through
             case DECLINE_OURS:
                 buttonLeftAccept.setEnabled(false);
@@ -168,7 +172,9 @@ public class MergeConflictDialogView implements IDialogView {
             this.getActiveConflict().resolve();
 
         int newIndex = -1;
-        for (Integer possibleKey : this.localConflictMap.keySet()) {
+        List<Integer> orderedKeyList = this.localConflictMap.keySet().stream().sorted().collect(Collectors.toList());
+
+        for (Integer possibleKey : orderedKeyList) {
             if (possibleKey > this.activeConflictIndex) {
                 newIndex = possibleKey;
                 break;
@@ -184,11 +190,6 @@ public class MergeConflictDialogView implements IDialogView {
             buttonLeftDecline.setEnabled(true);
             buttonRightDecline.setEnabled(true);
             okButton.setEnabled(false);
-
-            this.buttonLeftAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_OURS));
-            this.buttonLeftDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINE_OURS));
-            this.buttonRightAccept.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.ACCEPT_THEIRS));
-            this.buttonRightDecline.addActionListener(e -> buttonListener(getActiveConflict(), ButtonAction.DECLINED_THEIRS));
         }
     }
 
