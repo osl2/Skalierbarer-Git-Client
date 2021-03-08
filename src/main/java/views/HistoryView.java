@@ -200,7 +200,7 @@ public class HistoryView extends JPanel implements IView {
 
   private void addFiles() {
     while (gitFileIterator.hasNext() && loadedFiles < maxFiles) {
-      String activeFile = gitFileIterator.next().getRelativePath();
+      String activeFile = gitFileIterator.next().getSystemDependentRelativePath();
       fileListModel.addElement(activeFile);
       loadedFiles++;
     }
