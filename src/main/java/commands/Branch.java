@@ -15,6 +15,7 @@ import git.exception.GitException;
 public class Branch implements ICommand, ICommandGUI {
     private GitCommit commitPointOfBranching;
     private String branchName;
+    private String commandLine;
 
 
     /**
@@ -26,13 +27,20 @@ public class Branch implements ICommand, ICommandGUI {
     public boolean execute() {
         GitFacade jgit = new GitFacade();
         boolean suc = false;
+        if (commitPointOfBranching == null || branchName == null) {
+            GUIController.getInstance().errorHandler("Es muss ein Commit als Startpunkt für den neuen Branch angegeben werden " +
+                    "und ein Name für den neuen Branch.");
+            return false;
+        }
 
         try {
             suc = jgit.branchOperation(commitPointOfBranching, branchName);
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
         }
-
+        if (suc) {
+            commandLine = "git branch " + branchName + " " + commitPointOfBranching.getHashAbbrev();
+        }
         return suc;
     }
 
@@ -45,7 +53,7 @@ public class Branch implements ICommand, ICommandGUI {
      */
     @Override
     public String getCommandLine() {
-        return "git branch " + branchName + " " + commitPointOfBranching.getHashAbbrev();
+        return commandLine;
     }
 
     /**
