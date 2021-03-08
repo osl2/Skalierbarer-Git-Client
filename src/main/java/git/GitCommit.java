@@ -8,7 +8,6 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheIterator;
-import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -165,22 +164,15 @@ public class GitCommit {
      *
      * @return true if this Commit was successfully reverted.
      * @throws GitException if revert can not be executed successfully.
-     *                      todo update
      */
     public List<GitFileConflict> revert() throws GitException {
         Git git = GitData.getJGit();
-        ArrayList<GitFileConflict> conflicts = new ArrayList<>();
+        List<GitFileConflict> conflicts = new ArrayList<>();
         try {
             RevertCommand revertCommand = git.revert().include(revCommit);
             RevCommit rev = revertCommand.call();
             if (rev == null) { // There have been conflicts, so no commit was created
-                Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
-
-                for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
-                    File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
-                    GitFile gitFile = new GitFile(f.getTotalSpace(), f);
-                    conflicts.add(GitFileConflict.getConflictsForFile(gitFile, entry.getValue()));
-                }
+                conflicts = GitFileConflict.getConflictsForWorkingDirectory();
             }
 
         } catch (GitAPIException e) {

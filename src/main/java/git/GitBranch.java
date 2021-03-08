@@ -3,18 +3,14 @@ package git;
 import git.exception.GitException;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -115,16 +111,8 @@ public class GitBranch {
               .call();
       // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing
       // As the getConflicts method seems to be bugged. (2021-02-12)
-      List<GitFileConflict> conflictList = new ArrayList<>();
-      Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
 
-      for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
-        File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
-        GitFile gitFile = new GitFile(f.getTotalSpace(), f);
-        conflictList.add(GitFileConflict.getConflictsForFile(gitFile, entry.getValue()));
-      }
-
-      return conflictList;
+      return GitFileConflict.getConflictsForWorkingDirectory();
 
     } catch (GitAPIException | IOException e) {
       throw new GitException(e.getMessage());

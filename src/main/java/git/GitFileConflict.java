@@ -4,6 +4,7 @@ import git.conflict.AbstractHunk;
 import git.conflict.ConflictHunk;
 import git.conflict.TextHunk;
 import git.exception.GitException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.IndexDiff;
 
 import java.io.*;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +25,6 @@ public class GitFileConflict {
     private final List<AbstractHunk> hunkList;
     private final GitFile gitFile;
     private boolean deleted;
-    private boolean resolved = false;
 
     private GitFileConflict(GitFile gitFile, List<AbstractHunk> hunkList, boolean deleted) {
         this.gitFile = gitFile;
@@ -59,6 +60,19 @@ public class GitFileConflict {
             default:
                 throw new AssertionError("Unexpected Change type: " + state.toString());
         }
+    }
+
+    static List<GitFileConflict> getConflictsForWorkingDirectory() throws GitAPIException {
+        List<GitFileConflict> conflicts = new ArrayList<>();
+        Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
+
+        for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
+            File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
+            GitFile gitFile = new GitFile(f.getTotalSpace(), f);
+            conflicts.add(getConflictsForFile(gitFile, entry.getValue()));
+        }
+
+        return conflicts;
     }
 
     private static List<AbstractHunk> parseConflictMarkers(String[] lines) {
