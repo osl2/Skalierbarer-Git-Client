@@ -49,6 +49,8 @@ public class PushDialogView implements IDialogView {
 
         //refresh the list of remotes and remote branches.
         refreshButton.addActionListener(e -> setUpRemoteComboBox());
+
+        setNameComponents();
     }
 
     /*
@@ -63,6 +65,18 @@ public class PushDialogView implements IDialogView {
         if (selectedLocalBranch != null) {
             selectedRemoteBranchTextfield.setText(selectedLocalBranch.getName());
         }
+    }
+
+    /*
+    Sets the name of custom created components for testing. DO NOT CHANGE, otherwise, tests might fail
+     */
+    private void setNameComponents() {
+        remoteComboBox.setName("remoteComboBox");
+        localBranchComboBox.setName("localBranchComboBox");
+        selectedRemoteBranchTextfield.setName("selectedRemoteBranchTextField");
+        refreshButton.setName("refreshButton");
+        pushButton.setName("pushButton");
+
     }
 
     /**
