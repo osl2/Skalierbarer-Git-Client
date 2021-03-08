@@ -4,9 +4,8 @@ import controller.GUIController;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import controller.GUIController;
-import dialogviews.UsernamePasswordDialogView;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -18,6 +17,7 @@ import org.mockito.Spy;
 import java.awt.event.WindowListener;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,8 +46,6 @@ class CredentialProviderHolderTest {
 
   @BeforeEach
   protected void beforeEach() {
-    controller = GUIController.getInstance();
-    MockitoAnnotations.initMocks(this);
     credentialProviderHolder = CredentialProviderHolder.getInstance();
     credentialProviderHolder.setPassword("password");
     credentialProviderHolder.setUsername("username");
@@ -62,14 +60,14 @@ class CredentialProviderHolderTest {
   }
 
   @Test
-   void setUsernameTest() {
-    assertEquals(new UsernamePasswordCredentialsProvider("username", "password").hashCode(), credentialProviderHolder.getProvider().hashCode());
+  void setUsernameTest() {
+    int hash = credentialProviderHolder.getProvider().hashCode();
     credentialProviderHolder.setUsername("newUsername");
-    assertEquals(new UsernamePasswordCredentialsProvider("newUsername", "Password").hashCode(), credentialProviderHolder.getProvider().hashCode());
+    assertNotEquals(hash, credentialProviderHolder.getProvider().hashCode());
   }
 
   @Test
-   void setActiveTest() {
+  void setActiveTest() {
     assertFalse(credentialProviderHolder.isActive());
     credentialProviderHolder.setActive(true);
     assertTrue(credentialProviderHolder.isActive());
