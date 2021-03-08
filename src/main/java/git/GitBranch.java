@@ -61,8 +61,7 @@ public class GitBranch {
     if (this.branchName.startsWith("refs/heads/"))
       return this.branchName.substring("refs/heads/".length());
     else if (this.branchName.startsWith("refs/remotes/")) {
-      String[] refParts = this.branchName.split("/");
-      return this.branchName.substring("refs/remotes/".length() + refParts[2].length() + 1);
+      return this.branchName.substring("refs/remotes/".length());
     } else
       return this.branchName;
   }
@@ -83,17 +82,14 @@ public class GitBranch {
    * @return Commit, which is the head of the branch
    */
   public GitCommit getCommit() {
-    RevWalk revWalk = new RevWalk(GitData.getRepository());
     GitCommit head = null;
-    try {
+    try (RevWalk revWalk = new RevWalk(GitData.getRepository())){
       // dirty way to update the pointer
       Ref r = GitData.getRepository().exactRef(this.branchName);
       RevCommit revCommit = revWalk.parseCommit(r.getObjectId());
       head = new GitCommit(revCommit);
     } catch (IOException e) {
       Logger.getGlobal().warning(e.getMessage());
-    } finally {
-      revWalk.dispose();
     }
     return head;
   }

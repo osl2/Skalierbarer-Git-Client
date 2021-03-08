@@ -240,6 +240,5 @@
       <version>1.10.20</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>
