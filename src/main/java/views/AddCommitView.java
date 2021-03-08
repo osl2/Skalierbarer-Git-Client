@@ -15,7 +15,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddCommitView extends JPanel implements IView {
@@ -55,15 +55,15 @@ public class AddCommitView extends JPanel implements IView {
   private JScrollPane diffScrollPane;
   @SuppressWarnings("unused")
   private JTextPane diffTextPane;
-  private List<JList<FileListItem>> statusList;
+  private final JList<FileListItem>[] statusListArray;
   private boolean amend;
 
   public AddCommitView() {
-    //provide the statusList with all three types of lists
-    statusList = new LinkedList<>();
-    statusList.add(newFilesList);
-    statusList.add(modifiedChangedFilesList);
-    statusList.add(deletedFilesList);
+    //add all three types of lists to the status array
+    statusListArray = new JList[3];
+    statusListArray[0] = newFilesList;
+    statusListArray[1] = modifiedChangedFilesList;
+    statusListArray[2] = deletedFilesList;
 
     //if cancelButton was pressed, open confirmation dialog whether current state of staging-area should be saved
     cancelButton.addActionListener(e -> {
@@ -224,7 +224,7 @@ public class AddCommitView extends JPanel implements IView {
   private List<GitFile> getStagedFiles() {
     GitData gitData = new GitData();
     GitStatus gitStatus = gitData.getStatus();
-    List<GitFile> stagedFiles = new LinkedList<>();
+    List<GitFile> stagedFiles = new ArrayList<>();
     try {
       stagedFiles = gitStatus.getStagedFiles();
     } catch (IOException | GitException e) {
@@ -295,8 +295,8 @@ public class AddCommitView extends JPanel implements IView {
   objects of those FileListItems with selected state.
    */
   private List<GitFile> getSelectedGitFiles() {
-    List<GitFile> selectedCheckboxes = new LinkedList<>();
-    for (JList<FileListItem> list : statusList){
+    List<GitFile> selectedCheckboxes = new ArrayList<>();
+    for (JList<FileListItem> list : statusListArray) {
       for (int i = 0; i < list.getModel().getSize(); i++) {
         FileListItem item = list.getModel().getElementAt(i);
         if (item.isSelected()) {
@@ -311,10 +311,10 @@ public class AddCommitView extends JPanel implements IView {
   private void createUIComponents() {
     GitData data = new GitData();
     GitStatus gitStatus = data.getStatus();
-    List<GitFile> newFiles = new LinkedList<>();
-    List<GitFile> modifiedChangedFiles = new LinkedList<>();
-    List<GitFile> deletedFiles = new LinkedList<>();
-    try{
+    List<GitFile> newFiles = new ArrayList<>();
+    List<GitFile> modifiedChangedFiles = new ArrayList<>();
+    List<GitFile> deletedFiles = new ArrayList<>();
+    try {
       newFiles = gitStatus.getNewFiles();
       modifiedChangedFiles = gitStatus.getModifiedChangedFiles();
       deletedFiles = gitStatus.getDeletedFiles();

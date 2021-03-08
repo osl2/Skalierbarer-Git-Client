@@ -8,7 +8,7 @@ import git.exception.GitException;
 import views.AddCommitView;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ public class Add implements ICommand, ICommandGUI {
   private List<GitFile> files;
 
   public Add(){
-    files = new LinkedList<>();
+    files = new ArrayList<>();
   }
 
 
@@ -120,10 +120,10 @@ public class Add implements ICommand, ICommandGUI {
       stagedFiles = data.getStatus().getStagedFiles();
     } catch (IOException | GitException e) {
       GUIController.getInstance().errorHandler(e);
-      return new LinkedList<>();
+      return new ArrayList<>();
     }
 
-    List<GitFile> filesToBeAdded = new LinkedList<>();
+    List<GitFile> filesToBeAdded = new ArrayList<>();
     for (GitFile fileToBeAdded : files) {
       if (!stagedFiles.contains(fileToBeAdded)) {
         filesToBeAdded.add(fileToBeAdded);
@@ -145,11 +145,11 @@ public class Add implements ICommand, ICommandGUI {
       stagedFiles = data.getStatus().getStagedFiles();
     } catch (IOException | GitException e) {
       GUIController.getInstance().errorHandler(e);
-      return new LinkedList<>();
+      return new ArrayList<>();
     }
 
 
-    List<GitFile> filesToBeRestored = new LinkedList<>();
+    List<GitFile> filesToBeRestored = new ArrayList<>();
     for (GitFile fileToBeRestored : stagedFiles) {
       if (!files.contains(fileToBeRestored)) {
         filesToBeRestored.add(fileToBeRestored);
@@ -165,7 +165,7 @@ public class Add implements ICommand, ICommandGUI {
    * @return A list of files whose status will be staged once execute() is called
    */
   public List<GitFile> getFilesStatusChanged(){
-    List<GitFile> filesStatusChanged = new LinkedList<>();
+    List<GitFile> filesStatusChanged = new ArrayList<>();
     filesStatusChanged.addAll(getFilesToBeAdded());
     filesStatusChanged.addAll(getFilesToBeRestored());
     return filesStatusChanged;
