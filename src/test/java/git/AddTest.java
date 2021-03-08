@@ -1,40 +1,36 @@
 package git;
 
+import commands.AbstractCommandTest;
 import commands.Add;
-import controller.GUIController;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import util.GUIControllerTestable;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
-class AddTest extends AbstractGitTest {
+class AddTest extends AbstractCommandTest {
     private File file1;
     private File file2;
+    private File file3;
     private GitFile gitFile1;
     private GitFile gitFile2;
     private GitFile gitFile3;
     private Add add;
     private List<GitFile> files;
-    private GUIControllerTestable guiControllerTestable;
-    private MockedStatic<GUIController> mockedController;
 
     @BeforeEach
-    void setup() throws IOException {
+    void prepare() throws IOException {
         file1 = new File(repo, "file1");
         file2 = new File(repo, "file2");
-        File file3 = new File(repo, "file3");
+        file3 = new File(repo, "file3");
         new FileOutputStream(file1).close();
         new FileOutputStream(file2).close();
         new FileOutputStream(file3).close();
@@ -44,21 +40,8 @@ class AddTest extends AbstractGitTest {
 
         add = new Add();
         files = new ArrayList<>();
-
-        //set up GUI Controller mockup
-        guiControllerTestable = new GUIControllerTestable();
-        mockedController = mockStatic(GUIController.class);
-        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-        guiControllerTestable.resetTestStatus();
-
     }
 
-    @AfterEach
-    @Override
-    void tearDown() {
-        super.tearDown();
-        mockedController.close();
-    }
 
     @Test
     void executeAddTest() throws GitAPIException, GitException {
@@ -71,18 +54,18 @@ class AddTest extends AbstractGitTest {
                 .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
-        List<GitFile> addedFiles = GitStatus.getInstance().getAddedFiles();
-        assertTrue(addedFiles.contains(gitFile2));
+        Set<String> addedFiles = git.status().call().getAdded();
+        assertTrue(addedFiles.contains(file2.getName()));
 
         //execute add
         add.execute();
 
         //file2 and file3 should now be added, file1 should have been removed from the
         // staging area, list of added files should contain 2 elements
-        addedFiles = GitStatus.getInstance().getAddedFiles();
-        assertFalse(addedFiles.contains(gitFile1));
-        assertTrue(addedFiles.contains(gitFile2));
-        assertTrue(addedFiles.contains(gitFile3));
+        addedFiles = git.status().call().getAdded();
+        assertFalse(addedFiles.contains(file1.getName()));
+        assertTrue(addedFiles.contains(file2.getName()));
+        assertTrue(addedFiles.contains(file3.getName()));
         assertEquals(2, addedFiles.size());
 
 
@@ -100,8 +83,6 @@ class AddTest extends AbstractGitTest {
                 .addFilepattern(repo.toPath().relativize(file1.toPath()).toString())
                 .addFilepattern(repo.toPath().relativize(file2.toPath()).toString())
                 .call();
-        assertTrue(GitStatus.getInstance().getStagedFiles().contains(gitFile1));
-        assertTrue(GitStatus.getInstance().getStagedFiles().contains(gitFile2));
         assertTrue(git.status().call().getAdded().contains(file1.getName()));
         assertTrue(git.status().call().getAdded().contains(file2.getName()));
 
