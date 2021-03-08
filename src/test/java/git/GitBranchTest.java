@@ -2,32 +2,28 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.when;
 
-public class GitBranchTest extends AbstractGitTest {
+class GitBranchTest extends AbstractGitTest {
 
   private static final String[][] COMMIT_DATA = {
-      new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
-      new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
-      new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
-      new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
+          new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
+          new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
+          new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
+          new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
   };
   private static final String[] BRANCH_NAMES = {"BranchWithConflictToMaster", "Test5", "Test9", "wip/test1", "Branch1", "emptyBranch"};
 
@@ -37,40 +33,14 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Override
-  protected void setupRepo() throws GitAPIException, IOException {
-    Git.init().setDirectory(repo).setBare(false).call();
-    Git git = Git.open(repo);
-    textFile = new File(repo.getPath() + "/textFile.txt");
-    FileWriter fr = new FileWriter(textFile, true);
-    fr.write("data 1");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter(COMMIT_DATA[0][0], COMMIT_DATA[0][1]).setSign(false)
-        .setMessage(COMMIT_DATA[0][2]).call();
-
-    fr.write("data 2");
-    fr.flush();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter(COMMIT_DATA[1][0], COMMIT_DATA[1][1]).setSign(false)
-        .setMessage(COMMIT_DATA[1][2]).call();
-
-    fr.write("Neuer Inhalt des Files");
-    fr.close();
-
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter(COMMIT_DATA[2][0], COMMIT_DATA[2][1]).setSign(false)
-        .setMessage(COMMIT_DATA[2][2]).call();
-    git.commit().setCommitter(COMMIT_DATA[3][0], COMMIT_DATA[3][1]).setSign(false)
-        .setMessage(COMMIT_DATA[3][2]).call();
-
-    for (String branch : BRANCH_NAMES){
-        git.branchCreate().setName(branch).call();
+  public void init() throws GitAPIException, IOException, GitException, URISyntaxException {
+    super.init();
+    for (String branch : BRANCH_NAMES) {
+      git.branchCreate().setName(branch).call();
     }
-
+    FileWriter fr;
     git.checkout().setName(BRANCH_NAMES[0]).call();
-    File fileForMerge = new File (repo.getPath(), "/fileForMerge");
+    File fileForMerge = new File(repo.getPath(), "/fileForMerge");
     fr = new FileWriter(fileForMerge, true);
     fr.write("Text in " + BRANCH_NAMES[0] + " Branch");
     fr.write("moreText");
@@ -94,7 +64,7 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void branchRefIsUpdated() throws GitAPIException, GitException {
+  void branchRefIsUpdated() throws GitAPIException, GitException {
     git.branchCreate().setName("Test1").call();
     git.branchCreate().setName("Test2").call();
     git.branchCreate().setName("Test3").call();
@@ -109,13 +79,13 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void branchNameIsCorrectSpecialCharacters() throws GitAPIException, GitException {
+  void branchNameIsCorrectSpecialCharacters() throws GitAPIException, GitException {
     String[] expectedBranches = BRANCH_NAMES;
 
     String[] branchNames = gitData.getBranches().stream()
-        .map(GitBranch::getName)
-        .filter(b -> !b.equals("master")) // dont include master
-        .toArray(String[]::new);
+            .map(GitBranch::getName)
+            .filter(b -> !b.equals("master")) // dont include master
+            .toArray(String[]::new);
 
     Arrays.sort(expectedBranches);
     Arrays.sort(branchNames);
@@ -125,7 +95,7 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void getNameTest(){
+  void getNameTest() {
     String name1 = "name1ToTest";
     String name2 = "refs/heads/nameToTest";
     String name3 = "refs/remotes/nameToTest";
@@ -143,16 +113,16 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void mergeTest() throws GitAPIException, GitException {
+  void mergeTest() throws GitAPIException, GitException {
     List<GitBranch> allBranches = new ArrayList<>();
-    for (Ref reference : git.branchList().call()){
+    for (Ref reference : git.branchList().call()) {
       allBranches.add(new GitBranch(reference));
     }
     git.checkout().setName("master").call();
     GitBranch master = new GitBranch("");
     GitBranch merged = new GitBranch("");
-    for (GitBranch branch : allBranches){
-      if (branch.getName().equals("master")){
+    for (GitBranch branch : allBranches) {
+      if (branch.getName().equals("master")) {
         master = branch;
       } else if (branch.getName().equals(BRANCH_NAMES[5])){
         git.checkout().setName(branch.getFullName()).call();
@@ -177,25 +147,25 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void equalsTest() throws GitAPIException {
+  void equalsTest() throws GitAPIException {
     GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
     GitBranch branch2 = new GitBranch(BRANCH_NAMES[0]);
     GitBranch branch3 = new GitBranch(BRANCH_NAMES[3]);
 
-    for(Ref branch : git.branchList().call()){
-      if (branch.getName().endsWith(BRANCH_NAMES[0])){
+    for (Ref branch : git.branchList().call()) {
+      if (branch.getName().endsWith(BRANCH_NAMES[0])) {
         branch1 = new GitBranch(branch);
         branch2 = new GitBranch(branch);
-      } else if (branch.getName().endsWith(BRANCH_NAMES[3])){
+      } else if (branch.getName().endsWith(BRANCH_NAMES[3])) {
         branch3 = new GitBranch(branch);
       }
     }
 
-    assertTrue(branch1.equals(branch2));
-    assertTrue(branch1.equals(branch1));
-    assertFalse(branch1.equals(branch3));
-    assertFalse(branch1.equals(4));
-    assertFalse(branch2.equals(branch3));
-    assertFalse(branch1.equals(null));
+    assertEquals(branch2, branch1);
+    assertEquals(branch1, branch1);
+    assertNotEquals(branch3, branch1);
+    assertNotEquals(branch1, 4); // ?
+    assertNotEquals(branch3, branch2);
+    assertNotNull(branch1);
   }
 }
