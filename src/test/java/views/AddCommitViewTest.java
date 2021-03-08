@@ -2,6 +2,7 @@ package views;
 
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +24,8 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JList newFilesList;
     private JList deletedFilesList;
     private JTextArea commitMessageTextArea;
+    private JButton commitButton;
+    private File file;
 
     @BeforeEach
     void prepare() {
@@ -102,25 +106,101 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void newFilesListTest() throws IOException {
-        //create a new file so that newFilesList is not empty
-        File file = new File(repo, "file");
-        new FileOutputStream(file).close();
-
+    void newFilesListTest() throws IOException, GitAPIException {
+        createNewFile();
+        //reload view
         prepare();
 
         //newFilesList should now contain one element
         assertEquals(1, newFilesList.getModel().getSize());
 
-        Point pointClicked = newFilesList.getLocation();
-        MouseEvent mouseEvent = new MouseEvent(newFilesList, MouseEvent.MOUSE_CLICKED, 100, 0, pointClicked.x,
-                pointClicked.y, 1, false, MouseEvent.BUTTON1);
+        mouseListenerTest(newFilesList);
+    }
 
-        for (MouseListener listener : newFilesList.getMouseListeners()) {
+    @Test
+    void modifiedChangedFilesListTest() throws IOException, GitAPIException {
+        createNewFile();
+        add();
+        commit();
+        modifyFile();
+
+        //reload view
+        prepare();
+
+        assertEquals(1, modifiedChangedFilesList.getModel().getSize());
+
+        mouseListenerTest(modifiedChangedFilesList);
+    }
+
+
+    @Test
+    void commitButtonEmptyStagingAreaTest() {
+        fireCommitButton();
+        assertTrue(guiControllerTestable.errorHandlerMSGCalled);
+    }
+
+    @Test
+    void commitButtonEmptyMessageTest() throws IOException, GitAPIException {
+        createNewFile();
+        add();
+        fireCommitButton();
+        assertTrue(guiControllerTestable.errorHandlerMSGCalled);
+    }
+
+    @Test
+    void commitButtonTest() throws IOException, GitAPIException {
+        createNewFile();
+        add();
+        assertTrue(git.status().call().getAdded().contains(file.getName()));
+        //reload the view
+        prepare();
+
+        commitMessageTextArea.setText("Test commit");
+        fireCommitButton();
+        //TODO: Wie mit JOptionPane umgehen?
+        //since file should be pre-selected, commit should execute successfully and default view should be restored
+        assertTrue(guiControllerTestable.restoreDefaultViewCalled);
+    }
+
+    private void mouseListenerTest(JList list) {
+        Point pointClicked = list.getLocation();
+        MouseEvent mouseEvent = new MouseEvent(list, MouseEvent.MOUSE_CLICKED, 100, 0, pointClicked.x,
+                pointClicked.y, 1, false, MouseEvent.BUTTON1);
+        for (MouseListener listener : list.getMouseListeners()) {
             listener.mouseClicked(mouseEvent);
         }
-        AddCommitView.FileListItem item = (AddCommitView.FileListItem) newFilesList.getModel().getElementAt(0);
+        AddCommitView.FileListItem item = (AddCommitView.FileListItem) list.getModel().getElementAt(0);
         //item should now be selected
         assertTrue(item.isSelected());
+
+    }
+
+    private void fireCommitButton() {
+        commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        assertNotNull(commitButton);
+        for (ActionListener listener : commitButton.getActionListeners()) {
+            listener.actionPerformed(new ActionEvent(commitButton, ActionEvent.ACTION_PERFORMED, "Commit button clicked"));
+        }
+    }
+
+    private void createNewFile() throws IOException {
+        //create a new file so that newFilesList is not empty
+        file = new File(repo, "file");
+        new FileOutputStream(file).close();
+    }
+
+    private void add() throws GitAPIException {
+        git.add().addFilepattern(repo.toPath().relativize(file.toPath()).toString()).call();
+    }
+
+    private void commit() throws GitAPIException {
+        git.commit().setCommitter("Tester", "tester@example.com").setMessage("Test commit").call();
+        assertTrue(git.status().call().isClean());
+    }
+
+    private void modifyFile() throws IOException {
+        FileWriter out = new FileWriter(file);
+        out.write("Test");
+        out.close();
     }
 }
