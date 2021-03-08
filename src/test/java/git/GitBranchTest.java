@@ -168,7 +168,21 @@ public class GitBranchTest extends AbstractGitTest {
       }
     }
     resultFromMerge = master.merge(true);
-    assertTrue (resultFromMerge.size() > 0);
+    assertFalse (resultFromMerge.isEmpty());
 
+  }
+
+  @Test
+  public void equalsTest(){
+    GitBranch branch1 = new GitBranch("name1");
+    GitBranch branch2 = new GitBranch("name1");
+    GitBranch branch3 = new GitBranch("name2");
+
+    assertTrue(branch1.equals(branch2));
+    assertTrue(branch1.equals(branch1));
+    assertFalse(branch1.equals(branch3));
+    assertFalse(branch1.equals(4));
+    assertFalse(branch2.equals(branch1));
+    assertFalse(branch1.equals(null));
   }
 }
