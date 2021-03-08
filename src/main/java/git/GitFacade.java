@@ -135,13 +135,17 @@ public class GitFacade {
 
     public void cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
         try {
-            Git.cloneRepository()
+            Git result = Git.cloneRepository()
                     .setURI(gitUrl)
                     .setDirectory(dest)
                     .setCloneAllBranches(true)
                     .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
                     .setCloneSubmodules(recursive)
                     .call();
+            // This is most likely a known bug in jgit otherwise test cases will fail because this instance is not
+            // closed.
+            result.getRepository().close();
+            result.close();
         } catch (TransportException e) {
             throw new GitException("");
         } catch (InvalidRemoteException e) {
