@@ -42,33 +42,22 @@ public class Pull implements ICommand, ICommandGUI {
   }
 
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public String getCommandLine() {
     return commandLine;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public String getName() {
     return "Pull";
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public String getDescription() {
     return "Lädt Änderungen aus einem Online-Repo.";
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public void onButtonClicked() {
     GUIController.getInstance().openDialog(new PullDialogView());
@@ -104,33 +93,22 @@ public class Pull implements ICommand, ICommandGUI {
       GUIController.getInstance().errorHandler(e);
       return false;
     }
-    GitBranch master = null;
-    GitBranch src = null;
     for (GitBranch allBranch : allBranches) {
-      // Find fetched branch.
-      if (allBranch.getName().compareTo(remote.getName() + "/" + remoteBranch.getName()) == 0) {
-        src = allBranch;
-      }
       // Checks if the fetched branch exists locally.
       if (allBranch.getName().compareTo(remoteBranch.getName()) == 0) {
         dest = allBranch;
       }
-      // Find master branch if this branch was fetched the first time.
-      if (allBranch.getName().compareTo("master") == 0) {
-        master = allBranch;
-      }
     }
+
+
     // If fetched branch do not exist locally create new local branch.
     // The new created branch is based on the head commit of the master branch.
     if(dest == null) {
-      if(master == null) {
-        return false;
-      }
-      dest = createLocalBranch(master);
+      dest = createLocalBranch(remoteBranch);
     }
     GUIController.getInstance().closeDialogView();
     commandLine = remote.getName() + " " + remoteBranch.getName();
-    GUIController.getInstance().openDialog(new PullConflictDialogView(src, dest, getCommandLine()));
+    GUIController.getInstance().openDialog(new PullConflictDialogView(remoteBranch, dest, getCommandLine()));
     return true;
   }
 

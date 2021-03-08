@@ -2,6 +2,7 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
@@ -269,13 +270,17 @@ public class GitData {
     List<GitBranch> branches = new ArrayList<>();
 
     try {
-      refs = Git.lsRemoteRepository()
-          .setHeads(true)
-          .setRemote(remote.getUrl())
-          .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
-          .call();
+      // TODO: That's super ugly.
+      Git.lsRemoteRepository()
+              .setHeads(false)
+              .setRemote(remote.getUrl())
+              .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+              .call();
+
+      refs = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
       for (Ref ref : refs) {
-        branches.add(new GitBranch(ref));
+        if (ref.getName().startsWith("refs/remotes/" + remote.getName() + "/") && !ref.getName().endsWith("/HEAD"))
+          branches.add(new GitBranch(ref));
       }
     } catch (GitAPIException e) {
       throw new GitException();
