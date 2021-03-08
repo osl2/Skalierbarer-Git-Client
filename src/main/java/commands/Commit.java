@@ -65,7 +65,7 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     //empty staging area is only allowed for merge and amend
-    if (getStagedFiles().isEmpty() && gitData.getMergeCommitMessage() == null && !amend) {
+    if (getStagedFiles().isEmpty() && gitData.getMergeMessage() == null && !amend) {
       controller.errorHandler("Staging-Area leer. Leerer Commit nicht erlaubt!");
       return false;
     }

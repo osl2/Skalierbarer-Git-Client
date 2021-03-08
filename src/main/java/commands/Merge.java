@@ -4,15 +4,15 @@ import controller.GUIController;
 import dialogviews.MergeConflictDialogView;
 import dialogviews.MergeDialogView;
 import git.GitBranch;
-import git.GitChangeConflict;
 import git.GitData;
-import git.GitFile;
+import git.GitFileConflict;
 import git.exception.GitException;
 import org.eclipse.jgit.annotations.NonNull;
 import views.AddCommitView;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -80,8 +80,9 @@ public class Merge implements ICommand, ICommandGUI {
      */
     @Override
     public boolean execute() {
+        GitData gitData = new GitData();
         if (this.srcBranch == null || this.destBranch == null) {
-            Logger.getGlobal().warning("Source or Destination of Merge was NULL");
+            Logger.getGlobal().warning("Quell- oder Zielzweig wurde nicht gesetzt");
             return false;
         }
         if (this.srcBranch == this.destBranch) {
@@ -90,58 +91,64 @@ public class Merge implements ICommand, ICommandGUI {
             return false;
         }
 
-        Map<GitFile, List<GitChangeConflict>> conflicts;
+        try {
+            if (!this.destBranch.equals(gitData.getSelectedBranch())) {
+                GUIController.getInstance().errorHandler("Zur Zeit kann nur in den aktuell ausgewählten Zweig gemerged werden.");
+                return false;
+            }
+        } catch (IOException e) {
+            Logger.getGlobal().log(Level.SEVERE, "Der aktuelle Branch konnte nicht abgefragt werden: {}", e.getMessage());
+            return false;
+        }
+
+        List<GitFileConflict> conflicts;
         try {
             conflicts = this.srcBranch.merge(this.fastForward);
-            if (conflicts.size() > 0) {
-                for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflicts.entrySet()) {
-                    GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflicts,
-                            this.destBranch.getName(), this.srcBranch.getName()));
-                }
-
-                // Everything has been resolved. Create Merge-Commit
-                String message = new GitData().getMergeCommitMessage();
-                if (message == null) {
-                    message = "";
-                }
-                GUIController.getInstance().openView(new AddCommitView(message));
-
-            }
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
+            return false;
         }
+
+        if (conflicts.isEmpty()) return true;
+
+        for (GitFileConflict fileConflict : conflicts) {
+            // Resolve Conflicts via Gui
+            GUIController.getInstance().openDialog(new MergeConflictDialogView(fileConflict,
+                    this.destBranch.getName(), this.srcBranch.getName())
+            );
+        }
+
+        for (GitFileConflict fileConflict : conflicts) {
+            try {
+                if (!fileConflict.apply()) return false;
+            } catch (IOException | GitException e) {
+                GUIController.getInstance().errorHandler(e);
+                return false;
+            }
+        }
+
+        // Everything has been resolved. Create Merge-Commit
+        String message = new GitData().getStoredCommitMessage();
+        if (message == null) {
+            message = "";
+        }
+        GUIController.getInstance().openView(new AddCommitView(message));
+
 
         return true;
     }
 
-
-    /**
-     * Method to get the Commandline input that would be necessary to execute the command.
-     *
-     * @return Returns a String representation of the corresponding git command to
-     * display on the command line
-     */
     @Override
     public String getCommandLine() {
         return "git merge " + srcBranch.getName();
     }
 
-    /**
-     * Method to get the name of the command, that could be displayed in the GUI.
-     *
-     * @return The name of the command
-     */
     @Override
     public String getName() {
         return "Merge";
     }
 
-    /**
-     * Method to get a description of the Command to describe for the user,
-     * what the command does.
-     *
-     * @return description as a Sting
-     */
+
     @Override
     public String getDescription() {
         return "Verschmilzt zwei Zweige";

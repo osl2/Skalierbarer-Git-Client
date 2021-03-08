@@ -11,7 +11,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,29 +102,29 @@ public class GitBranch {
    * @return A list of conflicting pieces of code. This list can be empty if the merge
    * is completable without user interaction
    */
-  public Map<GitFile, List<GitChangeConflict>> merge(boolean fastForward) throws GitException {
+  public List<GitFileConflict> merge(boolean fastForward) throws GitException {
     MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;
 
     try {
       Ref ref = GitData.getRepository().exactRef(this.branchName);
       GitData.getJGit().merge()
-          .setStrategy(MergeStrategy.RESOLVE)
-          .include(ref)
-          .setCommit(true)
-          .setFastForward(ffm)
-          .call();
+              .setStrategy(MergeStrategy.RESOLVE)
+              .include(ref)
+              .setCommit(true)
+              .setFastForward(ffm)
+              .call();
       // let's reject what Jgit is doing, and just take the files it lists us, and do our own parsing
       // As the getConflicts method seems to be bugged. (2021-02-12)
-      Map<GitFile, List<GitChangeConflict>> conflictMap = new HashMap<>();
+      List<GitFileConflict> conflictList = new ArrayList<>();
       Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
 
       for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
         File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
         GitFile gitFile = new GitFile(f.getTotalSpace(), f);
-        conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile, entry.getValue()));
+        conflictList.add(GitFileConflict.getConflictsForFile(gitFile, entry.getValue()));
       }
 
-      return conflictMap;
+      return conflictList;
 
     } catch (GitAPIException | IOException e) {
       throw new GitException(e.getMessage());

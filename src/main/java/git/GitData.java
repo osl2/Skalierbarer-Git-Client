@@ -18,16 +18,13 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Provides a central point to obtain and create a number of git objects.
@@ -87,26 +84,6 @@ public class GitData {
   }
 
   /**
-   * Returns the merge commit message as prepared by git.
-   *
-   * @return String with commit message; NULL if MERGE_MSG does not exist in .git
-   */
-  public String getMergeCommitMessage() {
-
-    File mergeFile = new File(getRepository().getDirectory(), "MERGE_MSG");
-    if (!mergeFile.exists() || mergeFile.isDirectory()) {
-      return null;
-    }
-    try (BufferedReader br = new BufferedReader(new FileReader(mergeFile))){
-      return br.lines().collect(Collectors.joining(System.lineSeparator()));
-
-    } catch (IOException e) {
-      return null;
-    }
-
-  }
-
-  /**
    * Method to initalize the Repoistory.
    */
   private static void initializeRepository() {
@@ -121,9 +98,52 @@ public class GitData {
         builder.setWorkTree(path);
       repository = builder.build();
       git = Git.open(path);
+
+      git.getRepository().getConfig().setBoolean("commit", null, "gpgsign", false);
     } catch (IOException e) {
       Logger.getGlobal().warning("Beim Öffnen des Git-Repositorys ist etwas schief gelaufen "
-          + ERROR_MESSAGE + e.getMessage());
+              + ERROR_MESSAGE + e.getMessage());
+    }
+  }
+
+  /**
+   * Returns the stored commit message as prepared by git.
+   *
+   * @return String with commit message; NULL if COMMIT_EDIT_MSG does not exist in .git
+   */
+  public String getStoredCommitMessage() {
+    try {
+      return git.getRepository().readCommitEditMsg();
+    } catch (IOException e) {
+      Logger.getGlobal().warning("Could not read Commit-Edit-Message");
+      return null;
+    }
+  }
+
+  /**
+   * Returns the MERGE_MSG as prepared by commands triggering a git-merge
+   *
+   * @return String with commit message; NULL if MERGE_MSG does not exist in .git
+   */
+  public String getMergeMessage() {
+    try {
+      return git.getRepository().readMergeCommitMsg();
+    } catch (IOException e) {
+      Logger.getGlobal().warning("Could not read Merge-Message");
+      return null;
+    }
+  }
+
+  /**
+   * Allows to write a message to .git/COMMIT_EDIT_MESSAGE i.e. to preserve a commit message after aborting
+   *
+   * @param message the message to be saved.
+   */
+  public void writeStoredCommitMessage(String message) {
+    try {
+      git.getRepository().writeCommitEditMsg(message);
+    } catch (IOException e) {
+      Logger.getGlobal().warning("Could not store Commit-Edit-Message");
     }
   }
 

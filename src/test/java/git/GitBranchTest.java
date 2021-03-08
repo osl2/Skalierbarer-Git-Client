@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -123,7 +122,7 @@ class GitBranchTest extends AbstractGitTest {
         merged = new GitBranch(branch.getFullName());
       }
     }
-    Map<GitFile, List<GitChangeConflict>> resultFromMerge = master.merge(true);
+    List<GitFileConflict> resultFromMerge = master.merge(true);
     assertTrue(resultFromMerge.isEmpty());
     GitBranch finalMerged = merged;
     git.checkout().setName(finalMerged.getFullName()).setCreateBranch(false).call();

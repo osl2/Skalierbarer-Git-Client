@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AddCommitView extends JPanel implements IView {
 
@@ -104,7 +105,8 @@ public class AddCommitView extends JPanel implements IView {
     });
 
     //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+    String storedCommitMessage = new GitData().getStoredCommitMessage();
+    commitMessageTextArea.setText(Objects.requireNonNullElse(storedCommitMessage, DEFAULT_COMMIT_MESSAGE));
     //when the user clicks inside the text area, the default message should disappear
     commitMessageTextArea.addFocusListener(new FocusAdapter() {
       @Override

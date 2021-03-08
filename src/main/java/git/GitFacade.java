@@ -276,11 +276,9 @@ public class GitFacade {
         throw new AssertionError("not implemented");
     }
 
+    @Deprecated
     public boolean revert(GitCommit commit) throws GitException {
-        boolean suc;
-
-        suc = commit.revert();
-        return suc;
+        return commit.revert().size() == 0;
     }
 
     public boolean setConfigValue(String configOption, String configValue) {

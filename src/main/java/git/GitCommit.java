@@ -1,7 +1,5 @@
 package git;
 
-import controller.GUIController;
-import dialogviews.MergeConflictDialogView;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.RevertCommand;
@@ -24,7 +22,6 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import settings.Settings;
-import views.AddCommitView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -165,43 +162,32 @@ public class GitCommit {
 
     /**
      * Applying the git revert command on this Commit.
+     *
      * @return true if this Commit was successfully reverted.
      * @throws GitException if revert can not be executed successfully.
+     *                      todo update
      */
-    public boolean revert() throws GitException {
+    public List<GitFileConflict> revert() throws GitException {
         Git git = GitData.getJGit();
+        ArrayList<GitFileConflict> conflicts = new ArrayList<>();
         try {
             RevertCommand revertCommand = git.revert().include(revCommit);
             RevCommit rev = revertCommand.call();
-            if (rev == null){
-                Map<GitFile, List<GitChangeConflict>> conflictMap = new HashMap<>();
+            if (rev == null) { // There have been conflicts, so no commit was created
                 Map<String, IndexDiff.StageState> statusMap = GitData.getJGit().status().call().getConflictingStageState();
 
                 for (Map.Entry<String, IndexDiff.StageState> entry : statusMap.entrySet()) {
                     File f = new File(GitData.getRepository().getWorkTree(), entry.getKey());
                     GitFile gitFile = new GitFile(f.getTotalSpace(), f);
-                    conflictMap.put(gitFile, GitChangeConflict.getConflictsForFile(gitFile, entry.getValue()));
-                }
-                if (conflictMap.size() > 0) {
-                    for (Map.Entry<GitFile, List<GitChangeConflict>> e : conflictMap.entrySet()) {
-                        GUIController.getInstance().openDialog(new MergeConflictDialogView(e.getKey(), conflictMap,
-                                "Jetzige Datei", "Datei nach revert"));
-                    }
-
-                    // Everything has been resolved. Create Merge-Commit
-                    String message = new GitData().getMergeCommitMessage();
-                    if (message == null) {
-                        message = "";
-                    }
-                    GUIController.getInstance().openView(new AddCommitView(message));
-
+                    conflicts.add(GitFileConflict.getConflictsForFile(gitFile, entry.getValue()));
                 }
             }
-            return true;
+
         } catch (GitAPIException e) {
             throw new GitException("Beim Rückgängig machen des Commits ist ein Fehler aufgetreten" +
                 "Fehlermeldung: " + e.getMessage());
         }
+        return conflicts;
     }
 
     /**
