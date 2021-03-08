@@ -156,7 +156,8 @@ class AddCommitViewTest extends AbstractCommandTest {
 
     @Test
     void commitButtonEmptyStagingAreaTest() {
-        fireCommitButton();
+        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        fireActionEvent(commitButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
 
@@ -164,7 +165,8 @@ class AddCommitViewTest extends AbstractCommandTest {
     void commitButtonEmptyMessageTest() throws IOException, GitAPIException {
         createNewFile();
         add();
-        fireCommitButton();
+        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        fireActionEvent(commitButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
 
@@ -176,11 +178,57 @@ class AddCommitViewTest extends AbstractCommandTest {
         //reload the view
         prepare();
 
+        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        commitTest(commitButton);
+    }
+
+    @Test
+    void amendButtonTest() throws IOException, GitAPIException {
+        createNewFile();
+        add();
+        //reload the view
+        prepare();
+
+        JButton amendButton = (JButton) find.getChildByName(panel, "amendButton");
+        commitTest(amendButton);
+    }
+
+    @Test
+    void cancelButtonTestChangesMade() throws IOException, GitAPIException {
+        createNewFile();
+        prepare();
+
+        //status should contain the new file
+        assertTrue(git.status().call().getUntracked().contains(file.getName()));
+        assertEquals(1, newFilesList.getModel().getSize());
+        //get the item
+        AddCommitView.FileListItem fileListItem = (AddCommitView.FileListItem) newFilesList.getModel().getElementAt(0);
+        //select item to add it to the staging-area
+        fileListItem.setSelected(true);
+
+        JButton cancelButton = (JButton) find.getChildByName(panel, "cancelButton");
+        fireActionEvent(cancelButton);
+        assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
+
+        //status should now be clean, file should have been added
+        assertTrue(git.status().call().getAdded().contains(file.getName()));
+
+        assertTrue(guiControllerTestable.restoreDefaultViewCalled);
+
+    }
+
+    private void commitTest(JButton button) throws IOException, GitAPIException {
+        //staging area should not be empty
+        assertFalse(git.status().call().isClean());
+
         commitMessageTextArea.setText("Test commit");
-        fireCommitButton();
+        fireActionEvent(button);
         assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
         //since file should be pre-selected, commit should execute successfully and default view should be restored
         assertTrue(guiControllerTestable.restoreDefaultViewCalled);
+
+        //status should be clean after commit amend has been executed
+        assertTrue(git.status().call().isClean());
     }
 
     private void mouseListenerTest(JList list) {
@@ -196,11 +244,10 @@ class AddCommitViewTest extends AbstractCommandTest {
 
     }
 
-    private void fireCommitButton() {
-        commitButton = (JButton) find.getChildByName(panel, "commitButton");
-        assertNotNull(commitButton);
-        for (ActionListener listener : commitButton.getActionListeners()) {
-            listener.actionPerformed(new ActionEvent(commitButton, ActionEvent.ACTION_PERFORMED, "Commit button clicked"));
+    private void fireActionEvent(JButton button) {
+        assertNotNull(button);
+        for (ActionListener listener : button.getActionListeners()) {
+            listener.actionPerformed(new ActionEvent(button, ActionEvent.ACTION_PERFORMED, "Button clicked"));
         }
     }
 
