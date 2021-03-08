@@ -28,17 +28,38 @@ public class Commit implements ICommand, ICommandGUI {
    * This method determines whether the commit should amend the last commit.
    * @param amend True if git commit --amend should be performed, false otherwise.
    */
-  public void setAmend(boolean amend){
+  public void setAmend(boolean amend) {
     this.amend = amend;
+    if (amend && commitMessage == null) {
+      commitMessage = getLastCommitMessage();
+    }
   }
 
   /**
-   * This method sets the commit message of the next commit.
+   * Returns the commit message. If not set, returns the commit message of the last commit
+   *
+   * @return The commit message
+   */
+  public String getCommitMessage() {
+    if (commitMessage == null) {
+      return "";
+    } else {
+      return commitMessage;
+    }
+  }
+
+  /**
+   * This method sets the commit message of the next commit. The commit message is only updated when the passed message
+   * is neither empty nor equals the default commit message
    *
    * @param commitMessage the message of the next commit.
    */
   public void setCommitMessage(String commitMessage) {
-    this.commitMessage = commitMessage;
+    if (commitMessage != null
+            && commitMessage.compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE) != 0
+            && commitMessage.compareTo("") != 0) {
+      this.commitMessage = commitMessage;
+    }
   }
 
   /**
@@ -62,18 +83,9 @@ public class Commit implements ICommand, ICommandGUI {
     }
 
     //commit message must not be empty or the default commit message set by ACV
-    if (commitMessage == null
-            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
-            || commitMessage.equals("")) {
-      /*only in case of amend: if commit message was not set by the user, take the message from the last commit
-      (requires the commit history not to be empty)
-       */
-      if (amend) {
-        commitMessage = getLastCommitMessage();
-      } else {
-        controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
-        return false;
-      }
+    if (commitMessage == null) {
+      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
+      return false;
     }
 
     //empty staging area is only allowed for merge and amend

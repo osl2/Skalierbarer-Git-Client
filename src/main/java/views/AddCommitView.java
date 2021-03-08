@@ -214,22 +214,24 @@ public class AddCommitView extends JPanel implements IView {
   invokes the commit command when the user clicks on the commit button
    */
   private void executeCommit() {
+    Commit commitCommand = new Commit();
+
+    //set amend and commit message
+    commitCommand.setAmend(amend);
+    commitCommand.setCommitMessage(commitMessageTextArea.getText());
 
     //if staging area is not empty, show confirmation dialog
     List<GitFile> stagedFiles = getStagedFiles();
     if (!stagedFiles.isEmpty()) {
-      int confirmation = JOptionPane.showConfirmDialog(null, getCommitConfirmationPane(stagedFiles), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
+      int confirmation = JOptionPane.showConfirmDialog(null,
+              getCommitConfirmationPane(stagedFiles, commitCommand.getCommitMessage()), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE);
       if (confirmation != 0) {
         return;
       }
     }
 
-    Commit commitCommand = new Commit();
 
-    //set amend and commit message
-    commitCommand.setAmend(amend);
-    commitCommand.setCommitMessage(commitMessageTextArea.getText());
 
     //execute git commit
     if (commitCommand.execute()) {
@@ -263,19 +265,28 @@ public class AddCommitView extends JPanel implements IView {
     return stagedFiles;
   }
 
-  private JScrollPane getCommitConfirmationPane(List<GitFile> stagedFiles) {
+  private JPanel getCommitConfirmationPane(List<GitFile> stagedFiles, String commitMessage) {
+    JPanel panel = new JPanel(new BorderLayout());
+    JTextField headerTextField = new JTextField("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?");
+    JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
+    JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
+
+
     StringBuilder message = new StringBuilder();
-    message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
     for (GitFile gitFile : stagedFiles) {
       message.append(gitFile.getPath().getName());
       message.append("\n");
     }
     JTextArea textArea = new JTextArea(message.toString());
-    JScrollPane scrollPane = new JScrollPane(textArea);
+    JScrollPane fileScrollPane = new JScrollPane(textArea);
     textArea.setLineWrap(true);
-    scrollPane.setPreferredSize(new Dimension(500, 200));
-    scrollPane.setMaximumSize(new Dimension(500, 200));
-    return scrollPane;
+    fileScrollPane.setPreferredSize(new Dimension(500, 200));
+    fileScrollPane.setMaximumSize(new Dimension(500, 200));
+
+    panel.add(headerTextField, BorderLayout.NORTH);
+    panel.add(messageScrollPane, BorderLayout.SOUTH);
+    panel.add(fileScrollPane, BorderLayout.CENTER);
+    return panel;
   }
 
   /*
