@@ -11,6 +11,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 class PersistencyTest extends AbstractGitTest {
     @TempDir
     static File config;
+    private static final File TESTFILE = new File("testdir");
     Data data;
 
     @Override
@@ -28,6 +30,7 @@ class PersistencyTest extends AbstractGitTest {
         settings.setUser(gitData.getCommits().next().getAuthor());
         settings.setShowTreeView(false);
         settings.setUseTooltips(true);
+        data.storeNewRepositoryPath(TESTFILE);
         deleteDir(config);
         FileUtils.forceMkdir(config);
         new Persistency().save(config);
@@ -52,8 +55,14 @@ class PersistencyTest extends AbstractGitTest {
         assertEquals(settings.getActiveRepositoryPath(), newSettings.getActiveRepositoryPath());
 
         assertEquals(data.getLevels(), newData.getLevels());
-        //TODO: Warum schreibt er hier irgendwas vor den relativen Pfad?
-        // assertEquals(data.getRecentlyOpenedRepositories(), newData.getRecentlyOpenedRepositories());
+        assertEquals(data.getRecentlyOpenedRepositories(), newData.getRecentlyOpenedRepositories());
+    }
+
+    @Test
+    void directoriesAreOnlyAddedOnceTest() {
+        List<File> recentlyOpenedRepositories = data.getRecentlyOpenedRepositories();
+        data.storeNewRepositoryPath(TESTFILE.getAbsoluteFile());
+        assertEquals(recentlyOpenedRepositories, data.getRecentlyOpenedRepositories());
     }
 
 }
