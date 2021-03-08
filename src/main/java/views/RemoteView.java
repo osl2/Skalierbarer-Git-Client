@@ -10,8 +10,6 @@ import git.GitRemote;
 import git.exception.GitException;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,74 +50,13 @@ public class RemoteView extends JPanel implements IView {
    * Constructor to create RemoteView
    */
   public RemoteView() {
-    //Set the subcommand to set the Url to inactive
-    remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
-    // Gets the remotes of the repo and shows them in the List
-    remotes = git.getRemotes();
-    DefaultListModel<GitRemote> model = new DefaultListModel<>();
-    for (int i = 0; i < remotes.size(); i++) {
-      model.add(i, remotes.get(i));
-    }
-    remoteList.setCellRenderer(new RemoteViewRenderer());
-    remoteList.setModel(model);
-
+   loadRemotes();
    //ActtionListener to go back to the Mainwindow
-    removeButton.addActionListener(new ActionListener() {
-      /**
-       * Invoked when an action occurs.
-       *
-       * @param e the event to be processed
-       */
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GUIController.getInstance().restoreDefaultView();
-      }
-    });
-    safeButton.addActionListener(new ActionListener() {
-      /**
-       * Invoked when an action occurs.
-       *
-       * @param e the event to be processed
-       */
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int index = remoteList.getSelectedIndex();
-        // If no remote is selected show an error-Message
-        if (index < 0) {
-          GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
-          return;
-        }
-        remForSetURL.setRemote(remotes.get(index));
-        remForSetURL.setUrl(urlField.getText());
-        if (remForSetURL.execute()) {
-          GUIController.getInstance().setCommandLine(remForSetURL.getCommandLine());
-          remotes = git.getRemotes();
-          DefaultListModel<GitRemote> newModel = new DefaultListModel<>();
-          for (int i = 0; i < remotes.size(); i++) {
-            newModel.add(i, remotes.get(i));
-
-          }
-          remoteList.setModel(newModel);
-          remoteList.setSelectedIndex(index);
-          reloadBranches();
-
-        }
-        remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
-
-      }
-    });
-    addButton.addActionListener(new ActionListener() {
-      /**
-       * Invoked when an action occurs.
-       *
-       * @param e the event to be processed
-       */
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GUIController.getInstance().openDialog(new RemoteAddDialogView());
-      }
-    });
+    removeButton.addActionListener(e -> GUIController.getInstance().restoreDefaultView());
+    safeButton.addActionListener(e -> actionSafe()
+    );
+    addButton.addActionListener(e -> GUIController.getInstance().openDialog(new RemoteAddDialogView()));
     urlField.addFocusListener(new FocusAdapter() {
       /**
        * {@inheritDoc}
@@ -129,64 +66,48 @@ public class RemoteView extends JPanel implements IView {
         remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
       }
     });
-    deleteButton.addActionListener(new ActionListener() {
-      /**
-       * Invoked when an action occurs.
-       *
-       * @param e the event to be processed
-       */
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int index = remoteList.getSelectedIndex();
-        if (index < 0) {
-          GUIController.getInstance().errorHandler("Es ist kein Remote ausgewählt");
-          return;
+    deleteButton.addActionListener(e -> {
+      int index = remoteList.getSelectedIndex();
+      if (index < 0) {
+        GUIController.getInstance().errorHandler("Es ist kein Remote ausgewählt");
+        return;
+      }
+      Remote retRemote = new Remote();
+      retRemote.setRemoteSubcommand(Remote.RemoteSubcommand.REMOVE);
+      retRemote.setRemote(remotes.get(index));
+      if (retRemote.execute()) {
+        GUIController.getInstance().setCommandLine(retRemote.getCommandLine());
+        remotes = git.getRemotes();
+        DefaultListModel<GitRemote> model1 = new DefaultListModel<>();
+        for (int i = 0; i < remotes.size(); i++) {
+          model1.add(i, remotes.get(i));
         }
-        Remote retRemote = new Remote();
-        retRemote.setRemoteSubcommand(Remote.RemoteSubcommand.REMOVE);
-        retRemote.setRemote(remotes.get(index));
-        if (retRemote.execute()) {
-          GUIController.getInstance().setCommandLine(retRemote.getCommandLine());
-          remotes = git.getRemotes();
-          DefaultListModel<GitRemote> model = new DefaultListModel<>();
-          for (int i = 0; i < remotes.size(); i++) {
-            model.add(i, remotes.get(i));
-          }
-          remoteList.setModel(model);
-          nameField.setText("");
-          urlField.setText("");
-          branchArea.setText("");
-        }
+        remoteList.setModel(model1);
+        nameField.setText("");
+        urlField.setText("");
+        branchArea.setText("");
       }
     });
-    remoteList.addListSelectionListener(new ListSelectionListener() {
-      /**
-       * Called whenever the value of the selection changes.
-       *
-       * @param e the event that characterizes the change.
-       */
-      @Override
-      public void valueChanged(ListSelectionEvent e) {
-        int index = remoteList.getSelectedIndex();
-        GitRemote act = remotes.get(index);
-        nameField.setText(act.getName());
-        urlField.setText(act.getUrl());
-        if (!tryBranches(act)) {
-          GUIController.getInstance().openView(new RemoteView());
-          return;
-        }
-        StringBuilder set = new StringBuilder();
-        for (GitBranch branch : branches) {
-          set.append(branch.getName()).append(System.lineSeparator());
-        }
-        branchArea.setText(set.toString());
+    remoteList.addListSelectionListener(e -> {
+      int index = remoteList.getSelectedIndex();
+      GitRemote act = remotes.get(index);
+      nameField.setText(act.getName());
+      urlField.setText(act.getUrl());
+      if (!tryBranches(act)) {
+        GUIController.getInstance().openView(new RemoteView());
+        return;
       }
+      StringBuilder set = new StringBuilder();
+      for (GitBranch branch : branches) {
+        set.append(branch.getName()).append(System.lineSeparator());
+      }
+      branchArea.setText(set.toString());
     });
   }
 
   @Override
   public void update() {
-
+    loadRemotes();
   }
 
   /**
@@ -272,7 +193,7 @@ public class RemoteView extends JPanel implements IView {
       String name = value.getName();
       String url = value.getUrl();
       this.setText(name + System.lineSeparator() + System.lineSeparator() + url);
-      // Only the first 6 lines of the commit message should be shown;
+      // Only the first 6 lines of the commit message should be shown
       int width = list.getWidth();
       if (isSelected) {
         // This color is light blue.
@@ -287,5 +208,37 @@ public class RemoteView extends JPanel implements IView {
       return this;
 
     }
+  }
+  private void loadRemotes(){
+    //Set the subcommand to set the Url to inactive
+    remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+    GitData git = new GitData();
+    // Gets the remotes of the repo and shows them in the List
+    remotes = git.getRemotes();
+    DefaultListModel<GitRemote> model = new DefaultListModel<>();
+    for (int i = 0; i < remotes.size(); i++) {
+      model.add(i, remotes.get(i));
+    }
+    remoteList.setCellRenderer(new RemoteViewRenderer());
+    remoteList.setModel(model);
+
+  }
+  private void actionSafe(){
+    int index = remoteList.getSelectedIndex();
+    // If no remote is selected show an error-Message
+    if (index < 0) {
+      GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
+      return;
+    }
+    remForSetURL.setRemote(remotes.get(index));
+    remForSetURL.setUrl(urlField.getText());
+    if (remForSetURL.execute()) {
+      GUIController.getInstance().setCommandLine(remForSetURL.getCommandLine());
+      ((DefaultListModel<GitRemote>) remoteList.getModel()).set(index, remotes.get(index));
+      remoteList.setSelectedIndex(index);
+      reloadBranches();
+      remoteList.requestFocus();
+    }
+    remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
   }
 }

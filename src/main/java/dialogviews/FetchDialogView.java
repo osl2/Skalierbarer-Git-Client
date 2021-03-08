@@ -14,12 +14,10 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FetchDialogView implements IDialogView {
 
-  private JPanel FetchPanel;
+  private JPanel fetchPanel;
   @SuppressWarnings("unused")
   private JScrollPane treeScrollPanel;
   private JTree fetchTree;
@@ -53,43 +51,35 @@ public class FetchDialogView implements IDialogView {
 
     this.fetchTree.setRootVisible(false);
     model.setRoot(root);
-    fetchButton.addActionListener(new ActionListener() {
-      /**
-       * Invoked when an action occurs.
-       *
-       * @param e the event to be processed
-       */
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        // Gets the selcted Branches and remotes
-        TreePath[] selected = fetchTree.getSelectionPaths();
-        Fetch command = new Fetch();
-        if (selected == null) {
-          GUIController.getInstance().errorHandler("Es muss ein branch oder remote ausgewählt werden");
-          return;
-        }
-        for (TreePath treePath : selected) {
-          RefTreeNode node = (RefTreeNode) treePath.getLastPathComponent();
-          node.configureFetch(command);
-        }
-        // If executes change commandline and close dialogview
-        if (command.execute()) {
-          GUIController.getInstance().setCommandLine(command.getCommandLine());
-          GUIController.getInstance().closeDialogView();
-        } else {
-          GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler Aufgetreten");
-        }
-
+    fetchButton.addActionListener(e -> {
+      // Gets the selcted Branches and remotes
+      TreePath[] selected = fetchTree.getSelectionPaths();
+      Fetch command = new Fetch();
+      if (selected == null) {
+        GUIController.getInstance().errorHandler("Es muss ein branch oder remote ausgewählt werden");
+        return;
       }
+      for (TreePath treePath : selected) {
+        RefTreeNode node = (RefTreeNode) treePath.getLastPathComponent();
+        node.configureFetch(command);
+      }
+      // If executes change commandline and close dialogview
+      if (command.execute()) {
+        GUIController.getInstance().setCommandLine(command.getCommandLine());
+        GUIController.getInstance().closeDialogView();
+      } else {
+        GUIController.getInstance().errorHandler("Es ist ein unerwarteter Fehler Aufgetreten");
+      }
+
     });
   }
 
-  private RemoteTreeNode buildRemoteTree(GitRemote r) throws Exception {
+  private RemoteTreeNode buildRemoteTree(GitRemote r) {
     RemoteTreeNode root = new RemoteTreeNode(r);
     GitBranch[] branches;
     branches = loadRemoteBranches(r);
     if (branches == null) {
-      throw new Exception();
+      return null;
     }
     for (GitBranch branch : branches) {
       BranchTreeNode node = new BranchTreeNode(branch, r);
@@ -99,7 +89,7 @@ public class FetchDialogView implements IDialogView {
     return root;
   }
 
-  private static abstract class RefTreeNode extends DefaultMutableTreeNode {
+  private abstract static  class RefTreeNode extends DefaultMutableTreeNode {
     public RefTreeNode() {
     }
 
@@ -202,12 +192,12 @@ public class FetchDialogView implements IDialogView {
    */
   @Override
   public JPanel getPanel() {
-    return FetchPanel;
+    return fetchPanel;
   }
 
   @Override
   public void update() {
-
+  //Is not needed for now
   }
 
   /**
