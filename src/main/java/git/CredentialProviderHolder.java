@@ -90,7 +90,8 @@ public class CredentialProviderHolder {
      *
      * @return Returns the created provider
      */
-    private UsernamePasswordCredentialsProvider getProvider() {
+    @Deprecated
+    UsernamePasswordCredentialsProvider getProvider() {
         return new UsernamePasswordCredentialsProvider(username, password);
     }
 
