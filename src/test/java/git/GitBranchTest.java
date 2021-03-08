@@ -173,16 +173,25 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void equalsTest(){
-    GitBranch branch1 = new GitBranch("name1");
-    GitBranch branch2 = new GitBranch("name1");
-    GitBranch branch3 = new GitBranch("name2");
+  public void equalsTest() throws GitAPIException {
+    GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
+    GitBranch branch2 = new GitBranch(BRANCH_NAMES[0]);
+    GitBranch branch3 = new GitBranch(BRANCH_NAMES[3]);
+
+    for(Ref branch : git.branchList().call()){
+      if (branch.getName().endsWith(BRANCH_NAMES[0])){
+        branch1 = new GitBranch(branch);
+        branch2 = new GitBranch(branch);
+      } else if (branch.getName().endsWith(BRANCH_NAMES[3])){
+        branch3 = new GitBranch(branch);
+      }
+    }
 
     assertTrue(branch1.equals(branch2));
     assertTrue(branch1.equals(branch1));
     assertFalse(branch1.equals(branch3));
     assertFalse(branch1.equals(4));
-    assertFalse(branch2.equals(branch1));
+    assertFalse(branch2.equals(branch3));
     assertFalse(branch1.equals(null));
   }
 }
