@@ -3,8 +3,12 @@ package views;
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import util.JOptionPaneTestable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +19,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mockStatic;
 
 class AddCommitViewTest extends AbstractCommandTest {
     private FindComponents find;
@@ -26,6 +32,21 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JTextArea commitMessageTextArea;
     private JButton commitButton;
     private File file;
+    private static MockedStatic<JOptionPane> mockedJOptionPane;
+    private static JOptionPaneTestable jOptionPaneTestable;
+
+    @BeforeAll
+    private static void setupMockedJOptionPane() {
+        jOptionPaneTestable = new JOptionPaneTestable();
+        mockedJOptionPane = mockStatic(JOptionPane.class);
+        mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(), anyInt(), anyInt()))
+                .thenReturn(JOptionPaneTestable.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE));
+    }
+
+    @AfterAll
+    private static void closeMockedJOptionPane() {
+        jOptionPaneTestable.resetTestStatus();
+    }
 
     @BeforeEach
     void prepare() {
@@ -106,7 +127,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void newFilesListTest() throws IOException, GitAPIException {
+    void newFilesListTest() throws IOException {
         createNewFile();
         //reload view
         prepare();
@@ -157,7 +178,7 @@ class AddCommitViewTest extends AbstractCommandTest {
 
         commitMessageTextArea.setText("Test commit");
         fireCommitButton();
-        //TODO: Wie mit JOptionPane umgehen?
+        assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
         //since file should be pre-selected, commit should execute successfully and default view should be restored
         assertTrue(guiControllerTestable.restoreDefaultViewCalled);
     }
