@@ -50,6 +50,8 @@ public class RemoteView extends JPanel implements IView {
    * Constructor to create RemoteView
    */
   public RemoteView() {
+    //Set the subcommand to set the Url to inactive
+    remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
    loadRemotes();
    //ActtionListener to go back to the Mainwindow
@@ -193,7 +195,7 @@ public class RemoteView extends JPanel implements IView {
       String name = value.getName();
       String url = value.getUrl();
       this.setText(name + System.lineSeparator() + System.lineSeparator() + url);
-      // Only the first 6 lines of the commit message should be shown
+      // Only the first 6 lines of the commit message should be shown;
       int width = list.getWidth();
       if (isSelected) {
         // This color is light blue.
@@ -240,5 +242,15 @@ public class RemoteView extends JPanel implements IView {
       remoteList.requestFocus();
     }
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+  }
+  private void testGUI(){
+    nameField.setName("nameField");
+    urlField.setName("urlField");
+    remoteList.setName("remoteList");
+    addButton.setName("addButton");
+    removeButton.setName("removeButton");
+    safeButton.setName("safeButton");
+    deleteButton.setName("deleteButton");
+    branchArea.setName("branchArea");
   }
 }
