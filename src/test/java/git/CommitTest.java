@@ -1,7 +1,7 @@
 package git;
 
+import commands.AbstractCommandTest;
 import commands.Commit;
-import controller.GUIController;
 import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -10,12 +10,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import util.GUIControllerTestable;
 import views.AddCommitView;
 
 import java.io.*;
@@ -27,29 +23,12 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
-class CommitTest extends AbstractGitTest {
+class CommitTest extends AbstractCommandTest {
     private File file;
-    static GUIControllerTestable guiControllerTestable;
-    static MockedStatic<GUIController> mockedController;
     private final String COMMIT_MESSAGE = "Test Commit";
     private final String COMMIT_AMEND_MESSAGE = "Commit amend";
     private Commit commit;
-
-    @BeforeAll
-    static void setup() {
-        guiControllerTestable = new GUIControllerTestable();
-        mockedController = mockStatic(GUIController.class);
-        mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
-        guiControllerTestable.resetTestStatus();
-
-    }
-
-    @AfterAll
-    static void closeControllerMock() {
-        mockedController.close();
-    }
 
     @BeforeEach
     void initialize() {
