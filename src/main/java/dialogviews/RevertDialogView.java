@@ -1,12 +1,10 @@
 package dialogviews;
-
 import commands.Revert;
 import controller.GUIController;
 import git.GitBranch;
 import git.GitCommit;
 import git.GitData;
 import git.exception.GitException;
-
 import javax.swing.*;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -18,10 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Iterator;
-
+@SuppressWarnings("unused")
 public class RevertDialogView implements IDialogView {
-
-
     private JPanel panel1;
     private JPanel RevertPanel;
     private JScrollPane treeScrollPanel;
@@ -33,20 +29,25 @@ public class RevertDialogView implements IDialogView {
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     private DefaultTreeModel model;
 
+    /**
+     * Method to build the tree
+     * @param b The branch for the TreeNode
+     * @return The TreeNode of the Branch
+     */
     private BranchTreeNode buildBranchTree(GitBranch b) {
         BranchTreeNode root = new BranchTreeNode(b);
         Iterator<GitCommit> iter = null;
         try {
             iter = b.getCommits();
-        } catch (GitException e) {
-            GUIController.getInstance().errorHandler(e);
-        } catch (IOException e) {
+        } catch (GitException | IOException e) {
             GUIController.getInstance().errorHandler(e);
         }
         int i = 0;
-        while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
-            CommitTreeNode node = new CommitTreeNode(iter.next());
-            root.add(node);
+        if (iter != null) {
+            while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
+                CommitTreeNode node = new CommitTreeNode(iter.next());
+                root.add(node);
+            }
         }
 
         // We ran into our load maximum but the iterator had more nodes.
@@ -96,9 +97,12 @@ public class RevertDialogView implements IDialogView {
 
     }
 
+    /**
+     * Method to get the selectionListener for the tree, if there should be loaded more commits
+     * @return the listener for the tree
+     */
     private TreeSelectionListener loadMoreListener() {
         return treeSelectionEvent -> {
-            // todo: Come up with a better way of loading more nodes
             if (treeSelectionEvent.getPath().getLastPathComponent() instanceof LoadMoreNode) {
                 LoadMoreNode node = (LoadMoreNode) treeSelectionEvent.getPath().getLastPathComponent();
                 node.loadMoreItems();
@@ -107,14 +111,18 @@ public class RevertDialogView implements IDialogView {
         };
 
     }
-
+    @SuppressWarnings("BoundFieldAssignment")
     private void createUIComponents() {
         this.revertTree = new JTree(this.root);
         this.revertTree.addTreeSelectionListener(loadMoreListener());
     }
 
+    /**
+     * Constructor to create an Instance of the class RevertDialogView
+     */
     public RevertDialogView() {
         GitData testGit = new GitData();
+        // If there are no commits, the user cant revert.
         try {
             if (testGit.getBranches().size() == 0) {
                 GUIController.getInstance().errorHandler("Es existiert kein Commit");
@@ -125,6 +133,7 @@ public class RevertDialogView implements IDialogView {
             GUIController.getInstance().errorHandler(e);
             GUIController.getInstance().closeDialogView();
         }
+        // Add the loadMoreListener to the tree
         this.revertTree.addTreeSelectionListener(loadMoreListener());
         try {
             final GitData git;
@@ -149,6 +158,7 @@ public class RevertDialogView implements IDialogView {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Configures the revert-command
                 Revert rev = new Revert();
                 TreePath path = revertTree.getSelectionPath();
                 if (path == null) {
@@ -159,7 +169,6 @@ public class RevertDialogView implements IDialogView {
                 node.configureRevert(rev);
                 if (rev.getChosenCommit() == null) {
                     GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt sein.");
-                    return;
                 } else if (rev.execute()) {
                     GUIController.getInstance().setCommandLine(rev.getCommandLine());
                     GUIController.getInstance().closeDialogView();
@@ -182,15 +191,27 @@ public class RevertDialogView implements IDialogView {
             this.commit = commit;
         }
 
+        /**
+         * Gets the commit of this treeNode
+         * @return returns the commit
+         */
         public GitCommit getCommit() {
             return commit;
         }
 
+        /**
+         * Method to get the String-representation of this class
+         * @return the String-representation
+         */
         @Override
         public String toString() {
             return commit.getHashAbbrev() + " - " + commit.getShortMessage();
         }
 
+        /**
+         * Method to configure an revert command
+         * @param revert the command, which should be configured
+         */
         @Override
         void configureRevert(Revert revert) {
             revert.setChosenCommit(commit);
@@ -203,16 +224,26 @@ public class RevertDialogView implements IDialogView {
         private BranchTreeNode(GitBranch branch) {
             this.branch = branch;
         }
-
+        /**
+         * Method to get the String-representation of this class
+         * @return the String-representation
+         */
         @Override
         public String toString() {
             return branch.getName();
         }
 
+        /**
+         * Gets the branch of this node
+         * @return returns the branch
+         */
         public GitBranch getBranch() {
             return branch;
         }
-
+        /**
+         * Method to configure an revert command
+         * @param revert the command, which should be configured
+         */
         @Override
         void configureRevert(Revert revert) {
 
@@ -224,11 +255,19 @@ public class RevertDialogView implements IDialogView {
         Iterator<GitCommit> iterator;
         DefaultTreeModel model;
 
+        /**
+         * Constructor to create a new instance
+         * @param iterator the iterator for the loadMore-Method
+         * @param model the model, in which the items shuold be loaded
+         */
         LoadMoreNode(Iterator<GitCommit> iterator, DefaultTreeModel model) {
             this.iterator = iterator;
             this.model = model;
         }
 
+        /**
+         * Method to load more Items with the iterator
+         */
         void loadMoreItems() {
             int i = 0;
             while (i++ < LOAD_MORE_DEPTH && iterator.hasNext()) {
@@ -243,7 +282,10 @@ public class RevertDialogView implements IDialogView {
             model.reload(oldParent);
 
         }
-
+        /**
+         * Method to get the String-representation of this class
+         * @return the String-representation
+         */
         @Override
         public String toString() {
             return "Load " + LOAD_MORE_DEPTH + " more";
