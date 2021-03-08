@@ -2,6 +2,7 @@ package git;
 
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  public void getNameTest() throws GitAPIException {
+  public void getNameTest(){
     String name1 = "name1ToTest";
     String name2 = "refs/heads/nameToTest";
     String name3 = "refs/remotes/nameToTest";
@@ -61,5 +62,7 @@ public class GitBranchTest extends AbstractGitTest {
     assertEquals("nameToTest", branch3.getName());
     assertEquals(name3, branch3.getFullName());
     assertEquals("name/master/derBranch", branch4.getName());
+
+
   }
 }
