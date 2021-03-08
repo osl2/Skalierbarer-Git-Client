@@ -9,18 +9,19 @@ import java.util.ArrayList;
 
 /**
  * This class represents the git diff command. In order to execute the command you have to pass
- * a {@link GitCommit} and a {@link GitFile} or just a {@link GitFile}.
+ * a {@link GitCommit} and a {@link GitFile} or just a {@link GitFile}. This Command creates the diff
+ * between a given Commit and the previous one.
  */
 public class Diff implements ICommand {
   private GitCommit activeCommit;
   private GitFile activeFile;
   private String activeDiff;
-  private boolean validDiffCommit = false;
-  private boolean validDiffFile = false;
+  private boolean validDiff = false;
   private boolean commit = false;
 
   /**
-   * Executes the "git diff" command. Can only be used after @setDiffCommit was called once.
+   * Executes the "git diff" command. Can only be used after @setDiffCommit
+   * or @setDiffFile was called once.
    *
    * @return true, if the command has been executed successfully
    */
@@ -42,6 +43,7 @@ public class Diff implements ICommand {
       try {
         if (activeCommit.getParents().length != 0) {
           activeDiff = activeCommit.getDiff(activeCommit.getParents()[0], activeFile);
+          // If this Commit is the first one in the repository.
         } else {
           activeDiff = activeCommit.getDiff(null, activeFile);
         }
@@ -50,7 +52,7 @@ public class Diff implements ICommand {
         return false;
       }
     }
-    validDiffCommit = true;
+    validDiff = true;
     return true;
   }
 
@@ -63,8 +65,7 @@ public class Diff implements ICommand {
   public void setDiffCommit(GitCommit activeCommit, GitFile file) {
     this.activeCommit = activeCommit;
     this.activeFile = file;
-    validDiffCommit = false;
-    validDiffFile = false;
+    validDiff = false;
     commit = true;
   }
 
@@ -75,8 +76,7 @@ public class Diff implements ICommand {
    */
   public void setDiffFile(GitFile file) {
     this.activeFile = file;
-    validDiffFile = false;
-    validDiffCommit = false;
+    validDiff = false;
     commit = false;
   }
 
@@ -85,8 +85,8 @@ public class Diff implements ICommand {
    * @return the git diff of the given commit and the given file.
    */
   public String[] diffGit() {
-    if(!validDiffCommit && !validDiffFile) {
-      return new String[]{""};
+    if (!validDiff) {
+      return new String[]{};
     }
     ArrayList<String> lines = new ArrayList<>();
     activeDiff.lines().forEach(lines::add);

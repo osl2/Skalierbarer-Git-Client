@@ -21,7 +21,7 @@ public class DiffView implements IDiffView {
 
 
   public DiffView() {
-    StyleConstants.setForeground(addLine, Color.GREEN);
+    StyleConstants.setForeground(addLine, new Color(0, 150, 0) /* Dark Green */);
     StyleConstants.setForeground(removeLine, Color.RED);
     StyleConstants.setForeground(normalLine, Color.BLACK);
   }
