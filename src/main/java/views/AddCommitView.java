@@ -113,6 +113,7 @@ public class AddCommitView extends JPanel implements IView {
       public void focusGained(FocusEvent e) {
         JTextArea source = (JTextArea) e.getSource();
         String newText = "";
+        //do not reset the text in case the user has already entered something
         if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)) {
           newText = source.getText();
         }
@@ -131,7 +132,7 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
-
+    setNameComponents();
 
   }
 
@@ -157,6 +158,20 @@ public class AddCommitView extends JPanel implements IView {
     createUIComponents();
     //set the default text of the commit message text area
     commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+  }
+
+  /*
+   * Sets the names of the components that are being tested in AddCommitViewTest. DO NOT CHANGE, otherwise,
+   * tests might fail
+   */
+  private void setNameComponents() {
+    modifiedChangedFilesList.setName("modifiedChangedFilesList");
+    newFilesList.setName("newFilesList");
+    deletedFilesList.setName("deletedFilesList");
+    commitMessageTextArea.setName("commitMessageTextArea");
+    cancelButton.setName("cancelButton");
+    commitButton.setName("commitButton");
+    amendButton.setName("amendButton");
   }
 
   /*
@@ -387,7 +402,7 @@ public class AddCommitView extends JPanel implements IView {
    * This class represents a list item that holds a GitFile instance. This class is necessary to build the list
    * of files with uncommitted changes that is located in the middle panel of AddCommitView.
    */
-  private static class FileListItem {
+  static class FileListItem {
     private final GitFile gitFile;
     private boolean isSelected;
 
