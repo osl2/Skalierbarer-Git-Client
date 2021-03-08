@@ -28,6 +28,21 @@ public class SettingsDialogView implements IDialogView {
     public SettingsDialogView() {
         initDialogView();
         addActionListeners();
+        setNameComponents();
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void setNameComponents() {
+        levelComboBox.setName("levelComboBox");
+        nameField.setName("nameField");
+        eMailField.setName("eMailField");
+        tooltipsCheckbox.setName("tooltipsCheckbox");
+        treeViewCheckbox.setName("treeViewCheckbox");
+        saveButton.setName("saveButton");
+        cancelButton.setName("cancelButton");
     }
 
     /**
@@ -99,6 +114,6 @@ public class SettingsDialogView implements IDialogView {
 
     @Override
     public void update() {
-
+        // This method is not used because it is not needed.
     }
 }
