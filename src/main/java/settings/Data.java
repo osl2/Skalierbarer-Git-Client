@@ -125,8 +125,9 @@ public class Data extends DataObservable {
      * @param path path to a new created git repository;
      */
     public void storeNewRepositoryPath(File path) {
-        if (!repoList.contains(path))
-            repoList.add(path);
+        File absFile = path.getAbsoluteFile();
+        if (!repoList.contains(absFile))
+            repoList.add(absFile);
     }
 
     /**
