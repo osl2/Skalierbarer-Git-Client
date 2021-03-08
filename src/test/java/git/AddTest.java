@@ -130,8 +130,6 @@ class AddTest extends AbstractGitTest {
         assertFalse(git.status().call().getRemoved().contains(file1.getName()));
 
         //prepare add command to add deleted file
-        //TODO: setDeleted() kommt noch weg, wenn Änderung zu GitFile durch ist
-        gitFile1.setDeleted(true);
         files.add(gitFile1);
         add.setFiles(files);
         assertTrue(add.execute());

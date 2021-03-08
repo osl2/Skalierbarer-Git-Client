@@ -51,7 +51,7 @@ public class GitCommit {
      * @param file the file you want to get the git diff.
      * @return String representation of the git diff.
      */
-    public static String getDiff(GitFile file) throws IOException {
+    public static String getDiff(GitFile file) throws IOException, GitException {
         Git git = GitData.getJGit();
         AbstractTreeIterator newTreeIterator;
         TreeFilter filter = pathFilter(file);

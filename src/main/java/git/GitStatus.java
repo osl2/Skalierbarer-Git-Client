@@ -52,11 +52,7 @@ public class GitStatus {
       Git git = GitData.getJGit();
       Set<String> filesAddedJgit;
       filesAddedJgit = git.status().call().getAdded();
-      List<GitFile> addedGitFiles = toGitFile(filesAddedJgit);
-      for (GitFile gitFile : addedGitFiles) {
-        gitFile.setStaged(true);
-      }
-      return addedGitFiles;
+      return toGitFile(filesAddedJgit);
     } catch (GitAPIException e) {
       throw new GitException("Git Status konnte nicht erfolgreich ausgeführt werden,"
           + "\n Fehlernachricht: " + e.getMessage());
@@ -76,11 +72,7 @@ public class GitStatus {
       Git git = GitData.getJGit();
       Set<String> jgitFiles;
       jgitFiles = git.status().call().getChanged();
-      List<GitFile> changedGitFiles = toGitFile(jgitFiles);
-      for (GitFile gitFile : changedGitFiles) {
-        gitFile.setStaged(true);
-      }
-      return changedGitFiles;
+      return toGitFile(jgitFiles);
     } catch (GitAPIException e) {
       throw new GitException(GITAPIEXCEPTION_MESSAGE
           + ERROR_MESSAGE + e.getMessage());
@@ -136,12 +128,7 @@ public class GitStatus {
     try {
       Git git = GitData.getJGit();
       Set<String> removed = git.status().call().getRemoved();
-      List<GitFile> removedFiles = toGitFile(removed);
-      for (GitFile file : removedFiles) {
-        file.setStaged(true);
-        file.setDeleted(true);
-      }
-      return removedFiles;
+      return toGitFile(removed);
     } catch (GitAPIException e) {
       throw new GitException(GITAPIEXCEPTION_MESSAGE
           + ERROR_MESSAGE + e.getMessage());
@@ -159,11 +146,7 @@ public class GitStatus {
     try {
       Git git = GitData.getJGit();
       Set<String> missing = git.status().call().getMissing();
-      List<GitFile> missingFiles = toGitFile(missing);
-      for (GitFile file : missingFiles) {
-        file.setDeleted(true);
-      }
-      return missingFiles;
+      return toGitFile(missing);
     } catch (GitAPIException e) {
       throw new GitException(GITAPIEXCEPTION_MESSAGE
           + ERROR_MESSAGE + e.getMessage());
