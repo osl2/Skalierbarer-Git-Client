@@ -164,7 +164,7 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals(branch2, branch1);
     assertEquals(branch1, branch1);
     assertNotEquals(branch3, branch1);
-    assertNotEquals(branch1, 4); // ?
+    assertNotEquals(branch1, 4);
     assertNotEquals(branch3, branch2);
     assertNotNull(branch1);
   }
