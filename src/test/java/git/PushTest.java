@@ -1,5 +1,6 @@
 package git;
 
+import commands.AbstractCommandTest;
 import commands.Push;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class PushTest extends AbstractGitTest {
+class PushTest extends AbstractCommandTest {
     private Push push;
 
     @BeforeEach
@@ -29,7 +30,6 @@ public class PushTest extends AbstractGitTest {
         assertEquals(0, push.getCommandLine().compareTo("git push testRemote testBranch"));
 
         push.setRemoteBranch("remoteBranch");
-        String commandLine = push.getCommandLine();
         assertEquals(0, push.getCommandLine().compareTo("git push testRemote testBranch:remoteBranch"));
 
     }
