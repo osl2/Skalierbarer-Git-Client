@@ -3,32 +3,18 @@ package git;
 import controller.GUIController;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import controller.GUIController;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-
-import java.awt.event.WindowListener;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 
 class CredentialProviderHolderTest {
 
+  static GUIControllerTestable guiControllerTestable;
   static MockedStatic<GUIController> mockedController;
-  private static GUIControllerTestable guiControllerTestable;
   CredentialProviderHolder credentialProviderHolder;
 
   @BeforeAll
@@ -37,6 +23,8 @@ class CredentialProviderHolderTest {
     mockedController = mockStatic(GUIController.class);
     mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
     guiControllerTestable.resetTestStatus();
+
+
   }
 
   @AfterAll
@@ -82,3 +70,4 @@ class CredentialProviderHolderTest {
     assertTrue(guiControllerTestable.openDialogWithListenerCalled);
   }
 }
+ 
