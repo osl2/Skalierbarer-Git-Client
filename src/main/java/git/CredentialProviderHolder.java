@@ -2,6 +2,8 @@ package git;
 
 import controller.GUIController;
 import dialogviews.UsernamePasswordDialogView;
+import org.eclipse.jgit.transport.SshTransport;
+import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.awt.event.WindowEvent;
@@ -15,14 +17,6 @@ public class CredentialProviderHolder {
     private String username;
     private String password;
     private boolean isActive = true;
-
-    /**
-     * This calss is a singelton, so the Construktor is private
-     */
-    private CredentialProviderHolder(){
-        username = "";
-        password = "";
-    }
     private final WindowListener windowListener = new WindowListener() {
         /**
          * {@inheritDoc}
@@ -64,38 +58,58 @@ public class CredentialProviderHolder {
     };
 
     /**
+     * This calss is a singelton, so the Construktor is private
+     */
+    private CredentialProviderHolder() {
+        username = "";
+        password = "";
+    }
+
+    /**
      * Method to create the Singelton
+     *
      * @return Returns the Instance of the CredentialProvider
      */
-    public static CredentialProviderHolder getInstance(){
-        if (instance == null){
+    public static CredentialProviderHolder getInstance() {
+        if (instance == null) {
             instance = new CredentialProviderHolder();
         }
         return instance;
     }
 
+    static void configureTransport(Transport transport) {
+        if (transport instanceof SshTransport)
+            ((SshTransport) transport).setSshSessionFactory(new SSHCredentialProvider());
+        else
+            transport.setCredentialsProvider(getInstance().getProvider());
+
+    }
 
     /**
      * Method to get a UsernamePasswordProvider
+     *
      * @return Returns the created provider
      */
-    UsernamePasswordCredentialsProvider getProvider(){
+    @Deprecated
+    UsernamePasswordCredentialsProvider getProvider() {
         return new UsernamePasswordCredentialsProvider(username, password);
     }
 
     /**
      * Method to change the Strings for the Provider. Opens the dialogView for Userinput
-     * @param needProv Boolean if there should be a change
+     *
+     * @param needProv     Boolean if there should be a change
      * @param nameForProof Name of the remote, which the provider is for
      */
-    public void changeProvider(boolean needProv, String nameForProof){
+    public void changeProvider(boolean needProv, String nameForProof) {
         if (needProv) {
-            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof),windowListener);
+            GUIController.getInstance().openDialog(new UsernamePasswordDialogView(nameForProof), windowListener);
         }
     }
 
     /**
      * Get method for the boolean isActiv
+     *
      * @return gets the value of the variable
      */
     public boolean isActive() {
@@ -104,6 +118,7 @@ public class CredentialProviderHolder {
 
     /**
      * Set method for the boolean isActiv
+     *
      * @param active new value of Boolean
      */
     public void setActive(boolean active) {
@@ -112,6 +127,7 @@ public class CredentialProviderHolder {
 
     /**
      * Method to set the variable username
+     *
      * @param username new value
      */
     public void setUsername(String username) {
@@ -120,6 +136,7 @@ public class CredentialProviderHolder {
 
     /**
      * Method to set the variable password
+     *
      * @param password new value
      */
     public void setPassword(String password) {

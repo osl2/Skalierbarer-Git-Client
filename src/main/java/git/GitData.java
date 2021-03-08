@@ -274,7 +274,7 @@ public class GitData {
       Git.lsRemoteRepository()
               .setHeads(false)
               .setRemote(remote.getUrl())
-              .setCredentialsProvider(CredentialProviderHolder.getInstance().getProvider())
+              .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
               .call();
 
       refs = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
