@@ -70,7 +70,7 @@ public class DiffView implements IDiffView {
   private void writeDiff() {
     String[] output = diff.diffGit();
     pane.setText("");
-    if (output[0].compareTo("") == 0) return;
+    if (output == null) return;
     for (String s : output) {
       Document doc = pane.getStyledDocument();
       if (s.substring(0, 1).compareTo("+") == 0) {

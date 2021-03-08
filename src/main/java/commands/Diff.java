@@ -3,6 +3,7 @@ package commands;
 import controller.GUIController;
 import git.GitCommit;
 import git.GitFile;
+import git.exception.GitException;
 
 import java.io.IOException;
 import java.util.ArrayList;
