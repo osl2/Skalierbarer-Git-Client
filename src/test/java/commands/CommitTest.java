@@ -1,12 +1,11 @@
-package git;
+package commands;
 
-import commands.AbstractCommandTest;
-import commands.Commit;
 import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -40,7 +39,11 @@ class CommitTest extends AbstractCommandTest {
     @Override
     public void init() throws URISyntaxException, GitAPIException, GitException, IOException {
         super.init();
-        settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
+        //settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
+        StoredConfig config = git.getRepository().getConfig();
+        config.setString("user", null, "name", "Tester");
+        config.setString("user", null, "email", "tester@example.com");
+        config.save();
     }
 
     private void resetRepo() throws IOException, GitAPIException, GitException, URISyntaxException {
