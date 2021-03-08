@@ -12,6 +12,9 @@ import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.util.logging.Logger;
 
+/**
+ * This class is for creating the visual output of git diff commands.
+ */
 public class DiffView implements IDiffView {
   private final Diff diff = new Diff();
   private final JTextPane pane = new JTextPane();
@@ -42,14 +45,14 @@ public class DiffView implements IDiffView {
   @Override
   public void setDiff(GitCommit activeCommit, GitFile file) {
     diff.setDiffCommit(activeCommit, file);
-    diff.execute();
+    if (!diff.execute()) return;
     writeDiff();
   }
 
   @Override
   public void setDiff(GitFile file) {
     diff.setDiffFile(file);
-    diff.execute();
+    if (!diff.execute()) return;
     writeDiff();
   }
 
@@ -67,6 +70,7 @@ public class DiffView implements IDiffView {
   private void writeDiff() {
     String[] output = diff.diffGit();
     pane.setText("");
+    if (output == null) return;
     for (String s : output) {
       Document doc = pane.getStyledDocument();
       if (s.substring(0, 1).compareTo("+") == 0) {
