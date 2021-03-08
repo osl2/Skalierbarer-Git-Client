@@ -142,10 +142,9 @@ public class GitFacade {
                     .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
                     .setCloneSubmodules(recursive)
                     .call();
-            // This is most likely a known bug in jgit otherwise test cases will fail because this instance is not
-            // closed.
-            result.getRepository().close();
-            result.close();
+          // Otherwise this might lead to unexpected behaviour.
+          result.getRepository().close();
+          result.close();
         } catch (TransportException e) {
             throw new GitException("");
         } catch (InvalidRemoteException e) {

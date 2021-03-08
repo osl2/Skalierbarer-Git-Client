@@ -14,7 +14,7 @@ import java.io.File;
  * you have to pass an url and a path to a local directory.
  */
 public class Clone implements ICommand, ICommandGUI {
-  private String commandLine = "git clone ";
+  private String commandLine;
   private String gitURL;
   private File path;
   private boolean recursive = false;
@@ -67,7 +67,7 @@ public class Clone implements ICommand, ICommandGUI {
       return false;
     }
     Settings.getInstance().setActiveRepositoryPath(path);
-    commandLine = path.getAbsolutePath() + " " + commandLine + gitURL;
+    commandLine = "git clone " + path.getAbsolutePath() + " " + commandLine + gitURL;
     if(recursive) {
       commandLine = commandLine + " --recursive";
     }
