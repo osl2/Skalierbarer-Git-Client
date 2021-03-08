@@ -47,7 +47,7 @@ class GitDiffTest extends AbstractGitTest {
   }
 
   @Test
-  void getDiffWorkingDirectory() throws IOException {
+  void getDiffWorkingDirectory() throws IOException, GitException {
     FileWriter fr = new FileWriter(textFile, true);
     fr.write("Nicht gestaged");
     fr.close();

@@ -56,12 +56,10 @@ public class GitCommit {
         AbstractTreeIterator newTreeIterator;
         TreeFilter filter = pathFilter(file);
         //file must not be deleted, otherwise there is no diff
-        if (file.isStaged() && !file.isDeleted()) {
+        if (file.isStaged()) {
             newTreeIterator = new DirCacheIterator(DirCache.read(git.getRepository()));
-        } else if (!file.isStaged()) {
-            newTreeIterator = new FileTreeIterator(git.getRepository());
         } else {
-            return "";
+            newTreeIterator = new FileTreeIterator(git.getRepository());
         }
         OutputStream out = new ByteArrayOutputStream();
         try {
