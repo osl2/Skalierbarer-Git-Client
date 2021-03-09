@@ -98,7 +98,7 @@ class GitBranchTest extends AbstractGitTest {
   void getNameTest() {
     String name1 = "name1ToTest";
     String name2 = "refs/heads/nameToTest";
-    String name3 = "refs/remotes/nameToTest";
+    String name3 = "refs/remotes/testRemote/nameToTest";
     String name4 = "refs/heads/name/master/derBranch";
     GitBranch branch1 = new GitBranch(name1);
     GitBranch branch2 = new GitBranch(name2);
