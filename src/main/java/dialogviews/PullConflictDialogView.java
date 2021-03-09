@@ -3,6 +3,7 @@ package dialogviews;
 
 import commands.ICommandGUI;
 import commands.Merge;
+import commands.Pull;
 import commands.Rebase;
 import controller.GUIController;
 import git.GitBranch;
@@ -14,6 +15,10 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class represents a window to choose whether the fetched branch should
+ * be merged or rebased.
+ */
 public class PullConflictDialogView implements IDialogView {
 
 
@@ -58,6 +63,13 @@ public class PullConflictDialogView implements IDialogView {
     // This method is not used because it is not needed.
   }
 
+  /**
+   * Creates a new PullConflictDialogView to handle pull conflicts.
+   *
+   * @param src         the fetched branch from the Remote.
+   * @param dest        the locale branch to merge or rebase into.
+   * @param commandLine the commandLine output of the {@link Pull} command.
+   */
   public PullConflictDialogView(GitBranch src, GitBranch dest, String commandLine) {
     setNameComponents();
     mergeButton.setEnabled(false);
