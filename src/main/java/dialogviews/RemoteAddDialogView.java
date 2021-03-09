@@ -6,17 +6,18 @@ import views.RemoteView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class RemoteAddDialogView implements IDialogView {
+    @SuppressWarnings("unused")
     private JPanel panel1;
     private JPanel remoteAddPanel;
     private JTextField namefield;
     private JTextField urlField;
     private JButton stopButton;
     private JButton addButton;
+    @SuppressWarnings("unused")
     private JLabel nameLabel;
+    @SuppressWarnings("unused")
     private JLabel urlLabel;
 
     /**
@@ -30,39 +31,22 @@ public class RemoteAddDialogView implements IDialogView {
     }
 
     public RemoteAddDialogView() {
-        stopButton.addActionListener(new ActionListener() {
-            /**
-             * Invoked when an action occurs.
-             *
-             * @param e the event to be processed
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUIController.getInstance().closeDialogView();
+        testGUI();
+        stopButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
+        addButton.addActionListener(e -> {
+            String name = namefield.getText();
+            if (name.compareTo("") == 0) {
+                GUIController.getInstance().errorHandler("Kein Name eingegeben");
+                return;
             }
-        });
-        addButton.addActionListener(new ActionListener() {
-            /**
-             * Invoked when an action occurs.
-             *
-             * @param e the event to be processed
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = namefield.getText();
-                if (name.compareTo("") == 0) {
-                    GUIController.getInstance().errorHandler("Kein Name eingegeben");
-                    return;
-                }
-                Remote rem = new Remote();
-                rem.setRemoteSubcommand(Remote.RemoteSubcommand.ADD);
-                rem.setRemoteName(name);
-                rem.setUrl(urlField.getText());
-                if (rem.execute()) {
-                    GUIController.getInstance().setCommandLine(rem.getCommandLine());
-                    GUIController.getInstance().closeDialogView();
-                    GUIController.getInstance().openView(new RemoteView());
-                }
+            Remote rem = new Remote();
+            rem.setRemoteSubcommand(Remote.RemoteSubcommand.ADD);
+            rem.setRemoteName(name);
+            rem.setUrl(urlField.getText());
+            if (rem.execute()) {
+                GUIController.getInstance().setCommandLine(rem.getCommandLine());
+                GUIController.getInstance().closeDialogView();
+                GUIController.getInstance().openView(new RemoteView());
             }
         });
     }
@@ -93,6 +77,16 @@ public class RemoteAddDialogView implements IDialogView {
      */
     @Override
     public void update() {
+        //Not needed for this class
+    }
 
+    /**
+     * Is for testing the GUI. Do not change this!!!!!!
+     */
+    private void testGUI(){
+        namefield.setName("namefield");
+        urlField.setName("urlField");
+        addButton.setName("addButton");
+        stopButton.setName("stopButton");
     }
 }
