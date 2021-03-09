@@ -26,6 +26,7 @@ public class PullDialogView implements IDialogView {
     private Pull pull;
 
     public PullDialogView() {
+        setNameComponents();
         initPull();
         remoteCombobox.addActionListener(e -> {
             listOfRemoteBranches.clear();
@@ -50,6 +51,17 @@ public class PullDialogView implements IDialogView {
             pull.setRemoteBranch(listOfRemoteBranches.get(branchIndex));
             pull.execute();
         });
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void setNameComponents() {
+        remoteCombobox.setName("remoteCombobox");
+        branchComboBox.setName("branchComboBox");
+        pullButton.setName("pullButton");
+        refreshButton.setName("refreshButton");
     }
 
     private boolean nextTry(int index) {

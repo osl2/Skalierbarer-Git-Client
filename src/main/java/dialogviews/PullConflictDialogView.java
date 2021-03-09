@@ -59,6 +59,7 @@ public class PullConflictDialogView implements IDialogView {
   }
 
   public PullConflictDialogView(GitBranch src, GitBranch dest, String commandLine) {
+    setNameComponents();
     mergeButton.setEnabled(false);
     rebaseButton.setEnabled(false);
     conflictMessage.setRows(3);
@@ -105,6 +106,15 @@ public class PullConflictDialogView implements IDialogView {
         GUIController.getInstance().setCommandLine("git pull " + commandLine);
       }
     });
+  }
+
+  /**
+   * This method is needed in order to execute the GUI tests successfully.
+   * Do not change otherwise tests might fail.
+   */
+  private void setNameComponents() {
+    mergeButton.setName("mergeButton");
+    cancelButton.setName("cancelButton");
   }
 
 }
