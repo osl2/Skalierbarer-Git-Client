@@ -269,7 +269,9 @@ public class AddCommitView extends JPanel implements IView {
   private JPanel getCommitConfirmationPane(List<GitFile> stagedFiles, String commitMessage) {
     JPanel panel = new JPanel(new BorderLayout());
     JTextField headerTextField = new JTextField("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?");
+    headerTextField.setEditable(false);
     JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
+    messageTextArea.setEditable(false);
     JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
 
 
@@ -279,6 +281,7 @@ public class AddCommitView extends JPanel implements IView {
       message.append("\n");
     }
     JTextArea textArea = new JTextArea(message.toString());
+    textArea.setEditable(false);
     JScrollPane fileScrollPane = new JScrollPane(textArea);
     textArea.setLineWrap(true);
     fileScrollPane.setPreferredSize(new Dimension(500, 200));
