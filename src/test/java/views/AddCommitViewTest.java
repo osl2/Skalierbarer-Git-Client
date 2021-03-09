@@ -38,6 +38,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JCheckBox deletedFilesCheckBox;
 
     @BeforeAll
+    @SuppressWarnings("unused")
     private static void setupMockedJOptionPane() {
         jOptionPaneTestable = new JOptionPaneTestable();
         MockedStatic<JOptionPane> mockedJOptionPane = mockStatic(JOptionPane.class);
@@ -46,6 +47,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @AfterAll
+    @SuppressWarnings("unused")
     private static void closeMockedJOptionPane() {
         jOptionPaneTestable.resetTestStatus();
     }
