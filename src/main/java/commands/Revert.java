@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class Revert implements ICommand, ICommandGUI {
     private GitCommit chosenCommit;
+    private String commandLine;
 
     /**
      * Method to revert back to a chosen commit.
@@ -26,6 +27,10 @@ public class Revert implements ICommand, ICommandGUI {
      */
     @Override
     public boolean execute() {
+        if (chosenCommit == null) {
+            GUIController.getInstance().errorHandler("Es muss ein Commit übergebn werden");
+            return false;
+        }
         try {
             List<GitFileConflict> conflictList = chosenCommit.revert();
             if (!conflictList.isEmpty()) {
@@ -45,6 +50,7 @@ public class Revert implements ICommand, ICommandGUI {
             String message = new GitData().getStoredCommitMessage();
             if (message == null) message = "";
             GUIController.getInstance().openView(new AddCommitView(message));
+            commandLine = " git revert " + chosenCommit.getHashAbbrev();
             return true;
 
         } catch (GitException | IOException e) {
@@ -61,7 +67,7 @@ public class Revert implements ICommand, ICommandGUI {
      */
     @Override
     public String getCommandLine() {
-        return " git revert " + chosenCommit.getHashAbbrev();
+        return commandLine;
     }
 
     /**
