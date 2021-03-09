@@ -4,6 +4,8 @@ import git.exception.GitException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -15,7 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GitFacadeTest extends AbstractGitTest {
 
@@ -23,25 +25,13 @@ public class GitFacadeTest extends AbstractGitTest {
   @TempDir
   File newRepo;
 
+
   @Override
-  protected void setupRepo() throws GitAPIException, IOException {
-    Git.init().setDirectory(repo).setBare(false).call();
-    Git git = Git.open(repo);
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 1").call();
-    File textFile = new File(repo.getPath() + "/textFile.txt");
-    FileWriter fr = new FileWriter(textFile, true);
-    fr.write("data");
-    fr.flush();
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-        .setMessage("Commit 2").call();
-    git.add().addFilepattern(textFile.getName()).call();
-    git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-            .setMessage("Commit 3").call();
-    git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 4").call();
+  public void init() throws IOException, GitAPIException, GitException, URISyntaxException {
+    super.init();
+    settings.setUser(new GitAuthor("Author", "authoremail@example.com"));
     File fileNotStaged = new File(repo.getPath() + "/textFile3.txt");
+    FileWriter fr = new FileWriter(fileNotStaged, true);
     fr.write("Neuer Inhalt des Files");
     fr.close();
     this.fileNotStaged = fileNotStaged;
@@ -49,10 +39,29 @@ public class GitFacadeTest extends AbstractGitTest {
     git.close();
   }
 
-  @Override
-  public void init() throws IOException, GitAPIException, GitException, URISyntaxException {
-    super.init();
-    settings.setUser(new GitAuthor("Author", "authoremail@example.com"));
+  @Test
+  void stashTest(){
+    GitFacade facade = new GitFacade();
+    //Currently not implemented
+    assertThrows(AssertionError.class, () -> facade.createStash());
+  }
+
+  @Test
+  void checkoutTest() throws GitAPIException, IOException, GitException {
+    git.checkout().setName("NeuerBranch").setCreateBranch(true).call();
+
+    GitFacade facade = new GitFacade();
+    GitBranch branch = new GitBranch("");
+    for (Ref branchGit: git.branchList().call()){
+      if (branchGit.getName().endsWith("master")){
+        branch = new GitBranch(branchGit);
+      }
+    }
+    String currentBranch = repository.getBranch();
+    assertEquals("NeuerBranch", currentBranch);
+    facade.checkout(branch);
+    currentBranch = repository.getBranch();
+    assertEquals("master", currentBranch);
   }
 
   @Test
