@@ -17,7 +17,6 @@ class GitAuthorTest {
     author = new GitAuthor("name", "email");
   }
 
-  @SuppressWarnings({"SimplifiableAssertion"})
   @Test
   void equalsTest() {
     GitAuthor author2 = new GitAuthor("name", "email");
