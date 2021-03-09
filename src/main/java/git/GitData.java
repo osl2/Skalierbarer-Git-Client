@@ -18,7 +18,10 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
 import settings.Settings;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -78,6 +81,8 @@ public class GitData {
    * Method to reinitialize the repository.
    */
   public void reinitialize() {
+    git.getRepository().close();
+    git.close();
     initializeRepository();
   }
 
