@@ -138,8 +138,7 @@ public class Push implements ICommand, ICommandGUI {
       return false;
     }
     try {
-      gitFacade.pushOperation(remote, localBranch, remoteBranch);
-      return true;
+      return gitFacade.pushOperation(remote, localBranch, remoteBranch);
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
       if (CredentialProviderHolder.getInstance().isActive()) {
