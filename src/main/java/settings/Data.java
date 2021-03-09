@@ -5,6 +5,7 @@ import commands.*;
 import levels.Level;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ public class Data extends DataObservable {
 
     @JsonProperty("recentlyOpenedRepositories")
     private final LinkedList<File> repoList = new LinkedList<>();
+    @JsonProperty("levels")
+    private final ArrayList<Level> levels = new ArrayList<>();
 
     // This layout is necessary so that Jackson can create a correctly instantiated class.
     private Data() {
@@ -34,7 +37,7 @@ public class Data extends DataObservable {
         return INSTANCE;
     }
 
-    private static LinkedList<ICommandGUI> getCommandList(int id) {
+    private void configureDefaultLevels() {
         Add add = new Add();
         Commit commit = new Commit();
         Revert revert = new Revert();
@@ -53,60 +56,58 @@ public class Data extends DataObservable {
         Remote remote = new Remote();
         Stash stash = new Stash();
 
-        LinkedList<ICommandGUI> commands = new LinkedList<>();
+        LinkedList<ICommandGUI> commands1 = new LinkedList<>();
+        LinkedList<ICommandGUI> commands2 = new LinkedList<>();
+        LinkedList<ICommandGUI> commands3 = new LinkedList<>();
+        LinkedList<ICommandGUI> commands4 = new LinkedList<>();
 
-        switch (id) {
-            case 1:
-                commands.add(add);
-                commands.add(commit);
-                commands.add(init);
-                commands.add(revert);
-                break;
-            case 2:
-                commands.add(add);
-                commands.add(commit);
-                commands.add(init);
-                commands.add(revert);
-                commands.add(branch);
-                commands.add(checkout);
-                commands.add(merge);
-                break;
-            case 3:
-                commands.add(add);
-                commands.add(commit);
-                commands.add(init);
-                commands.add(revert);
-                commands.add(branch);
-                commands.add(checkout);
-                commands.add(merge);
-                commands.add(clone);
-                commands.add(fetch);
-                commands.add(pull);
-                commands.add(push);
-                break;
-            case 4:
-                commands.add(add);
-                commands.add(commit);
-                commands.add(init);
-                commands.add(revert);
-                commands.add(branch);
-                commands.add(checkout);
-                commands.add(merge);
-                commands.add(clone);
-                commands.add(fetch);
-                commands.add(pull);
-                commands.add(push);
-                commands.add(stash);
-                commands.add(remote);
-                commands.add(rebase);
-                break;
-            default:
+        commands1.add(add);
+        commands1.add(commit);
+        commands1.add(init);
+        commands1.add(revert);
 
-                break;
+        commands2.add(add);
+        commands2.add(commit);
+        commands2.add(init);
+        commands2.add(revert);
+        commands2.add(branch);
+        commands2.add(checkout);
+        commands2.add(merge);
 
-        }
-        return commands;
+        commands3.add(add);
+        commands3.add(commit);
+        commands3.add(init);
+        commands3.add(revert);
+        commands3.add(branch);
+        commands3.add(checkout);
+        commands3.add(merge);
+        commands3.add(clone);
+        commands3.add(fetch);
+        commands3.add(pull);
+        commands3.add(push);
 
+        commands4.add(add);
+        commands4.add(commit);
+        commands4.add(init);
+        commands4.add(revert);
+        commands4.add(branch);
+        commands4.add(checkout);
+        commands4.add(merge);
+        commands4.add(clone);
+        commands4.add(fetch);
+        commands4.add(pull);
+        commands4.add(push);
+        commands4.add(stash);
+        commands4.add(remote);
+        commands4.add(rebase);
+        Level levelOne = new Level("Level 1", commands1, 1);
+        Level levelTwo = new Level("Level 2", commands2, 2);
+        Level levelThree = new Level("Level 3", commands3, 3);
+        Level levelFour = new Level("Level 4", commands4, 4);
+        levels.add(levelOne);
+        levels.add(levelTwo);
+        levels.add(levelThree);
+        levels.add(levelFour);
     }
 
     /**
@@ -136,20 +137,8 @@ public class Data extends DataObservable {
      * @return immutable ordered List of all possible levels in the current configuration
      */
     public List<Level> getLevels() {
-        LinkedList<Level> levelLinkedList = new LinkedList<>();
-        LinkedList<ICommandGUI> commands1 = getCommandList(1);
-        LinkedList<ICommandGUI> commands2 = getCommandList(2);
-        LinkedList<ICommandGUI> commands3 = getCommandList(3);
-        LinkedList<ICommandGUI> commands4 = getCommandList(4);
-        Level levelOne = new Level("Level 1", commands1, 1);
-        Level levelTwo = new Level("Level 2", commands2, 2);
-        Level levelThree = new Level("Level 3", commands3, 3);
-        Level levelFour = new Level("Level 4", commands4, 4);
-        levelLinkedList.add(levelOne);
-        levelLinkedList.add(levelTwo);
-        levelLinkedList.add(levelThree);
-        levelLinkedList.add(levelFour);
+        if (levels.isEmpty()) configureDefaultLevels();
         // Modify settings.PersistencyTest if you add or remove a field!
-        return levelLinkedList;
+        return levels;
     }
 }
