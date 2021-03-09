@@ -64,6 +64,7 @@ public class RemoteViewTest extends AbstractRemoteTest {
         assertEquals("master" + System.lineSeparator(), branchArea.getText() );
         safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
         assertEquals("master" + System.lineSeparator(), branchArea.getText() );
+        assertEquals(url, remoteList.getSelectedValue().getUrl());
         deleteButton.getActionListeners()[0].actionPerformed(new ActionEvent(deleteButton, ActionEvent.ACTION_PERFORMED, null));
         assertEquals(0, remoteList.getModel().getSize());
     }

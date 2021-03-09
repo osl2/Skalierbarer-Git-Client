@@ -137,7 +137,7 @@ public class RemoteView extends JPanel implements IView {
     nameField.setText(act.getName());
     urlField.setText(act.getUrl());
     if (!tryBranches(act)) {
-      GUIController.getInstance().openView(new RemoteView());
+      GUIController.getInstance().errorHandler("Die branches konnten nicht geladen werden.");
       return;
     }
     StringBuilder set = new StringBuilder();
