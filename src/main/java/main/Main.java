@@ -19,7 +19,12 @@ public class Main {
             // Initialize Objects with sane values
             Settings settings = Settings.getInstance();
             Data data = Data.getInstance();
-            c.openDialog(new FirstUseDialogView());
+            while (settings.getActiveRepositoryPath() == null) {
+                c.openDialog(new FirstUseDialogView());
+                if (settings.getActiveRepositoryPath() == null) {
+                    c.errorHandler("Die Erstbenutzung muss abgeschlossen werden.");
+                }
+            }
             settings.setLevel(data.getLevels().get(0));
 
             persistency.save();
