@@ -2,7 +2,6 @@ package git;
 
 import commands.AbstractCommandTest;
 import commands.Add;
-import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ class AddTest extends AbstractCommandTest {
 
 
     @Test
-    void executeAddTest() throws GitAPIException, GitException {
+    void executeAddTest() throws GitAPIException {
         files.add(gitFile2);
         files.add(gitFile3);
         add.setFiles(files);
@@ -72,7 +71,7 @@ class AddTest extends AbstractCommandTest {
     }
 
     @Test
-    void getFilesStatusChangedTest() throws IOException, GitAPIException, GitException {
+    void getFilesStatusChangedTest() throws GitAPIException {
         //configure add command with file2 and file3 that have been selected
         files.add(gitFile2);
         files.add(gitFile3);

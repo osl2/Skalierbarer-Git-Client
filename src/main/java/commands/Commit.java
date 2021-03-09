@@ -8,6 +8,7 @@ import views.AddCommitView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents the git commit command. In order to execute this command
@@ -41,11 +42,7 @@ public class Commit implements ICommand, ICommandGUI {
    * @return The commit message
    */
   public String getCommitMessage() {
-    if (commitMessage == null) {
-      return "";
-    } else {
-      return commitMessage;
-    }
+    return Objects.requireNonNullElse(commitMessage, "");
   }
 
   /**

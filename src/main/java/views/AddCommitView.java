@@ -234,8 +234,6 @@ public class AddCommitView extends JPanel implements IView {
       }
     }
 
-
-
     //execute git commit
     if (commitCommand.execute()) {
       GUIController controller = GUIController.getInstance();

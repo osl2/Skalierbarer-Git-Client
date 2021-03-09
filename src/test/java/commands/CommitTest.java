@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -34,16 +33,6 @@ class CommitTest extends AbstractCommandTest {
         commit = new Commit();
         file = new File(repo, "file");
 
-    }
-
-    @Override
-    public void init() throws URISyntaxException, GitAPIException, GitException, IOException {
-        super.init();
-        //settings.setUser(new GitAuthor("TestUser", "tester@example.com"));
-        StoredConfig config = git.getRepository().getConfig();
-        config.setString("user", null, "name", "Tester");
-        config.setString("user", null, "email", "tester@example.com");
-        config.save();
     }
 
     private void resetRepo() throws IOException, GitAPIException, GitException, URISyntaxException {
@@ -83,8 +72,7 @@ class CommitTest extends AbstractCommandTest {
         //count the total number of commits
         Iterator<RevCommit> iterator = git.log().call().iterator();
         //get the latest commit
-        RevCommit latestCommit = iterator.next();
-        int numCommits = 1;
+        int numCommits = 0;
         //count the remaining commits
         while (iterator.hasNext()) {
             numCommits++;
