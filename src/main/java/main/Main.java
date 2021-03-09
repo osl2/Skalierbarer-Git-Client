@@ -14,6 +14,8 @@ public class Main {
     public static void main(String[] args) throws URISyntaxException {
         Persistency persistency = new Persistency();
         boolean settingsLoaded = persistency.load();
+        // Don't save during first-use.
+        persistency.disableUntilSave();
         GUIController c = GUIController.getInstance();
         if (!settingsLoaded) {
             // Initialize Objects with sane values
