@@ -27,7 +27,6 @@ class SettingsDialogViewTest extends AbstractCommandTest {
 
   @BeforeEach
   void getComponents() {
-    FindComponents find = new FindComponents();
     // Set a level in order to create SettingsDialogView.
     List<Level> levels = Data.getInstance().getLevels();
     assertEquals(4, levels.size());
@@ -36,19 +35,19 @@ class SettingsDialogViewTest extends AbstractCommandTest {
     settings.setShowTreeView(false);
     sDV = new SettingsDialogView();
     JPanel panel = sDV.getPanel();
-    nameField = (JTextField) find.getChildByName(panel, "nameField");
+    nameField = (JTextField) FindComponents.getChildByName(panel, "nameField");
     assertNotNull(nameField);
-    eMailField = (JTextField) find.getChildByName(panel, "eMailField");
+    eMailField = (JTextField) FindComponents.getChildByName(panel, "eMailField");
     assertNotNull(eMailField);
-    levelComboBox = (JComboBox) find.getChildByName(panel, "levelComboBox");
+    levelComboBox = (JComboBox) FindComponents.getChildByName(panel, "levelComboBox");
     assertNotNull(levelComboBox);
-    tooltipsCheckbox = (JCheckBox) find.getChildByName(panel, "tooltipsCheckbox");
+    tooltipsCheckbox = (JCheckBox) FindComponents.getChildByName(panel, "tooltipsCheckbox");
     assertNotNull(tooltipsCheckbox);
-    treeViewCheckbox = (JCheckBox) find.getChildByName(panel, "treeViewCheckbox");
+    treeViewCheckbox = (JCheckBox) FindComponents.getChildByName(panel, "treeViewCheckbox");
     assertNotNull(treeViewCheckbox);
-    saveButton = (JButton) find.getChildByName(panel, "saveButton");
+    saveButton = (JButton) FindComponents.getChildByName(panel, "saveButton");
     assertNotNull(saveButton);
-    cancelButton = (JButton) find.getChildByName(panel, "cancelButton");
+    cancelButton = (JButton) FindComponents.getChildByName(panel, "cancelButton");
     assertNotNull(cancelButton);
   }
 

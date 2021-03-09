@@ -12,7 +12,7 @@ public class FindComponents {
    * @param child  the name of the Component you want to find.
    * @return a Component with the specified name as the output of its getName() method.
    */
-  public Component getChildByName(Component parent, String child) {
+  public static Component getChildByName(Component parent, String child) {
     if (child.equals(parent.getName())) {
       return parent;
     }
