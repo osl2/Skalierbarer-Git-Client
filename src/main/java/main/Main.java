@@ -14,12 +14,19 @@ public class Main {
     public static void main(String[] args) throws URISyntaxException {
         Persistency persistency = new Persistency();
         boolean settingsLoaded = persistency.load();
+        // Don't save during first-use.
+        persistency.disableUntilSave();
         GUIController c = GUIController.getInstance();
         if (!settingsLoaded) {
             // Initialize Objects with sane values
             Settings settings = Settings.getInstance();
             Data data = Data.getInstance();
-            c.openDialog(new FirstUseDialogView());
+            while (settings.getActiveRepositoryPath() == null) {
+                c.openDialog(new FirstUseDialogView());
+                if (settings.getActiveRepositoryPath() == null) {
+                    c.errorHandler("Die Erstbenutzung muss abgeschlossen werden.");
+                }
+            }
             settings.setLevel(data.getLevels().get(0));
 
             persistency.save();

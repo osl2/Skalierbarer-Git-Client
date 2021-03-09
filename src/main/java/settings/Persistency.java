@@ -17,6 +17,7 @@ public class Persistency extends DataObserver {
     private static final String FILENAME_SETTINGS = "settings.json";
     private static final ObjectMapper mapper = new ObjectMapper();
     private final File configDir;
+    private boolean enabled = true;
 
     /**
      * Constructor
@@ -40,11 +41,19 @@ public class Persistency extends DataObserver {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
+    /**
+     * Disables automatic storage of changed parameters, until save is called manually.
+     * Calling {@link #load()} will also re-enable saving.
+     */
+    public void disableUntilSave() {
+        enabled = false;
+    }
 
     /**
      * Saves the current state to Datastore.
      */
     public boolean save(File directory) {
+        enabled = true;
         if (!directory.isDirectory()) {
             Logger.getGlobal().warning(directory.getAbsolutePath() + " is not a directory!");
             return false;
@@ -72,6 +81,7 @@ public class Persistency extends DataObserver {
      * Load state from Datastore.
      */
     public boolean load(File directory) {
+        enabled = true;
         if (!directory.isDirectory()) {
             Logger.getGlobal().warning(directory.getAbsolutePath() + " is not a directory!");
             return false;
@@ -98,6 +108,7 @@ public class Persistency extends DataObserver {
 
     @Override
     protected void dataChangedListener(DataObservable observable) {
+        if (!enabled) return;
         // We actually don't care who was changed, we just save the current state. Inefficient but easy to implement.
         this.save();
     }
