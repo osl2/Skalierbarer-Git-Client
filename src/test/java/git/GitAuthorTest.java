@@ -17,7 +17,7 @@ class GitAuthorTest {
     author = new GitAuthor("name", "email");
   }
 
-  @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes", "EqualsWithItself"})
+  @SuppressWarnings({"SimplifiableAssertion"})
   @Test
   void equalsTest() {
     GitAuthor author2 = new GitAuthor("name", "email");
@@ -28,7 +28,7 @@ class GitAuthorTest {
     author2 = new GitAuthor("name1", "email");
     assertFalse(author.equals(author2));
     assertFalse(author2.equals(author));
-    @SuppressWarnings("OptionalGetWithoutIsPresent") int i = new Random().ints().findFirst().getAsInt();
+    int i = new Random().ints().findFirst().getAsInt();
     assertFalse(author.equals(i));
   }
 

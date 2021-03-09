@@ -42,13 +42,11 @@ class CredentialProviderHolderTest {
 
   @Test
   void setPasswordTest() {
-    @SuppressWarnings("deprecation") int hash = credentialProviderHolder.getProvider().hashCode();
+    int hash = credentialProviderHolder.getProvider().hashCode();
     credentialProviderHolder.setPassword("newPassword");
-    //noinspection deprecation
     assertNotEquals(hash, credentialProviderHolder.getProvider().hashCode());
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   void setUsernameTest() {
     int hash = credentialProviderHolder.getProvider().hashCode();

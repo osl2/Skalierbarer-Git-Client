@@ -101,7 +101,7 @@ class CommitTest extends AbstractGitTest {
         //count the total number of commits
         Iterator<RevCommit> iterator = git.log().call().iterator();
         //get the latest commit
-        @SuppressWarnings("unused") RevCommit latestCommit = iterator.next();
+        RevCommit latestCommit = iterator.next();
         int numCommits = 1;
         //count the remaining commits
         while (iterator.hasNext()) {

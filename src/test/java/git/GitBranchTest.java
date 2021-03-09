@@ -106,7 +106,6 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals("name/master/derBranch", branch4.getName());
   }
 
-  @SuppressWarnings("UnusedAssignment")
   @Test
   void mergeTest() throws GitAPIException, GitException {
     List<GitBranch> allBranches = new ArrayList<>();
@@ -141,7 +140,6 @@ class GitBranchTest extends AbstractGitTest {
 
   }
 
-  @SuppressWarnings("AssertBetweenInconvertibleTypes")
   @Test
   void equalsTest() throws GitAPIException {
     GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
@@ -160,7 +158,6 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals(branch2, branch1);
     assertEquals(branch1, branch1);
     assertNotEquals(branch3, branch1);
-    //noinspection AssertBetweenInconvertibleTypes
     assertNotEquals(branch1, 4);
     assertNotEquals(branch3, branch2);
     assertNotNull(branch1);

@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class GitFacadeTest extends AbstractGitTest {
 
   File fileNotStaged;
-  @SuppressWarnings("unused")
   @TempDir
   File newRepo;
   GitFacade facade;
