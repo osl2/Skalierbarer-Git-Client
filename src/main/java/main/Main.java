@@ -15,9 +15,9 @@ public class Main {
         Persistency persistency = new Persistency();
         boolean settingsLoaded = persistency.load();
         // Don't save during first-use.
-        persistency.disableUntilSave();
         GUIController c = GUIController.getInstance();
         if (!settingsLoaded) {
+            persistency.disableUntilSave();
             // Initialize Objects with sane values
             Settings settings = Settings.getInstance();
             Data data = Data.getInstance();
