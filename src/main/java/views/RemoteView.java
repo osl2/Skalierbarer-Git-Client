@@ -11,8 +11,6 @@ import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.List;
 public class RemoteView extends JPanel implements IView {
   @SuppressWarnings("unused")
@@ -43,6 +41,7 @@ public class RemoteView extends JPanel implements IView {
   private List<GitRemote> remotes;
   private List<GitBranch> branches;
   private final Remote remForSetURL = new Remote();
+  private String actualUrl;
 
   /**
    * Constructor to create RemoteView
@@ -58,15 +57,6 @@ public class RemoteView extends JPanel implements IView {
     safeButton.addActionListener(e -> actionSafe()
     );
     addButton.addActionListener(e -> GUIController.getInstance().openDialog(new RemoteAddDialogView()));
-    urlField.addFocusListener(new FocusAdapter() {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public void focusGained(FocusEvent e) {
-        remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
-      }
-    });
     deleteButton.addActionListener(e -> {
       int index = remoteList.getSelectedIndex();
       if (index < 0) {
@@ -91,18 +81,14 @@ public class RemoteView extends JPanel implements IView {
     });
     remoteList.addListSelectionListener(e -> {
       int index = remoteList.getSelectedIndex();
+      if (index < 0){
+        return;
+      }
       GitRemote act = remotes.get(index);
       nameField.setText(act.getName());
       urlField.setText(act.getUrl());
-      if (!tryBranches(act)) {
-        GUIController.getInstance().openView(new RemoteView());
-        return;
-      }
-      StringBuilder set = new StringBuilder();
-      for (GitBranch branch : branches) {
-        set.append(branch.getName()).append(System.lineSeparator());
-      }
-      branchArea.setText(set.toString());
+      actualUrl = urlField.getText();
+      reloadBranches();
     });
   }
 
@@ -229,6 +215,9 @@ public class RemoteView extends JPanel implements IView {
     if (index < 0) {
       GUIController.getInstance().errorHandler("Es muss ein remote ausgewählt werden");
       return;
+    }
+    if (actualUrl.compareTo(urlField.getText()) != 0){
+      remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.SET_URL);
     }
     remForSetURL.setRemote(remotes.get(index));
     remForSetURL.setUrl(urlField.getText());
