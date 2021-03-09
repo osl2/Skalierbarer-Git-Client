@@ -19,17 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GitBranchTest extends AbstractGitTest {
 
-  private static final String[][] COMMIT_DATA = {
-          new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
-          new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
-          new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
-          new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
-  };
   private static final String[] BRANCH_NAMES = {"BranchWithConflictToMaster", "Test5", "Test9", "wip/test1", "Branch1", "emptyBranch"};
 
 
-  protected void addCommitToCurrentBranch (String name, String email, String commitMessage, Git git) throws GitAPIException {
-    git.commit().setCommitter(name, email).setSign(false).setMessage(commitMessage).call();
+  protected void addCommitToCurrentBranch(String commitMessage, Git git) throws GitAPIException {
+    git.commit().setCommitter("UserName", "UserMail").setSign(false).setMessage(commitMessage).call();
   }
 
   @Override
@@ -46,7 +40,7 @@ class GitBranchTest extends AbstractGitTest {
     fr.write("moreText");
     fr.close();
     git.add().addFilepattern(fileForMerge.getName()).call();
-    addCommitToCurrentBranch("UserName", "UserMail", "Commit1 on " + BRANCH_NAMES[0], git);
+    addCommitToCurrentBranch("Commit1 on " + BRANCH_NAMES[0], git);
 
 
     git.checkout().setName("master").call();
@@ -56,7 +50,7 @@ class GitBranchTest extends AbstractGitTest {
     fr.write("Mehr Text");
     fr.close();
     git.add().addFilepattern(fileForMerge2.getName()).call();
-    addCommitToCurrentBranch("UserName", "UserMail", "Commit1 on Master", git);
+    addCommitToCurrentBranch("Commit1 on Master", git);
 
     git.checkout().setName("master").call();
 
@@ -79,7 +73,7 @@ class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
-  void branchNameIsCorrectSpecialCharacters() throws GitAPIException, GitException {
+  void branchNameIsCorrectSpecialCharacters() throws GitException {
     String[] expectedBranches = BRANCH_NAMES;
 
     String[] branchNames = gitData.getBranches().stream()
@@ -112,6 +106,7 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals("name/master/derBranch", branch4.getName());
   }
 
+  @SuppressWarnings("UnusedAssignment")
   @Test
   void mergeTest() throws GitAPIException, GitException {
     List<GitBranch> allBranches = new ArrayList<>();
@@ -146,6 +141,7 @@ class GitBranchTest extends AbstractGitTest {
 
   }
 
+  @SuppressWarnings("AssertBetweenInconvertibleTypes")
   @Test
   void equalsTest() throws GitAPIException {
     GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
@@ -164,6 +160,7 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals(branch2, branch1);
     assertEquals(branch1, branch1);
     assertNotEquals(branch3, branch1);
+    //noinspection AssertBetweenInconvertibleTypes
     assertNotEquals(branch1, 4);
     assertNotEquals(branch3, branch2);
     assertNotNull(branch1);

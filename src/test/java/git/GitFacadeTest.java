@@ -5,8 +5,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import settings.Settings;
@@ -22,8 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GitFacadeTest extends AbstractGitTest {
 
   File fileNotStaged;
+  @SuppressWarnings("unused")
   @TempDir
   File newRepo;
+  GitFacade facade;
 
 
   @Override
@@ -39,9 +41,13 @@ public class GitFacadeTest extends AbstractGitTest {
     git.close();
   }
 
+  @BeforeEach
+  public void setGitFacade(){
+    facade = new GitFacade();
+  }
+
   @Test
   void stashTest(){
-    GitFacade facade = new GitFacade();
     //Currently not implemented
     assertThrows(AssertionError.class, () -> facade.createStash());
   }
@@ -50,7 +56,6 @@ public class GitFacadeTest extends AbstractGitTest {
   void checkoutTest() throws GitAPIException, IOException, GitException {
     git.checkout().setName("NeuerBranch").setCreateBranch(true).call();
 
-    GitFacade facade = new GitFacade();
     GitBranch branch = new GitBranch("");
     for (Ref branchGit: git.branchList().call()){
       if (branchGit.getName().endsWith("master")){
@@ -66,7 +71,6 @@ public class GitFacadeTest extends AbstractGitTest {
 
   @Test
   public void commitCommandTest() throws GitAPIException, GitException {
-    GitFacade facade = new GitFacade();
     git.add().addFilepattern(fileNotStaged.getName()).call();
     String commitMessage = RandomStringUtils.random(21);
     facade.commitOperation(commitMessage, false);
@@ -80,7 +84,6 @@ public class GitFacadeTest extends AbstractGitTest {
   @Test
   public void setReopsitoryPathTest() throws IOException {
     FileUtils.forceMkdir(newRepo);
-    GitFacade facade = new GitFacade();
     facade.setRepositoryPath(newRepo);
     assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
     assertEquals(GitData.getRepository().getDirectory(), new File (newRepo, ".git"));
@@ -88,4 +91,20 @@ public class GitFacadeTest extends AbstractGitTest {
     assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
     assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
   }
+
+  @Test
+  public void pullOperationTest (){
+    //not implemented
+    assertThrows(AssertionError.class, () -> facade.createStash());
+  }
+
+  @Test
+  public void remoteAddOperationTest() throws GitException, GitAPIException {
+    facade.remoteAddOperation("Name", "URL");
+    assertEquals(1, git.remoteList().call().size());
+    assertEquals("Name", git.remoteList().call().iterator().next().getName());
+    assertEquals("URL", git.remoteList().call().iterator().next().getURIs().iterator().next().toString());
+  }
+
+
 }
