@@ -34,6 +34,7 @@ public abstract class AbstractRemoteTest extends AbstractCommandTest {
     settings.setActiveRepositoryPath(remoteDir);
     gitData = new GitData();
     gitData.reinitialize();
+    assertEquals(2, remoteDir.listFiles().length);
     assertEquals(1, gitData.getBranches().size());
   }
 

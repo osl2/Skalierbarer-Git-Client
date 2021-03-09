@@ -12,6 +12,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the PullDialogView. The user can choose a remote and
+ * a branch on this remote to pull.
+ */
 public class PullDialogView implements IDialogView {
 
 
@@ -25,8 +29,10 @@ public class PullDialogView implements IDialogView {
     private List<GitBranch> listOfRemoteBranches = new ArrayList<>();
     private Pull pull;
 
+    /**
+     * Builds the PullDialogView JPanel.
+     */
     public PullDialogView() {
-        initPull();
         remoteCombobox.addActionListener(e -> {
             listOfRemoteBranches.clear();
             branchComboBox.removeAllItems();
@@ -50,6 +56,19 @@ public class PullDialogView implements IDialogView {
             pull.setRemoteBranch(listOfRemoteBranches.get(branchIndex));
             pull.execute();
         });
+        initPull();
+        setNameComponents();
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void setNameComponents() {
+        remoteCombobox.setName("remoteCombobox");
+        branchComboBox.setName("branchComboBox");
+        pullButton.setName("pullButton");
+        refreshButton.setName("refreshButton");
     }
 
     private boolean nextTry(int index) {
@@ -112,6 +131,7 @@ public class PullDialogView implements IDialogView {
         }
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(remoteName);
         remoteCombobox.setModel(model);
+        remoteCombobox.setSelectedIndex(0);
     }
 
     @Override
