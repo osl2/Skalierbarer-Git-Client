@@ -6,6 +6,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.URIish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -42,12 +44,12 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @BeforeEach
-  public void setGitFacade(){
+  public void setGitFacade() {
     facade = new GitFacade();
   }
 
   @Test
-  void stashTest(){
+  void stashTest() {
     //Currently not implemented
     assertThrows(AssertionError.class, () -> facade.createStash());
   }
@@ -57,8 +59,8 @@ public class GitFacadeTest extends AbstractGitTest {
     git.checkout().setName("NeuerBranch").setCreateBranch(true).call();
 
     GitBranch branch = new GitBranch("");
-    for (Ref branchGit: git.branchList().call()){
-      if (branchGit.getName().endsWith("master")){
+    for (Ref branchGit : git.branchList().call()) {
+      if (branchGit.getName().endsWith("master")) {
         branch = new GitBranch(branchGit);
       }
     }
@@ -86,14 +88,14 @@ public class GitFacadeTest extends AbstractGitTest {
     FileUtils.forceMkdir(newRepo);
     facade.setRepositoryPath(newRepo);
     assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
-    assertEquals(GitData.getRepository().getDirectory(), new File (newRepo, ".git"));
+    assertEquals(GitData.getRepository().getDirectory(), new File(newRepo, ".git"));
     facade.setRepositoryPath(repo);
     assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
     assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
   }
 
   @Test
-  public void pullOperationTest (){
+  public void pullOperationTest() {
     //not implemented
     assertThrows(AssertionError.class, () -> facade.createStash());
   }
@@ -105,6 +107,36 @@ public class GitFacadeTest extends AbstractGitTest {
     assertEquals("Name", git.remoteList().call().iterator().next().getName());
     assertEquals("URL", git.remoteList().call().iterator().next().getURIs().iterator().next().toString());
   }
+
+  @Test
+  public void cloneRepositoryTest() throws GitException, URISyntaxException {
+    File destination = new File(repo, "newFolder");
+    assertThrows(GitException.class, () -> facade.cloneRepository("https://git.scc.kit.edu/pse-git-client/entwurf.git", destination, true), "");
+
+    //Cloning a test-Repo from Git-Hub
+    facade.cloneRepository("https://github.com/rmccue/test-repository.git", destination, false);
+    File[] filesCloned = destination.listFiles();
+    assertTrue(filesCloned.length > 0);
+    boolean containsGit = false;
+    boolean containsOpml = false;
+    boolean containsReadme = false;
+    boolean containsOther = false;
+    for (File file : filesCloned){
+      if (file.getName().equals(".git")){
+        containsGit = true;
+      } else if (file.getName().equals("opml.php")){
+        containsOpml = true;
+      } else if (file.getName().equals("README")){
+        containsReadme = true;
+      } else {
+        containsOther = true;
+      }
+    }
+    assertTrue(containsGit);
+    assertTrue(containsOpml);
+    assertTrue(containsReadme);
+    assertFalse(containsOther);
+     }
 
 
 }
