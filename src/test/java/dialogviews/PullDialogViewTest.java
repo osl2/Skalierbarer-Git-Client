@@ -65,30 +65,16 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     jGit.close();
     repository.close();
     git.close();
-   /* GitFacade f = new GitFacade();
-    f.branchOperation(gitData.getSelectedBranch().getCommit(), "Neu");
-    List<GitBranch> branches = gitData.getBranches();
-    GitBranch b = null;
-    for(int i = 0; i < branches.size(); i++) {
-      if(branches.get(i).getName().compareTo("Neu") == 0) {
-        b = branches.get(i);
-      }
-    }
-    assertTrue(f.checkout(b));
-
-    assertEquals("Commit 5", b.getCommit().getMessage());
-    f.pushOperation(gitData.getRemotes().get(0), b);
-    assertEquals(2, gitData.getBranches(gitData.getRemotes().get(0)).size());*/
     remoteCombobox.setSelectedIndex(0);
     branchComboBox.setSelectedIndex(0);
+    List<Level> levels = Data.getInstance().getLevels();
+    Settings.getInstance().setLevel(levels.get(0));
     pullButton.getActionListeners()[0].actionPerformed(new ActionEvent(pullButton, ActionEvent.ACTION_PERFORMED, null));
-    assertTrue(guiControllerTestable.errorHandlerECalled);
+    assertTrue(guiControllerTestable.openDialogCalled);
     List<GitRemote> remoteList = gitData.getRemotes();
     assertEquals(1, remoteList.size());
     GitBranch remoteBranch = gitData.getBranches(remoteList.get(0)).get(0);
     GitBranch localBranch = gitData.getBranches().get(0);
-    List<Level> levels = Data.getInstance().getLevels();
-    Settings.getInstance().setLevel(levels.get(0));
     PullConflictDialogView conflict = new PullConflictDialogView(remoteBranch, localBranch, "pull");
     FindComponents find = new FindComponents();
     JButton mergeButton = (JButton) find.getChildByName(conflict.getPanel(), "mergeButton");
@@ -96,5 +82,19 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     mergeButton.getActionListeners()[0].actionPerformed(new ActionEvent(mergeButton, ActionEvent.ACTION_PERFORMED, null));
     GitCommit commit = gitData.getCommits().next();
     assertEquals("Commit 5", commit.getMessage());
+  }
+
+  @Test
+  void testMetaData() {
+    Settings.getInstance().setLevel(Data.getInstance().getLevels().get(3));
+    PullConflictDialogView conflict = new PullConflictDialogView(null, null, "pull");
+    assertNotNull(conflict.getDimension());
+    assertNotNull(conflict.getTitle());
+    conflict.update();
+    FindComponents find = new FindComponents();
+    JButton cancelButton = (JButton) find.getChildByName(conflict.getPanel(), "cancelButton");
+    assertNotNull(cancelButton);
+    cancelButton.getActionListeners()[0].actionPerformed(new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, null));
+    assertTrue(guiControllerTestable.closeDialogViewCalled);
   }
 }
