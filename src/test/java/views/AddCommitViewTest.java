@@ -32,13 +32,15 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JTextArea commitMessageTextArea;
     private JButton commitButton;
     private File file;
-    private static MockedStatic<JOptionPane> mockedJOptionPane;
     private static JOptionPaneTestable jOptionPaneTestable;
+    private JCheckBox modifiedChangedFilesCheckBox;
+    private JCheckBox newFilesCheckBox;
+    private JCheckBox deletedFilesCheckBox;
 
     @BeforeAll
     private static void setupMockedJOptionPane() {
         jOptionPaneTestable = new JOptionPaneTestable();
-        mockedJOptionPane = mockStatic(JOptionPane.class);
+        MockedStatic<JOptionPane> mockedJOptionPane = mockStatic(JOptionPane.class);
         mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(JOptionPaneTestable.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE));
     }
@@ -57,11 +59,14 @@ class AddCommitViewTest extends AbstractCommandTest {
         newFilesList = (JList) find.getChildByName(panel, "newFilesList");
         deletedFilesList = (JList) find.getChildByName(panel, "deletedFilesList");
         commitMessageTextArea = (JTextArea) find.getChildByName(panel, "commitMessageTextArea");
+        modifiedChangedFilesCheckBox = (JCheckBox) find.getChildByName(panel, "modifiedChangedFilesCheckBox");
+        newFilesCheckBox = (JCheckBox) find.getChildByName(panel, "newFilesCheckBox");
+        deletedFilesCheckBox = (JCheckBox) find.getChildByName(panel, "deletedFilesCheckBox");
 
     }
 
     @Test
-    void loadAddCommitView() {
+    void loadAddCommitViewTest() {
         assertNotNull(modifiedChangedFilesList);
         assertNotNull(newFilesList);
         assertNotNull(deletedFilesList);
@@ -229,6 +234,40 @@ class AddCommitViewTest extends AbstractCommandTest {
 
         //status should be clean after commit amend has been executed
         assertTrue(git.status().call().isClean());
+    }
+
+    @Test
+    void updateTest() {
+        addCommitView.update();
+        loadAddCommitViewTest();
+    }
+
+    @Test
+    void modifiedChangedFilesCheckBoxTest() {
+        selectAllCheckBoxTest(modifiedChangedFilesList, modifiedChangedFilesCheckBox);
+    }
+
+    @Test
+    void newFilesCheckBoxTest() {
+        selectAllCheckBoxTest(newFilesList, newFilesCheckBox);
+    }
+
+    @Test
+    void deletedFilesCheckBoxTest() {
+        selectAllCheckBoxTest(deletedFilesList, deletedFilesCheckBox);
+    }
+
+
+    void selectAllCheckBoxTest(JList list, JCheckBox checkBox) {
+        for (ItemListener listener : checkBox.getItemListeners()) {
+            listener.itemStateChanged(new ItemEvent(checkBox, ItemEvent.ITEM_STATE_CHANGED,
+                    checkBox, ItemEvent.SELECTED));
+        }
+        for (int i = 0; i < list.getModel().getSize(); i++) {
+            AddCommitView.FileListItem item =
+                    (AddCommitView.FileListItem) list.getModel().getElementAt(i);
+            assertTrue(item.isSelected());
+        }
     }
 
     private void mouseListenerTest(JList list) {

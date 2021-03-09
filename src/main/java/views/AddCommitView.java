@@ -191,6 +191,9 @@ public class AddCommitView extends JPanel implements IView {
     cancelButton.setName("cancelButton");
     commitButton.setName("commitButton");
     amendButton.setName("amendButton");
+    modifiedChangedFilesCheckBox.setName("modifiedChangedFilesCheckBox");
+    newFilesCheckBox.setName("newFilesCheckBox");
+    deletedFilesCheckBox.setName("deletedFilesCheckBox");
   }
 
   /*
@@ -306,7 +309,6 @@ public class AddCommitView extends JPanel implements IView {
         values[i] = new FileListItem(gitFile);
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
-        //TODO
       }
       i++;
     }
@@ -447,7 +449,6 @@ public class AddCommitView extends JPanel implements IView {
         }
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
-        //TODO
       }
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
