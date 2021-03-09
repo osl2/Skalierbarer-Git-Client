@@ -119,12 +119,6 @@ class GitDataTest extends AbstractGitTest {
         assertEquals("master", branches.iterator().next().getName());
     }
 
-
-    @Test
-    public void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
-        git.branchCreate().setName("Test1").call();
-        git.branchCreate().setName("Test2").call();
-        git.branchCreate().setName("Test3").call();
   @Test
   void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
     git.branchCreate().setName("Test1").call();
