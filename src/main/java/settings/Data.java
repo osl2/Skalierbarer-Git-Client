@@ -97,7 +97,6 @@ public class Data extends DataObservable {
         commands4.add(fetch);
         commands4.add(pull);
         commands4.add(push);
-        commands4.add(stash);
         commands4.add(remote);
         commands4.add(rebase);
         Level levelOne = new Level("Level 1", commands1, 1);

@@ -3,7 +3,6 @@ package git;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
-import org.eclipse.jgit.api.StashListCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
@@ -208,27 +207,6 @@ public class GitData {
     }
   }
 
-
-  /**
-   * Get all stashes of the current Repository.
-   *
-   * @return A list of all Stashes
-   */
-  @SuppressWarnings("unused")
-  public List<GitStash> getStashes() {
-    try {
-      StashListCommand stashListCommand = new StashListCommand(repository);
-      Collection<RevCommit> listOfStashes = stashListCommand.call();
-      List<GitStash> gitStashes = new ArrayList<>();
-      for (RevCommit stash : listOfStashes) {
-        gitStashes.add(new GitStash(stash));
-      }
-      return gitStashes;
-    } catch (GitAPIException e) {
-      Logger.getGlobal().warning(e.getMessage());
-      return new ArrayList<>();
-    }
-  }
 
 
   /**
