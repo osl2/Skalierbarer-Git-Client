@@ -8,13 +8,12 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GitCommitTest extends AbstractGitTest {
+class GitCommitTest extends AbstractGitTest {
 
   @Override
   protected void setupRepo() throws GitAPIException, IOException {
@@ -25,29 +24,29 @@ public class GitCommitTest extends AbstractGitTest {
 
     git.add().addFilepattern(textFile.getName()).call();
     git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 1").call();
+        .setMessage("Commit 1").call();
 
     fr.write("data");
     fr.flush();
 
     git.add().addFilepattern(textFile.getName()).call();
     git.commit().setCommitter("Tester 2", "tester2@example.com").setSign(false)
-            .setMessage("Commit 2").call();
+        .setMessage("Commit 2").call();
 
     fr.write("Neuer Inhalt des Files");
     fr.close();
 
     git.add().addFilepattern(textFile.getName()).call();
     git.commit().setCommitter("Tester 3", "tester3@example.com").setSign(false)
-            .setMessage("Commit 3").call();
+        .setMessage("Commit 3").call();
     git.commit().setCommitter("Tester 1", "tester1@example.com").setSign(false)
-            .setMessage("Commit 4").call();
+        .setMessage("Commit 4").call();
 
     git.close();
   }
 
   @Test
-  public void getChangedFilesTest() throws IOException, GitException {
+  void getChangedFilesTest() throws IOException, GitException {
     Iterator<GitCommit> commits = gitData.getCommits();
     GitCommit commit;
     while (commits.hasNext()) {
@@ -64,12 +63,12 @@ public class GitCommitTest extends AbstractGitTest {
   }
 
   @Test
-  public void getChangedFilesFirstCommitTest() throws IOException, GitException {
+  void getChangedFilesFirstCommitTest() throws IOException, GitException {
     Iterator<GitCommit> commits = gitData.getCommits();
     GitCommit commit;
     while (commits.hasNext()) {
       GitCommit commitselect = commits.next();
-      if(commitselect.getMessage().equals("Commit 1")) {
+      if (commitselect.getMessage().equals("Commit 1")) {
         commit = commitselect;
         List<GitFile> changedFiles = commit.getChangedFiles();
         assertEquals(changedFiles.size(), 1);
