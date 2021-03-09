@@ -1,14 +1,10 @@
 package git;
 
-import commands.Remote;
 import git.exception.GitException;
-import org.apache.commons.io.FileSystem;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +18,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GitFacadeTest extends AbstractGitTest {
+class GitFacadeTest extends AbstractGitTest {
 
   File fileNotStaged;
   @SuppressWarnings("unused")
@@ -49,7 +44,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @BeforeEach
-  public void setGitFacade() {
+  void setGitFacade() {
     facade = new GitFacade();
   }
 
@@ -77,7 +72,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  public void commitCommandTest() throws GitAPIException, GitException {
+  void commitCommandTest() throws GitAPIException, GitException {
     git.add().addFilepattern(fileNotStaged.getName()).call();
     String commitMessage = RandomStringUtils.random(21);
     facade.commitOperation(commitMessage, false);
@@ -89,7 +84,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  public void setReopsitoryPathTest() throws IOException {
+  void setReopsitoryPathTest() throws IOException {
     FileUtils.forceMkdir(newRepo);
     facade.setRepositoryPath(newRepo);
     assertEquals(newRepo, Settings.getInstance().getActiveRepositoryPath());
@@ -100,13 +95,13 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  public void pullOperationTest() {
+  void pullOperationTest() {
     //not implemented
     assertThrows(AssertionError.class, () -> facade.createStash());
   }
 
   @Test
-  public void remoteAddOperationTest() throws GitException, GitAPIException {
+  void remoteAddOperationTest() throws GitException, GitAPIException {
     facade.remoteAddOperation("Name", "URL");
     assertEquals(1, git.remoteList().call().size());
     assertEquals("Name", git.remoteList().call().iterator().next().getName());
@@ -114,7 +109,7 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  public void cloneRepositoryTest() throws GitException, IOException {
+  void cloneRepositoryTest() throws GitException, IOException {
     File destination = new File(repo, "newFolder");
     FileUtils.forceMkdir(destination);
     assertThrows(GitException.class, () -> facade.cloneRepository("https://git.scc.kit.edu/pse-git-client/entwurf.git", destination, true), "");
@@ -149,7 +144,7 @@ public class GitFacadeTest extends AbstractGitTest {
 
 
   @Test
-  public void fetchRemotesTest() throws GitAPIException, GitException, IOException {
+  void fetchRemotesTest() throws GitAPIException, GitException, IOException {
     String gitUrl = "https://github.com/rmccue/test-repository.git";
 
     //Get all Branches of Remote repo and instantiate a master Branch
@@ -158,8 +153,8 @@ public class GitFacadeTest extends AbstractGitTest {
         .setHeads(true)
         .setRemote(gitUrl)
         .call();
-    for(Ref ref : refs){
-      if (ref.getName().contains("master")){
+    for (Ref ref : refs) {
+      if (ref.getName().contains("master")) {
         masterBranch = new GitBranch(ref);
       }
     }
@@ -175,7 +170,7 @@ public class GitFacadeTest extends AbstractGitTest {
         .call();
 
     GitRemote remote = new GitRemote(gitUrl, "user", "origin");
-    ArrayList <GitRemote> remotesToFetch = new ArrayList<>();
+    ArrayList<GitRemote> remotesToFetch = new ArrayList<>();
     remotesToFetch.add(remote);
     assertEquals(1, remotesToFetch.size());
     facade.fetchRemotes(remotesToFetch);
@@ -193,5 +188,16 @@ public class GitFacadeTest extends AbstractGitTest {
 
   }
 
+  @Test
+  void getDiffTest() throws GitAPIException {
+
+    GitCommit commit = new GitCommit(git.log().call().iterator().next());
+    assertThrows(AssertionError.class, () -> facade.getDiff(commit));
+  }
+
+  @Test
+  void revertTest() {
+
+  }
 
 }

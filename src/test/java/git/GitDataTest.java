@@ -22,50 +22,50 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Is testing GitData
  */
-public class GitDataTest extends AbstractGitTest {
-    private static final String[][] COMMIT_DATA = {
-            new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
-            new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
-            new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
-            new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
-    };
+class GitDataTest extends AbstractGitTest {
+  private static final String[][] COMMIT_DATA = {
+      new String[]{"Tester 1", "tester1@example.com", "Commit 1"},
+      new String[]{"Tester 2", "tester2@example.com", "Commit 2"},
+      new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
+      new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
+  };
 
 
-    @Test
-    public void getBranchesTest() throws GitAPIException, GitException {
-        git.branchCreate().setName("TestBranch").call();
-        List<GitBranch> branchesGitData = gitData.getBranches();
-        List<Ref> branchesJGit = git.branchList().call();
-        assertEquals(branchesGitData.size(), branchesJGit.size());
+  @Test
+  void getBranchesTest() throws GitAPIException, GitException {
+    git.branchCreate().setName("TestBranch").call();
+    List<GitBranch> branchesGitData = gitData.getBranches();
+    List<Ref> branchesJGit = git.branchList().call();
+    assertEquals(branchesGitData.size(), branchesJGit.size());
+  }
+
+  @Test
+  void commitsAreSortedFromNewestToOldestTest() throws IOException, GitException {
+    int size = 0;
+    Iterator<GitCommit> it = gitData.getCommits();
+    while (it.hasNext()) {
+      size++;
+      it.next();
+    }
+    assertEquals(COMMIT_DATA.length, size);
+    it = gitData.getCommits();
+    int i = size - 1;
+    while (it.hasNext()) {
+      assertEquals(new GitAuthor(COMMIT_DATA[i][0], COMMIT_DATA[i][1]), it.next().getAuthor());
+      i--;
     }
 
-    @Test
-    public void commitsAreSortedFromNewestToOldestTest() throws IOException, GitException {
-        int size = 0;
-        Iterator<GitCommit> it = gitData.getCommits();
-        while (it.hasNext()) {
-            size++;
-            it.next();
-        }
-        assertEquals(COMMIT_DATA.length, size);
-        it = gitData.getCommits();
-        int i = size - 1;
-        while (it.hasNext()) {
-            assertEquals(new GitAuthor(COMMIT_DATA[i][0], COMMIT_DATA[i][1]), it.next().getAuthor());
-            i--;
-        }
+  }
 
+  @Test
+  void commitsHaveCorrectCommitMessageTest() throws IOException, GitException {
+    int i = COMMIT_DATA.length - 1;
+    Iterator<GitCommit> it = gitData.getCommits();
+    while (it.hasNext()) {
+      assertEquals(COMMIT_DATA[i--][2],
+          it.next().getMessage());
     }
-
-    @Test
-    public void commitsHaveCorrectCommitMessageTest() throws IOException, GitException {
-        int i = COMMIT_DATA.length - 1;
-        Iterator<GitCommit> it = gitData.getCommits();
-        while (it.hasNext()) {
-            assertEquals(COMMIT_DATA[i--][2],
-                    it.next().getMessage());
-        }
-    }
+  }
     @Test
     void reinitializeTest(){
         Git gitBegin = git;
@@ -90,15 +90,15 @@ public class GitDataTest extends AbstractGitTest {
 
     }
 
-    @Test
-    public void findsAllBranches() throws GitAPIException, GitException {
-        git.branchCreate().setName("Test1").call();
-        git.branchCreate().setName("Test2").call();
-        git.branchCreate().setName("Test3").call();
+  @Test
+  void findsAllBranches() throws GitAPIException, GitException {
+    git.branchCreate().setName("Test1").call();
+    git.branchCreate().setName("Test2").call();
+    git.branchCreate().setName("Test3").call();
 
-        List<GitBranch> branches = gitData.getBranches();
-        assertEquals(4, branches.size()); // master + 3
-    }
+    List<GitBranch> branches = gitData.getBranches();
+    assertEquals(4, branches.size()); // master + 3
+  }
 
     @Test
     void getBranchesRepoTest() throws GitAPIException, GitException {
@@ -125,12 +125,17 @@ public class GitDataTest extends AbstractGitTest {
         git.branchCreate().setName("Test1").call();
         git.branchCreate().setName("Test2").call();
         git.branchCreate().setName("Test3").call();
+  @Test
+  void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
+    git.branchCreate().setName("Test1").call();
+    git.branchCreate().setName("Test2").call();
+    git.branchCreate().setName("Test3").call();
 
-        List<GitBranch> branches = gitData.getBranches();
-        GitBranch selected = branches.get(2); // arbitrary selection
-        assertNotEquals(selected, gitData.getSelectedBranch());
-        git.checkout().setName(selected.getFullName()).call();
-        assertEquals(selected, gitData.getSelectedBranch());
-    }
+    List<GitBranch> branches = gitData.getBranches();
+    GitBranch selected = branches.get(2); // arbitrary selection
+    assertNotEquals(selected, gitData.getSelectedBranch());
+    git.checkout().setName(selected.getFullName()).call();
+    assertEquals(selected, gitData.getSelectedBranch());
+  }
 }
 
