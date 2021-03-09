@@ -319,15 +319,28 @@ public class AddCommitView extends JPanel implements IView {
 
     //only one element can be chosen at a time
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
     //Mouse for Checkboxes. Selected files are being marked for git add
-
-
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
         JList list = (JList) event.getSource();
         //get the item index that was clicked
-        int index = list.locationToIndex(event.getPoint());
+        Point eventPoint = event.getPoint();
+
+        //get the index closest to the clicking point
+        int index = list.locationToIndex(eventPoint);
+
+        //get the rectangle of all cells in the list
+        Rectangle validListRectangle = new Rectangle(0, 0);
+        if (list.getModel().getSize() > 0) {
+          validListRectangle = list.getCellBounds(0, list.getModel().getSize() - 1);
+        }
+
+        //if index is -1, list is empty. Otherwise, eventPoint might be outside the list rectangle
+        if (index < 0 || eventPoint.x > validListRectangle.width || eventPoint.y > validListRectangle.height) {
+          return;
+        }
         FileListItem item = (FileListItem) list.getModel().getElementAt(index);
         //set index in list to be selected
         list.setSelectedIndex(index);
