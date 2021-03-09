@@ -49,11 +49,12 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     remoteCombobox.setSelectedIndex(0);
     branchComboBox.setSelectedIndex(0);
     refreshButton.getActionListeners()[0].actionPerformed(new ActionEvent(refreshButton, ActionEvent.ACTION_PERFORMED, null));
-    assertNotEquals(0, branchComboBox.getSelectedIndex());
+    assertEquals(0, branchComboBox.getSelectedIndex());
   }
 
   @Test
   void testPullButton() throws GitException, IOException, GitAPIException {
+    // Create a new Commit to pull.
     Git jGit = Git.open(repo);
     FileWriter fr = new FileWriter(textFile, true);
     fr.write("pull");
@@ -65,6 +66,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     jGit.close();
     repository.close();
     git.close();
+    // Execute the Pull command in
     remoteCombobox.setSelectedIndex(0);
     branchComboBox.setSelectedIndex(0);
     List<Level> levels = Data.getInstance().getLevels();
@@ -83,6 +85,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     GitCommit commit = gitData.getCommits().next();
     assertEquals("Commit 5", commit.getMessage());
   }
+
 
   @Test
   void testMetaData() {
