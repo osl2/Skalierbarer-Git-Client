@@ -1,15 +1,19 @@
 package dialogviews;
 
-import commands.AbstractCommandTest;
+import commands.AbstractRemoteTest;
+import git.GitBranch;
+import git.GitRemote;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class PushDialogViewTest extends AbstractCommandTest {
+class PushDialogViewTest extends AbstractRemoteTest {
     private PushDialogView pushDialogView;
     private JPanel pushPanel;
     private JComboBox remoteComboBox;
@@ -33,7 +37,7 @@ class PushDialogViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void loadDialogView() {
+    void loadDialogViewTest() {
         assertNotNull(pushPanel);
         assertNotNull(remoteComboBox);
         assertNotNull(localBranchComboBox);
@@ -42,15 +46,6 @@ class PushDialogViewTest extends AbstractCommandTest {
         assertNotNull(pushButton);
 
         assertEquals(0, selectedRemoteBranchTextField.getText().compareTo("master"));
-        /*
-        geht nicht, NPE
-
-        GitRemote remote = (GitRemote) remoteComboBox.getSelectedItem();
-        assertEquals(0, remote.getName().compareTo("origin"));
-        GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
-        assertEquals(0, localBranch.getName().compareTo("master"));
-
-         */
     }
 
     @Test
@@ -63,5 +58,38 @@ class PushDialogViewTest extends AbstractCommandTest {
         assertNotNull(pushDialogView.getDimension());
     }
 
-    //TODO: Test update()
+    @Test
+    void localBranchComboBoxTest() {
+        //master should be the only local branch
+        assertEquals(1, localBranchComboBox.getModel().getSize());
+        //select the master branch
+        localBranchComboBox.setSelectedIndex(0);
+        for (ActionListener listener : localBranchComboBox.getActionListeners()) {
+            listener.actionPerformed(new ActionEvent(localBranchComboBox, ActionEvent.ACTION_PERFORMED, "Action event"));
+        }
+        assertEquals(0, selectedRemoteBranchTextField.getText().compareTo("master"));
+
+        //master should be selected
+        GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
+        assertNotNull(localBranch);
+        assertEquals(0, localBranch.getName().compareTo("master"));
+    }
+
+    @Test
+    void remoteComboBoxTest() {
+        //should contain one remote
+        assertEquals(1, remoteComboBox.getModel().getSize());
+
+        //origin should be selected
+        GitRemote remote = (GitRemote) remoteComboBox.getSelectedItem();
+        assertNotNull(remote);
+        assertEquals(0, remote.getName().compareTo("origin"));
+    }
+
+    @Test
+    void updateTest() {
+        pushDialogView.update();
+        loadDialogViewTest();
+        //TODO: add new remotes and reload
+    }
 }

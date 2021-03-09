@@ -60,6 +60,15 @@ public class PushDialogView implements IDialogView {
         //fill local branch combobox and remote combobox with values
         setUpLocalBranchComboBox();
         setUpRemoteComboBox();
+
+        //select the first index if the comboboxes are not empty
+        if (remoteComboBox.getModel().getSize() > 0) {
+            remoteComboBox.setSelectedIndex(0);
+        }
+        if (localBranchComboBox.getModel().getSize() > 0) {
+            localBranchComboBox.setSelectedIndex(0);
+        }
+
         //set text of the remote branch textfield: remote branch equals selected local branch
         GitBranch selectedLocalBranch = (GitBranch) localBranchComboBox.getSelectedItem();
         if (selectedLocalBranch != null) {
