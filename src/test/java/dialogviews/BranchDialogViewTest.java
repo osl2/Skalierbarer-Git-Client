@@ -17,20 +17,19 @@ class BranchDialogViewTest extends AbstractCommandTest {
 
   @Test
   void testBranchDialogView() throws GitException {
-    FindComponents find = new FindComponents();
     BranchDialogView branchD = new BranchDialogView();
     JPanel frame = branchD.getPanel();
     JTextField textField;
-    textField = (JTextField) find.getChildByName(frame, "nameField");
+    textField = (JTextField) FindComponents.getChildByName(frame, "nameField");
     assertNotNull(textField);
     textField.setText("NeuerBranch");
-    JComboBox branchComboBox = (JComboBox) find.getChildByName(frame, "branchComboBox");
+    JComboBox branchComboBox = (JComboBox) FindComponents.getChildByName(frame, "branchComboBox");
     assertNotNull(branchComboBox);
     branchComboBox.setSelectedIndex(0);
-    JComboBox commitComboBox = (JComboBox) find.getChildByName(frame, "commitComboBox");
+    JComboBox commitComboBox = (JComboBox) FindComponents.getChildByName(frame, "commitComboBox");
     assertNotNull(commitComboBox);
     commitComboBox.setSelectedIndex(0);
-    JButton branchButton = (JButton) find.getChildByName(frame, "branchButton");
+    JButton branchButton = (JButton) FindComponents.getChildByName(frame, "branchButton");
     assertNotNull(branchButton);
     branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
     GitData data = new GitData();

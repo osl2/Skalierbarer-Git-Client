@@ -43,6 +43,17 @@ public class CheckoutDialogView implements IDialogView {
         this.tree1.setRootVisible(false);
 
         model.setRoot(this.generateTree());
+        nameComponents();
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void nameComponents() {
+        tree1.setName("tree1");
+        okButton.setName("okButton");
+        abortButton.setName("abortButton");
     }
 
     private DefaultMutableTreeNode generateTree() {
