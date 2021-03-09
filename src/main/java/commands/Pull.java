@@ -60,6 +60,11 @@ public class Pull implements ICommand, ICommandGUI {
 
   @Override
   public void onButtonClicked() {
+    GitData data = new GitData();
+    if (data.getRemotes().size() == 0) {
+      GUIController.getInstance().errorHandler("Es sind keine Remotes bekannt.");
+      return;
+    }
     GUIController.getInstance().openDialog(new PullDialogView());
   }
 
