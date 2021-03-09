@@ -1,18 +1,22 @@
 package git;
 
+
 import git.exception.GitException;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import settings.Settings;
 
+
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -62,6 +66,29 @@ public class GitDataTest extends AbstractGitTest {
                     it.next().getMessage());
         }
     }
+    @Test
+    void reinitializeTest(){
+        Git gitBegin = git;
+        gitData.reinitialize();
+        Git gitEnd = GitData.getJGit();
+        assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
+
+    }
+
+    @Test
+    void getStashesTest() throws IOException, GitAPIException {
+        List<GitStash> stashes = gitData.getStashes();
+        assertEquals(0, stashes.size());
+        textFile = new File(repo, "textFile");
+        FileWriter fr = new FileWriter(textFile, true);
+        fr.write("new Text for Stash");
+        fr.close();
+        RevCommit bla = git.stashCreate().call();
+        assertEquals(git.getRepository().getDirectory().getParentFile(), repo);
+        assertEquals(0, gitData.getStashes().size());
+
+
+    }
 
     @Test
     public void findsAllBranches() throws GitAPIException, GitException {
@@ -72,6 +99,26 @@ public class GitDataTest extends AbstractGitTest {
         List<GitBranch> branches = gitData.getBranches();
         assertEquals(4, branches.size()); // master + 3
     }
+
+    @Test
+    void getBranchesRepoTest() throws GitAPIException, GitException {
+        String gitUrl = "https://github.com/rmccue/test-repository.git";
+        deleteDir(repo);
+        git = Git.cloneRepository()
+            .setURI(gitUrl)
+            .setDirectory(repo)
+            .setCloneAllBranches(true)
+            .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
+            .setCloneSubmodules(true)
+            .call();
+        List<GitRemote> remotes = gitData.getRemotes();
+        assertEquals(1, remotes.size());
+        GitRemote remote = remotes.iterator().next();
+        List<GitBranch> branches = gitData.getBranches(remote);
+        assertEquals(1, branches.size());
+        assertEquals("master", branches.iterator().next().getName());
+    }
+
 
     @Test
     public void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
