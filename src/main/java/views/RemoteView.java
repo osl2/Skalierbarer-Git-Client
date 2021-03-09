@@ -11,8 +11,6 @@ import git.exception.GitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.List;
@@ -50,6 +48,7 @@ public class RemoteView extends JPanel implements IView {
    * Constructor to create RemoteView
    */
   public RemoteView() {
+    testGUI();
     //Set the subcommand to set the Url to inactive
     remForSetURL.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
     GitData git = new GitData();
@@ -195,7 +194,6 @@ public class RemoteView extends JPanel implements IView {
       String name = value.getName();
       String url = value.getUrl();
       this.setText(name + System.lineSeparator() + System.lineSeparator() + url);
-      // Only the first 6 lines of the commit message should be shown;
       int width = list.getWidth();
       if (isSelected) {
         // This color is light blue.
