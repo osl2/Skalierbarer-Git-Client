@@ -1,13 +1,15 @@
 package git;
 
+import commands.Remote;
 import git.exception.GitException;
+import org.apache.commons.io.FileSystem;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.transport.SshSessionFactory;
-import org.eclipse.jgit.transport.URIish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -18,6 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -109,9 +114,13 @@ public class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  public void cloneRepositoryTest() throws GitException, URISyntaxException {
+  public void cloneRepositoryTest() throws GitException, IOException {
     File destination = new File(repo, "newFolder");
+    FileUtils.forceMkdir(destination);
     assertThrows(GitException.class, () -> facade.cloneRepository("https://git.scc.kit.edu/pse-git-client/entwurf.git", destination, true), "");
+
+    FileUtils.forceDelete(destination);
+    FileUtils.forceMkdir(destination);
 
     //Cloning a test-Repo from Git-Hub
     facade.cloneRepository("https://github.com/rmccue/test-repository.git", destination, false);
@@ -121,12 +130,12 @@ public class GitFacadeTest extends AbstractGitTest {
     boolean containsOpml = false;
     boolean containsReadme = false;
     boolean containsOther = false;
-    for (File file : filesCloned){
-      if (file.getName().equals(".git")){
+    for (File file : filesCloned) {
+      if (file.getName().equals(".git")) {
         containsGit = true;
-      } else if (file.getName().equals("opml.php")){
+      } else if (file.getName().equals("opml.php")) {
         containsOpml = true;
-      } else if (file.getName().equals("README")){
+      } else if (file.getName().equals("README")) {
         containsReadme = true;
       } else {
         containsOther = true;
@@ -136,7 +145,53 @@ public class GitFacadeTest extends AbstractGitTest {
     assertTrue(containsOpml);
     assertTrue(containsReadme);
     assertFalse(containsOther);
-     }
+  }
+
+
+  @Test
+  public void fetchRemotesTest() throws GitAPIException, GitException, IOException {
+    String gitUrl = "https://github.com/rmccue/test-repository.git";
+
+    //Get all Branches of Remote repo and instantiate a master Branch
+    GitBranch masterBranch = new GitBranch("");
+    Collection<Ref> refs = Git.lsRemoteRepository()
+        .setHeads(true)
+        .setRemote(gitUrl)
+        .call();
+    for(Ref ref : refs){
+      if (ref.getName().contains("master")){
+        masterBranch = new GitBranch(ref);
+      }
+    }
+
+    //Cloning Repository
+    deleteDir(repo);  //make an empty directory
+    git = Git.cloneRepository()
+        .setURI(gitUrl)
+        .setDirectory(repo)
+        .setCloneAllBranches(true)
+        .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
+        .setCloneSubmodules(true)
+        .call();
+
+    GitRemote remote = new GitRemote(gitUrl, "user", "origin");
+    ArrayList <GitRemote> remotesToFetch = new ArrayList<>();
+    remotesToFetch.add(remote);
+    assertEquals(1, remotesToFetch.size());
+    facade.fetchRemotes(remotesToFetch);
+
+    remote.addBranch(masterBranch);
+    remotesToFetch = new ArrayList<>();
+    remotesToFetch.add(remote);
+    assertEquals(1, remotesToFetch.size());
+    facade.fetchRemotes(remotesToFetch);
+
+    remotesToFetch = new ArrayList<>();
+    remotesToFetch.add(new GitRemote("blabla", "user", "name!"));
+    ArrayList<GitRemote> finalRemotesToFetch = remotesToFetch;
+    assertThrows(GitException.class, () -> facade.fetchRemotes(finalRemotesToFetch));
+
+  }
 
 
 }
