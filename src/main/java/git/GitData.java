@@ -82,7 +82,7 @@ public class GitData {
   }
 
   /**
-   * Returns the merge oommit message as prepared by git.
+   * Returns the merge commit message as prepared by git.
    *
    * @return String with commit message; NULL if MERGE_MSG does not exist in .git
    */
