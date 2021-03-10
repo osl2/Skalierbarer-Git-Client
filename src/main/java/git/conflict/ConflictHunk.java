@@ -62,6 +62,13 @@ public class ConflictHunk extends AbstractHunk {
 
     }
 
+    public void acceptNone() {
+        result.clear();
+        acceptedOurs = false;
+        acceptedTheirs = false;
+        resolved = true;
+    }
+
     /**
      * Returns the lines which represent the current state of the hunk
      *

@@ -33,6 +33,8 @@ public class MergeConflictDialogView implements IDialogView {
     private JScrollPane centerScrollbar;
     @SuppressWarnings("unused")
     private JScrollPane rightScrollbar;
+    @SuppressWarnings("unused")
+    private JPanel comparisonPane;
     private int sidesHandled = 0;
     private final Iterator<ConflictHunk> conflictHunkIterator;
     private ConflictHunk currentHunk;
@@ -99,6 +101,10 @@ public class MergeConflictDialogView implements IDialogView {
         }
         sidesHandled++;
         if (sidesHandled == 2 || fileConflict.wasDeleted()) {
+            // If we do decline both sides, the conflict is not yet resolved. In that case we actively state that we
+            // do not want to accept any side.
+            if (!hunk.isResolved())
+                hunk.acceptNone();
             buttonRightAccept.setEnabled(false);
             buttonLeftAccept.setEnabled(false);
             buttonLeftDecline.setEnabled(false);
@@ -125,7 +131,6 @@ public class MergeConflictDialogView implements IDialogView {
 
 
     private Style getApplicableStyle(StyleContext context, AbstractHunk hunk) {
-        Style conflictStyle = context.getStyle("conflict");
         Style activeConflictStyle = context.getStyle("activeConflict");
         Style resolvedConflictStyle = context.getStyle("resolvedConflict");
         if (hunk instanceof ConflictHunk && hunk.isResolved()) {
