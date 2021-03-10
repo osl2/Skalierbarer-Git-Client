@@ -14,7 +14,7 @@ public class JOptionPaneTestable extends JOptionPane {
             throws HeadlessException {
 
         showConfirmDialogCalled = true;
-        return 0;
+        return JOptionPane.YES_OPTION;
     }
 
     public void resetTestStatus() {

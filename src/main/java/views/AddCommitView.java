@@ -78,11 +78,11 @@ public class AddCommitView extends JPanel implements IView {
                 "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         //if Yes was selected, perform git add on the files
-        if (saveChanges == 0) {
+        if (saveChanges == JOptionPane.YES_OPTION) {
           executeAdd();
         }
         //do not restore default view if user selected Cancel
-        else if (saveChanges == 2) {
+        else if (saveChanges == JOptionPane.CANCEL_OPTION) {
           close = false;
         }
       }
@@ -237,7 +237,7 @@ public class AddCommitView extends JPanel implements IView {
       int confirmation = JOptionPane.showConfirmDialog(null,
               getCommitConfirmationPane(stagedFiles, commitCommand.getCommitMessage()), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE);
-      if (confirmation != 0) {
+      if (confirmation != JOptionPane.YES_OPTION) {
         return;
       }
     }
