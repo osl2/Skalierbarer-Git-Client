@@ -78,6 +78,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     void loadAddCommitViewWithText() {
         addCommitView = new AddCommitView("Test");
         panel = addCommitView.getView();
+        commitMessageTextArea = (JTextArea) FindComponents.getChildByName(panel, "commitMessageTextArea");
         assertEquals(0, commitMessageTextArea.getText().compareTo("Test"));
     }
 
