@@ -13,6 +13,18 @@ import settings.*;
 
 import java.io.*;
 import java.util.*;
+import git.exception.*;
+import org.apache.commons.io.*;
+import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.errors.*;
+import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.revwalk.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.*;
+import settings.*;
+
+import java.io.*;
+import java.util.*;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -75,21 +87,14 @@ class GitDataTest extends AbstractGitTest {
           it.next().getMessage());
     }
   }
+    @Test
+    void reinitializeTest(){
+        Git gitBegin = git;
+        gitData.reinitialize();
+        Git gitEnd = GitData.getJGit();
+        assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
 
-  @Test
-  void reinitializeTest() throws IOException {
-    Git gitBegin = git;
-    gitData.reinitialize();
-    Git gitEnd = GitData.getJGit();
-    assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
-
-    File filetoTest = new File(newTempFile, "/.git");
-    FileUtils.forceMkdir(filetoTest);
-    System.out.println(filetoTest.getAbsolutePath());
-    Settings.getInstance().setActiveRepositoryPath(filetoTest);
-    gitData.reinitialize();
-    assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
-  }
+    }
 
   @Test
   void getStashesTest() throws IOException, GitAPIException {
