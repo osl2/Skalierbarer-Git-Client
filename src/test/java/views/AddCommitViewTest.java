@@ -68,13 +68,14 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void loadAddCommitViewTest() {
+    void loadAddCommitViewTest() throws IOException {
         assertNotNull(modifiedChangedFilesList);
         assertNotNull(newFilesList);
         assertNotNull(deletedFilesList);
 
         assertNotNull(commitMessageTextArea);
-        assertEquals(0, commitMessageTextArea.getText().compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE));
+        assertEquals(0, commitMessageTextArea.getText().compareTo(repository.readCommitEditMsg()));
+
     }
 
     @Test
@@ -100,9 +101,17 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void commitMessageTextAreaEdited() {
+    void commitMessageTextAreaEdited() throws IOException {
         assertNotNull(commitMessageTextArea);
-        assertEquals(0, commitMessageTextArea.getText().compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE));
+        String commitEdithMsg = repository.readCommitEditMsg();
+        if (commitEdithMsg != null) {
+            assertEquals(0, commitMessageTextArea.getText().compareTo(commitEdithMsg));
+        } else {
+            assertEquals(0, commitMessageTextArea.getText().compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE));
+        }
+
+        //reset the commit message text are
+        commitMessageTextArea.setText(AddCommitView.DEFAULT_COMMIT_MESSAGE);
 
         //when the focus is gained, the default commit message should disappear
         for (FocusListener listener : commitMessageTextArea.getFocusListeners()) {
@@ -173,6 +182,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         createNewFile();
         add();
         JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        commitMessageTextArea.setText("");
         fireActionEvent(commitButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
@@ -224,7 +234,7 @@ class AddCommitViewTest extends AbstractCommandTest {
 
     }
 
-    private void commitTest(JButton button) throws IOException, GitAPIException {
+    private void commitTest(JButton button) throws GitAPIException {
         //staging area should not be empty
         assertFalse(git.status().call().isClean());
 
@@ -239,7 +249,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @Test
-    void updateTest() {
+    void updateTest() throws IOException {
         addCommitView.update();
         loadAddCommitViewTest();
     }
@@ -257,6 +267,16 @@ class AddCommitViewTest extends AbstractCommandTest {
     @Test
     void deletedFilesCheckBoxTest() {
         selectAllCheckBoxTest(deletedFilesList, deletedFilesCheckBox);
+    }
+
+    @Test
+    void commitMessageTextAreaLoadEarlierMessageTest() throws IOException {
+        String oldCommitMessage = "Text from earlier ACV opened";
+        commitMessageTextArea.setText(oldCommitMessage);
+        git.getRepository().writeCommitEditMsg(oldCommitMessage);
+        //reload the view. Commit message should reappear
+        prepare();
+        assertEquals(0, commitMessageTextArea.getText().compareTo(oldCommitMessage));
     }
 
 

@@ -88,6 +88,12 @@ public class AddCommitView extends JPanel implements IView {
       }
       if(close){
         GUIController.getInstance().restoreDefaultView();
+
+        //save the commit message if user closes the view
+        GitData data = new GitData();
+        if (commitMessageTextArea.getText().compareTo(DEFAULT_COMMIT_MESSAGE) != 0) {
+          data.writeStoredCommitMessage(commitMessageTextArea.getText());
+        }
       }
 
     });
@@ -179,8 +185,6 @@ public class AddCommitView extends JPanel implements IView {
   @Override
   public void update() {
     createUIComponents();
-    //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
   }
 
   /*
@@ -229,7 +233,7 @@ public class AddCommitView extends JPanel implements IView {
 
     //if staging area is not empty, show confirmation dialog
     List<GitFile> stagedFiles = getStagedFiles();
-    if (!stagedFiles.isEmpty()) {
+    if (!stagedFiles.isEmpty() || amend) {
       int confirmation = JOptionPane.showConfirmDialog(null,
               getCommitConfirmationPane(stagedFiles, commitCommand.getCommitMessage()), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE);
