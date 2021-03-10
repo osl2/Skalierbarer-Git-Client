@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * A class to do operations, that change something in the Git repository.
@@ -210,13 +211,19 @@ public class GitFacade {
             GitAuthor author = settings.getUser();
             Git jgit = GitData.getJGit();
             jgit.commit().setMessage(commitMessage).setAuthor(author.getName(), author.getEmail())
-              .setSign(false) // Currently we have no provider support to allow signatures. Therefore we force them to false
-              // See Issue !17
-              .setAmend(amend).call();
+                    .setSign(false) // Currently we have no provider support to allow signatures. Therefore we force them to false
+                    // See Issue !17
+                    .setAmend(amend).call();
+
+            jgit.getRepository().writeCommitEditMsg(null);
             return true;
         } catch (GitAPIException e) {
             throw new GitException("Mit dem Commit ist etwas schief gelaufen: \n " +
                     ERROR_MESSAGE + e.getMessage());
+        } catch (IOException e) {
+            Logger.getGlobal().warning("Couldn't delete .git/COMMIT_EDITMSG");
+            // only triggered by .writeCommitEditMsg() the commit was still successful.
+            return true;
         }
     }
 
