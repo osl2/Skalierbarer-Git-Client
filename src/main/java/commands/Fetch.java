@@ -2,10 +2,7 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.FetchDialogView;
-import git.CredentialProviderHolder;
-import git.GitBranch;
-import git.GitFacade;
-import git.GitRemote;
+import git.*;
 import git.exception.GitException;
 
 import java.util.LinkedList;
@@ -104,6 +101,11 @@ public class Fetch implements ICommand, ICommandGUI {
    */
   @Override
   public void onButtonClicked() {
+    GitData data = new GitData();
+    if (data.getRemotes().isEmpty()) {
+      GUIController.getInstance().errorHandler("Es sind keine Remote Repositorys bekannt.");
+      return;
+    }
     FetchDialogView dialogView = new FetchDialogView();
     if (dialogView.canBeOpened()) {
       GUIController.getInstance().openDialog(dialogView);

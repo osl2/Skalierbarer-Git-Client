@@ -1,9 +1,17 @@
 package commands;
 
+import git.GitData;
+import git.GitRemote;
 import git.exception.GitException;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 public class FetchTest extends AbstractRemoteTest {
 
@@ -33,5 +41,16 @@ public class FetchTest extends AbstractRemoteTest {
     assertNull(fetch.getCommandLine());
     fetch.onButtonClicked();
     assertTrue(guiControllerTestable.openDialogCalled);
+  }
+
+  @Test
+  void testDialogViewDoesNotOpen() {
+    MockedConstruction<GitData> mockConst = mockConstruction(GitData.class, (mock, context) -> {
+      when(mock.getBranches(any(GitRemote.class))).thenReturn(new ArrayList<>());
+    });
+    Fetch fetch = new Fetch();
+    fetch.onButtonClicked();
+    assertFalse(guiControllerTestable.openDialogCalled);
+    mockConst.close();
   }
 }
