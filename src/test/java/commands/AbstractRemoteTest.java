@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public abstract class AbstractRemoteTest extends AbstractCommandTest {
 
   protected static File remoteDir = new File("src" + System.getProperty("file.separator") + "test" +
-          System.getProperty("file.separator") + "resources" + System.getProperty("file.separator") + "Test" +
-          System.getProperty("file.separator") + "remote");
+          System.getProperty("file.separator") + "resources" + System.getProperty("file.separator")
+          + "Test" + System.getProperty("file.separator") + "remote");
 
   @BeforeEach
   protected void createRemoteDir() throws IOException, GitAPIException, GitException {

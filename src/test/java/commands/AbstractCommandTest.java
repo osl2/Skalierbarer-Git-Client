@@ -2,8 +2,8 @@ package commands;
 
 import controller.GUIController;
 import git.AbstractGitTest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
 
@@ -13,16 +13,16 @@ public abstract class AbstractCommandTest extends AbstractGitTest {
     protected static GUIControllerTestable guiControllerTestable;
     protected static MockedStatic<GUIController> mockedController;
 
-    @BeforeAll
-    protected static void setup() {
+    @BeforeEach
+    protected void setup() {
         guiControllerTestable = new GUIControllerTestable();
         mockedController = mockStatic(GUIController.class);
         mockedController.when(GUIController::getInstance).thenReturn(guiControllerTestable);
         guiControllerTestable.resetTestStatus();
     }
 
-    @AfterAll
-    protected static void tearDown() {
+    @AfterEach
+    protected void tearDownCommandTest() {
         mockedController.close();
     }
 

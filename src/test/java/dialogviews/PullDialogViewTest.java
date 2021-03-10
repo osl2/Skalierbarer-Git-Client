@@ -55,17 +55,13 @@ public class PullDialogViewTest extends AbstractRemoteTest {
   @Test
   void testPullButton() throws GitException, IOException, GitAPIException {
     // Create a new Commit to pull.
-    Git jGit = Git.open(repo);
+    git = Git.open(repo);
     FileWriter fr = new FileWriter(textFile, true);
     fr.write("pull");
     fr.close();
-    jGit.add().addFilepattern(textFile.getName()).call();
-    jGit.commit().setCommitter("Tester 5", "tester5@example.com").setSign(false)
+    git.add().addFilepattern(textFile.getName()).call();
+    git.commit().setCommitter("Tester 5", "tester5@example.com").setSign(false)
             .setMessage("Commit 5").call();
-    jGit.getRepository().close();
-    jGit.close();
-    repository.close();
-    git.close();
     // Execute the Pull command in
     remoteCombobox.setSelectedIndex(0);
     branchComboBox.setSelectedIndex(0);
