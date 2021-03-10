@@ -55,7 +55,11 @@ public abstract class AbstractGitTest {
 
     @AfterEach
     void tearDown() {
+        repository.close();
         git.close();
+        GitData.getJGit().close();
+        GitData.getRepository().close();
+
     }
 
     protected void setupRepo() throws GitAPIException, IOException {

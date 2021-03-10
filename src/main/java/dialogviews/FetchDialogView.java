@@ -15,6 +15,10 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 
+/**
+ * This class creates a DialogView to execute the {@link Fetch} command.
+ * You can choose one or more Remotes or one or more Remote Branch to fetch.
+ */
 public class FetchDialogView implements IDialogView {
 
   private JPanel fetchPanel;
@@ -30,6 +34,7 @@ public class FetchDialogView implements IDialogView {
    * Constructor to create a new Instance
    */
   public FetchDialogView() {
+    setNameComponents();
     final GitData git;
     git = new GitData();
     fetchTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
@@ -72,6 +77,15 @@ public class FetchDialogView implements IDialogView {
       }
 
     });
+  }
+
+  /**
+   * This method is needed in order to execute the GUI tests successfully.
+   * Do not change otherwise tests might fail.
+   */
+  private void setNameComponents() {
+    fetchTree.setName("fetchTree");
+    fetchButton.setName("fetchButton");
   }
 
   private RemoteTreeNode buildRemoteTree(GitRemote r) {
@@ -138,6 +152,7 @@ public class FetchDialogView implements IDialogView {
       this.branch = branch;
       this.remote = remote;
     }
+
     /**
      * Gets the string-representation of this class
      * @return string-representation
@@ -197,14 +212,15 @@ public class FetchDialogView implements IDialogView {
 
   @Override
   public void update() {
-  //Is not needed for now
+    //Is not needed for now
   }
 
   /**
    * Returns if this window can be opened
+   *
    * @return true if its possible false else
    */
-  public boolean isOpen() {
+  public boolean canBeOpened() {
     return isOpen;
   }
 
