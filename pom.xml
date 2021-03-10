@@ -92,9 +92,9 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
+              <descriptors>
+                <descriptor>src/main/assembly/jar-with-dependencies.xml</descriptor>
+              </descriptors>
               <archive>
                 <manifest>
                   <mainClass>main.Main</mainClass>
@@ -164,6 +164,7 @@
             <goals>
               <goal>download-licenses</goal>
             </goals>
+            <phase>prepare-package</phase>
           </execution>
           <execution>
             <id>add-third-party</id>
@@ -193,6 +194,7 @@
             <configuration>
               <roots>
                 <root>src/main/java</root>
+                <root>src/test/java</root>
               </roots>
               <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
               <processStartTag>========================LICENSE_START=================================</processStartTag>
@@ -202,6 +204,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.sonarqube</groupId>
+        <artifactId>sonar-plugin-api</artifactId>
+        <version>8.7.0.41497</version>
       </plugin>
     </plugins>
   </build>
@@ -285,11 +292,6 @@
       <groupId>com.jetbrains.intellij.java</groupId>
       <artifactId>java-compiler-ant-tasks</artifactId>
       <version>203.7148.57</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sonarsource.sonarqube</groupId>
-      <artifactId>sonar-plugin-api</artifactId>
-      <version>8.7.0.41497</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
