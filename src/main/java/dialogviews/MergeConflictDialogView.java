@@ -33,12 +33,15 @@ public class MergeConflictDialogView implements IDialogView {
     private JScrollPane centerScrollbar;
     @SuppressWarnings("unused")
     private JScrollPane rightScrollbar;
+    @SuppressWarnings("unused")
+    private JPanel comparisonPane;
     private int sidesHandled = 0;
     private final Iterator<ConflictHunk> conflictHunkIterator;
     private ConflictHunk currentHunk;
 
     public MergeConflictDialogView(GitFileConflict fileConflict,
                                    String titleOurs, String titleTheirs) {
+        nameComponents();
         this.fileConflict = fileConflict;
         this.conflictHunkIterator = fileConflict.getConflictHunkList().listIterator();
         this.buttonLeftAccept.setText(">");
@@ -58,6 +61,29 @@ public class MergeConflictDialogView implements IDialogView {
 
         handleNextConflict();
         populatePanels();
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void nameComponents() {
+        contentPane.setName("contentPane");
+        leftTextPane.setName("leftTextPane");
+        centerTextArea.setName("centerTextArea");
+        rightTextPane.setName("rightTextPane");
+        leftLabel.setName("leftLabel");
+        centerLabel.setName("centerLabel");
+        rightLabel.setName("rightLabel");
+        leftScrollbar.setName("leftScrollbar");
+        buttonLeftAccept.setName("buttonLeftAccept");
+        buttonLeftDecline.setName("buttonLeftDecline");
+        buttonRightAccept.setName("buttonRightAccept");
+        buttonRightDecline.setName("buttonRightDecline");
+        okButton.setName("okButton");
+        centerScrollbar.setName("centerScrollbar");
+        rightScrollbar.setName("rightScrollbar");
+        comparisonPane.setName("comparisonPane");
     }
 
     private ConflictHunk getActiveHunk() {
@@ -99,6 +125,10 @@ public class MergeConflictDialogView implements IDialogView {
         }
         sidesHandled++;
         if (sidesHandled == 2 || fileConflict.wasDeleted()) {
+            // If we do decline both sides, the conflict is not yet resolved. In that case we actively state that we
+            // do not want to accept any side.
+            if (!hunk.isResolved())
+                hunk.acceptNone();
             buttonRightAccept.setEnabled(false);
             buttonLeftAccept.setEnabled(false);
             buttonLeftDecline.setEnabled(false);
@@ -125,7 +155,6 @@ public class MergeConflictDialogView implements IDialogView {
 
 
     private Style getApplicableStyle(StyleContext context, AbstractHunk hunk) {
-        Style conflictStyle = context.getStyle("conflict");
         Style activeConflictStyle = context.getStyle("activeConflict");
         Style resolvedConflictStyle = context.getStyle("resolvedConflict");
         if (hunk instanceof ConflictHunk && hunk.isResolved()) {
