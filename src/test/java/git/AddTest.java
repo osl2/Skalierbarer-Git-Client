@@ -46,7 +46,7 @@ class AddTest extends AbstractCommandTest {
     void executeAddTest() throws GitAPIException {
         files.add(gitFile2);
         files.add(gitFile3);
-        add.setFiles(files);
+        add.setSelectedFiles(files);
 
         //add file1 and file2 manually
         git.add()
@@ -75,7 +75,7 @@ class AddTest extends AbstractCommandTest {
         //configure add command with file2 and file3 that have been selected
         files.add(gitFile2);
         files.add(gitFile3);
-        add.setFiles(files);
+        add.setSelectedFiles(files);
 
         //add file1 and file2 manually
         git.add()
@@ -111,7 +111,7 @@ class AddTest extends AbstractCommandTest {
 
         //prepare add command to add deleted file
         files.add(gitFile1);
-        add.setFiles(files);
+        add.setSelectedFiles(files);
         assertTrue(add.execute());
 
         //file should now be removed
@@ -128,7 +128,7 @@ class AddTest extends AbstractCommandTest {
         files.add(gitFile1);
         files.add(gitFile2);
         files.add(nestedGitFile);
-        add.setFiles(files);
+        add.setSelectedFiles(files);
         String commandLine = add.getCommandLine();
         String separator = File.separator.compareTo("/") == 0 ? "/" : "\\";
         assertEquals(0, commandLine.compareTo("git add file1 file2 dir" + separator + "nestedFile "));

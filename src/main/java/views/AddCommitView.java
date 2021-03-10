@@ -155,7 +155,11 @@ public class AddCommitView extends JPanel implements IView {
     });
   }
 
-
+  /**
+   * This constructor loads the view with the passed commit message
+   *
+   * @param commitMessage The message that should be displayed in the commitMessageTextArea
+   */
   public AddCommitView(String commitMessage) {
     this();
     commitMessageTextArea.setText(commitMessage);
@@ -204,7 +208,7 @@ public class AddCommitView extends JPanel implements IView {
 
 
     //pass all selected GitFiles to add
-    addCommand.setFiles(getSelectedGitFiles());
+    addCommand.setSelectedFiles(getSelectedGitFiles());
 
     //execute git add and set command line
     if (addCommand.execute()) {
@@ -247,7 +251,7 @@ public class AddCommitView extends JPanel implements IView {
    */
   private List<GitFile> getFilesStatusChanged() {
     Add add = new Add();
-    add.setFiles(getSelectedGitFiles());
+    add.setSelectedFiles(getSelectedGitFiles());
     return add.getFilesStatusChanged();
   }
 
@@ -266,6 +270,9 @@ public class AddCommitView extends JPanel implements IView {
     return stagedFiles;
   }
 
+  /*
+  Builds the panel that asks the user whether he/ she for confirmation when trying to commit
+   */
   private JPanel getCommitConfirmationPane(List<GitFile> stagedFiles, String commitMessage) {
     JPanel panel = new JPanel(new BorderLayout());
     JTextField headerTextField = new JTextField("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?");
@@ -405,6 +412,9 @@ public class AddCommitView extends JPanel implements IView {
     diffTextPane = diffView.openDiffView();
   }
 
+  /*
+  Method to select/ deselect all items in a list
+   */
   private void selectAll(JList<FileListItem> list, boolean select) {
 
     for (int i = 0; i < list.getModel().getSize(); i++) {
@@ -466,7 +476,7 @@ public class AddCommitView extends JPanel implements IView {
    * This class represents a list item that holds a GitFile instance. This class is necessary to build the list
    * of files with uncommitted changes that is located in the middle panel of AddCommitView.
    */
-  static class FileListItem {
+  protected static class FileListItem {
     private final GitFile gitFile;
     private boolean isSelected;
 
