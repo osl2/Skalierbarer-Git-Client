@@ -170,7 +170,6 @@ class CheckoutDialogViewTest extends AbstractCommandTest {
     void loadMoreNodeTest() throws GitAPIException {
         git.branchDelete().setBranchNames("testBranch").setForce(true).call();
         generateCommits(71);
-        //checkoutDialogView = new CheckoutDialogView();
         checkoutDialogView.update();
         // Select loadMoreNode
         Object rootNode = tree1.getModel().getRoot();
