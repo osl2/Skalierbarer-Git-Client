@@ -1,6 +1,7 @@
 package dialogviews;
 
 import commands.AbstractRemoteTest;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,4 +48,25 @@ public class FetchDialogViewTest extends AbstractRemoteTest {
     assertNotNull(fDV.getPanel());
     assertTrue(fDV.canBeOpened());
   }
+
+  @Test
+  void testLoadMoreNode() throws GitAPIException {
+    generateCommits(71);
+    Object rootNode = fetchTree.getModel().getRoot();
+    Object masterBranchNode = fetchTree.getModel().getChild(rootNode, 0);
+    assertNotNull(masterBranchNode);
+
+  }
+
+  private void generateCommits(int amount) throws GitAPIException {
+    for (int i = 0; i < amount; i++) {
+      git.commit()
+              .setCommitter("Author " + i, i + "@example.com")
+              .setMessage("New Commit " + i)
+              .setSign(false)
+              .call();
+    }
+  }
+
 }
+
