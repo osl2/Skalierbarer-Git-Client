@@ -166,11 +166,12 @@ public class Commit implements ICommand, ICommandGUI {
    */
   private boolean isCommitHistoryEmpty() {
     GitData gitData = new GitData();
-    boolean commitHistoryEmpty = false;
+    boolean commitHistoryEmpty;
     try {
       commitHistoryEmpty = !gitData.getCommits().hasNext();
     } catch (IOException | GitException e) {
-      GUIController.getInstance().errorHandler(e);
+      //if there is no commit, gitData.getCommits().hasNext probably throws an exception
+      return true;
     }
     return commitHistoryEmpty;
   }
