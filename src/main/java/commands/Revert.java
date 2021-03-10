@@ -95,6 +95,16 @@ public class Revert implements ICommand, ICommandGUI {
      */
     @Override
     public void onButtonClicked() {
+        GitData data = new GitData();
+        try {
+            if (data.getBranches().isEmpty()) {
+                GUIController.getInstance().errorHandler("Es existiert kein Commit");
+                return;
+            }
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+            return;
+        }
         GUIController.getInstance().openDialog(new RevertDialogView());
     }
 
