@@ -35,18 +35,25 @@ public class Fetch implements ICommand, ICommandGUI {
    *
    */
 
-  public void addRemote(GitRemote remote){
-    if(!remotes.contains(remote)) {
+  public void addRemote(GitRemote remote) {
+    if (!remotes.contains(remote)) {
       remotes.add(remote);
     }
   }
 
+  /**
+   * Adds a Branch on Remote to be fetched by the execute method.
+   *
+   * @param remote to add a Branch to fetch.
+   * @param branch on the Remote to fetch.
+   */
   public void addBranch(GitRemote remote, GitBranch branch) {
-    if (!remotes.contains(remote)){
+    if (!remotes.contains(remote)) {
       remotes.add(remote);
     }
     remote.addBranch(branch);
   }
+
   /**
    * Method to get the Commandline input that would be necessarry to execute the command.
    *
@@ -55,9 +62,9 @@ public class Fetch implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
-      StringBuilder out = new StringBuilder();
+    StringBuilder out = new StringBuilder();
     for (GitRemote remote : remotes) {
-      if (remote.getFetchBranches() == null) {
+      if (remote.getFetchBranches().isEmpty()) {
         out.append("git fetch ").append(remote.getName());
       } else {
         for (int j = 0; j < remote.getFetchBranches().size(); j++) {
@@ -65,7 +72,10 @@ public class Fetch implements ICommand, ICommandGUI {
         }
       }
     }
-      return out.toString();
+    if (out.toString().compareTo("") == 0) {
+      return null;
+    }
+    return out.toString();
   }
 
   /**
@@ -95,7 +105,7 @@ public class Fetch implements ICommand, ICommandGUI {
   @Override
   public void onButtonClicked() {
     FetchDialogView dialogView = new FetchDialogView();
-    if (dialogView.isOpen()){
+    if (dialogView.canBeOpened()) {
       GUIController.getInstance().openDialog(dialogView);
     }
 

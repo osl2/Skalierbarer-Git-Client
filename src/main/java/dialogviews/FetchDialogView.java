@@ -217,9 +217,10 @@ public class FetchDialogView implements IDialogView {
 
   /**
    * Returns if this window can be opened
+   *
    * @return true if its possible false else
    */
-  public boolean isOpen() {
+  public boolean canBeOpened() {
     return isOpen;
   }
 

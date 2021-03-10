@@ -45,6 +45,6 @@ public class FetchDialogViewTest extends AbstractRemoteTest {
     assertNotNull(fDV.getDimension());
     assertNotNull(fDV.getTitle());
     assertNotNull(fDV.getPanel());
-    assertTrue(fDV.isOpen());
+    assertTrue(fDV.canBeOpened());
   }
 }
