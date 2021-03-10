@@ -6,6 +6,9 @@
   <version>1.0-SNAPSHOT</version>
   <properties>
     <ci.artifactPhase>none</ci.artifactPhase>
+    <license.inceptionYear>2020</license.inceptionYear>
+    <license.licenseName>apache_v2</license.licenseName>
+    <license.organizationName>The Git-Client Project Authors</license.organizationName>
   </properties>
   <repositories>
     <repository>
@@ -150,6 +153,55 @@
         <configuration>
           <destFile>target/jacoco.exec</destFile>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <executions>
+          <execution>
+            <id>download-licenses</id>
+            <goals>
+              <goal>download-licenses</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>add-third-party</id>
+            <goals>
+              <goal>add-third-party</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <excludedScopes>test</excludedScopes>
+              <useMissingFile>true</useMissingFile>
+            </configuration>
+
+          </execution>
+          <execution>
+            <id>update-project-license</id>
+            <goals>
+              <goal>update-project-license</goal>
+            </goals>
+            <phase>process-sources</phase>
+          </execution>
+          <execution>
+            <id>update-file-header</id>
+            <goals>
+              <goal>update-file-header</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <roots>
+                <root>src/main/java</root>
+              </roots>
+              <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+              <processStartTag>========================LICENSE_START=================================</processStartTag>
+              <processEndTag>=========================LICENSE_END==================================</processEndTag>
+              <sectionDelimiter>======================================================================
+              </sectionDelimiter>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

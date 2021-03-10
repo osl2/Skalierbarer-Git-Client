@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<licenseSummary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns="http://mojo.codehaus.org/"
+                xsi:schemaLocation="http://mojo.codehaus.org/ licenses.xsd">
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.intellij.deps</groupId>
+            <artifactId>jdom</artifactId>
+            <licenses>
+                <license>
+                    <name>Apache 2.0 with acknowledgements removed</name>
+                    <url>
+                        https://raw.githubusercontent.com/hunterhacker/jdom/01c0d6747d3b73651c6dfb2366c8bbb85970d8ae/LICENSE.txt
+                    </url>
+                </license>
+            </licenses>
+        </dependency>
+    </dependencies>
+</licenseSummary>
