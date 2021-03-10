@@ -27,6 +27,7 @@ public class MergeDialogView implements IDialogView {
     private final GitData data;
 
     public MergeDialogView() {
+        nameComponents();
         this.data = new GitData();
 
         this.fromLabel.setText("Von");
@@ -37,18 +38,22 @@ public class MergeDialogView implements IDialogView {
         this.abortButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
         this.okButton.addActionListener(this::okButtonListener);
 
-
-        fromComboBox.setRenderer((jList, gitBranch, i, b, b1) -> {
-            if (gitBranch != null)
-                return new JLabel(gitBranch.getName());
-            else
-                return new JLabel("");
-        });
-
         // To update the branch list
         update();
 
 
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void nameComponents() {
+        fromLabel.setName("fromLabel");
+        toLabel.setName("toLabel");
+        okButton.setName("okButton");
+        abortButton.setName("abortButton");
+        fromComboBox.setName("fromComboBox");
     }
 
     /**
