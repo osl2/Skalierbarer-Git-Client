@@ -22,7 +22,6 @@ public class CommitIteratorTest extends AbstractGitTest{
     Iterable<RevCommit> gitIterator = git.log().call();
     assertTrue(gitIterator.iterator().hasNext());
     iterator = new CommitIterator(gitIterator);
-    assertEquals(gitIterator.iterator().next(), iterator.next());
     assertTrue(iterator.hasNext());
   }
 }
