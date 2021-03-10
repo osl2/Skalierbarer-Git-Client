@@ -41,6 +41,7 @@ public class MergeConflictDialogView implements IDialogView {
 
     public MergeConflictDialogView(GitFileConflict fileConflict,
                                    String titleOurs, String titleTheirs) {
+        nameComponents();
         this.fileConflict = fileConflict;
         this.conflictHunkIterator = fileConflict.getConflictHunkList().listIterator();
         this.buttonLeftAccept.setText(">");
@@ -60,6 +61,29 @@ public class MergeConflictDialogView implements IDialogView {
 
         handleNextConflict();
         populatePanels();
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void nameComponents() {
+        contentPane.setName("contentPane");
+        leftTextPane.setName("leftTextPane");
+        centerTextArea.setName("centerTextArea");
+        rightTextPane.setName("rightTextPane");
+        leftLabel.setName("leftLabel");
+        centerLabel.setName("centerLabel");
+        rightLabel.setName("rightLabel");
+        leftScrollbar.setName("leftScrollbar");
+        buttonLeftAccept.setName("buttonLeftAccept");
+        buttonLeftDecline.setName("buttonLeftDecline");
+        buttonRightAccept.setName("buttonRightAccept");
+        buttonRightDecline.setName("buttonRightDecline");
+        okButton.setName("okButton");
+        centerScrollbar.setName("centerScrollbar");
+        rightScrollbar.setName("rightScrollbar");
+        comparisonPane.setName("comparisonPane");
     }
 
     private ConflictHunk getActiveHunk() {
