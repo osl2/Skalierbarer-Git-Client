@@ -5,7 +5,6 @@ import commands.Push;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,9 @@ class PushTest extends AbstractRemoteTest {
         push = new Push();
         remote = new GitRemote(REMOTE_URI, "user", REMOTE_NAME);
         URIish remote_uri = new URIish(REMOTE_URI);
+        //update git
+        git = GitData.getJGit();
+        repository = GitData.getRepository();
         git.remoteAdd().setUri(remote_uri).setName(REMOTE_NAME).call();
 
         boolean branchExists = false;
@@ -99,11 +101,7 @@ class PushTest extends AbstractRemoteTest {
     void testExecuteNoRemoteBranchSet() throws GitAPIException {
         push.setLocalBranch(localBranch);
         push.setRemote(remote);
-        //assertTrue(push.execute());
-        //TODO: warum schlägt der Test fehl, wenn push.execute() GENAU DASSELBE Kommando ausführt???
-        git.push().setRemote(remote.getName()).setTransportConfigCallback(CredentialProviderHolder::configureTransport)
-                .setRefSpecs(new RefSpec(localBranch.getName() + ":" + localBranch.getName())).call();
-
+        assertTrue(push.execute());
 
         git.fetch().setRemote(REMOTE_NAME).call();
         List<Ref> remoteBranches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
