@@ -1,16 +1,14 @@
 package commands;
 
 import controller.GUIController;
-import git.GitData;
-import git.GitFacade;
-import git.GitFile;
-import git.GitStatus;
+import git.*;
 import git.exception.GitException;
 import views.AddCommitView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents the git commit command. In order to execute this command
@@ -31,17 +29,34 @@ public class Commit implements ICommand, ICommandGUI {
    * This method determines whether the commit should amend the last commit.
    * @param amend True if git commit --amend should be performed, false otherwise.
    */
-  public void setAmend(boolean amend){
+  public void setAmend(boolean amend) {
     this.amend = amend;
+    if (amend && commitMessage == null) {
+      commitMessage = getLastCommitMessage();
+    }
   }
 
   /**
-   * This method sets the commit message of the next commit.
+   * Returns the commit message. If not set, returns the commit message of the last commit
+   *
+   * @return The commit message
+   */
+  public String getCommitMessage() {
+    return Objects.requireNonNullElse(commitMessage, "");
+  }
+
+  /**
+   * This method sets the commit message of the next commit. The commit message is only updated when the passed message
+   * is neither empty nor equals the default commit message
    *
    * @param commitMessage the message of the next commit.
    */
   public void setCommitMessage(String commitMessage) {
-    this.commitMessage = commitMessage;
+    if (commitMessage != null
+            && commitMessage.compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE) != 0
+            && commitMessage.compareTo("") != 0) {
+      this.commitMessage = commitMessage;
+    }
   }
 
   /**
@@ -59,8 +74,14 @@ public class Commit implements ICommand, ICommandGUI {
     GitData gitData = new GitData();
 
     //amending is only possible if commit history is not empty
-    if (amend && !isCommitHistoryEmpty()) {
+    if (amend && isCommitHistoryEmpty()) {
       controller.errorHandler("Es ist noch kein Commit vorhanden, der rückgängig gemacht werden kann!");
+      return false;
+    }
+
+    //commit message must not be empty or the default commit message set by ACV
+    if (commitMessage == null) {
+      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
       return false;
     }
 
@@ -70,13 +91,6 @@ public class Commit implements ICommand, ICommandGUI {
       return false;
     }
 
-
-    if (commitMessage == null
-            || commitMessage.equals(AddCommitView.DEFAULT_COMMIT_MESSAGE)
-            || commitMessage.equals("")){
-      controller.errorHandler("Ungültige Commit-Nachricht eingegeben");
-      return false;
-    }
     boolean success;
     try {
       success = gitFacade.commitOperation(commitMessage, amend);
@@ -128,9 +142,12 @@ public class Commit implements ICommand, ICommandGUI {
     //do nothing, since there is no commit button
   }
 
-  private List<GitFile> getStagedFiles(){
+  /*
+  Returns a list of staged files from the current status
+   */
+  private List<GitFile> getStagedFiles() {
     GitData gitData = new GitData();
-    GitStatus gitStatus= gitData.getStatus();
+    GitStatus gitStatus = gitData.getStatus();
     List<GitFile> stagedFiles;
 
     //get the list of staged files from status
@@ -144,14 +161,36 @@ public class Commit implements ICommand, ICommandGUI {
     return stagedFiles;
   }
 
+  /*
+  Determines whether the commit history is empty
+   */
   private boolean isCommitHistoryEmpty() {
     GitData gitData = new GitData();
-    boolean commitHistoryEmpty = false;
+    boolean commitHistoryEmpty;
     try {
-      commitHistoryEmpty = gitData.getCommits().hasNext();
+      commitHistoryEmpty = !gitData.getCommits().hasNext();
+    } catch (IOException | GitException e) {
+      //if there is no commit, gitData.getCommits().hasNext probably throws an exception
+      return true;
+    }
+    return commitHistoryEmpty;
+  }
+
+  /*
+  Returns the commit message from the last commit. This is necessary for --amend.
+   */
+  private String getLastCommitMessage() {
+    assert !isCommitHistoryEmpty();
+    GitData data = new GitData();
+    String lastCommitMessage = "";
+    try {
+      GitCommit lastCommit = data.getCommits().next();
+      if (lastCommit != null) {
+        lastCommitMessage = lastCommit.getMessage();
+      }
     } catch (IOException | GitException e) {
       GUIController.getInstance().errorHandler(e);
     }
-    return commitHistoryEmpty;
+    return lastCommitMessage;
   }
 }

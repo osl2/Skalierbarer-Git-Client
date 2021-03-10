@@ -109,7 +109,7 @@ public class GitData {
   /**
    * Returns the stored commit message as prepared by git.
    *
-   * @return String with commit message; NULL if COMMIT_EDIT_MSG does not exist in .git
+   * @return String with commit message; NULL if COMMIT_EDITMSG does not exist in .git
    */
   public String getStoredCommitMessage() {
     try {

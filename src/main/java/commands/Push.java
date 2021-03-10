@@ -114,39 +114,46 @@ public class Push implements ICommand, ICommandGUI {
   /**
    * Sets the remote branch the local commits should be pushed to. If the remote branch does not exist,
    * a new upstream branch will be created
+   *
    * @param remoteBranch the name of the new RemoteBranch
    */
-  public void setRemoteBranch(String remoteBranch){
+  public void setRemoteBranch(String remoteBranch) {
     this.remoteBranch = remoteBranch;
   }
 
-  private boolean tryExecute(){
+  /*
+  Tries to execute the command. If authentification is required, the CredentialProvider will be activated and the
+  command execution is retried.
+   */
+  private boolean tryExecute() {
     GitFacade gitFacade = new GitFacade();
     try {
       gitFacade.pushOperation(remote, localBranch, remoteBranch);
       return true;
     } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
-      if (CredentialProviderHolder.getInstance().isActive()){
+      if (CredentialProviderHolder.getInstance().isActive()) {
         return tryExecute();
-      }
-      else {
+      } else {
         CredentialProviderHolder.getInstance().setActive(true);
         return false;
       }
     }
   }
-  private boolean getBranches(){
+
+  /*
+   * Returns all branches in the given remote. Activates the CredentialProviderHolder if authentification is required.
+   */
+  private boolean getBranches() {
     GitData git = new GitData();
     try {
       branchList = git.getBranches(remote);
       return true;
-    } catch (GitException e){
+    } catch (GitException e) {
       CredentialProviderHolder.getInstance().changeProvider(true, remote.getName());
-      if (CredentialProviderHolder.getInstance().isActive()){
+      if (CredentialProviderHolder.getInstance().isActive()) {
         return getBranches();
-      }
-      else {
+      } else {
         CredentialProviderHolder.getInstance().setActive(true);
         return false;
       }

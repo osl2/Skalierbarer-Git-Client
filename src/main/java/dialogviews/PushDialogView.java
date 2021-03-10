@@ -51,6 +51,9 @@ public class PushDialogView implements IDialogView {
         refreshButton.addActionListener(e -> setUpRemoteComboBox());
     }
 
+    /*
+    Prepares the comboboxes and the textfield for the remote branch
+     */
     private void loadDialog() {
         //fill local branch combobox and remote combobox with values
         setUpLocalBranchComboBox();
@@ -92,6 +95,9 @@ public class PushDialogView implements IDialogView {
         return this.contentPane;
     }
 
+    /**
+     * updates the view
+     */
     @Override
     public void update() {
         loadDialog();
@@ -152,6 +158,10 @@ public class PushDialogView implements IDialogView {
         remoteComboBox.setRenderer(new RemoteComboBoxRenderer());
     }
 
+    /*
+    Provides the push command with the necessary parameters and calls execute(). If the command was executed
+    successfully, the GUIController is set to display the command line
+     */
     private boolean executePush() {
         Push push = new Push();
         push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
@@ -161,13 +171,15 @@ public class PushDialogView implements IDialogView {
         boolean success = push.execute();
 
         //set command line if push was successful
-        if(success){
+        if (success) {
             GUIController.getInstance().setCommandLine(push.getCommandLine());
         }
         return success;
     }
 
-
+    /*
+    Renderer for branch combobox. Displays the name of the branch
+     */
     private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -176,6 +188,9 @@ public class PushDialogView implements IDialogView {
         }
     }
 
+    /*
+    Renderer for remote combobox. Displays the name of the remote
+     */
     private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {

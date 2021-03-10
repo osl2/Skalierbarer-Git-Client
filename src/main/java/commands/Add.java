@@ -16,15 +16,18 @@ import java.util.List;
  * the user has to pass a list of GitFiles.
  */
 public class Add implements ICommand, ICommandGUI {
-  private List<GitFile> files;
+  private List<GitFile> selectedFiles;
 
   public Add(){
-    files = new ArrayList<>();
+    selectedFiles = new ArrayList<>();
   }
 
 
   /**
-   * Performs git add on each GitFile instance separately.
+   * Performs git add on each GitFile instance separately. This method compares the selected files to the files already
+   * in the staging area. The user might have deselected files that have been added earlier. This method first adds all
+   * files that are not yet staged. Afterwards, all files that were already staged but are not contained in selectedFiles
+   * are being removed from the staging are.
    *
    * @return true, if the command has been executed successfully on every file in the list, false otherwise
    */
@@ -54,12 +57,14 @@ public class Add implements ICommand, ICommandGUI {
   }
 
   /**
-   * Takes a list of files that should be added with the next execute()
+   * Takes a list of files that should be added with the next execute().This works in both directions: files that
+   * do not appear in this list but were staged earlier, will be removed from the staging-area. Files in the list that
+   * are not yet staged, will be added.
    *
-   * @param files All files selected by the user to add them to the staging area
+   * @param selectedFiles All files selected by the user to add them to the staging area
    */
-  public void setFiles(List<GitFile> files) {
-    this.files = files;
+  public void setSelectedFiles(List<GitFile> selectedFiles) {
+    this.selectedFiles = selectedFiles;
   }
 
 
@@ -100,6 +105,9 @@ public class Add implements ICommand, ICommandGUI {
     return "Fügt Dateien zur Staging-Area hinzu";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onButtonClicked() {
     GUIController controller = GUIController.getInstance();
@@ -124,7 +132,7 @@ public class Add implements ICommand, ICommandGUI {
     }
 
     List<GitFile> filesToBeAdded = new ArrayList<>();
-    for (GitFile fileToBeAdded : files) {
+    for (GitFile fileToBeAdded : selectedFiles) {
       if (!stagedFiles.contains(fileToBeAdded)) {
         filesToBeAdded.add(fileToBeAdded);
       }
@@ -151,7 +159,7 @@ public class Add implements ICommand, ICommandGUI {
 
     List<GitFile> filesToBeRestored = new ArrayList<>();
     for (GitFile fileToBeRestored : stagedFiles) {
-      if (!files.contains(fileToBeRestored)) {
+      if (!selectedFiles.contains(fileToBeRestored)) {
         filesToBeRestored.add(fileToBeRestored);
       }
     }

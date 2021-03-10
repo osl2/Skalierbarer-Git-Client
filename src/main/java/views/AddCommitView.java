@@ -56,6 +56,9 @@ public class AddCommitView extends JPanel implements IView {
   private JScrollPane diffScrollPane;
   @SuppressWarnings("unused")
   private JTextPane diffTextPane;
+  private JCheckBox modifiedChangedFilesCheckBox;
+  private JCheckBox newFilesCheckBox;
+  private JCheckBox deletedFilesCheckBox;
   private final JList<FileListItem>[] statusListArray;
   private boolean amend;
 
@@ -75,16 +78,22 @@ public class AddCommitView extends JPanel implements IView {
                 "Änderungen speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         //if Yes was selected, perform git add on the files
-        if (saveChanges == 0) {
+        if (saveChanges == JOptionPane.YES_OPTION) {
           executeAdd();
         }
         //do not restore default view if user selected Cancel
-        else if (saveChanges == 2) {
+        else if (saveChanges == JOptionPane.CANCEL_OPTION) {
           close = false;
         }
       }
       if(close){
         GUIController.getInstance().restoreDefaultView();
+
+        //save the commit message if user closes the view
+        GitData data = new GitData();
+        if (commitMessageTextArea.getText().compareTo(DEFAULT_COMMIT_MESSAGE) != 0) {
+          data.writeStoredCommitMessage(commitMessageTextArea.getText());
+        }
       }
 
     });
@@ -113,6 +122,7 @@ public class AddCommitView extends JPanel implements IView {
       public void focusGained(FocusEvent e) {
         JTextArea source = (JTextArea) e.getSource();
         String newText = "";
+        //do not reset the text in case the user has already entered something
         if (!source.getText().contains(DEFAULT_COMMIT_MESSAGE)) {
           newText = source.getText();
         }
@@ -131,11 +141,31 @@ public class AddCommitView extends JPanel implements IView {
       }
     });
 
+    modifiedChangedFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(modifiedChangedFilesList, selected);
+    });
 
+    newFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(newFilesList, selected);
+    });
+    setNameComponents();
 
+    deletedFilesCheckBox.addItemListener(e -> {
+      JCheckBox source = (JCheckBox) e.getSource();
+      boolean selected = source.isSelected();
+      selectAll(deletedFilesList, selected);
+    });
   }
 
-
+  /**
+   * This constructor loads the view with the passed commit message
+   *
+   * @param commitMessage The message that should be displayed in the commitMessageTextArea
+   */
   public AddCommitView(String commitMessage) {
     this();
     commitMessageTextArea.setText(commitMessage);
@@ -155,8 +185,23 @@ public class AddCommitView extends JPanel implements IView {
   @Override
   public void update() {
     createUIComponents();
-    //set the default text of the commit message text area
-    commitMessageTextArea.setText(DEFAULT_COMMIT_MESSAGE);
+  }
+
+  /*
+   * Sets the names of the components that are being tested in AddCommitViewTest. DO NOT CHANGE, otherwise,
+   * tests might fail
+   */
+  private void setNameComponents() {
+    modifiedChangedFilesList.setName("modifiedChangedFilesList");
+    newFilesList.setName("newFilesList");
+    deletedFilesList.setName("deletedFilesList");
+    commitMessageTextArea.setName("commitMessageTextArea");
+    cancelButton.setName("cancelButton");
+    commitButton.setName("commitButton");
+    amendButton.setName("amendButton");
+    modifiedChangedFilesCheckBox.setName("modifiedChangedFilesCheckBox");
+    newFilesCheckBox.setName("newFilesCheckBox");
+    deletedFilesCheckBox.setName("deletedFilesCheckBox");
   }
 
   /*
@@ -167,7 +212,7 @@ public class AddCommitView extends JPanel implements IView {
 
 
     //pass all selected GitFiles to add
-    addCommand.setFiles(getSelectedGitFiles());
+    addCommand.setSelectedFiles(getSelectedGitFiles());
 
     //execute git add and set command line
     if (addCommand.execute()) {
@@ -180,28 +225,22 @@ public class AddCommitView extends JPanel implements IView {
   invokes the commit command when the user clicks on the commit button
    */
   private void executeCommit() {
-
-    //if staging area is not empty, show confirmation dialog
-    List<GitFile> stagedFiles = getStagedFiles();
-    if (!stagedFiles.isEmpty()) {
-      StringBuilder message = new StringBuilder();
-      message.append("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?\n");
-      for (GitFile gitFile : stagedFiles) {
-        message.append(gitFile.getPath().getName());
-        message.append("\n");
-      }
-      int confirmation = JOptionPane.showConfirmDialog(null, message.toString(),
-              "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      if (confirmation != 0) {
-        return;
-      }
-    }
-
     Commit commitCommand = new Commit();
 
     //set amend and commit message
     commitCommand.setAmend(amend);
     commitCommand.setCommitMessage(commitMessageTextArea.getText());
+
+    //if staging area is not empty, show confirmation dialog
+    List<GitFile> stagedFiles = getStagedFiles();
+    if (!stagedFiles.isEmpty() || amend) {
+      int confirmation = JOptionPane.showConfirmDialog(null,
+              getCommitConfirmationPane(stagedFiles, commitCommand.getCommitMessage()), "Änderungen einbuchen?", JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE);
+      if (confirmation != JOptionPane.YES_OPTION) {
+        return;
+      }
+    }
 
     //execute git commit
     if (commitCommand.execute()) {
@@ -216,7 +255,7 @@ public class AddCommitView extends JPanel implements IView {
    */
   private List<GitFile> getFilesStatusChanged() {
     Add add = new Add();
-    add.setFiles(getSelectedGitFiles());
+    add.setSelectedFiles(getSelectedGitFiles());
     return add.getFilesStatusChanged();
   }
 
@@ -236,6 +275,36 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   /*
+  Builds the panel that asks the user whether he/ she for confirmation when trying to commit
+   */
+  private JPanel getCommitConfirmationPane(List<GitFile> stagedFiles, String commitMessage) {
+    JPanel panel = new JPanel(new BorderLayout());
+    JTextField headerTextField = new JTextField("Bist du sicher, dass die Änderungen an folgenden Dateien eingebucht werden sollen?");
+    headerTextField.setEditable(false);
+    JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
+    messageTextArea.setEditable(false);
+    JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
+
+
+    StringBuilder message = new StringBuilder();
+    for (GitFile gitFile : stagedFiles) {
+      message.append(gitFile.getPath().getName());
+      message.append("\n");
+    }
+    JTextArea textArea = new JTextArea(message.toString());
+    textArea.setEditable(false);
+    JScrollPane fileScrollPane = new JScrollPane(textArea);
+    textArea.setLineWrap(true);
+    fileScrollPane.setPreferredSize(new Dimension(500, 200));
+    fileScrollPane.setMaximumSize(new Dimension(500, 200));
+
+    panel.add(headerTextField, BorderLayout.NORTH);
+    panel.add(messageScrollPane, BorderLayout.SOUTH);
+    panel.add(fileScrollPane, BorderLayout.CENTER);
+    return panel;
+  }
+
+  /*
   creates the lists in the middle panel which present all files with uncommitted changes. There are three lists
   which invoke this method: newFilesList, modifiedChangedFilesList and deletedFilesList.
   This method sets up the list model with the given files and adds a MouseListener to all of them. The mouse listener
@@ -252,7 +321,6 @@ public class AddCommitView extends JPanel implements IView {
         values[i] = new FileListItem(gitFile);
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
-        //TODO
       }
       i++;
     }
@@ -265,15 +333,28 @@ public class AddCommitView extends JPanel implements IView {
 
     //only one element can be chosen at a time
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
     //Mouse for Checkboxes. Selected files are being marked for git add
-
-
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
         JList list = (JList) event.getSource();
         //get the item index that was clicked
-        int index = list.locationToIndex(event.getPoint());
+        Point eventPoint = event.getPoint();
+
+        //get the index closest to the clicking point
+        int index = list.locationToIndex(eventPoint);
+
+        //get the rectangle of all cells in the list
+        Rectangle validListRectangle = new Rectangle(0, 0);
+        if (list.getModel().getSize() > 0) {
+          validListRectangle = list.getCellBounds(0, list.getModel().getSize() - 1);
+        }
+
+        //if index is -1, list is empty. Otherwise, eventPoint might be outside the list rectangle
+        if (index < 0 || eventPoint.x > validListRectangle.width || eventPoint.y > validListRectangle.height) {
+          return;
+        }
         FileListItem item = (FileListItem) list.getModel().getElementAt(index);
         //set index in list to be selected
         list.setSelectedIndex(index);
@@ -336,6 +417,19 @@ public class AddCommitView extends JPanel implements IView {
   }
 
   /*
+  Method to select/ deselect all items in a list
+   */
+  private void selectAll(JList<FileListItem> list, boolean select) {
+
+    for (int i = 0; i < list.getModel().getSize(); i++) {
+      FileListItem item = list.getModel().getElementAt(i);
+      item.setSelected(select);
+    }
+    //repaint list
+    list.repaint();
+  }
+
+  /*
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
    * panel of AddCommitView. The renderer is configured to show items as checkboxes.
    */
@@ -370,7 +464,6 @@ public class AddCommitView extends JPanel implements IView {
         }
       } catch (GitException e) {
         GUIController.getInstance().errorHandler(e);
-        //TODO
       }
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
@@ -387,7 +480,7 @@ public class AddCommitView extends JPanel implements IView {
    * This class represents a list item that holds a GitFile instance. This class is necessary to build the list
    * of files with uncommitted changes that is located in the middle panel of AddCommitView.
    */
-  private static class FileListItem {
+  protected static class FileListItem {
     private final GitFile gitFile;
     private boolean isSelected;
 

@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
@@ -103,7 +104,14 @@ public abstract class AbstractGitTest {
         git.getRepository().getConfig().setBoolean("commit", null, "gpgsign", false);
         git.getRepository().getConfig().save();
         repository = git.getRepository();
+        setAuthor();
+    }
 
+    private void setAuthor() throws IOException {
+        StoredConfig config = git.getRepository().getConfig();
+        config.setString("user", null, "name", "TestAuthor");
+        config.setString("user", null, "email", "tester@example.com");
+        config.save();
     }
 
 }
