@@ -77,7 +77,7 @@ public class CheckoutDialogView implements IDialogView {
             GUIController.getInstance().errorHandler(e);
             // this is fatal for our view
             GUIController.getInstance().closeDialogView();
-            return null;
+            return root;
         }
         int i = 0;
         while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {

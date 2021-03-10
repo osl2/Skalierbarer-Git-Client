@@ -2,6 +2,8 @@ package dialogviews;
 
 import commands.AbstractCommandTest;
 import commands.Checkout;
+import git.GitBranch;
+import git.GitData;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -15,11 +17,11 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CheckoutDialogViewTest extends AbstractCommandTest {
 
@@ -136,6 +138,60 @@ class CheckoutDialogViewTest extends AbstractCommandTest {
         checkoutCommit();
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
         checkoutMockedConstruction.close();
+    }
+
+    @Test
+    void failOnGitExceptionTreeGenerator() {
+        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) -> {
+            when(mock.getBranches()).thenThrow(new GitException());
+            when(mock.getCommits()).thenThrow(new GitException());
+        });
+        checkoutDialogView = new CheckoutDialogView();
+        assertTrue(guiControllerTestable.errorHandlerECalled);
+
+        gitDataMockedConstruction.close();
+    }
+
+    @Test
+    void failOnGitExceptionBranchBuilder() throws GitException, IOException {
+        GitBranch mockedBranch = mock(GitBranch.class);
+        when(mockedBranch.getCommits()).thenThrow(new GitException());
+
+        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) -> {
+            when(mock.getBranches()).thenReturn(Collections.singletonList(mockedBranch));
+        });
+        checkoutDialogView = new CheckoutDialogView();
+        assertTrue(guiControllerTestable.errorHandlerECalled);
+
+        gitDataMockedConstruction.close();
+    }
+
+    @Test
+    void loadMoreNodeTest() throws GitAPIException {
+        git.branchDelete().setBranchNames("testBranch").setForce(true).call();
+        generateCommits(71);
+        //checkoutDialogView = new CheckoutDialogView();
+        checkoutDialogView.update();
+        // Select loadMoreNode
+        Object rootNode = tree1.getModel().getRoot();
+        Object masterBranchNode = tree1.getModel().getChild(rootNode, 0);
+        Object testLoadMoreNode = tree1.getModel().getChild(masterBranchNode, tree1.getModel().getChildCount(masterBranchNode) - 1);
+        assertNotNull(testLoadMoreNode);
+        TreePath path = new TreePath(testLoadMoreNode);
+        tree1.setSelectionPath(path);
+        Object lastNode = tree1.getModel().getChild(masterBranchNode, tree1.getModel().getChildCount(masterBranchNode) - 1);
+        assertNotEquals(lastNode, testLoadMoreNode);
+
+    }
+
+    private void generateCommits(int amount) throws GitAPIException {
+        for (int i = 0; i < amount; i++) {
+            git.commit()
+                    .setCommitter("Author " + i, i + "@example.com")
+                    .setMessage("New Commit " + i)
+                    .setSign(false)
+                    .call();
+        }
     }
 
 }
