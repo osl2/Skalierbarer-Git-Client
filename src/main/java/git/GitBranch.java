@@ -136,4 +136,9 @@ public class GitBranch {
     }
     return false;
   }
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }
