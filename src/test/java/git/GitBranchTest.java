@@ -140,6 +140,14 @@ class GitBranchTest extends AbstractGitTest {
   }
 
   @Test
+  void hashTest(){
+    GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
+    GitBranch branch2 = new GitBranch(BRANCH_NAMES[1]);
+    assertNotEquals(branch1.hashCode(), branch2.hashCode());
+    assertEquals(branch1.hashCode(), branch1.hashCode());
+  }
+
+  @Test
   void equalsTest() throws GitAPIException {
     GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
     GitBranch branch2 = new GitBranch(BRANCH_NAMES[0]);
@@ -158,6 +166,7 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals(branch1, branch1);
     assertNotEquals(branch3, branch1);
     assertNotEquals(branch1, 4);
+    assertFalse(branch1.equals(null));
     assertNotEquals(branch3, branch2);
     assertNotNull(branch1);
   }
