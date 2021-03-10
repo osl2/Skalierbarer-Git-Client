@@ -4,13 +4,15 @@ import commands.AbstractRemoteTest;
 import commands.Remote;
 import dialogviews.FindComponents;
 import git.GitRemote;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,24 +27,23 @@ public class RemoteViewTest extends AbstractRemoteTest {
     JButton removeButton;
     @BeforeEach
     void prepare(){
-        FindComponents find = new FindComponents();
         RemoteView remoteD = new RemoteView();
         JPanel frame = remoteD.getView();
-        urlField = (JTextField) find.getChildByName(frame, "urlField");
+        urlField = (JTextField) FindComponents.getChildByName(frame, "urlField");
         assertNotNull(urlField);
-        nameField = (JTextField) find.getChildByName(frame, "nameField");
+        nameField = (JTextField) FindComponents.getChildByName(frame, "nameField");
         assertNotNull(nameField);
-        branchArea = (JTextArea) find.getChildByName(frame, "branchArea");
+        branchArea = (JTextArea) FindComponents.getChildByName(frame, "branchArea");
         assertNotNull(branchArea);
-        remoteList = (JList<GitRemote>) find.getChildByName(frame, "remoteList");
+        remoteList = (JList<GitRemote>) FindComponents.getChildByName(frame, "remoteList");
         assertNotNull(remoteList);
-        safeButton = (JButton) find.getChildByName(frame, "safeButton");
+        safeButton = (JButton) FindComponents.getChildByName(frame, "safeButton");
         assertNotNull(safeButton);
-        deleteButton = (JButton) find.getChildByName(frame, "deleteButton");
+        deleteButton = (JButton) FindComponents.getChildByName(frame, "deleteButton");
         assertNotNull(deleteButton);
-        addButton = (JButton) find.getChildByName(frame, "addButton");
+        addButton = (JButton) FindComponents.getChildByName(frame, "addButton");
         assertNotNull(addButton);
-        removeButton = (JButton) find.getChildByName(frame, "removeButton");
+        removeButton = (JButton) FindComponents.getChildByName(frame, "removeButton");
     }
     @Test
     void testStop(){
@@ -65,13 +66,25 @@ public class RemoteViewTest extends AbstractRemoteTest {
         safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
         assertEquals("master" + System.lineSeparator(), branchArea.getText() );
         assertEquals(url, remoteList.getSelectedValue().getUrl());
+        urlField.setText("");
+        safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.errorHandlerECalled);
         deleteButton.getActionListeners()[0].actionPerformed(new ActionEvent(deleteButton, ActionEvent.ACTION_PERFORMED, null));
         assertEquals(0, remoteList.getModel().getSize());
     }
     @Test
     void testMainWindowThings(){
+        deleteButton.getActionListeners()[0].actionPerformed(new ActionEvent(deleteButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.errorHandlerMSGCalled);
+        safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.errorHandlerMSGCalled);
         RemoteView rView = new RemoteView();
+        rView.update();
         Remote rem = new Remote();
+        rem.onButtonClicked();
+        assertTrue(guiControllerTestable.openViewCalled);
+        rem.setRemoteSubcommand(Remote.RemoteSubcommand.INACTIVE);
+        assertNull(rem.getCommandLine());
         assertNotNull(rView.getView());
         assertEquals("Remote", rem.getName());
         rem.setRemoteSubcommand(Remote.RemoteSubcommand.ADD);
@@ -79,6 +92,20 @@ public class RemoteViewTest extends AbstractRemoteTest {
         rem.setUrl("gg");
         assertNotNull(rem.getCommandLine());
         assertNotNull(rem.getDescription());
+    }
+    @Test
+    void testSetUrl() throws GitAPIException {
 
+        File newDir = new File("src" + System.getProperty("file.separator") + "test" +
+                System.getProperty("file.separator") + "resources" + System.getProperty("file.separator") + "Test" +
+                System.getProperty("file.separator") + "testRemote");
+        Git.init().setDirectory(newDir).setBare(false).call();
+        int size = remoteList.getModel().getSize();
+        assertEquals( 1, size);
+        remoteList.setSelectedIndex(0);
+        urlField.setText(newDir.getPath());
+        safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
+        assertEquals(newDir.getPath(), remoteList.getSelectedValue().getUrl());
+        deleteDir(newDir);
     }
 }
