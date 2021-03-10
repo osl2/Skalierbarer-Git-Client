@@ -54,7 +54,6 @@ public class Data extends DataObservable {
 
         Rebase rebase = new Rebase(null, null);
         Remote remote = new Remote();
-        Stash stash = new Stash();
 
         LinkedList<ICommandGUI> commands1 = new LinkedList<>();
         LinkedList<ICommandGUI> commands2 = new LinkedList<>();
@@ -97,7 +96,6 @@ public class Data extends DataObservable {
         commands4.add(fetch);
         commands4.add(pull);
         commands4.add(push);
-        commands4.add(stash);
         commands4.add(remote);
         commands4.add(rebase);
         Level levelOne = new Level("Level 1", commands1, 1);

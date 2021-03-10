@@ -5,18 +5,14 @@ import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
 
-
-
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 /**
@@ -75,20 +71,6 @@ class GitDataTest extends AbstractGitTest {
 
     }
 
-    @Test
-    void getStashesTest() throws IOException, GitAPIException {
-        List<GitStash> stashes = gitData.getStashes();
-        assertEquals(0, stashes.size());
-        textFile = new File(repo, "textFile");
-        FileWriter fr = new FileWriter(textFile, true);
-        fr.write("new Text for Stash");
-        fr.close();
-        RevCommit bla = git.stashCreate().call();
-        assertEquals(git.getRepository().getDirectory().getParentFile(), repo);
-        assertEquals(0, gitData.getStashes().size());
-
-
-    }
 
   @Test
   void findsAllBranches() throws GitAPIException, GitException {
