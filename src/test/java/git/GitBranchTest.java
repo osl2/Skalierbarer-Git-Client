@@ -1,18 +1,15 @@
 package git;
 
-import git.exception.GitException;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Ref;
-import org.junit.jupiter.api.Test;
+import git.exception.*;
+import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.errors.*;
+import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.revwalk.*;
+import org.junit.jupiter.api.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,9 +73,9 @@ class GitBranchTest extends AbstractGitTest {
     String[] expectedBranches = BRANCH_NAMES;
 
     String[] branchNames = gitData.getBranches().stream()
-            .map(GitBranch::getName)
-            .filter(b -> !b.equals("master")) // dont include master
-            .toArray(String[]::new);
+        .map(GitBranch::getName)
+        .filter(b -> !b.equals("master")) // dont include master
+        .toArray(String[]::new);
 
     Arrays.sort(expectedBranches);
     Arrays.sort(branchNames);
@@ -117,7 +114,7 @@ class GitBranchTest extends AbstractGitTest {
     for (GitBranch branch : allBranches) {
       if (branch.getName().equals("master")) {
         master = branch;
-      } else if (branch.getName().equals(BRANCH_NAMES[5])){
+      } else if (branch.getName().equals(BRANCH_NAMES[5])) {
         git.checkout().setName(branch.getFullName()).call();
         merged = new GitBranch(branch.getFullName());
       }
@@ -127,24 +124,31 @@ class GitBranchTest extends AbstractGitTest {
     GitBranch finalMerged = merged;
     git.checkout().setName(finalMerged.getFullName()).setCreateBranch(false).call();
 
-    for (GitBranch branch : allBranches){
-      if (branch.getName().equals("BranchWithConflictToMaster")){
+    for (GitBranch branch : allBranches) {
+      if (branch.getName().equals("BranchWithConflictToMaster")) {
         git.checkout().setName("BranchWithConflictToMaster").call();
 
       }
     }
     resultFromMerge = master.merge(true);
     //TODO: Fails if all tests are runned, succedes if only this test Method is called??
-   // assertFalse(resultFromMerge.isEmpty());
+    // assertFalse(resultFromMerge.isEmpty());
 
   }
 
   @Test
-  void hashTest(){
+  void hashTest() {
     GitBranch branch1 = new GitBranch(BRANCH_NAMES[0]);
     GitBranch branch2 = new GitBranch(BRANCH_NAMES[1]);
     assertNotEquals(branch1.hashCode(), branch2.hashCode());
     assertEquals(branch1.hashCode(), branch1.hashCode());
+  }
+
+  @Test
+  void initializeCommitTest() throws GitAPIException {
+    ObjectId objectId = new ObjectId(12, 34, 56, 78, 90);
+    GitCommit commit = new GitCommit(null);
+    assertThrows(NullPointerException.class, () ->commit.getAuthor());
   }
 
   @Test

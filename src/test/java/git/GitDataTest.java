@@ -1,6 +1,18 @@
 package git;
 
 
+import git.exception.*;
+import org.apache.commons.io.*;
+import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.errors.*;
+import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.revwalk.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.*;
+import settings.*;
+
+import java.io.*;
+import java.util.*;
 import git.exception.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -25,7 +37,8 @@ class GitDataTest extends AbstractGitTest {
       new String[]{"Tester 3", "tester3@example.com", "Commit 3"},
       new String[]{"Tester 4", "tester4@example.com", "Commit 4"},
   };
-
+  @TempDir
+  protected static File newTempFile;
 
   @Test
   void getBranchesTest() throws GitAPIException, GitException {
@@ -62,15 +75,36 @@ class GitDataTest extends AbstractGitTest {
           it.next().getMessage());
     }
   }
-    @Test
-    void reinitializeTest(){
-        Git gitBegin = git;
-        gitData.reinitialize();
-        Git gitEnd = GitData.getJGit();
-        assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
 
-    }
+  @Test
+  void reinitializeTest() throws IOException {
+    Git gitBegin = git;
+    gitData.reinitialize();
+    Git gitEnd = GitData.getJGit();
+    assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
 
+    File filetoTest = new File(newTempFile, "/.git");
+    FileUtils.forceMkdir(filetoTest);
+    System.out.println(filetoTest.getAbsolutePath());
+    Settings.getInstance().setActiveRepositoryPath(filetoTest);
+    gitData.reinitialize();
+    assertEquals(gitBegin.getRepository().getDirectory(), gitEnd.getRepository().getDirectory());
+  }
+
+  @Test
+  void getStashesTest() throws IOException, GitAPIException {
+    List<GitStash> stashes = gitData.getStashes();
+    assertEquals(0, stashes.size());
+    textFile = new File(repo, "textFile");
+    FileWriter fr = new FileWriter(textFile, true);
+    fr.write("new Text for Stash");
+    fr.close();
+    RevCommit bla = git.stashCreate().call();
+    assertEquals(git.getRepository().getDirectory().getParentFile(), repo);
+    assertEquals(0, gitData.getStashes().size());
+
+
+  }
 
   @Test
   void findsAllBranches() throws GitAPIException, GitException {
@@ -82,24 +116,24 @@ class GitDataTest extends AbstractGitTest {
     assertEquals(4, branches.size()); // master + 3
   }
 
-    @Test
-    void getBranchesRepoTest() throws GitAPIException, GitException {
-        String gitUrl = "https://github.com/rmccue/test-repository.git";
-        deleteDir(repo);
-        git = Git.cloneRepository()
-            .setURI(gitUrl)
-            .setDirectory(repo)
-            .setCloneAllBranches(true)
-            .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
-            .setCloneSubmodules(true)
-            .call();
-        List<GitRemote> remotes = gitData.getRemotes();
-        assertEquals(1, remotes.size());
-        GitRemote remote = remotes.iterator().next();
-        List<GitBranch> branches = gitData.getBranches(remote);
-        assertEquals(1, branches.size());
-        assertEquals("master", branches.iterator().next().getName());
-    }
+  @Test
+  void getBranchesRepoTest() throws GitAPIException, GitException {
+    String gitUrl = "https://github.com/rmccue/test-repository.git";
+    deleteDir(repo);
+    git = Git.cloneRepository()
+        .setURI(gitUrl)
+        .setDirectory(repo)
+        .setCloneAllBranches(true)
+        .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
+        .setCloneSubmodules(true)
+        .call();
+    List<GitRemote> remotes = gitData.getRemotes();
+    assertEquals(1, remotes.size());
+    GitRemote remote = remotes.iterator().next();
+    List<GitBranch> branches = gitData.getBranches(remote);
+    assertEquals(1, branches.size());
+    assertEquals("master", branches.iterator().next().getName());
+  }
 
   @Test
   void selectedBranchIsUpdated() throws GitAPIException, IOException, GitException {
