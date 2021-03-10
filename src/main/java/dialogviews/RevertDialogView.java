@@ -17,6 +17,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
 
+/**
+ * This class represents the DialogView which is opened after pressing the revert Button in
+ * the Main Window. You can choose one Commit and press the revert Button to execute the
+ * git revert command on this commit.
+ */
 public class RevertDialogView implements IDialogView {
 
     @SuppressWarnings("unused")
@@ -34,99 +39,10 @@ public class RevertDialogView implements IDialogView {
     private DefaultTreeModel model;
 
     /**
-     * Method to build the tree
-     * @param b The branch for the TreeNode
-     * @return The TreeNode of the Branch
-     */
-    private BranchTreeNode buildBranchTree(GitBranch b) {
-        BranchTreeNode root2 = new BranchTreeNode(b);
-        Iterator<GitCommit> iter = null;
-        try {
-            iter = b.getCommits();
-        } catch (GitException | IOException e) {
-            GUIController.getInstance().errorHandler(e);
-        }
-        int i = 0;
-        if (iter != null) {
-            while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
-                CommitTreeNode node = new CommitTreeNode(iter.next());
-                root.add(node);
-            }
-        }
-
-        // We ran into our load maximum but the iterator had more nodes.
-        if (i > MAX_BRANCH_DEPTH) {
-            root2.add(new LoadMoreNode(iter, model));
-        }
-
-        return root2;
-    }
-
-
-    /**
-     * DialogWindow Title
-     *
-     * @return Window Title as String
-     */
-    @Override
-    public String getTitle() {
-        return "Revert";
-    }
-
-    /**
-     * The size of the Dialog
-     *
-     * @return 2D Dimension
-     */
-    @Override
-    public Dimension getDimension() {
-        return new Dimension(800, 600);
-    }
-
-    /**
-     * The content Panel containing all contents of the Dialog
-     *
-     * @return the shown content
-     */
-    @Override
-    public JPanel getPanel() {
-        return revertPanel;
-    }
-
-    /**
-     * method that is called to update the dialog view.
-     */
-    @Override
-    public void update() {
-        //Is not needed for now
-    }
-
-    /**
-     * Method to get the selectionListener for the tree, if there should be loaded more commits
-     * @return the listener for the tree
-     */
-    private TreeSelectionListener loadMoreListener() {
-        return treeSelectionEvent -> {
-            // todo: Come up with a better way of loading more nodes
-            if (treeSelectionEvent.getPath().getLastPathComponent() instanceof LoadMoreNode) {
-                LoadMoreNode node = (LoadMoreNode) treeSelectionEvent.getPath().getLastPathComponent();
-                node.loadMoreItems();
-
-            }
-        };
-
-    }
-    @SuppressWarnings("unused")
-    private void createUIComponents() {
-        //noinspection BoundFieldAssignment
-        this.revertTree = new JTree(this.root);
-        this.revertTree.addTreeSelectionListener(loadMoreListener());
-    }
-
-    /**
      * Constructor to create an Instance of the class RevertDialogView
      */
     public RevertDialogView() {
+        setNameComponents();
         GitData testGit = new GitData();
         // If there are no commits, the user cant revert.
         try {
@@ -174,7 +90,109 @@ public class RevertDialogView implements IDialogView {
         });
     }
 
-    private abstract static  class RefTreeNode extends DefaultMutableTreeNode {
+
+    /**
+     * DialogWindow Title
+     *
+     * @return Window Title as String
+     */
+    @Override
+    public String getTitle() {
+        return "Revert";
+    }
+
+    /**
+     * The size of the Dialog
+     *
+     * @return 2D Dimension
+     */
+    @Override
+    public Dimension getDimension() {
+        return new Dimension(800, 600);
+    }
+
+    /**
+     * The content Panel containing all contents of the Dialog
+     *
+     * @return the shown content
+     */
+    @Override
+    public JPanel getPanel() {
+        return revertPanel;
+    }
+
+    /**
+     * method that is called to update the dialog view.
+     */
+    @Override
+    public void update() {
+        //Is not needed for now
+    }
+
+    /**
+     * Method to build the tree
+     *
+     * @param b The branch for the TreeNode
+     * @return The TreeNode of the Branch
+     */
+    private BranchTreeNode buildBranchTree(GitBranch b) {
+        BranchTreeNode root2 = new BranchTreeNode(b);
+        Iterator<GitCommit> iter = null;
+        try {
+            iter = b.getCommits();
+        } catch (GitException | IOException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
+        int i = 0;
+        if (iter != null) {
+            while (i++ < MAX_BRANCH_DEPTH && iter.hasNext()) {
+                CommitTreeNode node = new CommitTreeNode(iter.next());
+                root2.add(node);
+            }
+        }
+
+        // We ran into our load maximum but the iterator had more nodes.
+        if (i > MAX_BRANCH_DEPTH) {
+            root2.add(new LoadMoreNode(iter, model));
+        }
+
+        return root2;
+    }
+
+    /**
+     * Method to get the selectionListener for the tree, if there should be loaded more commits
+     *
+     * @return the listener for the tree
+     */
+    private TreeSelectionListener loadMoreListener() {
+        return treeSelectionEvent -> {
+            // todo: Come up with a better way of loading more nodes
+            if (treeSelectionEvent.getPath().getLastPathComponent() instanceof LoadMoreNode) {
+                LoadMoreNode node = (LoadMoreNode) treeSelectionEvent.getPath().getLastPathComponent();
+                node.loadMoreItems();
+
+            }
+        };
+
+    }
+
+    @SuppressWarnings("unused")
+    private void createUIComponents() {
+        //noinspection BoundFieldAssignment
+        this.revertTree = new JTree(this.root);
+        this.revertTree.addTreeSelectionListener(loadMoreListener());
+    }
+
+    /**
+     * This method is needed in order to execute the GUI tests successfully.
+     * Do not change otherwise tests might fail.
+     */
+    private void setNameComponents() {
+        revertButton.setName("revertButton");
+        revertTree.setName("revertTree");
+    }
+
+    private abstract static class RefTreeNode extends DefaultMutableTreeNode {
         public RefTreeNode() {
         }
 
@@ -221,6 +239,7 @@ public class RevertDialogView implements IDialogView {
         private BranchTreeNode(GitBranch branch) {
             this.branch = branch;
         }
+
         /**
          * Method to get the String-representation of this class
          * @return the String-representation
@@ -237,6 +256,7 @@ public class RevertDialogView implements IDialogView {
         public GitBranch getBranch() {
             return branch;
         }
+
         /**
          * Method to configure an revert command
          * @param revert the command, which should be configured
@@ -279,6 +299,7 @@ public class RevertDialogView implements IDialogView {
             model.reload(oldParent);
 
         }
+
         /**
          * Method to get the String-representation of this class
          * @return the String-representation
