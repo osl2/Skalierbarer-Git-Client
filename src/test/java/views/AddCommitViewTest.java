@@ -35,17 +35,19 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JCheckBox modifiedChangedFilesCheckBox;
     private JCheckBox newFilesCheckBox;
     private JCheckBox deletedFilesCheckBox;
+    private static MockedStatic<JOptionPane> mockedJOptionPane;
 
     @BeforeAll
     static void setupMockedJOptionPane() {
         jOptionPaneTestable = new JOptionPaneTestable();
-        MockedStatic<JOptionPane> mockedJOptionPane = mockStatic(JOptionPane.class);
+        mockedJOptionPane = mockStatic(JOptionPane.class);
         mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(JOptionPaneTestable.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE));
     }
 
     @AfterAll
     static void closeMockedJOptionPane() {
+        mockedJOptionPane.close();
         jOptionPaneTestable.resetTestStatus();
     }
 
