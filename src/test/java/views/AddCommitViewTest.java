@@ -17,20 +17,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mockStatic;
 
 class AddCommitViewTest extends AbstractCommandTest {
-    private FindComponents find;
     private AddCommitView addCommitView;
     private JPanel panel;
     private JList modifiedChangedFilesList;
     private JList newFilesList;
     private JList deletedFilesList;
     private JTextArea commitMessageTextArea;
-    private JButton commitButton;
     private File file;
     private static JOptionPaneTestable jOptionPaneTestable;
     private JCheckBox modifiedChangedFilesCheckBox;
@@ -38,8 +37,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JCheckBox deletedFilesCheckBox;
 
     @BeforeAll
-    @SuppressWarnings("unused")
-    private static void setupMockedJOptionPane() {
+    static void setupMockedJOptionPane() {
         jOptionPaneTestable = new JOptionPaneTestable();
         MockedStatic<JOptionPane> mockedJOptionPane = mockStatic(JOptionPane.class);
         mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(), anyInt(), anyInt()))
@@ -47,23 +45,21 @@ class AddCommitViewTest extends AbstractCommandTest {
     }
 
     @AfterAll
-    @SuppressWarnings("unused")
-    private static void closeMockedJOptionPane() {
+    static void closeMockedJOptionPane() {
         jOptionPaneTestable.resetTestStatus();
     }
 
     @BeforeEach
     void prepare() {
-        find = new FindComponents();
         addCommitView = new AddCommitView();
         panel = addCommitView.getView();
-        modifiedChangedFilesList = (JList) find.getChildByName(panel, "modifiedChangedFilesList");
-        newFilesList = (JList) find.getChildByName(panel, "newFilesList");
-        deletedFilesList = (JList) find.getChildByName(panel, "deletedFilesList");
-        commitMessageTextArea = (JTextArea) find.getChildByName(panel, "commitMessageTextArea");
-        modifiedChangedFilesCheckBox = (JCheckBox) find.getChildByName(panel, "modifiedChangedFilesCheckBox");
-        newFilesCheckBox = (JCheckBox) find.getChildByName(panel, "newFilesCheckBox");
-        deletedFilesCheckBox = (JCheckBox) find.getChildByName(panel, "deletedFilesCheckBox");
+        modifiedChangedFilesList = (JList) FindComponents.getChildByName(panel, "modifiedChangedFilesList");
+        newFilesList = (JList) FindComponents.getChildByName(panel, "newFilesList");
+        deletedFilesList = (JList) FindComponents.getChildByName(panel, "deletedFilesList");
+        commitMessageTextArea = (JTextArea) FindComponents.getChildByName(panel, "commitMessageTextArea");
+        modifiedChangedFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "modifiedChangedFilesCheckBox");
+        newFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "newFilesCheckBox");
+        deletedFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "deletedFilesCheckBox");
 
     }
 
@@ -82,16 +78,12 @@ class AddCommitViewTest extends AbstractCommandTest {
     void loadAddCommitViewWithText() {
         addCommitView = new AddCommitView("Test");
         panel = addCommitView.getView();
-        modifiedChangedFilesList = (JList) find.getChildByName(panel, "modifiedChangedFilesList");
-        newFilesList = (JList) find.getChildByName(panel, "newFilesList");
-        deletedFilesList = (JList) find.getChildByName(panel, "deletedFilesList");
-        commitMessageTextArea = (JTextArea) find.getChildByName(panel, "commitMessageTextArea");
         assertEquals(0, commitMessageTextArea.getText().compareTo("Test"));
     }
 
     @Test
     void cancelButtonTest() {
-        JButton cancelButton = (JButton) find.getChildByName(panel, "cancelButton");
+        JButton cancelButton = (JButton) FindComponents.getChildByName(panel, "cancelButton");
         assertNotNull(cancelButton);
         for (ActionListener listener : cancelButton.getActionListeners()) {
             listener.actionPerformed(new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, "Cancel button clicked"));
@@ -104,11 +96,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     void commitMessageTextAreaEdited() throws IOException {
         assertNotNull(commitMessageTextArea);
         String commitEdithMsg = repository.readCommitEditMsg();
-        if (commitEdithMsg != null) {
-            assertEquals(0, commitMessageTextArea.getText().compareTo(commitEdithMsg));
-        } else {
-            assertEquals(0, commitMessageTextArea.getText().compareTo(AddCommitView.DEFAULT_COMMIT_MESSAGE));
-        }
+        assertEquals(0, commitMessageTextArea.getText().compareTo(Objects.requireNonNullElse(commitEdithMsg, AddCommitView.DEFAULT_COMMIT_MESSAGE)));
 
         //reset the commit message text are
         commitMessageTextArea.setText(AddCommitView.DEFAULT_COMMIT_MESSAGE);
@@ -172,7 +160,7 @@ class AddCommitViewTest extends AbstractCommandTest {
 
     @Test
     void commitButtonEmptyStagingAreaTest() {
-        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        JButton commitButton = (JButton) FindComponents.getChildByName(panel, "commitButton");
         fireActionEvent(commitButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
@@ -181,7 +169,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     void commitButtonEmptyMessageTest() throws IOException, GitAPIException {
         createNewFile();
         add();
-        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        JButton commitButton = (JButton) FindComponents.getChildByName(panel, "commitButton");
         commitMessageTextArea.setText("");
         fireActionEvent(commitButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
@@ -195,7 +183,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         //reload the view
         prepare();
 
-        JButton commitButton = (JButton) find.getChildByName(panel, "commitButton");
+        JButton commitButton = (JButton) FindComponents.getChildByName(panel, "commitButton");
         commitTest(commitButton);
     }
 
@@ -206,7 +194,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         //reload the view
         prepare();
 
-        JButton amendButton = (JButton) find.getChildByName(panel, "amendButton");
+        JButton amendButton = (JButton) FindComponents.getChildByName(panel, "amendButton");
         commitTest(amendButton);
     }
 
@@ -223,7 +211,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         //select item to add it to the staging-area
         fileListItem.setSelected(true);
 
-        JButton cancelButton = (JButton) find.getChildByName(panel, "cancelButton");
+        JButton cancelButton = (JButton) FindComponents.getChildByName(panel, "cancelButton");
         fireActionEvent(cancelButton);
         assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
 
