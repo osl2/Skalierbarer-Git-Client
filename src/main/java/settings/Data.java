@@ -54,7 +54,6 @@ public class Data extends DataObservable {
 
         Rebase rebase = new Rebase(null, null);
         Remote remote = new Remote();
-        Stash stash = new Stash();
 
         LinkedList<ICommandGUI> commands1 = new LinkedList<>();
         LinkedList<ICommandGUI> commands2 = new LinkedList<>();
