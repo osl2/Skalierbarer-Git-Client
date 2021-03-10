@@ -126,13 +126,15 @@ class GitCommitTest extends AbstractGitTest {
     String diff32 = commit3.getDiff(commit2, file);
     String diff42 = commit4.getDiff(commit2, file);
 
-
+    System.out.println(diff14);
     assertTrue(diff32.contains("Neuer Inhalt des Files"));
     assertFalse(diff42.contains("data 2"));
 
 
     assertEquals(0, commit4.getDiff(commit3, file).length());
     assertTrue(commit3.getDiff(commit2, file).contains("Neuer Inhalt des Files"));
+
+    System.out.println(commit3.getDiff(commit2, file).length());
   }
 
   @Test
