@@ -49,6 +49,19 @@ public class MainWindow extends JFrame {
     private JTextField commandLineTextField;
     private JLabel branchLabel;
 
+    public MainWindow() {
+        setNameComponents();
+    }
+
+    /**
+     * Returns the content panel of the MainWindow
+     *
+     * @return The content panel that holds all components
+     */
+    public JPanel getPanel() {
+        return contentPane;
+    }
+
     /**
      * Replace the lower view of the window.
      * This will invoke {@link #update()}
@@ -61,6 +74,16 @@ public class MainWindow extends JFrame {
         // New Data -> Refresh view
         this.update();
         return true;
+    }
+
+    /*
+    This is for testing
+     */
+    private void setNameComponents() {
+        commandLineTextField.setName("commandLineTextField");
+        branchLabel.setName("branchLabel");
+        buttonPanel.setName("buttonPanel");
+        viewPanel.setName("viewPanel");
     }
 
     /**
@@ -186,8 +209,6 @@ public class MainWindow extends JFrame {
         openItem.addActionListener(l -> openFileListener());
 
         m1.add(openItem);
-        //m1.add(new JMenuItem("Initialisieren")); // removed as it has got it's own button in the gui right now
-        //m1.add(new JMenuItem("Klonen")); // Also has a button apparently.
         m1.add(recentlyUsed);
 
         JMenuItem settingsItem = new JMenuItem("Einstellungen");
