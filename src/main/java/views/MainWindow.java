@@ -117,7 +117,6 @@ public class MainWindow extends JFrame {
 
     private void changeRepository(File path) {
         Settings.getInstance().setActiveRepositoryPath(path);
-        Settings.getInstance().fireDataChangedEvent();
         new GitData().reinitialize();
         GUIController.getInstance().update();
     }

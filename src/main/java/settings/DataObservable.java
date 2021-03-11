@@ -9,14 +9,12 @@ import java.util.List;
  */
 public abstract class DataObservable {
     /**
-     * List of Registered observers.
-     * <p>
-     * SHOULD NOT BE CHANGED EXTERNALLY.
+     * List of registered observers.
      */
     protected List<DataObserver> dataObserverList = new ArrayList<>();
 
     /**
-     * Register a new Listener to be called when Changes occur.
+     * Register a new listener to be called when changes occur.
      *
      * @param dataObserver the Observer to register
      */
@@ -26,10 +24,9 @@ public abstract class DataObservable {
     }
 
     /**
-     * Notifies all Observers of Change.
-     * THIS FUNCTION SHOULD BE CALLED ONLY EXTERNALLY AFTER A GROUP OF CHANGES HAS HAPPENED.
+     * Notifies all Observers of a Data Change.
      */
-    public void fireDataChangedEvent() {
+    protected void fireDataChangedEvent() {
         for (DataObserver o : dataObserverList) {
             o.dataChangedListener(this);
         }

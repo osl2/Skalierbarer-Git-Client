@@ -74,9 +74,7 @@ public class SettingsDialogView implements IDialogView {
             Settings.getInstance().setUser(author);
             int index = levelComboBox.getSelectedIndex();
             Settings.getInstance().setLevel(levels.get(index));
-            if (Settings.getInstance().settingsChanged()) {
-                Settings.getInstance().fireDataChangedEvent();
-            }
+
             GUIController.getInstance().closeDialogView();
         });
         cancelButton.addActionListener(e -> GUIController.getInstance().closeDialogView());

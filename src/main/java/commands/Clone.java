@@ -71,7 +71,6 @@ public class Clone implements ICommand, ICommandGUI {
     if(recursive) {
       commandLine = commandLine + " --recursive";
     }
-    Settings.getInstance().settingsChanged();
     return true;
   }
 
