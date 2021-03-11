@@ -28,9 +28,7 @@ public class Init implements ICommand, ICommandGUI {
     this.path = path;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public boolean execute() {
     if (path == null) {
@@ -51,34 +49,26 @@ public class Init implements ICommand, ICommandGUI {
     return true;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public String getCommandLine() {
     return commandLine;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public String getName() {
     return "Init";
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public String getDescription() {
     return "Der git init Befehl wird verwendet um ein neues git Repository anzulegen. " +
             "Dazu muss in der Kommandozeile der Pfad zu dem gewünschten Ordner angegeben sein.";
   }
 
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public void onButtonClicked() {
     JFileChooser chooser = new JFileChooser();
@@ -86,11 +76,10 @@ public class Init implements ICommand, ICommandGUI {
     int returnVal = chooser.showOpenDialog(null);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       path = chooser.getSelectedFile();
+      if (!execute()) {
+        return;
+      }
+      GUIController.getInstance().setCommandLine(this.getCommandLine());
     }
-    boolean success = execute();
-    if (!success) {
-      return;
-    }
-    GUIController.getInstance().setCommandLine(this.getCommandLine());
   }
 }
