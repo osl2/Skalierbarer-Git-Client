@@ -60,7 +60,7 @@ public class BranchDialogView implements IDialogView {
             // checks if a commit is selected
             if (commitComboBox.getSelectedItem() == null) {
                 GUIController.getInstance().errorHandler("Es muss ein Commit ausgewählt werden. Beim Auswählen eines" +
-                        "Branches wird standartmäßig der letzte Commit ausgewählt");
+                        "Branches wird standardmäßig der letzte Commit ausgewählt");
                 return;
             }
             // Gets the commit from the combobox an the Name of the new Branch frpm the textfield
