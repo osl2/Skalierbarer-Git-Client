@@ -184,6 +184,9 @@
               <goal>update-project-license</goal>
             </goals>
             <phase>process-sources</phase>
+            <configuration>
+              <licenseFile>LICENSE</licenseFile>
+            </configuration>
           </execution>
           <execution>
             <id>update-file-header</id>
