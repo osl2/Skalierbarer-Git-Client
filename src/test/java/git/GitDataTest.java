@@ -97,21 +97,6 @@ class GitDataTest extends AbstractGitTest {
     }
 
   @Test
-  void getStashesTest() throws IOException, GitAPIException {
-    List<GitStash> stashes = gitData.getStashes();
-    assertEquals(0, stashes.size());
-    textFile = new File(repo, "textFile");
-    FileWriter fr = new FileWriter(textFile, true);
-    fr.write("new Text for Stash");
-    fr.close();
-    RevCommit bla = git.stashCreate().call();
-    assertEquals(git.getRepository().getDirectory().getParentFile(), repo);
-    assertEquals(0, gitData.getStashes().size());
-
-
-  }
-
-  @Test
   void findsAllBranches() throws GitAPIException, GitException {
     git.branchCreate().setName("Test1").call();
     git.branchCreate().setName("Test2").call();
