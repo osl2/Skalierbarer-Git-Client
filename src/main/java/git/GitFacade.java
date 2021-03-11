@@ -283,11 +283,6 @@ public class GitFacade {
         throw new AssertionError("not implemented");
     }
 
-    @Deprecated
-    public boolean revert(GitCommit commit) throws GitException {
-        return commit.revert().size() == 0;
-    }
-
     public boolean setConfigValue(String configOption, String configValue) {
         String[] option = configOption.split("\\.");
         StoredConfig config = GitData.getRepository().getConfig();

@@ -7,7 +7,6 @@ import com.jcraft.jsch.agentproxy.connector.SSHAgentConnector;
 import com.jcraft.jsch.agentproxy.usocket.JNAUSocketFactory;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SSHCredentialProvider extends JschConfigSessionFactory {
@@ -18,7 +17,7 @@ public class SSHCredentialProvider extends JschConfigSessionFactory {
             jsch.setIdentityRepository(new RemoteIdentityRepository(new SSHAgentConnector(new JNAUSocketFactory())));
 
         } catch (AgentProxyException e) {
-            Logger.getGlobal().log(Level.SEVERE, "Couldn't use SSH-Agent: {}", e.getMessage());
+            Logger.getGlobal().severe("Couldn't use SSH-Agent: " + e.getMessage());
         }
     }
 }

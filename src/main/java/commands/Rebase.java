@@ -80,6 +80,7 @@ public class Rebase implements ICommand, ICommandGUI {
    */
   @Override
   public void onButtonClicked() {
+    // There is no actual gui Button.
   }
 }
 

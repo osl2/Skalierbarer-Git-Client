@@ -92,8 +92,9 @@ public class CredentialProviderHolder {
      * Method to get a UsernamePasswordProvider
      *
      * @return Returns the created provider
+     * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "2021-03-10")
     UsernamePasswordCredentialsProvider getProvider() {
         return new UsernamePasswordCredentialsProvider(username, password);
     }

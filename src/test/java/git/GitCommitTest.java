@@ -55,7 +55,7 @@ class GitCommitTest extends AbstractGitTest {
       if (commitselect.getMessage().equals("Commit 2")) {
         commit = commitselect;
         List<GitFile> changedFiles = commit.getChangedFiles();
-        assertEquals(changedFiles.size(), 1);
+        assertEquals(1, changedFiles.size());
         GitFile file = changedFiles.get(0);
         assertEquals(new File(repo, "textFile.txt"), file.getPath());
       }
@@ -72,7 +72,7 @@ class GitCommitTest extends AbstractGitTest {
       if (commitselect.getMessage().equals("Commit 1")) {
         commit = commitselect;
         List<GitFile> changedFiles = commit.getChangedFiles();
-        assertEquals(changedFiles.size(), 1);
+        assertEquals(1, changedFiles.size());
         GitFile file = changedFiles.get(0);
         assertEquals(new File(repo, "textFile.txt"), file.getPath());
       }

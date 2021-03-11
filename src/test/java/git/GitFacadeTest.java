@@ -195,22 +195,8 @@ class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  void revertTest() throws GitAPIException, GitException {
-    RevCommit ref = git.log().call().iterator().next();
-    GitCommit commit = new GitCommit(ref);
-    assertTrue(facade.revert(commit));
-
-  }
-
-  @Test
   void rebaseTest(){
     GitBranch branch = new GitBranch("name");
     assertThrows(AssertionError.class, () -> facade.rebase(branch));
   }
-
-
-   @Test
-  void pushTest(){
-    //TODO: Implement me!
-   }
 }

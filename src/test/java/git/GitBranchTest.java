@@ -169,6 +169,8 @@ class GitBranchTest extends AbstractGitTest {
     assertEquals(branch2, branch1);
     assertEquals(branch1, branch1);
     assertNotEquals(branch3, branch1);
+    // Order matters! Do not swap!
+    //noinspection AssertBetweenInconvertibleTypes
     assertNotEquals(branch1, 4);
     assertFalse(branch1.equals(null));
     assertNotEquals(branch3, branch2);
