@@ -95,9 +95,7 @@ class GitFileTest extends AbstractGitTest {
     String absolutePath = Settings.getInstance().getActiveRepositoryPath().getAbsolutePath();
     File testFile = new File("wrong" + absolutePath + "\\test\\testfile.txt");
     long space = testFile.getTotalSpace();
-    assertThrows(AssertionError.class, () -> {
-      new GitFile(space, testFile);
-    });
+    assertThrows(AssertionError.class, () -> new GitFile(space, testFile));
   }
 
   @Test
@@ -153,5 +151,12 @@ class GitFileTest extends AbstractGitTest {
     GitFile gitFile3 = new GitFile(file3.getTotalSpace(), file3);
     assertNotEquals(gitFile3, gitFile);
 
+  }
+
+  @Test
+  void hashCodeTest() {
+    File file2 = fileNotStaged;
+    GitFile gitFile2 = new GitFile(fileNotStaged.getTotalSpace(), fileNotStaged);
+    assertEquals(gitFile.hashCode(), gitFile2.hashCode());
   }
 }
