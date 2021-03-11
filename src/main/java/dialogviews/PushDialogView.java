@@ -189,10 +189,16 @@ public class PushDialogView implements IDialogView {
      */
     private boolean executePush() {
         Push push = new Push();
-        push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
+        GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
+        push.setLocalBranch(localBranch);
         push.setRemote((GitRemote) remoteComboBox.getSelectedItem());
 
-        push.setRemoteBranch(selectedRemoteBranchTextfield.getText());
+        String remoteBranchName = selectedRemoteBranchTextfield.getText();
+
+        //only set remote branch name if it does not equal name of local branch
+        if (localBranch != null && remoteBranchName.compareTo(localBranch.getName()) != 0) {
+            push.setRemoteBranchName(selectedRemoteBranchTextfield.getText());
+        }
         boolean success = push.execute();
 
         //set command line if push was successful

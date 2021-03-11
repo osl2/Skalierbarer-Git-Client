@@ -10,8 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PushDialogViewTest extends AbstractRemoteTest {
     private PushDialogView pushDialogView;
@@ -21,18 +20,16 @@ class PushDialogViewTest extends AbstractRemoteTest {
     private JTextField selectedRemoteBranchTextField;
     private JButton refreshButton;
     private JButton pushButton;
-    private FindComponents find;
 
     @BeforeEach
     void prepareDialog() {
-        find = new FindComponents();
         pushDialogView = new PushDialogView();
         pushPanel = pushDialogView.getPanel();
-        remoteComboBox = (JComboBox) find.getChildByName(pushPanel, "remoteComboBox");
-        localBranchComboBox = (JComboBox) find.getChildByName(pushPanel, "localBranchComboBox");
-        selectedRemoteBranchTextField = (JTextField) find.getChildByName(pushPanel, "selectedRemoteBranchTextField");
-        refreshButton = (JButton) find.getChildByName(pushPanel, "refreshButton");
-        pushButton = (JButton) find.getChildByName(pushPanel, "pushButton");
+        remoteComboBox = (JComboBox) FindComponents.getChildByName(pushPanel, "remoteComboBox");
+        localBranchComboBox = (JComboBox) FindComponents.getChildByName(pushPanel, "localBranchComboBox");
+        selectedRemoteBranchTextField = (JTextField) FindComponents.getChildByName(pushPanel, "selectedRemoteBranchTextField");
+        refreshButton = (JButton) FindComponents.getChildByName(pushPanel, "refreshButton");
+        pushButton = (JButton) FindComponents.getChildByName(pushPanel, "pushButton");
 
     }
 
@@ -91,5 +88,18 @@ class PushDialogViewTest extends AbstractRemoteTest {
         pushDialogView.update();
         loadDialogViewTest();
         //TODO: add new remotes and reload
+    }
+
+    @Test
+    void pushButtonTest() {
+        assertTrue(localBranchComboBox.getModel().getSize() > 0);
+        assertTrue(remoteComboBox.getModel().getSize() > 0);
+        localBranchComboBox.setSelectedIndex(0);
+        remoteComboBox.setSelectedIndex(0);
+        for (ActionListener listener : pushButton.getActionListeners()) {
+            listener.actionPerformed(new ActionEvent(pushButton, ActionEvent.ACTION_PERFORMED, "Button clicked"));
+        }
+        assertTrue(guiControllerTestable.closeDialogViewCalled);
+        assertTrue(guiControllerTestable.setCommandLineCalled);
     }
 }
