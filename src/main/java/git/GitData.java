@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.*;
 
 /**
  * Provides a central point to obtain and create a number of git objects.
@@ -91,7 +92,9 @@ public class GitData {
     try {
       FileRepositoryBuilder builder = new FileRepositoryBuilder();
       builder.setMustExist(true);
-      if (path.getAbsolutePath().matches(".*/.git$"))
+      String separator = Pattern.quote(System.getProperty("file.separator"));
+      String regex = ".*" + separator + ".git";
+      if (path.getAbsolutePath().matches(regex))
         builder.setGitDir(path);
       else
         builder.setWorkTree(path);

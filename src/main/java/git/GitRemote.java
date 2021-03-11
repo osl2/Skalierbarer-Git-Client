@@ -130,5 +130,22 @@ public class GitRemote {
       throw new GitException(e.getMessage());
     }
   }
+
+  @Override
+  public boolean equals (Object o){
+    if (this == o){
+      return true;
+    }
+    if(o != null){
+      if(getClass() == o.getClass()){
+        GitRemote remote = (GitRemote) o;
+        return (remote.gitUser.equals(this.gitUser)
+        && remote.getUrl().equals(this.getUrl())
+        && remote.getName().equals(this.getName())
+        && remote.getFetchBranches().equals(this.getFetchBranches()));
+      }
+    }
+    return false;
+  }
 }
 
