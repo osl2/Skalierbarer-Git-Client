@@ -28,7 +28,7 @@
             </constraints>
             <properties>
               <editable value="false"/>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <opaque value="true"/>
               <text value="Verbundene Remotes "/>
               <toolTipText value="Wähle das entfernte Repository aus, in das gepusht werden soll"/>
@@ -42,7 +42,7 @@
             </constraints>
             <properties>
               <editable value="false"/>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <text value="Entfernter Ziel-Branch"/>
             </properties>
           </component>
@@ -95,7 +95,7 @@
             </constraints>
             <properties>
               <editable value="false"/>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <text value="Lokaler Quell-Branch"/>
               <toolTipText value="Wähle den Branch aus, von dem gepusht werden soll"/>
             </properties>

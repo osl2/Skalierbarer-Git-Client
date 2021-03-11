@@ -31,6 +31,7 @@ public class PushDialogView implements IDialogView {
     @SuppressWarnings("unused")
     private JPanel localBranchPanel;
 
+
     public PushDialogView() {
         loadDialog();
 
@@ -52,6 +53,7 @@ public class PushDialogView implements IDialogView {
 
         setNameComponents();
     }
+
 
     /*
     Prepares the comboboxes and the textfield for the remote branch
@@ -206,7 +208,9 @@ public class PushDialogView implements IDialogView {
     private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
-            this.setText(value.getName());
+            if (value != null) {
+                this.setText(value.getName());
+            }
             return this;
         }
     }
@@ -217,7 +221,9 @@ public class PushDialogView implements IDialogView {
     private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
-            this.setText(value.getName());
+            if (value != null) {
+                this.setText(value.getName());
+            }
             return this;
         }
     }
