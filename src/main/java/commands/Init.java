@@ -44,6 +44,7 @@ public class Init implements ICommand, ICommandGUI {
     // Set active repository
     Settings.getInstance().setActiveRepositoryPath(path);
     Data.getInstance().storeNewRepositoryPath(path);
+
     // Create the git commandLine input to execute this command.
     commandLine = "git init";
     return true;

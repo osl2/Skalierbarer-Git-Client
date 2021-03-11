@@ -59,6 +59,7 @@ public class Settings extends DataObservable {
             this.settingsChanged = true;
         }
         this.level = level;
+        fireDataChangedEvent();
     }
 
     /**
@@ -74,6 +75,8 @@ public class Settings extends DataObservable {
     /**
      * Sets the committer identity
      *
+     * <p><b>Does not fire a DataChangedEvent</b></p>
+     *
      * @param user Committer-Identity
      */
     @JsonIgnore
@@ -82,6 +85,7 @@ public class Settings extends DataObservable {
         facade.setConfigValue("user.name", user.getName());
         facade.setConfigValue("user.email", user.getEmail());
 
+        // We do not fire a Settings Changed event, as this data will not be saved by us.
     }
 
     /**
@@ -104,6 +108,7 @@ public class Settings extends DataObservable {
             this.settingsChanged = true;
         }
         this.activeRepositoryPath = activeRepositoryPath;
+        fireDataChangedEvent();
 
     }
 
@@ -136,6 +141,7 @@ public class Settings extends DataObservable {
             this.settingsChanged = true;
         }
         this.useTooltips = useTooltips;
+        fireDataChangedEvent();
     }
 
     /**
@@ -148,17 +154,7 @@ public class Settings extends DataObservable {
             this.settingsChanged = true;
         }
         this.showTreeView = showTreeView;
-    }
-
-    /**
-     * Check if the settings have been changed since loading from disk.
-     * This is useful to determine if {@link #fireDataChangedEvent()}
-     * should be called after making potential changes to the data.
-     *
-     * @return true if values have been changed and not saved yet
-     */
-    public boolean settingsChanged() {
-        return settingsChanged;
+        fireDataChangedEvent();
     }
 
     /**
