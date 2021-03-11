@@ -142,7 +142,6 @@ public class MainWindow extends JFrame {
     private void createMenubar() {
         JMenuBar bar = new JMenuBar();
         JMenu m1 = new JMenu("Repository");
-        JMenu m2 = new JMenu("Über");
         JMenu recentlyUsed = new JMenu("Kürzlich Verwendet");
 
         for (File f : Data.getInstance().getRecentlyOpenedRepositories()) {
@@ -167,7 +166,6 @@ public class MainWindow extends JFrame {
         m1.add(settingsItem);
 
         bar.add(m1);
-        bar.add(m2);
         this.setJMenuBar(bar);
     }
 }
