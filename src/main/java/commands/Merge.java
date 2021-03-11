@@ -140,6 +140,7 @@ public class Merge implements ICommand, ICommandGUI {
 
     @Override
     public String getCommandLine() {
+        if (srcBranch == null) return null;
         return "git merge " + srcBranch.getName();
     }
 
