@@ -14,7 +14,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractRemoteTest extends AbstractCommandTest {
-
+  protected String REMOTE_URI = repo.getPath() + System.getProperty("file.separator") + ".git";
   protected static File remoteDir = new File("src" + System.getProperty("file.separator") + "test" +
           System.getProperty("file.separator") + "resources" + System.getProperty("file.separator")
           + "Test" + System.getProperty("file.separator") + "remote");
@@ -24,7 +24,7 @@ public abstract class AbstractRemoteTest extends AbstractCommandTest {
     deleteDir(remoteDir.getAbsoluteFile());
     FileUtils.forceMkdir(remoteDir);
     Git result = Git.cloneRepository()
-            .setURI(repo.getPath() + System.getProperty("file.separator") + ".git")
+            .setURI(REMOTE_URI)
             .setDirectory(remoteDir)
             .setCloneAllBranches(true)
             .call();

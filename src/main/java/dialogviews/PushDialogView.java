@@ -31,6 +31,7 @@ public class PushDialogView implements IDialogView {
     @SuppressWarnings("unused")
     private JPanel localBranchPanel;
 
+
     public PushDialogView() {
         loadDialog();
 
@@ -49,7 +50,10 @@ public class PushDialogView implements IDialogView {
 
         //refresh the list of remotes and remote branches.
         refreshButton.addActionListener(e -> setUpRemoteComboBox());
+
+        setNameComponents();
     }
+
 
     /*
     Prepares the comboboxes and the textfield for the remote branch
@@ -58,11 +62,32 @@ public class PushDialogView implements IDialogView {
         //fill local branch combobox and remote combobox with values
         setUpLocalBranchComboBox();
         setUpRemoteComboBox();
+
+        //select the first index if the comboboxes are not empty
+        if (remoteComboBox.getModel().getSize() > 0) {
+            remoteComboBox.setSelectedIndex(0);
+        }
+        if (localBranchComboBox.getModel().getSize() > 0) {
+            localBranchComboBox.setSelectedIndex(0);
+        }
+
         //set text of the remote branch textfield: remote branch equals selected local branch
         GitBranch selectedLocalBranch = (GitBranch) localBranchComboBox.getSelectedItem();
         if (selectedLocalBranch != null) {
             selectedRemoteBranchTextfield.setText(selectedLocalBranch.getName());
         }
+    }
+
+    /*
+    Sets the name of custom created components for testing. DO NOT CHANGE, otherwise, tests might fail
+     */
+    private void setNameComponents() {
+        remoteComboBox.setName("remoteComboBox");
+        localBranchComboBox.setName("localBranchComboBox");
+        selectedRemoteBranchTextfield.setName("selectedRemoteBranchTextField");
+        refreshButton.setName("refreshButton");
+        pushButton.setName("pushButton");
+
     }
 
     /**
@@ -164,10 +189,16 @@ public class PushDialogView implements IDialogView {
      */
     private boolean executePush() {
         Push push = new Push();
-        push.setLocalBranch((GitBranch) localBranchComboBox.getSelectedItem());
+        GitBranch localBranch = (GitBranch) localBranchComboBox.getSelectedItem();
+        push.setLocalBranch(localBranch);
         push.setRemote((GitRemote) remoteComboBox.getSelectedItem());
 
-        push.setRemoteBranch(null);
+        String remoteBranchName = selectedRemoteBranchTextfield.getText();
+
+        //only set remote branch name if it does not equal name of local branch
+        if (localBranch != null && remoteBranchName.compareTo(localBranch.getName()) != 0) {
+            push.setRemoteBranchName(selectedRemoteBranchTextfield.getText());
+        }
         boolean success = push.execute();
 
         //set command line if push was successful
@@ -183,7 +214,9 @@ public class PushDialogView implements IDialogView {
     private class BranchComboBoxRenderer extends JTextField implements ListCellRenderer<GitBranch> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitBranch> list, GitBranch value, int index, boolean isSelected, boolean cellHasFocus) {
-            this.setText(value.getName());
+            if (value != null) {
+                this.setText(value.getName());
+            }
             return this;
         }
     }
@@ -194,7 +227,9 @@ public class PushDialogView implements IDialogView {
     private class RemoteComboBoxRenderer extends JTextField implements ListCellRenderer<GitRemote> {
         @Override
         public Component getListCellRendererComponent(JList<? extends GitRemote> list, GitRemote value, int index, boolean isSelected, boolean cellHasFocus) {
-            this.setText(value.getName());
+            if (value != null) {
+                this.setText(value.getName());
+            }
             return this;
         }
     }
