@@ -24,7 +24,7 @@ public class GitFileConflict {
     private static final String CONFLICT_MARKER_END = ">>>>>>> ";
     private final List<AbstractHunk> hunkList;
     private final GitFile gitFile;
-    private boolean deleted;
+    private final boolean deleted;
 
     private GitFileConflict(GitFile gitFile, List<AbstractHunk> hunkList, boolean deleted) {
         this.gitFile = gitFile;
@@ -38,20 +38,17 @@ public class GitFileConflict {
      * @param gitFile File, for which the conflicts are wanted
      * @param state   State of the conflicts
      * @return GitFileConflict representing all conflicts in the file.
-     * todo BOTH_ADDED case
      */
     public static GitFileConflict getConflictsForFile(GitFile gitFile, IndexDiff.StageState state) {
         ArrayList<AbstractHunk> hunkList = new ArrayList<>();
         switch (state) {
-            case BOTH_ADDED:
-                // Fall through
-                throw new AssertionError("BOTH_ADDED NOT HANDLED");
             case DELETED_BY_THEM:
                 hunkList.add(new ConflictHunk(readFileContents(gitFile), new String[0]));
                 return new GitFileConflict(gitFile, hunkList, true);
             case DELETED_BY_US:
                 hunkList.add(new ConflictHunk(new String[0], readFileContents(gitFile)));
                 return new GitFileConflict(gitFile, hunkList, true);
+            case BOTH_ADDED:
             case BOTH_MODIFIED:
                 // Multiple Conflicts possible. We need to parse in file conflict markers.
                 String[] lines = readFileContents(gitFile);
@@ -130,6 +127,7 @@ public class GitFileConflict {
         return gitFile;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean apply() throws IOException, GitException {
         if (hunkList.stream().anyMatch(e -> !e.isResolved())) {
             return false; // There are still hunks to be resolved
