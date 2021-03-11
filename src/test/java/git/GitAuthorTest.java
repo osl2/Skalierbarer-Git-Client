@@ -3,9 +3,8 @@ package git;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 class GitAuthorTest {
@@ -20,15 +19,17 @@ class GitAuthorTest {
   @Test
   void equalsTest() {
     GitAuthor author2 = new GitAuthor("name", "email");
-    assertTrue(author.equals(author2));
-    assertTrue(author2.equals(author));
-    assertTrue(author2.equals(author2));
-    assertTrue(author.equals(author));
+    assertEquals(author2, author);
+    assertEquals(author, author2);
+    assertEquals(author2, author2);
+    assertEquals(author, author);
     author2 = new GitAuthor("name1", "email");
-    assertFalse(author.equals(author2));
-    assertFalse(author2.equals(author));
-    int i = new Random().ints().findFirst().getAsInt();
-    assertFalse(author.equals(i));
+    assertNotEquals(author2, author);
+    assertNotEquals(author, author2);
+    int i = 4; // The most random integer.
+    // Do no swap sides. assertNotEquals calls leftSide.equals(rightSide) internally!
+    //noinspection AssertBetweenInconvertibleTypes
+    assertNotEquals(author, i);
   }
 
   @Test

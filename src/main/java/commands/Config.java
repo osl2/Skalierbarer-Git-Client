@@ -10,13 +10,6 @@ public class Config implements ICommand {
     private String name = "";
     private String eMail = "";
 
-
-    public Config() {
-
-    }
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean execute() {
         if (name == null || eMail == null) {
