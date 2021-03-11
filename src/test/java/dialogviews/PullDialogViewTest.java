@@ -84,7 +84,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
 
 
   @Test
-  void testMetaData() {
+  void testMetaDataPullConflictView() {
     Settings.getInstance().setLevel(Data.getInstance().getLevels().get(3));
     PullConflictDialogView conflict = new PullConflictDialogView(null, null, "pull");
     assertNotNull(conflict.getDimension());
@@ -95,5 +95,12 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     assertNotNull(cancelButton);
     cancelButton.getActionListeners()[0].actionPerformed(new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, null));
     assertTrue(guiControllerTestable.closeDialogViewCalled);
+  }
+
+  @Test
+  void testMetaDataPullDialogView() {
+    pDV.update();
+    assertNotNull(pDV.getDimension());
+    assertNotNull(pDV.getTitle());
   }
 }
