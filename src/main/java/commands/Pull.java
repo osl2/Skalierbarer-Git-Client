@@ -128,6 +128,7 @@ public class Pull implements ICommand, ICommandGUI {
         }
       }
     } catch (GitException e) {
+      //TODO: sollte wenn die hier geworfen wird execute nicht false zurückgeben???
       GUIController.getInstance().errorHandler(e);
       return master;
     }
