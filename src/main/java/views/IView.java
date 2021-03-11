@@ -2,6 +2,9 @@ package views;
 
 import javax.swing.*;
 
+/**
+ * Represents a view which can be loaded into the lower part of {@link MainWindow}
+ */
 public interface IView {
 
     /**

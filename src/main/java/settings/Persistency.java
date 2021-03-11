@@ -51,6 +51,9 @@ public class Persistency extends DataObserver {
 
     /**
      * Saves the current state to Datastore.
+     *
+     * @param   directory the directory to save the config to.
+     * @return  true      if the config was saved successfully
      */
     public boolean save(File directory) {
         enabled = true;
@@ -72,6 +75,8 @@ public class Persistency extends DataObserver {
 
     /**
      * {@link #load(File)}
+     *
+     * @return true if the config was saved successfully
      */
     public boolean save() {
         return this.save(configDir);
@@ -79,6 +84,9 @@ public class Persistency extends DataObserver {
 
     /**
      * Load state from Datastore.
+     *
+     * @param directory the config directory to load files from
+     * @return true if the config was loaded successfully
      */
     public boolean load(File directory) {
         enabled = true;
@@ -101,6 +109,8 @@ public class Persistency extends DataObserver {
 
     /**
      * {@link #load(File)}
+     *
+     * @return true if the config was loaded successfully
      */
     public boolean load() {
         return this.load(configDir);

@@ -10,6 +10,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
+/**
+ * This dialog is opened when the user has no valid configuration.
+ * It asks for basic data like Author information and a repo to open/initialize.
+ */
 public class FirstUseDialogView implements IDialogView {
     private JTextField nameField;
     private JTextField eMailField;
@@ -24,6 +28,11 @@ public class FirstUseDialogView implements IDialogView {
     private JFileChooser chooser;
 
 
+    /**
+     * Creates a new instance. Needs to be opened by a GUIController.
+     *
+     * @see GUIController#openDialog(IDialogView)
+     */
     public FirstUseDialogView() {
         finishButton.addActionListener(e -> {
             name = nameField.getText();

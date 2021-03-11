@@ -28,10 +28,11 @@ public class Fetch implements ICommand, ICommandGUI {
 
 
   /**
-   * Returns a list containing all remote names.
+   * Add a remote to the list of remotes to fetch.
+   * All remoted added via this method will be passed to git-fetch
    *
+   * @param remote the GitRemote to add. See {@link GitRemote#addBranch(GitBranch)} for more details
    */
-
   public void addRemote(GitRemote remote) {
     if (!remotes.contains(remote)) {
       remotes.add(remote);
@@ -96,9 +97,6 @@ public class Fetch implements ICommand, ICommandGUI {
             "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void onButtonClicked() {
     GitData data = new GitData();
@@ -132,4 +130,3 @@ public class Fetch implements ICommand, ICommandGUI {
     }
   }
 }
-

@@ -12,6 +12,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Dialog to select the target of a Push
+ */
 public class PushDialogView implements IDialogView {
 
     private JPanel contentPane;
@@ -32,6 +35,9 @@ public class PushDialogView implements IDialogView {
     private JPanel localBranchPanel;
 
 
+    /**
+     * Create new view
+     */
     public PushDialogView() {
         loadDialog();
 

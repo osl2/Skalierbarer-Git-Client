@@ -9,8 +9,16 @@ import settings.Settings;
 import java.net.URISyntaxException;
 
 
+/**
+ * The main entry point of the program. Ties together all subsystems
+ */
 public class Main {
 
+    /**
+     * Initializes the program
+     * @param args the commandline args which were passed
+     * @throws URISyntaxException if the active repository was an invalid path
+     */
     public static void main(String[] args) throws URISyntaxException {
         Persistency persistency = new Persistency();
         boolean settingsLoaded = persistency.load();

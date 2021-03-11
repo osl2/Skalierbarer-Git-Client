@@ -96,7 +96,8 @@ public class GitBranch {
    *
    * @param fastForward use fast-forward?
    * @return A list of conflicting pieces of code. This list can be empty if the merge
-   * is completable without user interaction
+   *          is completable without user interaction
+   * @throws GitException if the merge fails due to Git related reasons.
    */
   public List<GitFileConflict> merge(boolean fastForward) throws GitException {
     MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;

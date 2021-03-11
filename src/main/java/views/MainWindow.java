@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+/**
+ * The main window of the application tying all submodules together.
+ */
 public class MainWindow extends JFrame {
 
     private IView loadedView;
@@ -41,10 +44,17 @@ public class MainWindow extends JFrame {
         return true;
     }
 
+    /**
+     * Sets the text shown to the user in the command line representation
+     * @param text the text to show
+     */
     public void setCommandLineText(String text) {
         this.commandLineTextField.setText(text);
     }
 
+    /**
+     * Removes all buttons from the Button panel at the top
+     */
     public void clearButtonPanel() {
         for (Component c : buttonPanel.getComponents()) {
             this.buttonPanel.remove(c);

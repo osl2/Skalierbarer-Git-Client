@@ -12,6 +12,10 @@ import git.exception.GitException;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
+/**
+ * Shows an overview about all configured remotes and allows to change their settings
+ */
 public class RemoteView extends JPanel implements IView {
   @SuppressWarnings("unused")
   private JPanel panel1;
@@ -98,7 +102,7 @@ public class RemoteView extends JPanel implements IView {
   }
 
   /**
-   * Method to grz the RemotePanel
+   * Method to get the RemotePanel
    *
    * @return RemotePnael for the mainwindow
    */
@@ -158,10 +162,10 @@ public class RemoteView extends JPanel implements IView {
     }
     /**
      * Return a component that has been configured to display the specified
-     * value. That component's <code>paint</code> method is then called to
+     * value. That component's {@code paint} method is then called to
      * "render" the cell.  If it is necessary to compute the dimensions
      * of a list because the list cells do not have a fixed size, this method
-     * is called to generate a component on which <code>getPreferredSize</code>
+     * is called to generate a component on which {@code getPreferredSize}
      * can be invoked.
      *
      * @param list         The JList we're painting.

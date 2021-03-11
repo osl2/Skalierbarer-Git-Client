@@ -5,6 +5,9 @@ import git.GitFile;
 
 import javax.swing.*;
 
+/**
+ * Specifies how a diff formatting view has to be defined.
+ */
 public interface IDiffView {
 
   /**

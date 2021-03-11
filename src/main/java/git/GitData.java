@@ -270,6 +270,7 @@ public class GitData {
    *
    * @param remote Online repository, where the branches come from
    * @return List of branches in the repository
+   * @throws GitException when obtaining the branches fails due to git.
    */
   public List<GitBranch> getBranches(GitRemote remote) throws GitException {
     Collection<Ref> refs;

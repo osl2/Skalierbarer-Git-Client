@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.Iterator;
 
 /**
- * This View is used to help the user resolve any conflicts during a Merge (or rebase for that matter)
+ * This View is used to help the user resolve any file conflicts
  */
 public class MergeConflictDialogView implements IDialogView {
     private final GitFileConflict fileConflict;
@@ -39,6 +39,13 @@ public class MergeConflictDialogView implements IDialogView {
     private final Iterator<ConflictHunk> conflictHunkIterator;
     private ConflictHunk currentHunk;
 
+    /**
+     * Creates a new MergeConflictDialogView
+     *
+     * @param fileConflict  The {@link GitFileConflict} encapsulating the conflicting changes for that file
+     * @param titleOurs     Title to be shown over the left side view, usually the branch you merge into
+     * @param titleTheirs   Title to be shown over the right side view, usually the branch you merge from
+     */
     public MergeConflictDialogView(GitFileConflict fileConflict,
                                    String titleOurs, String titleTheirs) {
         nameComponents();
@@ -203,40 +210,21 @@ public class MergeConflictDialogView implements IDialogView {
     }
 
 
-    /**
-     * DialogWindow Title
-     *
-     * @return Window Title as String
-     */
     @Override
     public String getTitle() {
         return "Resolve Merge Conflicts (" + this.fileConflict.getGitFile().getPath().toString() + ")";
     }
 
-    /**
-     * The Size of the newly created Dialog
-     *
-     * @return 2D Dimension
-     */
     @Override
     public Dimension getDimension() {
         return contentPane.getPreferredSize();
     }
 
-    /**
-     * The content Panel containing all contents of the Dialog
-     *
-     * @return the shown content
-     */
     @Override
     public JPanel getPanel() {
         return contentPane;
     }
 
-    /**
-     * Refresh the contents of the Dialog window,
-     * i.e. when data changes
-     */
     @Override
     public void update() {
         populatePanels();

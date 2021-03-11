@@ -23,6 +23,9 @@ public class DiffView implements IDiffView {
   private final SimpleAttributeSet normalLine = new SimpleAttributeSet();
 
 
+  /**
+   * Create a new View
+   */
   public DiffView() {
     StyleConstants.setForeground(addLine, new Color(0, 150, 0) /* Dark Green */);
     StyleConstants.setForeground(removeLine, Color.RED);

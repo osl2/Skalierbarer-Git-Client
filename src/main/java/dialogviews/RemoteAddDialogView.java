@@ -7,6 +7,9 @@ import views.RemoteView;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Dialogview opened to add a new Remote
+ */
 public class RemoteAddDialogView implements IDialogView {
     @SuppressWarnings("unused")
     private JPanel panel1;
@@ -21,15 +24,8 @@ public class RemoteAddDialogView implements IDialogView {
     private JLabel urlLabel;
 
     /**
-     * DialogWindow Title
-     *
-     * @return Window Title as String
+     * Create a new Dialog.
      */
-    @Override
-    public String getTitle() {
-        return "Remote hinzufügen";
-    }
-
     public RemoteAddDialogView() {
         testGUI();
         stopButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
@@ -51,30 +47,21 @@ public class RemoteAddDialogView implements IDialogView {
         });
     }
 
-    /**
-     * The Size of the newly created Dialog
-     *
-     * @return 2D Dimension
-     */
+    @Override
+    public String getTitle() {
+        return "Remote hinzufügen";
+    }
+
     @Override
     public Dimension getDimension() {
         return new Dimension(300, 150);
     }
 
-    /**
-     * The content Panel containing all contents of the Dialog
-     *
-     * @return the shown content
-     */
     @Override
     public JPanel getPanel() {
         return remoteAddPanel;
     }
 
-    /**
-     * Refresh the contents of the Dialog window,
-     * i.e. when data changes
-     */
     @Override
     public void update() {
         //Not needed for this class
@@ -83,7 +70,7 @@ public class RemoteAddDialogView implements IDialogView {
     /**
      * Is for testing the GUI. Do not change this!!!!!!
      */
-    private void testGUI(){
+    private void testGUI() {
         namefield.setName("namefield");
         urlField.setName("urlField");
         addButton.setName("addButton");

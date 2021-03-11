@@ -6,6 +6,10 @@ import git.CredentialProviderHolder;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Dialog to ask for the user's credentials when executing a
+ * remote operation.
+ */
 public class UsernamePasswordDialogView implements IDialogView {
     @SuppressWarnings("unused")
     private JPanel panel1;
@@ -20,16 +24,16 @@ public class UsernamePasswordDialogView implements IDialogView {
     private JButton breakButton;
     private final String name;
 
-    /**
-     * DialogWindow Title
-     *
-     * @return Window Title as String
-     */
+
     @Override
     public String getTitle() {
         return "Benutzername - " + name;
     }
 
+    /**
+     * New Dialog
+     * @param name Shown in dialog title to identify the credential usage
+     */
     public UsernamePasswordDialogView(String name) {
         this.name = name;
         okButton.addActionListener(e -> {
@@ -51,30 +55,16 @@ public class UsernamePasswordDialogView implements IDialogView {
         });
     }
 
-    /**
-     * The content Panel containing all contents of the Dialog
-     *
-     * @return the shown content
-     */
     @Override
     public JPanel getPanel() {
         return userPwPanel;
     }
 
-    /**
-     * The Size of the newly created Dialog
-     *
-     * @return 2D Dimension
-     */
     @Override
     public Dimension getDimension() {
         return new Dimension(400, 200);
     }
 
-    /**
-     * Refresh the contents of the Dialog window,
-     * i.e. when data changes
-     */
     @Override
     public void update() {
         // Is not needed for this dialogview

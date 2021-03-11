@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The View opened to add files to the staging area and to commit files.
+ */
 public class AddCommitView extends JPanel implements IView {
 
   public static final String DEFAULT_COMMIT_MESSAGE = "Hier Commit-Nachricht eingeben";
@@ -62,6 +65,9 @@ public class AddCommitView extends JPanel implements IView {
   private final JList<FileListItem>[] statusListArray;
   private boolean amend;
 
+  /**
+   * Create a new View.
+   */
   public AddCommitView() {
     //add all three types of lists to the status array
     statusListArray = new JList[3];

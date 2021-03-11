@@ -18,6 +18,11 @@ import java.util.List;
 public class Add implements ICommand, ICommandGUI {
   private List<GitFile> selectedFiles;
 
+  /**
+   * Create a new Instance of the Command.
+   *
+   * The Command needs to be configured before {@link #execute()} may be called.
+   */
   public Add(){
     selectedFiles = new ArrayList<>();
   }
