@@ -8,6 +8,7 @@ import org.eclipse.jgit.transport.URIish;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a remote in the Git package.
@@ -146,5 +147,10 @@ public class GitRemote {
         }
         return false;
     }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(url, gitUser, name, fetchBranches);
+  }
 }
 
