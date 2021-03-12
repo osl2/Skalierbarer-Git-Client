@@ -72,6 +72,8 @@ public class UsernamePasswordDialogView implements IDialogView {
             CredentialProviderHolder.getInstance().setActive(false);
             GUIController.getInstance().closeDialogView();
         });
+
+        setNameComponents();
     }
 
     @Override
@@ -87,5 +89,12 @@ public class UsernamePasswordDialogView implements IDialogView {
     @Override
     public void update() {
         // Is not needed for this dialogview
+    }
+
+    private void setNameComponents() {
+        okButton.setName("okButton");
+        breakButton.setName("breakButton");
+        passwordField.setName("passwordField");
+        userNameLabel.setName("userNameLabel");
     }
 }

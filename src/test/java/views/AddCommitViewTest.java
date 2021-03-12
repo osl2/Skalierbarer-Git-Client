@@ -22,12 +22,11 @@ package views;
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import util.JOptionPaneTestable;
+import org.mockito.Mockito;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +39,6 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mockStatic;
 
 class AddCommitViewTest extends AbstractCommandTest {
     private AddCommitView addCommitView;
@@ -50,28 +48,27 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JList deletedFilesList;
     private JTextArea commitMessageTextArea;
     private File file;
-    private static JOptionPaneTestable jOptionPaneTestable;
     private JCheckBox modifiedChangedFilesCheckBox;
     private JCheckBox newFilesCheckBox;
     private JCheckBox deletedFilesCheckBox;
-    private static MockedStatic<JOptionPane> mockedJOptionPane;
-
-    @BeforeAll
-    static void setupMockedJOptionPane() {
-        jOptionPaneTestable = new JOptionPaneTestable();
-        mockedJOptionPane = mockStatic(JOptionPane.class);
-        mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(), anyInt(), anyInt()))
-                .thenReturn(JOptionPaneTestable.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE));
-    }
-
-    @AfterAll
-    static void closeMockedJOptionPane() {
-        mockedJOptionPane.close();
-        jOptionPaneTestable.resetTestStatus();
-    }
+    private MockedStatic<JOptionPane> mockedJOptionPane;
 
     @BeforeEach
     void prepare() {
+        mockedJOptionPane = Mockito.mockStatic(JOptionPane.class);
+        mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(),
+                anyInt(), anyInt()))
+                .thenReturn(JOptionPane.YES_OPTION);
+        loadComponents();
+    }
+
+    @AfterEach
+    void closeJOptionPane() {
+        mockedJOptionPane.close();
+    }
+
+    @BeforeEach
+    void loadComponents() {
         addCommitView = new AddCommitView();
         panel = addCommitView.getView();
         modifiedChangedFilesList = (JList) FindComponents.getChildByName(panel, "modifiedChangedFilesList");
@@ -100,6 +97,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         addCommitView = new AddCommitView("Test");
         panel = addCommitView.getView();
         commitMessageTextArea = (JTextArea) FindComponents.getChildByName(panel, "commitMessageTextArea");
+        assertNotNull(commitMessageTextArea);
         assertEquals(0, commitMessageTextArea.getText().compareTo("Test"));
     }
 
@@ -156,7 +154,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     void newFilesListTest() throws IOException {
         createNewFile();
         //reload view
-        prepare();
+        loadComponents();
 
         //newFilesList should now contain one element
         assertEquals(1, newFilesList.getModel().getSize());
@@ -172,7 +170,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         modifyFile();
 
         //reload view
-        prepare();
+        loadComponents();
 
         assertEquals(1, modifiedChangedFilesList.getModel().getSize());
 
@@ -203,7 +201,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         add();
         assertTrue(git.status().call().getAdded().contains(file.getName()));
         //reload the view
-        prepare();
+        loadComponents();
 
         JButton commitButton = (JButton) FindComponents.getChildByName(panel, "commitButton");
         commitTest(commitButton);
@@ -214,7 +212,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         createNewFile();
         add();
         //reload the view
-        prepare();
+        loadComponents();
 
         JButton amendButton = (JButton) FindComponents.getChildByName(panel, "amendButton");
         commitTest(amendButton);
@@ -223,7 +221,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     @Test
     void cancelButtonTestChangesMade() throws IOException, GitAPIException {
         createNewFile();
-        prepare();
+        loadComponents();
 
         //status should contain the new file
         assertTrue(git.status().call().getUntracked().contains(file.getName()));
@@ -235,7 +233,6 @@ class AddCommitViewTest extends AbstractCommandTest {
 
         JButton cancelButton = (JButton) FindComponents.getChildByName(panel, "cancelButton");
         fireActionEvent(cancelButton);
-        assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
 
         //status should now be clean, file should have been added
         assertTrue(git.status().call().getAdded().contains(file.getName()));
@@ -250,7 +247,6 @@ class AddCommitViewTest extends AbstractCommandTest {
 
         commitMessageTextArea.setText("Test commit");
         fireActionEvent(button);
-        assertTrue(jOptionPaneTestable.isShowConfirmDialogCalled());
         //since file should be pre-selected, commit should execute successfully and default view should be restored
         assertTrue(guiControllerTestable.restoreDefaultViewCalled);
 
@@ -285,7 +281,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         commitMessageTextArea.setText(oldCommitMessage);
         git.getRepository().writeCommitEditMsg(oldCommitMessage);
         //reload the view. Commit message should reappear
-        prepare();
+        loadComponents();
         assertEquals(0, commitMessageTextArea.getText().compareTo(oldCommitMessage));
     }
 

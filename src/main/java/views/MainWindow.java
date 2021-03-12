@@ -186,8 +186,6 @@ public class MainWindow extends JFrame {
         openItem.addActionListener(l -> openFileListener());
 
         m1.add(openItem);
-        //m1.add(new JMenuItem("Initialisieren")); // removed as it has got it's own button in the gui right now
-        //m1.add(new JMenuItem("Klonen")); // Also has a button apparently.
         m1.add(recentlyUsed);
 
         JMenuItem settingsItem = new JMenuItem("Einstellungen");

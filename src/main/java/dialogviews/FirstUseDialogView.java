@@ -79,6 +79,16 @@ public class FirstUseDialogView implements IDialogView {
                 path = chooser.getSelectedFile();
             }
         });
+
+        setNameComponents();
+    }
+
+    /*
+    This is for testing
+     */
+    private void setNameComponents() {
+        chooseButton.setName("chooseButton");
+        finishButton.setName("finishButton");
     }
 
     /**
