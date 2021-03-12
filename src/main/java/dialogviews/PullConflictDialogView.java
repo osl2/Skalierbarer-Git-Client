@@ -101,15 +101,8 @@ public class PullConflictDialogView implements IDialogView {
     if (!merge) {
       mergeButton.setEnabled(true);
     }
+    rebaseButton.setEnabled(false);
     cancelButton.addActionListener(e -> GUIController.getInstance().closeDialogView());
-    rebaseButton.addActionListener(e -> {
-      GUIController.getInstance().closeDialogView();
-      Rebase rebase = new Rebase(src, dest);
-      boolean success = rebase.execute();
-      if (success) {
-        GUIController.getInstance().setCommandLine("git pull --rebase " + commandLine);
-      }
-    });
     mergeButton.addActionListener(e -> {
       GUIController.getInstance().closeDialogView();
       Merge merge1 = new Merge(src, dest);
