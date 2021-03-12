@@ -8,7 +8,7 @@ import git.exception.GitException;
 import java.util.List;
 
 /**
- * This class represents the git push command. In order to execute this command you
+ * Represents the git push command. In order to execute this command you
  * have to pass a local {@link GitBranch} and a {@link GitRemote}.
  */
 public class Push implements ICommand, ICommandGUI {

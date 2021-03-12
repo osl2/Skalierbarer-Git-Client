@@ -7,7 +7,7 @@ import git.GitFacade;
 import git.exception.GitException;
 
 /**
- * This class represents the git branch operation. With the execute method
+ * Represents the git branch operation. With the execute method
  * you can create a new branch in your underlying git repository. In order to
  * execute you have to pass the name of the new Branch and the {@link GitCommit}
  * to start your branch.

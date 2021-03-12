@@ -177,17 +177,11 @@ public class AddCommitView extends JPanel implements IView {
     commitMessageTextArea.setText(commitMessage);
   }
 
-  /**
-   * @return The JPanel that holds all the elements in the view
-   */
   @Override
   public JPanel getView() {
     return contentPanel;
   }
 
-  /**
-   * Updates the view.
-   */
   @Override
   public void update() {
     createUIComponents();
@@ -422,9 +416,7 @@ public class AddCommitView extends JPanel implements IView {
     diffTextPane = diffView.openDiffView();
   }
 
-  /*
-  Method to select/ deselect all items in a list
-   */
+  // Method to select/deselect all items in a list
   private void selectAll(JList<FileListItem> list, boolean select) {
 
     for (int i = 0; i < list.getModel().getSize(); i++) {
@@ -435,7 +427,7 @@ public class AddCommitView extends JPanel implements IView {
     list.repaint();
   }
 
-  /*
+  /**
    * This class defines the renderer for the list of files with uncommitted changes that is located in the middle
    * panel of AddCommitView. The renderer is configured to show items as checkboxes.
    */
@@ -482,7 +474,7 @@ public class AddCommitView extends JPanel implements IView {
 
   }
 
-  /*
+  /**
    * This class represents a list item that holds a GitFile instance. This class is necessary to build the list
    * of files with uncommitted changes that is located in the middle panel of AddCommitView.
    */
@@ -490,31 +482,31 @@ public class AddCommitView extends JPanel implements IView {
     private final GitFile gitFile;
     private boolean isSelected;
 
-    /*
+    /**
      * Creates a list item that holds a GitFile. When the file is already in the staging area,
      * the list item is initially set to be selected.
-     * @param gitFile
+     * @param gitFile the File to show
      */
     FileListItem(GitFile gitFile) throws GitException {
       this.gitFile = gitFile;
       this.isSelected = gitFile.isStaged();
     }
 
-    /*
+    /**
      * Returns the selection state of the item
      */
     boolean isSelected() {
       return isSelected;
     }
 
-    /*
+    /**
      * Setter for the selection state. When the user clicks on a list entry, its selection state will change
      */
     void setSelected(boolean isSelected) {
       this.isSelected = isSelected;
     }
 
-    /*
+    /**
      * Method to retrieve the GitFile instance that is encapsulated in the list item
      */
     GitFile getGitFile() {

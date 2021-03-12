@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents the git add command. In order to execute this command
+ * Represents the git add command. In order to execute this command
  * the user has to pass a list of GitFiles.
  */
 public class Add implements ICommand, ICommandGUI {

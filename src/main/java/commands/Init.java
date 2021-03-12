@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.io.File;
 
 /**
- * This class represents the git init command. In order to execute you have
+ * Represents the git init command. In order to execute you have
  * pass a {@link File} which represents a path to a local directory.
  */
 public class Init implements ICommand, ICommandGUI {

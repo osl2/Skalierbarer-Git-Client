@@ -8,7 +8,7 @@ import git.exception.GitException;
 import java.util.LinkedList;
 
 /**
- * This class represents the git fetch command. In order to execute the command
+ * Represents the git fetch command. In order to execute the command
  * you have to pass a list of {@link GitRemote}.
  */
 public class Fetch implements ICommand, ICommandGUI {

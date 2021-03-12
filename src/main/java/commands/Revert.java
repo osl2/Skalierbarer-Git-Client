@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This class represents the git revert command. In order to execute you have to
+ * Represents the git revert command. In order to execute you have to
  * pass a {@link GitCommit} to revert.
  */
 public class Revert implements ICommand, ICommandGUI {
