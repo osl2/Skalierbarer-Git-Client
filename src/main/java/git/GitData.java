@@ -257,7 +257,7 @@ public class GitData {
         String user = uris.iterator().next().getUser();
         String name = config.getName();
         URIish uri = config.getURIs().iterator().next();
-        gitRemotes.add(new GitRemote(uri.toString(), user, name));
+        gitRemotes.add(new GitRemote(uri.toString(), name));
       }
       return gitRemotes;
     } catch (GitAPIException e) {

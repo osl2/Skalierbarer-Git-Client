@@ -19,14 +19,15 @@
  */
 package git;
 
-import git.exception.*;
-import org.eclipse.jgit.api.errors.*;
-import org.junit.jupiter.api.*;
+import git.exception.GitException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GitRemoteTest extends AbstractGitTest {
 
@@ -38,25 +39,24 @@ public class GitRemoteTest extends AbstractGitTest {
     resetRemote();
   }
   private void resetRemote(){
-    gitRemote = new GitRemote("url", "user", "name");
+    gitRemote = new GitRemote("url", "name");
   }
 
   @Test
   void getterAndSetterTest() throws GitException {
-    gitRemote.setGitUser("newUser");
-    assertEquals(new GitRemote("url", "newUser", "name"), gitRemote);
+    assertEquals(new GitRemote("url", "name"), gitRemote);
     resetRemote();
     gitRemote.setName("newName");
-    assertEquals(new GitRemote("url", "user", "newName"), gitRemote);
+    assertEquals(new GitRemote("url", "newName"), gitRemote);
     assertEquals(gitRemote.getName(), "newName");
     resetRemote();
-    assertTrue (gitRemote.setUrl("newUrl"));
-    assertEquals(new GitRemote("newUrl", "user", "name"), gitRemote);
+    assertTrue(gitRemote.setUrl("newUrl"));
+    assertEquals(new GitRemote("newUrl", "name"), gitRemote);
   }
 
   @Test
   void equalsTest() {
     assertTrue(gitRemote.equals(gitRemote));
-    assertTrue(gitRemote.equals(new GitRemote("url", "user", "name")));
+    assertTrue(gitRemote.equals(new GitRemote("url", "name")));
   }
 }

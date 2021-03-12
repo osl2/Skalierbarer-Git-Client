@@ -175,7 +175,7 @@ class GitFacadeTest extends AbstractGitTest {
         .setCloneSubmodules(true)
         .call();
 
-    GitRemote remote = new GitRemote(gitUrl, "user", "origin");
+    GitRemote remote = new GitRemote(gitUrl, "origin");
     ArrayList<GitRemote> remotesToFetch = new ArrayList<>();
     remotesToFetch.add(remote);
     assertEquals(1, remotesToFetch.size());
@@ -188,7 +188,7 @@ class GitFacadeTest extends AbstractGitTest {
     facade.fetchRemotes(remotesToFetch);
 
     remotesToFetch = new ArrayList<>();
-    remotesToFetch.add(new GitRemote("blabla", "user", "name!"));
+    remotesToFetch.add(new GitRemote("blabla", "name!"));
     ArrayList<GitRemote> finalRemotesToFetch = remotesToFetch;
     assertThrows(GitException.class, () -> facade.fetchRemotes(finalRemotesToFetch));
 
