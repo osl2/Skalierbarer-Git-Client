@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 /**
  * Provides a central point to obtain and create a number of git objects.
@@ -299,13 +299,13 @@ public class GitData {
     List<GitBranch> branches = new ArrayList<>();
 
     try {
-      // TODO: That's super ugly.
-      Git.lsRemoteRepository()
-              .setHeads(false)
-              .setRemote(remote.getUrl())
+      git.fetch()
+              .setRemote(remote.getName())
+              .setRefSpecs("refs/heads/*:refs/remotes/"
+                      + remote.getName() + "/*")
+              .setThin(true)
               .setTransportConfigCallback(CredentialProviderHolder::configureTransport)
               .call();
-
       refs = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
       for (Ref ref : refs) {
         if (ref.getName().startsWith("refs/remotes/" + remote.getName() + "/") && !ref.getName().endsWith("/HEAD"))

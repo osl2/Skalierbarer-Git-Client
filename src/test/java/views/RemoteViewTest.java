@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -122,9 +121,9 @@ public class RemoteViewTest extends AbstractRemoteTest {
         int size = remoteList.getModel().getSize();
         assertEquals( 1, size);
         remoteList.setSelectedIndex(0);
-        urlField.setText(newDir.getPath());
+        urlField.setText(newDir.getAbsolutePath());
         safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
-        assertEquals(newDir.getPath(), remoteList.getSelectedValue().getUrl());
+        assertEquals(newDir.getAbsolutePath(), remoteList.getSelectedValue().getUrl());
         deleteDir(newDir);
     }
 }
