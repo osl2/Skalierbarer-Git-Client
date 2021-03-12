@@ -3,12 +3,16 @@ package dialogviews;
 import commands.CloneTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 public class CloneDialogViewTest extends CloneTest {
   private CloneDialogView cDV;
@@ -37,6 +41,21 @@ public class CloneDialogViewTest extends CloneTest {
 
   @Test
   void testCloneButton() {
+    MockedConstruction<JFileChooser> jFileChooserMockedConstruction = mockConstruction(JFileChooser.class, (mock, context) -> {
+      when(mock.showOpenDialog(any())).thenReturn(JFileChooser.APPROVE_OPTION);
+      when(mock.getSelectedFile()).thenReturn(remoteDir);
+    });
+    remoteField.setText(repo.getAbsolutePath());
+    recursiveCheckBox.setSelected(true);
+    chooseButton.getActionListeners()[0].actionPerformed(new ActionEvent(chooseButton, ActionEvent.ACTION_PERFORMED, null));
+    cloneButton.getActionListeners()[0].actionPerformed(new ActionEvent(cloneButton, ActionEvent.ACTION_PERFORMED, null));
+    assertTrue(guiControllerTestable.closeDialogViewCalled);
+    assertTrue(guiControllerTestable.setCommandLineCalled);
+    jFileChooserMockedConstruction.close();
+  }
+
+  @Test
+  void testCloneSecondConstructor() {
     remoteField.setText(repo.getAbsolutePath());
     cDV = new CloneDialogView(repo.getAbsolutePath(), remoteDir, true);
     JPanel panel = cDV.getPanel();
