@@ -49,19 +49,6 @@ public class MainWindow extends JFrame {
     private JTextField commandLineTextField;
     private JLabel branchLabel;
 
-    public MainWindow() {
-        setNameComponents();
-    }
-
-    /**
-     * Returns the content panel of the MainWindow
-     *
-     * @return The content panel that holds all components
-     */
-    public JPanel getPanel() {
-        return contentPane;
-    }
-
     /**
      * Replace the lower view of the window.
      * This will invoke {@link #update()}
@@ -74,16 +61,6 @@ public class MainWindow extends JFrame {
         // New Data -> Refresh view
         this.update();
         return true;
-    }
-
-    /*
-    This is for testing
-     */
-    private void setNameComponents() {
-        commandLineTextField.setName("commandLineTextField");
-        branchLabel.setName("branchLabel");
-        buttonPanel.setName("buttonPanel");
-        viewPanel.setName("viewPanel");
     }
 
     /**
@@ -217,9 +194,5 @@ public class MainWindow extends JFrame {
 
         bar.add(m1);
         this.setJMenuBar(bar);
-
-        recentlyUsed.setName("recentlyUsed");
-        openItem.setName("openItem");
-        settingsItem.setName("settingsItem");
     }
 }
