@@ -6,14 +6,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import util.GUIControllerTestable;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.*;
 
 class InitTest {
   @TempDir
@@ -60,5 +62,19 @@ class InitTest {
     assertNull(init.getCommandLine());
     assertNotNull(init.getDescription());
     assertNotNull(init.getName());
+  }
+
+  @Test
+  void globalTestCaseInit() {
+    // Dieser TestFall beschreibt den TestFall T3 Anlegen eines neuen Repository aus dem Pflichtenheft (Sollen wir das so machen)
+    MockedConstruction<JFileChooser> jFileChooserMockedConstruction = mockConstruction(JFileChooser.class, (mock, context) -> {
+      when(mock.showOpenDialog(any())).thenReturn(JFileChooser.APPROVE_OPTION);
+      when(mock.getSelectedFile()).thenReturn(directory);
+    });
+    Init init = new Init();
+    init.onButtonClicked();
+    File file = directory.listFiles()[0];
+    assertEquals(".git", file.getName());
+    jFileChooserMockedConstruction.close();
   }
 }
