@@ -263,6 +263,7 @@ public class GitCommit {
      * Method to get the files changed in that Commit.
      *
      * @return List of the changed Files.
+     * @throws IOException if the files could not be determined
      */
     public List<GitFile> getChangedFiles() throws IOException {
         initializeCommit();

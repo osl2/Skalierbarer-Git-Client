@@ -65,7 +65,7 @@ public class GitBranch {
 
   /**
    * Method to get the current value of the full reference name of a Branch.
-   * i.e. master -> refs/heads/master
+   * i.e. master - refs/heads/master
    *
    * @return Name of the branch
    */

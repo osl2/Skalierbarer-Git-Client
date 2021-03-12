@@ -9,6 +9,8 @@ public interface IView {
 
     /**
      * Returns the lower part of the main window.
+     *
+     * @return the Panel with the view contents
      */
     JPanel getView();
 
