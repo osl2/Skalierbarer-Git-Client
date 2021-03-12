@@ -217,5 +217,9 @@ public class MainWindow extends JFrame {
 
         bar.add(m1);
         this.setJMenuBar(bar);
+
+        recentlyUsed.setName("recentlyUsed");
+        openItem.setName("openItem");
+        settingsItem.setName("settingsItem");
     }
 }
