@@ -43,10 +43,12 @@ public class Main {
         boolean settingsLoaded = persistency.load();
         // Don't save during first-use.
         GUIController c = GUIController.getInstance();
-        if (!settingsLoaded) {
+        if (!settingsLoaded || !Settings.getInstance().getActiveRepositoryPath().isDirectory()) {
+
             persistency.disableUntilSave();
             // Initialize Objects with sane values
             Settings settings = Settings.getInstance();
+            settings.setActiveRepositoryPath(null);
             Data data = Data.getInstance();
             while (settings.getActiveRepositoryPath() == null) {
                 c.openDialog(new FirstUseDialogView());
