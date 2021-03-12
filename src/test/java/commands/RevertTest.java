@@ -2,16 +2,17 @@ package commands;
 
 import git.GitCommit;
 import git.GitData;
+import git.GitFileConflict;
 import git.exception.GitException;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RevertTest extends AbstractCommandTest {
 
@@ -76,5 +77,17 @@ public class RevertTest extends AbstractCommandTest {
     Revert revert = new Revert();
     assertFalse(revert.execute());
     assertTrue(guiControllerTestable.errorHandlerMSGCalled);
+  }
+
+  @Test
+  void testRevertConflicts() throws IOException, GitException {
+    GitFileConflict conflict = mock(GitFileConflict.class);
+    when(conflict.apply()).thenReturn(false).thenReturn(true);
+    GitCommit mockCommit = mock(GitCommit.class);
+    when(mockCommit.revert()).thenReturn(Collections.singletonList(conflict));
+    Revert revert = new Revert();
+    revert.setChosenCommit(mockCommit);
+    assertFalse(revert.execute());
+    assertTrue(revert.execute());
   }
 }
