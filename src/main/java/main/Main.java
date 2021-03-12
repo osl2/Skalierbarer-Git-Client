@@ -37,6 +37,9 @@ public class Main {
             }
             settings.setLevel(data.getLevels().get(0));
 
+            // Make sure settings are saved, even on first run.
+            settings.addDataChangedListener(persistency);
+            data.addDataChangedListener(persistency);
             persistency.save();
         }
 
