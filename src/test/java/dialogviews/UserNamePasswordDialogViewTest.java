@@ -16,6 +16,8 @@ class UserNamePasswordDialogViewTest extends AbstractCommandTest {
     private UsernamePasswordDialogView usernamePasswordDialogView;
     private JButton breakButton;
     private JButton okButton;
+    private JPasswordField passwordField;
+    private JLabel userNameLabel;
 
     @BeforeEach
     void prepare() {
@@ -23,7 +25,8 @@ class UserNamePasswordDialogViewTest extends AbstractCommandTest {
         JPanel panel = usernamePasswordDialogView.getPanel();
         breakButton = (JButton) FindComponents.getChildByName(panel, "breakButton");
         okButton = (JButton) FindComponents.getChildByName(panel, "okButton");
-
+        passwordField = (JPasswordField) FindComponents.getChildByName(panel, "passwordField");
+        userNameLabel = (JLabel) FindComponents.getChildByName(panel, "userNameLabel");
     }
 
     @Test
@@ -35,6 +38,12 @@ class UserNamePasswordDialogViewTest extends AbstractCommandTest {
 
     @Test
     void okButtonTest() {
+        String testUserName = "testUserName";
+        String testPassword = "testPassword";
+        assertNotNull(userNameLabel);
+        assertNotNull(passwordField);
+        userNameLabel.setText(testUserName);
+        passwordField.setText(testPassword);
         assertNotNull(okButton);
         for (ActionListener listener : okButton.getActionListeners()) {
             listener.actionPerformed(new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, "OK button clicked"));

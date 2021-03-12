@@ -94,5 +94,7 @@ public class UsernamePasswordDialogView implements IDialogView {
     private void setNameComponents() {
         okButton.setName("okButton");
         breakButton.setName("breakButton");
+        passwordField.setName("passwordField");
+        userNameLabel.setName("userNameLabel");
     }
 }
