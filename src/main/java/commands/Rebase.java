@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import git.GitBranch;
 
 /**
- * This class represents the git rebase command. In order to execute you have
+ * Represents the git rebase command. In order to execute you have
  * to pass two branches.
  */
 public class Rebase implements ICommand, ICommandGUI {

@@ -46,6 +46,7 @@ public class GitStatus {
    *
    * @return a list of files added to the index, not in HEAD
    * @see GitFile
+   * @throws GitException if the state could not be parsed
    */
   public List<GitFile> getAddedFiles() throws GitException {
     try {
@@ -66,6 +67,7 @@ public class GitStatus {
    * an older version from a former commit and a modified version in the working directory
    *
    * @return a list of files that have changed from HEAD to index
+   * @throws GitException if the state could not be parsed
    */
   public List<GitFile> getChangedFiles() throws GitException {
     try {
@@ -87,6 +89,7 @@ public class GitStatus {
    * added to the staging-area yet
    *
    * @return a list of files modified on disk relative to the index
+   * @throws GitException if the state could not be parsed
    */
   public List<GitFile> getModifiedFiles() throws GitException {
     try {
@@ -103,6 +106,7 @@ public class GitStatus {
    * Jgit: getUntracked(); e.g. what you get if you create a new file without adding it to the index
    *
    * @return list of files that are not ignored, and not in the index
+   * @throws GitException if the state could not be parsed
    */
   public List<GitFile> getUntrackedFiles() throws GitException {
     try {

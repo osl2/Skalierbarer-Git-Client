@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * Encapsulates a set of commands a user may use.
+ * Usually configured by data.json
+ */
 public class Level {
     @JsonProperty("name")
     private final String name; //name as a unique identifier

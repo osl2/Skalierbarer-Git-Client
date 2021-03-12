@@ -10,7 +10,7 @@ import settings.Settings;
 import java.io.File;
 
 /**
- * This class represents the git clone command. In order to execute this command
+ * Represents the git clone command. In order to execute this command
  * you have to pass an url and a path to a local directory.
  */
 public class Clone implements ICommand, ICommandGUI {

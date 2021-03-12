@@ -28,20 +28,11 @@ public class GitFacade {
     private static final String ERROR_MESSAGE = "Fehlermeldung: ";
 
     /**
-     * Create a new Stash.
-     *
-     * @return true iff stash was created successfully
-     */
-    @SuppressWarnings("unused")
-    public boolean createStash() {
-        throw new AssertionError("not implemented yet");
-    }
-
-    /**
      * Checkout an other branch. It loads the data of that branch and provides the data from JGit.
      *
-     * @param branch branch that should be checked out
-     * @return true if it is successfully checked out, false if something went wrong
+     * @param branch        branch that should be checked out
+     * @return              true if it is successfully checked out, false if something went wrong
+     * @throws GitException if checkout failed due to git
      */
     public boolean checkout(GitBranch branch) throws GitException {
         try {
@@ -57,6 +48,7 @@ public class GitFacade {
      *
      * @param commit commit that should be checked out
      * @return true if it is performed successfully, false if something went wrong
+     * @throws GitException if checkout failed due to git
      */
     public boolean checkout(GitCommit commit) throws GitException {
         try {
@@ -70,9 +62,10 @@ public class GitFacade {
     /**
      * Creates a new branch with the specific name at the commit in JGit. The new branch is checked out afterward
      *
-     * @param commit commit where the new branch begins
-     * @param name   name of the branch
-     * @return true if it is performed successfully, false if something went wrong
+     * @param commit        commit where the new branch begins
+     * @param name          name of the branch
+     * @return              true if it is performed successfully, false if something went wrong
+     * @throws GitException if branching wasn't possible due to git internal problems
      */
     public boolean branchOperation(GitCommit commit, String name) throws GitException {
         try {
@@ -103,6 +96,7 @@ public class GitFacade {
      * @param name name of the new remote
      * @param url  Url of the repository
      * @return true if it is performed successfully, false if something went wrong
+     * @throws GitException if the remote could not be added due to uri syntax or git.
      */
     public boolean remoteAddOperation(String name, String url) throws GitException {
         Git git = GitData.getJGit();
@@ -134,6 +128,13 @@ public class GitFacade {
         return true;
     }
 
+    /**
+     * Clones a repository into a directory
+     * @param gitUrl the url where the origin is located
+     * @param dest the directory to clone into
+     * @param recursive checkout all submodules
+     * @throws GitException if the clone fails due to git related reasons
+     */
     public void cloneRepository(String gitUrl, File dest, boolean recursive) throws GitException {
         try {
             Git result = Git.cloneRepository()
@@ -155,6 +156,11 @@ public class GitFacade {
         }
     }
 
+    /**
+     * Fetches specified branches of a list of remotes. See {@link GitRemote#getFetchBranches()}
+     * @param remotes           list of remotes to fetch from
+     * @throws GitException     if the fetching fails due to git
+     */
     public void fetchRemotes(List<GitRemote> remotes) throws GitException {
         try {
             Git jgit = GitData.getJGit();
@@ -185,6 +191,13 @@ public class GitFacade {
         }
     }
 
+    /**
+     * Sets the active repository path. See {@link Settings#setActiveRepositoryPath(File)}
+     *
+     * If the directory is not an active git repository, one will be initialized.
+     *
+     * @param path the path to the directory to open
+     */
     public void setRepositoryPath(File path) {
         Settings settings = Settings.getInstance();
         GitData data = new GitData();
@@ -204,6 +217,7 @@ public class GitFacade {
      * @param commitMessage The commit message specified by the user
      * @param amend         true if the last commit should be amended, false otherwise
      * @return True if the commit was successful
+     * @throws GitException if committing failed due to unexpected git problems.
      */
     public boolean commitOperation(String commitMessage, boolean amend) throws GitException {
         try {
@@ -228,27 +242,14 @@ public class GitFacade {
     }
 
     /**
-     * Pushes the local commit history from the selected branch to the selected online repo and creates a new branch
-     * with the same name as the local branch. Sets up the local branch to track the remote branch if 'setUpstream' is true
-     *
-     * @param remote      The name of the online repo (must have been preconfigured before)
-     * @param localBranch The name of the local branch whose commits should be pushed
-     * @return True if the push has been successful, false otherwise, e.g. connection to
-     * online repo failed
-     */
-    @SuppressWarnings("unused")
-    public boolean pushOperation(GitRemote remote, GitBranch localBranch) throws GitException {
-        return pushOperation(remote, localBranch, localBranch.getName());
-    }
-
-    /**
      * Pushes the local commit history from the selected branch to the selected online repo in the selected branch. Sets up
      * the local branch to track the remote branch if 'setUpstream' is true
      *
-     * @param remote           The remote repo the local changes should be pushed to
-     * @param localBranch      The local branch whose changes should be pushed
-     * @param remoteBranchName The remote branch the changes should be pushed to (already existing)
+     * @param remote            The remote repo the local changes should be pushed to
+     * @param localBranch       The local branch whose changes should be pushed
+     * @param remoteBranchName  The remote branch the changes should be pushed to (already existing)
      * @return True if the push has been executed successfully, false otherwise, e.g. connection to the online repo failed
+     * @throws GitException     if pushing failed either due to transport problems or internal git problems.
      */
     public boolean pushOperation(GitRemote remote, GitBranch localBranch, String remoteBranchName) throws GitException {
         try {
@@ -278,11 +279,15 @@ public class GitFacade {
         }
     }
 
-    @SuppressWarnings("unused")
-    public boolean rebase(GitBranch branchB) {
-        throw new AssertionError("not implemented");
-    }
 
+    /**
+     * Set a config value in the git config.
+     *
+     * <p>Currently only supports 2-layer deep settings like `commit.gpgsign`</p>
+     * @param configOption the option to set
+     * @param configValue the value to set
+     * @return true if the config was set successfully
+     */
     public boolean setConfigValue(String configOption, String configValue) {
         String[] option = configOption.split("\\.");
         StoredConfig config = GitData.getRepository().getConfig();
@@ -294,10 +299,5 @@ public class GitFacade {
             return false;
         }
         return true;
-    }
-
-    @SuppressWarnings("unused")
-    public String getDiff(GitCommit activeCommit) {
-        throw new AssertionError("not implemented");
     }
 }

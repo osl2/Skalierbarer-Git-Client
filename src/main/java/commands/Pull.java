@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents the git pull command. In order to execute you have to
+ * Represents the git pull command. In order to execute you have to
  * pass a {@link GitRemote} and a remote {@link GitBranch}.
  */
 public class Pull implements ICommand, ICommandGUI {

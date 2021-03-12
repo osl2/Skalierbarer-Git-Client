@@ -9,6 +9,9 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
 import java.util.logging.Logger;
 
+/**
+ * Provides the connection between JGit and the system's SSH-Agent
+ */
 public class SSHCredentialProvider extends JschConfigSessionFactory {
     @Override
     protected void configureJSch(JSch jsch) {

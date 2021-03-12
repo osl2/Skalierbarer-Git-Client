@@ -3,6 +3,11 @@ package dialogviews;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Represents a Dialog Window
+ * the Information is used by the {@link controller.GUIController}
+ * to create a new modal Dialog Window.
+ */
 public interface IDialogView {
 
     /**
@@ -22,13 +27,13 @@ public interface IDialogView {
     /**
      * The content Panel containing all contents of the Dialog
      *
-     * @return the shown content
+     * @return the contentPanel of the new Dialog
      */
     JPanel getPanel();
 
     /**
-     * Refresh the contents of the Dialog window,
-     * i.e. when data changes
+     * Called to notify the Dialog of changes to the application data.
+     * A well written Dialog should reload all data shown to the user.
      */
     void update();
 

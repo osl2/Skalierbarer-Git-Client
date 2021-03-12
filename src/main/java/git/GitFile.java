@@ -118,7 +118,8 @@ public class GitFile {
   /**
    * Adds the file to the staging-area, thereby performing git add.
    *
-   * @return True if the file was added to the staging area successfully
+   * @return True           if the file was added to the staging area successfully
+   * @throws GitException   if the file was not found in git
    */
   public boolean add() throws GitException {
     Git git = GitData.getJGit();
@@ -152,8 +153,9 @@ public class GitFile {
 
   /**
    * Removes file from the staging-area, thereby performing git restore --staged file.
+   *
+   * @throws GitException   if this file was not found in git.
    */
-
   public void addUndo() throws GitException {
     Git git = GitData.getJGit();
     try {

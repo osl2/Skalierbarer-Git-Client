@@ -105,6 +105,10 @@ public class GitFileConflict {
         }
     }
 
+    /**
+     * Has the file been deleted in one of the sides?
+     * @return true if the file has been deleted in one of the sides
+     */
     public boolean wasDeleted() {
         return deleted;
     }
@@ -127,6 +131,14 @@ public class GitFileConflict {
         return gitFile;
     }
 
+    /**
+     * Apply the resolution to the file system and stage changes
+     *
+     * @return true         if the files were successfully changed
+     *         false        if at least one conflict hasn't been resolved
+     * @throws IOException  if the writing failed
+     * @throws GitException if the file couldn't be staged
+     */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean apply() throws IOException, GitException {
         if (hunkList.stream().anyMatch(e -> !e.isResolved())) {

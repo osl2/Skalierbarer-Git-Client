@@ -10,6 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Dialog to configure program settings
+ */
 public class SettingsDialogView implements IDialogView {
     private JPanel settingsPanel;
     private JComboBox<String> levelComboBox;

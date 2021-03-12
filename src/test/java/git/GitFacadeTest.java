@@ -48,12 +48,6 @@ class GitFacadeTest extends AbstractGitTest {
   }
 
   @Test
-  void stashTest() {
-    //Currently not implemented
-    assertThrows(AssertionError.class, () -> facade.createStash());
-  }
-
-  @Test
   void checkoutTest() throws GitAPIException, IOException, GitException {
     git.checkout().setName("NeuerBranch").setCreateBranch(true).call();
 
@@ -91,12 +85,6 @@ class GitFacadeTest extends AbstractGitTest {
     facade.setRepositoryPath(repo);
     assertEquals(repo, Settings.getInstance().getActiveRepositoryPath());
     assertEquals(git.getRepository().getDirectory(), Git.open(repo).getRepository().getDirectory());
-  }
-
-  @Test
-  void pullOperationTest() {
-    //not implemented
-    assertThrows(AssertionError.class, () -> facade.createStash());
   }
 
   @Test
@@ -185,18 +173,5 @@ class GitFacadeTest extends AbstractGitTest {
     ArrayList<GitRemote> finalRemotesToFetch = remotesToFetch;
     assertThrows(GitException.class, () -> facade.fetchRemotes(finalRemotesToFetch));
 
-  }
-
-  @Test
-  void getDiffTest() throws GitAPIException {
-
-    GitCommit commit = new GitCommit(git.log().call().iterator().next());
-    assertThrows(AssertionError.class, () -> facade.getDiff(commit));
-  }
-
-  @Test
-  void rebaseTest(){
-    GitBranch branch = new GitBranch("name");
-    assertThrows(AssertionError.class, () -> facade.rebase(branch));
   }
 }

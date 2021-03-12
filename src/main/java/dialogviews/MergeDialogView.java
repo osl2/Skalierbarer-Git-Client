@@ -26,6 +26,9 @@ public class MergeDialogView implements IDialogView {
     private JPanel contentPane;
     private final GitData data;
 
+    /**
+     * View to select the Branch to Merge
+     */
     public MergeDialogView() {
         nameComponents();
         this.data = new GitData();

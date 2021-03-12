@@ -178,7 +178,11 @@ public class GUIController extends DataObserver {
     }
 
     /**
-     * See {@link #openDialog(IDialogView, WindowListener)}
+     * Open a Dialog.
+     * <p>If you need more information about window Events
+     * use {@link #openDialog(IDialogView, WindowListener)} instead</p>
+     *
+     * @param dialog The Dialog to be opened
      */
     public void openDialog(IDialogView dialog) {
         this.openDialog(dialog, null);

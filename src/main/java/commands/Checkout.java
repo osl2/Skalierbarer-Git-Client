@@ -8,7 +8,7 @@ import git.GitFacade;
 import git.exception.GitException;
 
 /**
- * This class represents the git checkout command. In order to execute this command
+ * Represents the git checkout command. In order to execute this command
  * you have to pass the {@link GitBranch} or the {@link GitCommit} you want to checkout.
  */
 public class Checkout implements ICommand, ICommandGUI {

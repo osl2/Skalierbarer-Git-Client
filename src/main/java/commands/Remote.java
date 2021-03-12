@@ -10,7 +10,7 @@ import views.RemoteView;
 import java.util.List;
 
 /**
- * This class represents the git remote command. It uses {@link RemoteSubcommand} to
+ * Represents the git remote command. It uses {@link RemoteSubcommand} to
  * indicate which command should be executed.
  */
 public class Remote implements ICommand, ICommandGUI {

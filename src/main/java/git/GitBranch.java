@@ -65,7 +65,7 @@ public class GitBranch {
 
   /**
    * Method to get the current value of the full reference name of a Branch.
-   * i.e. master -> refs/heads/master
+   * i.e. master - refs/heads/master
    *
    * @return Name of the branch
    */
@@ -96,7 +96,8 @@ public class GitBranch {
    *
    * @param fastForward use fast-forward?
    * @return A list of conflicting pieces of code. This list can be empty if the merge
-   * is completable without user interaction
+   *          is completable without user interaction
+   * @throws GitException if the merge fails due to Git related reasons.
    */
   public List<GitFileConflict> merge(boolean fastForward) throws GitException {
     MergeCommand.FastForwardMode ffm = fastForward ? MergeCommand.FastForwardMode.FF : MergeCommand.FastForwardMode.NO_FF;

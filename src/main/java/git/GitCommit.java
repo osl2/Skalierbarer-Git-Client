@@ -51,6 +51,8 @@ public class GitCommit {
      *
      * @param file the file you want to get the git diff.
      * @return String representation of the git diff.
+     * @throws IOException when the File could not be accessed
+     * @throws GitException if the diff fails due to git related reasons
      */
     public static String getDiff(GitFile file) throws IOException, GitException {
         Git git = GitData.getJGit();
@@ -208,6 +210,7 @@ public class GitCommit {
      * @param other the other commit, if you want to compare to the empty git repository set other to null.
      * @param file  the file you want to get the git diff.
      * @return String representation of the diff.
+     * @throws IOException if the file couldn't be accessed.
      */
     public String getDiff(GitCommit other, GitFile file) throws IOException {
         Git git = GitData.getJGit();
@@ -260,6 +263,7 @@ public class GitCommit {
      * Method to get the files changed in that Commit.
      *
      * @return List of the changed Files.
+     * @throws IOException if the files could not be determined
      */
     public List<GitFile> getChangedFiles() throws IOException {
         initializeCommit();

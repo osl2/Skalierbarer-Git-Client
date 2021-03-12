@@ -164,6 +164,8 @@ public class GitData {
    * Get all commits of the current Repository.
    *
    * @return Array of all commits without stashes
+   * @throws IOException    if the commit objects could not be read from disk
+   * @throws GitException   if the data was malformed or other git errors occured
    */
   public Iterator<GitCommit> getCommits() throws IOException, GitException {
     try {
@@ -250,6 +252,7 @@ public class GitData {
    * Method to get a list of the branches, witch are available in the current repository.
    *
    * @return A list of branches in the repository
+   * @throws GitException if the branches could not be read
    */
   public List<GitBranch> getBranches() throws GitException {
     try {
@@ -270,6 +273,7 @@ public class GitData {
    *
    * @param remote Online repository, where the branches come from
    * @return List of branches in the repository
+   * @throws GitException when obtaining the branches fails due to git.
    */
   public List<GitBranch> getBranches(GitRemote remote) throws GitException {
     Collection<Ref> refs;

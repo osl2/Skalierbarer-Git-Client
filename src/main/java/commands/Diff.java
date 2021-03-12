@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * This class represents the git diff command. In order to execute the command you have to pass
+ * Represents the git diff command. In order to execute the command you have to pass
  * a {@link GitCommit} and a {@link GitFile} or just a {@link GitFile}. This Command creates the diff
  * between a given Commit and the previous one.
  */

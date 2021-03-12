@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class represents the git commit command. In order to execute this command
+ * Represents the git commit command. In order to execute this command
  * at least one file has to be in the staging area and a Commit message has to be passed.
  */
 public class Commit implements ICommand, ICommandGUI {

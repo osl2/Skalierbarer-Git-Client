@@ -18,6 +18,9 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Iterator;
 
+/**
+ * Opens a TreeView to select Commit or Branch to checkout.
+ */
 public class CheckoutDialogView implements IDialogView {
 
     private static final int MAX_BRANCH_DEPTH = 25;
@@ -31,6 +34,9 @@ public class CheckoutDialogView implements IDialogView {
     private JPanel bottomPanel;
     private DefaultTreeModel model;
 
+    /**
+     * Create a new view
+     */
     public CheckoutDialogView() {
         git = new GitData();
         this.abortButton.setText("Abbrechen");

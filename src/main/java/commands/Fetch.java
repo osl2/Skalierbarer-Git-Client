@@ -8,7 +8,7 @@ import git.exception.GitException;
 import java.util.LinkedList;
 
 /**
- * This class represents the git fetch command. In order to execute the command
+ * Represents the git fetch command. In order to execute the command
  * you have to pass a list of {@link GitRemote}.
  */
 public class Fetch implements ICommand, ICommandGUI {
@@ -28,10 +28,11 @@ public class Fetch implements ICommand, ICommandGUI {
 
 
   /**
-   * Returns a list containing all remote names.
+   * Add a remote to the list of remotes to fetch.
+   * All remoted added via this method will be passed to git-fetch
    *
+   * @param remote the GitRemote to add. See {@link GitRemote#addBranch(GitBranch)} for more details
    */
-
   public void addRemote(GitRemote remote) {
     if (!remotes.contains(remote)) {
       remotes.add(remote);
@@ -92,18 +93,15 @@ public class Fetch implements ICommand, ICommandGUI {
    */
   @Override
   public String getDescription() {
-    return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories" +
-            "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
+    return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories " +
+            "holt, und für diese einen neuen Zweig im aktuellen lokalen Repository anlegt.";
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void onButtonClicked() {
     GitData data = new GitData();
     if (data.getRemotes().isEmpty()) {
-      GUIController.getInstance().errorHandler("Es sind keine Remote Repositorys bekannt.");
+      GUIController.getInstance().errorHandler("Es sind keine Remote Repositories bekannt.");
       return;
     }
     FetchDialogView dialogView = new FetchDialogView();
@@ -115,7 +113,7 @@ public class Fetch implements ICommand, ICommandGUI {
   private boolean tryFetch(){
     return retryFetch();
   }
-  private boolean retryFetch(){
+  private boolean retryFetch() {
     GitFacade gitFacade = new GitFacade();
     try {
       gitFacade.fetchRemotes(remotes);
@@ -132,4 +130,3 @@ public class Fetch implements ICommand, ICommandGUI {
     }
   }
 }
-
