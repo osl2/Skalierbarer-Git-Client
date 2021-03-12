@@ -93,15 +93,15 @@ public class Fetch implements ICommand, ICommandGUI {
    */
   @Override
   public String getDescription() {
-    return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories" +
-            "hohlt, und für diese einen neuen Zweig im aktuellen lokalen repository anlegt.";
+    return "Kommando, welches mehrere Zweige aus mehreren Online-Repositories " +
+            "holt, und für diese einen neuen Zweig im aktuellen lokalen Repository anlegt.";
   }
 
   @Override
   public void onButtonClicked() {
     GitData data = new GitData();
     if (data.getRemotes().isEmpty()) {
-      GUIController.getInstance().errorHandler("Es sind keine Remote Repositorys bekannt.");
+      GUIController.getInstance().errorHandler("Es sind keine Remote Repositories bekannt.");
       return;
     }
     FetchDialogView dialogView = new FetchDialogView();
@@ -113,7 +113,7 @@ public class Fetch implements ICommand, ICommandGUI {
   private boolean tryFetch(){
     return retryFetch();
   }
-  private boolean retryFetch(){
+  private boolean retryFetch() {
     GitFacade gitFacade = new GitFacade();
     try {
       gitFacade.fetchRemotes(remotes);
