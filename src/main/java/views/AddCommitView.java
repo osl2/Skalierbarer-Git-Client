@@ -477,15 +477,12 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setText(value.getGitFile().getPath().getName());
 
       //color staged files in green, unstaged files in red
-      try {
-        if (value.getGitFile().isStaged()) {
+        if (value.isSelected()) {
           checkBox.setForeground(Color.GREEN);
         } else {
           checkBox.setForeground(Color.RED);
         }
-      } catch (GitException e) {
-        GUIController.getInstance().errorHandler(e);
-      }
+
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
       if (cellHasFocus) {
