@@ -183,4 +183,13 @@ public class Settings extends DataObservable {
         this.settingsChanged = false;
     }
 
+    /**
+     * Check if the active Repository exists
+     *
+     * @return true iff the repository exists
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean activeRepositoryIsValid() {
+        return this.activeRepositoryPath != null && this.activeRepositoryPath.isDirectory();
+    }
 }
