@@ -3,6 +3,7 @@ package views;
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
 import levels.Level;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
@@ -26,11 +27,19 @@ class MainWindowTest extends AbstractCommandTest {
     private JTextField commandLineTextField;
     private JPanel buttonPanel;
     private JLabel branchLabel;
+    private MockedConstruction<JFrame> mockedJFrame;
 
     @BeforeEach
     void prepare() {
         mainWindow = new MainWindow();
         loadComponents();
+
+        mockedJFrame = mockConstruction(JFrame.class);
+    }
+
+    @AfterEach
+    void closeMockedJFrame() {
+        mockedJFrame.close();
     }
 
     private void loadComponents() {
