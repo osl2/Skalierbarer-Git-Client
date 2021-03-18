@@ -49,6 +49,19 @@ public class MainWindow extends JFrame {
     private JTextField commandLineTextField;
     private JLabel branchLabel;
 
+    public MainWindow() {
+        setNameComponents();
+    }
+
+    /**
+     * Returns the content panel of the MainWindow
+     *
+     * @return The content panel that holds all components
+     */
+    public JPanel getPanel() {
+        return contentPane;
+    }
+
     /**
      * Replace the lower view of the window.
      * This will invoke {@link #update()}
@@ -63,8 +76,19 @@ public class MainWindow extends JFrame {
         return true;
     }
 
+    /*
+    This is for testing
+     */
+    private void setNameComponents() {
+        commandLineTextField.setName("commandLineTextField");
+        branchLabel.setName("branchLabel");
+        buttonPanel.setName("buttonPanel");
+        viewPanel.setName("viewPanel");
+    }
+
     /**
      * Sets the text shown to the user in the command line representation
+     *
      * @param text the text to show
      */
     public void setCommandLineText(String text) {
@@ -194,5 +218,9 @@ public class MainWindow extends JFrame {
 
         bar.add(m1);
         this.setJMenuBar(bar);
+
+        recentlyUsed.setName("recentlyUsed");
+        openItem.setName("openItem");
+        settingsItem.setName("settingsItem");
     }
 }
