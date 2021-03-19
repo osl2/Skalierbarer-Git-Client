@@ -37,8 +37,6 @@ public class GitRemote {
     // This has to be a String as URL is a too restrictive data type
     // refusing to operate on totally valid git urls.
     private String url;
-    @SuppressWarnings("unused")
-    private String gitUser;
     private String name;
     @SuppressWarnings("unused")
     private List<GitBranch> branches;
@@ -49,25 +47,14 @@ public class GitRemote {
     /**
      * Method to instantiate a remote by url, User and name.
      *
-     * @param url     url that the remote should get
-     * @param gitUser user, that the remote has
-     * @param name    name, that the remote has
+     * @param url  url that the remote should get
+     * @param name name, that the remote has
      */
-    GitRemote(String url, String gitUser, String name) {
+    GitRemote(String url, String name) {
         this.url = url;
-        this.gitUser = gitUser;
         this.name = name;
     }
 
-    /**
-     * Method to get the user of the remote.
-     *
-     * @param gitUser User of the remote
-     */
-    @SuppressWarnings("unused")
-    public void setGitUser(String gitUser) {
-        this.gitUser = gitUser;
-    }
 
     /**
      * Method to get the name of the remote.
@@ -159,8 +146,7 @@ public class GitRemote {
         }
         if (o != null && getClass() == o.getClass()) {
             GitRemote remote = (GitRemote) o;
-            return (remote.gitUser.equals(this.gitUser)
-                    && remote.getUrl().equals(this.getUrl())
+            return (remote.getUrl().equals(this.getUrl())
                     && remote.getName().equals(this.getName())
                     && remote.getFetchBranches().equals(this.getFetchBranches()));
         }
@@ -169,7 +155,7 @@ public class GitRemote {
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, gitUser, name, fetchBranches);
+    return Objects.hash(url, name, fetchBranches);
   }
 }
 

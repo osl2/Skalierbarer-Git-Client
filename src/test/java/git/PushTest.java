@@ -46,10 +46,10 @@ class PushTest extends AbstractRemoteTest {
     @BeforeEach
     void setupPush() throws URISyntaxException, GitAPIException {
         //this comes from AbstractRemoteTest
-        origin = new GitRemote(REMOTE_URI, "User", "origin");
+        origin = new GitRemote(REMOTE_URI, "origin");
 
         push = new Push();
-        newRemote = new GitRemote(REMOTE_URI, "user", NEW_REMOTE_NAME);
+        newRemote = new GitRemote(REMOTE_URI, NEW_REMOTE_NAME);
         URIish remote_uri = new URIish(REMOTE_URI);
         //update git
         git = GitData.getJGit();
