@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  * This View is used to help the user resolve any file conflicts
@@ -216,7 +217,7 @@ public class MergeConflictDialogView implements IDialogView {
                     rightText.insertString(rightText.getLength(), line + System.lineSeparator(), applicableStyle);
                 }
             } catch (BadLocationException e) {
-                e.printStackTrace();
+                Logger.getGlobal().warning(e.getMessage());
             }
         }
 
