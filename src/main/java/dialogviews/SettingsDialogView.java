@@ -91,8 +91,16 @@ public class SettingsDialogView implements IDialogView {
         saveButton.addActionListener(e -> {
             Settings.getInstance().setUseTooltips(tooltipsCheckbox.isSelected());
             Settings.getInstance().setShowTreeView(treeViewCheckbox.isSelected());
-            author.setEmail(eMailField.getText());
-            author.setName(nameField.getText());
+            if (!eMailField.getText().isEmpty()) {
+                author.setEmail(eMailField.getText());
+            } else{
+                author.setEmail(Settings.getInstance().getUser().getEmail());
+            }
+            if (!nameField.getText().isEmpty()) {
+                author.setName(nameField.getText());
+            } else{
+                author.setName(Settings.getInstance().getUser().getName());
+            }
             Settings.getInstance().setUser(author);
             int index = levelComboBox.getSelectedIndex();
             Settings.getInstance().setLevel(levels.get(index));
