@@ -21,9 +21,13 @@ package commands;
 
 import controller.GUIController;
 import dialogviews.BranchDialogView;
+import git.GitBranch;
 import git.GitCommit;
+import git.GitData;
 import git.GitFacade;
 import git.exception.GitException;
+
+import java.util.List;
 
 /**
  * Represents the git branch operation. With the execute method
@@ -100,6 +104,17 @@ public class Branch implements ICommand, ICommandGUI {
      */
     @Override
     public void onButtonClicked() {
+        GitData gitData = new GitData();
+        List<GitBranch> branchesToGetEmpty;
+        try {
+            branchesToGetEmpty = gitData.getBranches();
+            if (branchesToGetEmpty.isEmpty()){
+                GUIController.getInstance().errorHandler("Es existiert noch kein commit");
+                return;
+            }
+        } catch (GitException e) {
+            GUIController.getInstance().errorHandler(e);
+        }
         GUIController.getInstance().openDialog(new BranchDialogView());
     }
 
