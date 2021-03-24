@@ -94,6 +94,8 @@ public class FirstUseDialogView implements IDialogView {
     private void setNameComponents() {
         chooseButton.setName("chooseButton");
         finishButton.setName("finishButton");
+        nameField.setName("nameField");
+        eMailField.setName("emailField");
     }
 
     /**
