@@ -59,7 +59,7 @@ public class FirstUseDialogView implements IDialogView {
             eMail = eMailField.getText();
             config = new Config();
             if (name.isEmpty() || eMail.isEmpty()){
-                GUIController.getInstance().errorHandler(new GitException("Name oder Email leer"));
+                GUIController.getInstance().errorHandler("Name oder Email leer");
             } else {
                 config.setName(name);
                 config.setEMail(eMail);
