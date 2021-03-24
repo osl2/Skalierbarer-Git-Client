@@ -147,7 +147,9 @@ public class GitFile {
       git.add().addFilepattern(relativePath).call();
       Status status = git.status().call();
       //If file was added, it should now be added. If file was deleted, it should now be removed
-      assert status.getAdded().contains(relativePath) || status.getRemoved().contains(relativePath);
+      assert status.getAdded().contains(relativePath)
+              || status.getRemoved().contains(relativePath)
+              || status.getChanged().contains(relativePath);
       return true;
     } catch (GitAPIException e) {
       throw new GitException("File not found in Git");
