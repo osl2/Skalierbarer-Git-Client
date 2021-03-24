@@ -23,6 +23,7 @@ import commands.Config;
 import commands.Init;
 import controller.GUIController;
 import git.GitData;
+import git.exception.*;
 import settings.Settings;
 
 import javax.swing.*;
@@ -57,17 +58,21 @@ public class FirstUseDialogView implements IDialogView {
             name = nameField.getText();
             eMail = eMailField.getText();
             config = new Config();
-            config.setName(name);
-            config.setEMail(eMail);
-            init = new Init();
-            init.setPathToRepository(path);
-            if (init.execute()) {
-                Settings.getInstance().setActiveRepositoryPath(path);
-                // make sure it is initialized.
-                GitData data = new GitData();
-                data.reinitialize();
-                config.execute();
-                GUIController.getInstance().closeDialogView();
+            if (name.isEmpty() || eMail.isEmpty()){
+                GUIController.getInstance().errorHandler("Name oder Email leer");
+            } else {
+                config.setName(name);
+                config.setEMail(eMail);
+                init = new Init();
+                init.setPathToRepository(path);
+                if (init.execute()) {
+                    Settings.getInstance().setActiveRepositoryPath(path);
+                    // make sure it is initialized.
+                    GitData data = new GitData();
+                    data.reinitialize();
+                    config.execute();
+                    GUIController.getInstance().closeDialogView();
+                }
             }
         });
         // Opens a new JFileChooser to set a path to a directory.
@@ -89,6 +94,8 @@ public class FirstUseDialogView implements IDialogView {
     private void setNameComponents() {
         chooseButton.setName("chooseButton");
         finishButton.setName("finishButton");
+        nameField.setName("nameField");
+        eMailField.setName("emailField");
     }
 
     /**
