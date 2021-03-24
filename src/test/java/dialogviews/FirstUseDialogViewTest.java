@@ -19,17 +19,21 @@
  */
 package dialogviews;
 
-import commands.*;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
-import settings.*;
+import commands.AbstractCommandTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
+import settings.Settings;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 class FirstUseDialogViewTest extends AbstractCommandTest {
   private FirstUseDialogView firstUseDialogView;
@@ -104,7 +108,7 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
     }
     assertEquals(0, Settings.getInstance().getActiveRepositoryPath().getName().compareTo(repo.getName()));
     assertFalse(guiControllerTestable.closeDialogViewCalled);
-    assertTrue(guiControllerTestable.errorHandlerECalled);
+    assertTrue(guiControllerTestable.errorHandlerMSGCalled);
   }
 
   @Test
@@ -119,6 +123,6 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
     }
     assertEquals(0, Settings.getInstance().getActiveRepositoryPath().getName().compareTo(repo.getName()));
     assertFalse(guiControllerTestable.closeDialogViewCalled);
-    assertTrue(guiControllerTestable.errorHandlerECalled);
+    assertTrue(guiControllerTestable.errorHandlerMSGCalled);
   }
 }
