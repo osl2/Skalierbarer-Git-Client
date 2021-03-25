@@ -112,10 +112,10 @@ public class Branch implements ICommand, ICommandGUI {
                 GUIController.getInstance().errorHandler("Es existiert noch kein commit");
                 return;
             }
+            GUIController.getInstance().openDialog(new BranchDialogView());
         } catch (GitException e) {
             GUIController.getInstance().errorHandler(e);
         }
-        GUIController.getInstance().openDialog(new BranchDialogView());
     }
 
     /**
