@@ -193,4 +193,13 @@ class GitFacadeTest extends AbstractGitTest {
     assertThrows(GitException.class, () -> facade.fetchRemotes(finalRemotesToFetch));
 
   }
+
+  @Test
+  void branchOperationTest() throws GitAPIException, GitException {
+    RevCommit revCommit = git.log().call().iterator().next();
+    GitCommit gitCommit = new GitCommit(revCommit);
+    assertTrue(facade.branchOperation(gitCommit, "Name"));
+    assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, " nam e"));
+    assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, ""));
+  }
 }
