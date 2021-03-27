@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -87,7 +87,9 @@ public class GitFacade {
      * @throws GitException if branching wasn't possible due to git internal problems
      */
     public boolean branchOperation(GitCommit commit, String name) throws GitException {
-        if (name.contains(" ")){
+       if (name.contains("?")){
+           throw new GitException("Das Symbol ? ist in Zweignamen nicht erlaubt.");
+       } else  if (name.contains(" ")){
             throw new GitException("Der Name des neuen Branches darf keine Leerzeichen enthalten");
         }
         try {

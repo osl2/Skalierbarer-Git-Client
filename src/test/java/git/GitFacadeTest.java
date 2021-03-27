@@ -201,5 +201,6 @@ class GitFacadeTest extends AbstractGitTest {
     assertTrue(facade.branchOperation(gitCommit, "Name"));
     assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, " nam e"));
     assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, ""));
+    assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, "Nam?e"));
   }
 }
