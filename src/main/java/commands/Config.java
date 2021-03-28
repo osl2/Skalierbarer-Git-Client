@@ -22,7 +22,7 @@ package commands;
 import git.GitFacade;
 
 /**
- * This class is used the change the e-Mail and the name that will
+ * This class is used to change the e-Mail and the name that will
  * be displayed when the user creates a new Commit.
  */
 public class Config implements ICommand {
