@@ -253,8 +253,6 @@ public class GitData {
       List<RemoteConfig> remotes = git.remoteList().call();
       List<GitRemote> gitRemotes = new ArrayList<>();
       for (RemoteConfig config : remotes) {
-        List<URIish> uris = config.getURIs();
-        String user = uris.iterator().next().getUser();
         String name = config.getName();
         URIish uri = config.getURIs().iterator().next();
         gitRemotes.add(new GitRemote(uri.toString(), name));

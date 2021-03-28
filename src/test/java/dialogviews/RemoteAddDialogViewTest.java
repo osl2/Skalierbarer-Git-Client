@@ -26,25 +26,26 @@ import org.junit.jupiter.api.Test;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
- public class RemoteAddDialogViewTest extends AbstractCommandTest {
+class RemoteAddDialogViewTest extends AbstractCommandTest {
     JTextField textField;
     JTextField urlField;
     JButton addButton;
     JButton stopButton;
+
     @BeforeEach
-    void getComp(){
-        FindComponents find = new FindComponents();
+    void getComp() {
         RemoteAddDialogView remoteD = new RemoteAddDialogView();
         JPanel frame = remoteD.getPanel();
-        textField = (JTextField) find.getChildByName(frame, "namefield");
+        textField = (JTextField) FindComponents.getChildByName(frame, "namefield");
         assertNotNull(textField);
-        urlField = (JTextField) find.getChildByName(frame, "urlField");
+        urlField = (JTextField) FindComponents.getChildByName(frame, "urlField");
         assertNotNull(urlField);
-        addButton = (JButton) find.getChildByName(frame, "addButton");
+        addButton = (JButton) FindComponents.getChildByName(frame, "addButton");
         assertNotNull(addButton);
-        stopButton =(JButton) find.getChildByName(frame, "stopButton");
+        stopButton = (JButton) FindComponents.getChildByName(frame, "stopButton");
         assertNotNull(stopButton);
     }
     @Test

@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GitRemoteTest extends AbstractGitTest {
+class GitRemoteTest extends AbstractGitTest {
 
   GitRemote gitRemote;
 
@@ -38,7 +38,8 @@ public class GitRemoteTest extends AbstractGitTest {
     super.init();
     resetRemote();
   }
-  private void resetRemote(){
+
+  private void resetRemote() {
     gitRemote = new GitRemote("url", "name");
   }
 
@@ -48,7 +49,7 @@ public class GitRemoteTest extends AbstractGitTest {
     resetRemote();
     gitRemote.setName("newName");
     assertEquals(new GitRemote("url", "newName"), gitRemote);
-    assertEquals(gitRemote.getName(), "newName");
+    assertEquals("newName", gitRemote.getName());
     resetRemote();
     assertTrue(gitRemote.setUrl("newUrl"));
     assertEquals(new GitRemote("newUrl", "name"), gitRemote);

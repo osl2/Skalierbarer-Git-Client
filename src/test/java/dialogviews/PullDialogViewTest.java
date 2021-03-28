@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class PullDialogViewTest extends AbstractRemoteTest {
+class PullDialogViewTest extends AbstractRemoteTest {
   PullDialogView pDV;
   JButton pullButton;
   JButton refreshButton;
@@ -49,17 +49,16 @@ public class PullDialogViewTest extends AbstractRemoteTest {
   JComboBox branchComboBox;
 
   @BeforeEach
-  void setupComponents() throws IOException, GitAPIException {
+  void setupComponents() {
     pDV = new PullDialogView();
     JPanel panel = pDV.getPanel();
-    FindComponents find = new FindComponents();
-    pullButton = (JButton) find.getChildByName(panel, "pullButton");
+    pullButton = (JButton) FindComponents.getChildByName(panel, "pullButton");
     assertNotNull(pullButton);
-    refreshButton = (JButton) find.getChildByName(panel, "refreshButton");
+    refreshButton = (JButton) FindComponents.getChildByName(panel, "refreshButton");
     assertNotNull(refreshButton);
-    remoteCombobox = (JComboBox) find.getChildByName(panel, "remoteCombobox");
+    remoteCombobox = (JComboBox) FindComponents.getChildByName(panel, "remoteCombobox");
     assertNotNull(remoteCombobox);
-    branchComboBox = (JComboBox) find.getChildByName(panel, "branchComboBox");
+    branchComboBox = (JComboBox) FindComponents.getChildByName(panel, "branchComboBox");
     assertNotNull(branchComboBox);
   }
 
@@ -93,8 +92,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     GitBranch remoteBranch = gitData.getBranches(remoteList.get(0)).get(0);
     GitBranch localBranch = gitData.getBranches().get(0);
     PullConflictDialogView conflict = new PullConflictDialogView(remoteBranch, localBranch, "pull");
-    FindComponents find = new FindComponents();
-    JButton mergeButton = (JButton) find.getChildByName(conflict.getPanel(), "mergeButton");
+    JButton mergeButton = (JButton) FindComponents.getChildByName(conflict.getPanel(), "mergeButton");
     assertNotNull(mergeButton);
     mergeButton.getActionListeners()[0].actionPerformed(new ActionEvent(mergeButton, ActionEvent.ACTION_PERFORMED, null));
     GitCommit commit = gitData.getCommits().next();
@@ -109,8 +107,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
     assertNotNull(conflict.getDimension());
     assertNotNull(conflict.getTitle());
     conflict.update();
-    FindComponents find = new FindComponents();
-    JButton cancelButton = (JButton) find.getChildByName(conflict.getPanel(), "cancelButton");
+    JButton cancelButton = (JButton) FindComponents.getChildByName(conflict.getPanel(), "cancelButton");
     assertNotNull(cancelButton);
     cancelButton.getActionListeners()[0].actionPerformed(new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, null));
     assertTrue(guiControllerTestable.closeDialogViewCalled);

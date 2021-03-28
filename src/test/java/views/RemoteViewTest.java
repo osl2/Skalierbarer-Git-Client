@@ -35,7 +35,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RemoteViewTest extends AbstractRemoteTest {
+class RemoteViewTest extends AbstractRemoteTest {
     JTextField urlField;
     JTextField nameField;
     JTextArea branchArea;
@@ -44,8 +44,9 @@ public class RemoteViewTest extends AbstractRemoteTest {
     JButton deleteButton;
     JButton addButton;
     JButton removeButton;
+
     @BeforeEach
-    void prepare(){
+    void prepare() {
         RemoteView remoteD = new RemoteView();
         JPanel frame = remoteD.getView();
         urlField = (JTextField) FindComponents.getChildByName(frame, "urlField");

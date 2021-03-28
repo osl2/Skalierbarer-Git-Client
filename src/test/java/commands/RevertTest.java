@@ -33,7 +33,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class RevertTest extends AbstractCommandTest {
+class RevertTest extends AbstractCommandTest {
 
   @Test
   void testExecute() throws IOException, GitException {

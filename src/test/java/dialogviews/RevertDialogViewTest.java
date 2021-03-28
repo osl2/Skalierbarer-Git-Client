@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
-public class RevertDialogViewTest extends AbstractCommandTest {
+class RevertDialogViewTest extends AbstractCommandTest {
   RevertDialogView rDV;
   JButton revertButton;
   JTree revertTree;
