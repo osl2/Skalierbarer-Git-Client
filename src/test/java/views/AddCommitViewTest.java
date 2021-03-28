@@ -199,8 +199,11 @@ class AddCommitViewTest extends AbstractCommandTest {
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
 
+    /*
+    This is global testcase 6 from Pflichtenheft
+     */
     @Test
-    void commitButtonTest() throws IOException, GitAPIException {
+    void globalCommitTest_T6() throws IOException, GitAPIException {
         createNewFile();
         add();
         assertTrue(git.status().call().getAdded().contains(file.getName()));
@@ -347,12 +350,13 @@ class AddCommitViewTest extends AbstractCommandTest {
     This is testcase 5 from the Pflichtenheft
      */
     @Test
-    void globalAddTestT5() throws IOException, GitAPIException, GitException {
+    void globalAddTest_T5() throws IOException, GitAPIException, GitException {
         createNewFile();
         add();
         commit();
         modifyFile();
 
+        //testcase step: open ACV, cannot be tested here
         //reload view
         loadComponents();
         assertEquals(1, modifiedChangedFilesList.getModel().getSize());
@@ -405,5 +409,6 @@ class AddCommitViewTest extends AbstractCommandTest {
         cancelButtonTest();
         assertFalse(firstFile.isStaged());
     }
+
 
 }
