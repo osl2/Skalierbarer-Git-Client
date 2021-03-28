@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class Add implements ICommand, ICommandGUI {
   private List<GitFile> selectedFiles;
-  public String commandLine = "";
+  private String commandLine = "";
 
   /**
    * Create a new Instance of the Command.
