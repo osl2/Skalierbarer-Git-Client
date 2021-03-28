@@ -111,12 +111,17 @@ public class Add implements ICommand, ICommandGUI {
   This is called by execute() to save the data necessary for the command line output for later
    */
   private void setCommandLine(List<GitFile> filesToBeAdded) {
-    StringBuilder cl = new StringBuilder("git add ");
-    for (GitFile file : filesToBeAdded) {
-      cl.append(file.getSystemDependentRelativePath());
-      cl.append(" ");
+    if (filesToBeAdded.isEmpty()) {
+      return;
+    } else {
+      StringBuilder cl = new StringBuilder("git add ");
+      for (GitFile file : filesToBeAdded) {
+        cl.append(file.getSystemDependentRelativePath());
+        cl.append(" ");
+      }
+      commandLine = cl.toString();
     }
-    commandLine = cl.toString();
+
   }
 
   /**
