@@ -84,7 +84,7 @@ class InitTest {
   }
 
   @Test
-  void globalTestCaseInit() {
+  void globalTestCaseInit_T3() {
     MockedConstruction<JFileChooser> jFileChooserMockedConstruction = mockConstruction(JFileChooser.class, (mock, context) -> {
       when(mock.showOpenDialog(any())).thenReturn(JFileChooser.APPROVE_OPTION);
       when(mock.getSelectedFile()).thenReturn(directory);
