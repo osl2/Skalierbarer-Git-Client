@@ -158,6 +158,8 @@ public class RemoteViewTest extends AbstractRemoteTest {
         remoteList.setSelectedIndex(1);
         assertEquals("test", nameField.getText());
         assertEquals(newDir.getAbsolutePath(), urlField.getText());
+        removeButton.getActionListeners()[0].actionPerformed(new ActionEvent(removeButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.restoreDefaultViewCalled);
         deleteDir(newDir);
     }
 }
