@@ -91,7 +91,9 @@ public class GitFacade {
            throw new GitException("Das Symbol ? ist in Zweignamen nicht erlaubt.");
        } else  if (name.contains(" ")){
             throw new GitException("Der Name des neuen Branches darf keine Leerzeichen enthalten");
-        }
+        } else if (name.length() > 250){
+           throw new GitException("Der Name darf Maximal 250 Zeichen lang sein");
+       }
         try {
             Git git = GitData.getJGit();
             git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
@@ -99,6 +101,9 @@ public class GitFacade {
         } catch (GitAPIException e) {
             throw new GitException("Fehler beim Erstellen des neuen Branches \n"
                     + ERROR_MESSAGE + e.getMessage());
+        } catch (JGitInternalException e) {
+            throw new GitException("Mit dem Programm ist etwas intern schief gelaufen \n" +
+                "vielleicht war der Branch-Name zu lang");
         }
     }
 
