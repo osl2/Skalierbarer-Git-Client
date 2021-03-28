@@ -145,7 +145,19 @@ public class RemoteViewTest extends AbstractRemoteTest {
         JPanel addDialogPanel = addDialogView.getPanel();
         JTextField addNameField = (JTextField) FindComponents.getChildByName(addDialogPanel, "namefield");
         assertNotNull(addNameField);
-
+        JTextField addUrlField = (JTextField) FindComponents.getChildByName(addDialogPanel, "urlField");
+        assertNotNull(addUrlField);
+        JButton addRemAddButton = (JButton) FindComponents.getChildByName(addDialogPanel, "addButton");
+        assertNotNull(addRemAddButton);
+        addNameField.setText("test");
+        addUrlField.setText(newDir.getAbsolutePath());
+        addRemAddButton.getActionListeners()[0].actionPerformed(new ActionEvent(addRemAddButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.closeDialogViewCalled);
+        prepare();
+        assertEquals(2, remoteList.getModel().getSize());
+        remoteList.setSelectedIndex(1);
+        assertEquals("test", nameField.getText());
+        assertEquals(newDir.getAbsolutePath(), urlField.getText());
         deleteDir(newDir);
     }
 }
