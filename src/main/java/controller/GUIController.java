@@ -134,6 +134,8 @@ public class GUIController extends DataObserver {
 
     /**
      * Close the open Dialog.
+     * <p>
+     * Causes an update
      */
     public void closeDialogView() {
         JDialog currentDialog = dialogStack.pop();
@@ -144,6 +146,8 @@ public class GUIController extends DataObserver {
 
     /**
      * Replace the commandLine text in the MainWindow
+     *
+     * Causes an update
      *
      * @param commandLine the new text to be shown
      */
@@ -234,6 +238,7 @@ public class GUIController extends DataObserver {
     /**
      * Change the view in the MainWindow
      *
+     * Causes an update.
      * @param view the View to be opened
      */
     public void openView(IView view) {
