@@ -67,8 +67,8 @@ public class Revert implements ICommand, ICommandGUI {
                 String message = new GitData().getMergeMessage();
                 if (message == null) message = "";
                 GUIController.getInstance().openView(new AddCommitView(message));
-                commandLine = " git revert " + chosenCommit.getHashAbbrev();
             }
+            commandLine = " git revert " + chosenCommit.getHashAbbrev();
             return true;
 
         } catch (GitException | IOException e) {
