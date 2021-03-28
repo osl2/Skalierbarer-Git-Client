@@ -76,6 +76,7 @@ public class MergeDialogView implements IDialogView {
         okButton.setName("okButton");
         abortButton.setName("abortButton");
         fromComboBox.setName("fromComboBox");
+        toValueLabel.setName("toValueLabel");
     }
 
     /**

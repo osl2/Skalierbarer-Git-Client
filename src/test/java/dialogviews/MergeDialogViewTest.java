@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,27 +26,30 @@ import git.GitData;
 import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import static dialogviews.FindComponents.getChildByName;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
+import static util.UITestHelper.clickButton;
 
-public class MergeDialogViewTest extends AbstractCommandTest {
+class MergeDialogViewTest extends AbstractCommandTest {
     MergeDialogView mdv;
     JButton okButton;
     JButton abortButton;
     JLabel fromLabel;
     JLabel toLabel;
+    JLabel toValueLabel;
+
     JComboBox<GitBranch> fromComboBox;
 
     @BeforeEach
@@ -58,6 +61,7 @@ public class MergeDialogViewTest extends AbstractCommandTest {
         fromComboBox = (JComboBox<GitBranch>) getChildByName(panel, "fromComboBox");
         fromLabel = (JLabel) getChildByName(panel, "fromLabel");
         toLabel = (JLabel) getChildByName(panel, "toLabel");
+        toValueLabel = (JLabel) getChildByName(panel, "toValueLabel");
     }
 
     @Override
@@ -69,27 +73,17 @@ public class MergeDialogViewTest extends AbstractCommandTest {
     @Test
     void testNoSelection() {
         fromComboBox.setSelectedIndex(-1);
-        ActionEvent okClicked = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, null);
-        for (ActionListener actionListener : okButton.getActionListeners()) {
-            actionListener.actionPerformed(okClicked);
-
-        }
+        clickButton(okButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
-
-
     }
 
     @Test
     void testBranchSelectedThenMergeFailure() {
-        MockedConstruction<Merge> mmerge = mockConstruction(Merge.class, (mock, context) -> {
-            when(mock.execute()).thenReturn(false);
-        });
+        MockedConstruction<Merge> mmerge = mockConstruction(
+                Merge.class, (mock, context) -> when(mock.execute()).thenReturn(false)
+        );
         fromComboBox.setSelectedIndex(0);
-        ActionEvent okClicked = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, null);
-        for (ActionListener actionListener : okButton.getActionListeners()) {
-            actionListener.actionPerformed(okClicked);
-
-        }
+        clickButton(okButton);
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
 
         mmerge.close();
@@ -97,9 +91,9 @@ public class MergeDialogViewTest extends AbstractCommandTest {
 
     @Test
     void updateGitExceptionTest() {
-        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) -> {
-            when(mock.getBranches()).thenThrow(new GitException());
-        });
+        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) ->
+                when(mock.getBranches()).thenThrow(new GitException())
+        );
         mdv = new MergeDialogView();
         mdv.update();
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
@@ -108,9 +102,9 @@ public class MergeDialogViewTest extends AbstractCommandTest {
 
     @Test
     void updateIOExceptionTest() {
-        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) -> {
-            when(mock.getSelectedBranch()).thenThrow(new IOException());
-        });
+        MockedConstruction<GitData> gitDataMockedConstruction = mockConstruction(GitData.class, (mock, context) ->
+                when(mock.getSelectedBranch()).thenThrow(new IOException())
+        );
         mdv = new MergeDialogView();
         mdv.update();
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
@@ -123,5 +117,38 @@ public class MergeDialogViewTest extends AbstractCommandTest {
         assertNotNull(mdv.getPanel());
         assertNotNull(mdv.getTitle());
     }
+
+    @Test
+    @DisplayName("Globaler Testfall T11 - Kein Konflikt")
+    void g11Test() throws IOException, GitAPIException {
+        /* Setup Repo */
+        git.checkout().setCreateBranch(false).setName("testBranch").call();
+        try (FileWriter fw = new FileWriter(textFile, true)) {
+            fw.write("new data");
+            fw.flush();
+        }
+        git.add().addFilepattern(textFile.getName()).call();
+        git.commit().setMessage("New data").call();
+        GitBranch branchToMerge = gitData.getSelectedBranch();
+        git.checkout().setName("master").call();
+        GitBranch masterBranch = gitData.getSelectedBranch();
+        assertNotEquals("master", branchToMerge.getName());
+        assertEquals("master", gitData.getSelectedBranch().getName());
+
+        // Label is correctly showing branch Name
+        assertEquals(gitData.getSelectedBranch().getName(), Objects.requireNonNull(toValueLabel).getText());
+
+        assertEquals(branchToMerge, Objects.requireNonNull(fromComboBox).getSelectedItem());
+
+        // clicks merge button
+        clickButton(okButton);
+        // window closes
+        assertTrue(guiControllerTestable.closeDialogViewCalled);
+        // closeDialogView causes an update, therefore the gui is refreshed and we see the current commits in our
+        // untestable mainWindow
+        assertEquals(branchToMerge.getCommit(), masterBranch.getCommit());
+
+    }
+
 
 }
