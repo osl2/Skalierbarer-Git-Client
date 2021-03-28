@@ -19,21 +19,17 @@
  */
 package dialogviews;
 
-import commands.AbstractCommandTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedConstruction;
-import settings.Settings;
+import commands.*;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+import settings.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class FirstUseDialogViewTest extends AbstractCommandTest {
   private FirstUseDialogView firstUseDialogView;
@@ -64,7 +60,7 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
   }
 
   @AfterEach
-  void tearDown(){
+  void tearDown() {
     mockedJFileChooser.close();
   }
 
@@ -96,8 +92,7 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
   }
 
 
-  @Test
-  void testEmptyName() {
+  private void testEmptyName() {
     emailField.setText("TestMail");
     //Set a path
     for (ActionListener listener : chooseButton.getActionListeners()) {
@@ -111,8 +106,8 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
     assertTrue(guiControllerTestable.errorHandlerMSGCalled);
   }
 
-  @Test
-  void testEmptyMail() {
+
+  private void testEmptyMail() {
     nameField.setText("TestMail");
     //Set a path
     for (ActionListener listener : chooseButton.getActionListeners()) {
@@ -124,5 +119,19 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
     assertEquals(0, Settings.getInstance().getActiveRepositoryPath().getName().compareTo(repo.getName()));
     assertFalse(guiControllerTestable.closeDialogViewCalled);
     assertTrue(guiControllerTestable.errorHandlerMSGCalled);
+  }
+
+  @Test
+  void firstUseTest2() {
+    testEmptyMail();
+    mockedController.reset();
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled);
+    testEmptyName();
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled);
+    mockedController.reset();
+    assertFalse(guiControllerTestable.closeDialogViewCalled);
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled);
+    testFinishButton();
+
   }
 }

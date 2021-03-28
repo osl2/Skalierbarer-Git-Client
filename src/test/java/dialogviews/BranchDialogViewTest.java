@@ -72,7 +72,7 @@ class BranchDialogViewTest extends AbstractCommandTest {
   }
 
   @Test
-  void globalTestCase() throws GitAPIException {
+  void branchTest_T9() throws GitAPIException {
     //Checking state in the beginning
     String branchSelected = (String) branchComboBox.getSelectedItem();
     assertEquals("master", branchSelected);

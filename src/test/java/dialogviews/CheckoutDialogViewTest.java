@@ -212,4 +212,14 @@ class CheckoutDialogViewTest extends AbstractCommandTest {
         }
     }
 
+    @Test
+    void checkoutCommitTest_T8() throws IOException, GitAPIException {
+        checkoutCommitTest();
+    }
+
+    @Test
+    void checkoutBranchTest_T10() throws IOException {
+        checkoutBranchTest();
+    }
+
 }
