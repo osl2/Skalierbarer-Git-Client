@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 public class GUIController extends DataObserver {
 
     private static final int ERROR_MESSAGE_WIDTH = 600;
-    private static final int ERROR_MESSAGE_HEIGHT = 800;
+    private static final int ERROR_MESSAGE_HEIGHT = 500;
     private static GUIController INSTANCE;
     private final Map<JDialog, IDialogView> dialogMap;
     private final ArrayDeque<JDialog> dialogStack;
