@@ -21,32 +21,50 @@ package views;
 
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class HistoryViewTest extends AbstractCommandTest {
+  JList commitList;
+  JList fileList;
+  JTextPane diffText;
+  JTextArea commitMessage;
+  private HistoryView history;
+
+  @BeforeEach
+  void findGuiComponents() {
+    FindComponents find = new FindComponents();
+    history = new HistoryView();
+    JPanel historyPanel = history.getView();
+    commitList = (JList) find.getChildByName(historyPanel, "commitList");
+    assertNotNull(commitList);
+    fileList = (JList) find.getChildByName(historyPanel, "fileList");
+    assertNotNull(fileList);
+    diffText = (JTextPane) find.getChildByName(historyPanel, "diffText");
+    assertNotNull(diffText);
+    commitMessage = (JTextArea) find.getChildByName(historyPanel, "commitMessage");
+    assertNotNull(commitMessage);
+  }
 
   @Test
   void loadHistoryView() {
-    FindComponents find = new FindComponents();
-    HistoryView history = new HistoryView();
-    JPanel historyPanel = history.getView();
-    JList commitList = (JList) find.getChildByName(historyPanel, "commitList");
-    assertNotNull(commitList);
-    JList fileList = (JList) find.getChildByName(historyPanel, "fileList");
-    assertNotNull(fileList);
-    JTextPane diffText = (JTextPane) find.getChildByName(historyPanel, "diffText");
-    assertNotNull(diffText);
-    JTextArea commitMessage = (JTextArea) find.getChildByName(historyPanel, "commitMessage");
-    assertNotNull(commitMessage);
     commitList.setSelectedIndex(2);
     fileList.setSelectedIndex(0);
     assertNotEquals("", commitMessage.getText());
     assertNotEquals("", diffText.getText());
+  }
+
+  @Test
+  void globalTestCaseDiff() {
+    commitList.setSelectedIndex(2);
+    fileList.setSelectedIndex(0);
+    System.out.println(diffText.getText());
+    assertTrue(diffText.getText().contains("-data 1"));
+    assertTrue(diffText.getText().contains("+data 1data 2"));
   }
 }
