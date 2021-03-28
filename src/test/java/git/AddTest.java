@@ -21,6 +21,7 @@ package git;
 
 import commands.AbstractCommandTest;
 import commands.Add;
+import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -139,16 +140,42 @@ class AddTest extends AbstractCommandTest {
     }
 
     @Test
-    void getCommandLineTest() {
+    void addNestedFileTest() throws GitException, GitAPIException, IOException {
         File dir = new File(repo, "dir");
         assert dir.mkdir();
         File nestedFile = new File(dir, "nestedFile");
+        new FileOutputStream(nestedFile).close();
+        GitFile nestedGitFile = new GitFile(nestedFile.getTotalSpace(), nestedFile);
+
+        files.add(nestedGitFile);
+        add.setSelectedFiles(files);
+        add.execute();
+        assertTrue(nestedGitFile.isStaged());
+        assertTrue(git.status().call().getAdded().contains("dir/nestedFile"));
+    }
+
+    /*
+    This testcase corresponds partly to global testcase 26 from the Pflichtenheft
+     */
+    @Test
+    void globalCommandLineTest_T26() throws IOException {
+        File dir = new File(repo, "dir");
+        assert dir.mkdir();
+        File nestedFile = new File(dir, "nestedFile");
+        new FileOutputStream(nestedFile).close();
         GitFile nestedGitFile = new GitFile(nestedFile.getTotalSpace(), nestedFile);
         files.add(gitFile1);
         files.add(gitFile2);
         files.add(nestedGitFile);
         add.setSelectedFiles(files);
         String commandLine = add.getCommandLine();
+        assertTrue(commandLine.isEmpty());
+
+        //execute add
+        add.execute();
+
+        //command line should now represent the command that was just executed
+        commandLine = add.getCommandLine();
         String separator = File.separator.compareTo("/") == 0 ? "/" : "\\";
         assertEquals(0, commandLine.compareTo("git add file1 file2 dir" + separator + "nestedFile "));
     }

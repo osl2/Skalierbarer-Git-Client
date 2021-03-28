@@ -410,5 +410,16 @@ class AddCommitViewTest extends AbstractCommandTest {
         assertFalse(firstFile.isStaged());
     }
 
+    /*
+    This is testcase 26 from the Pflichtenheft
+     */
+    @Test
+    void globalCommandLineTest_T26() throws IOException, GitAPIException {
+        //commit a file
+        globalCommitTest_T6();
 
+        //this cannot really be tested any further
+        assertTrue(guiControllerTestable.setCommandLineCalled);
+
+    }
 }

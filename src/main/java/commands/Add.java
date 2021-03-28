@@ -36,6 +36,7 @@ import java.util.List;
  */
 public class Add implements ICommand, ICommandGUI {
   private List<GitFile> selectedFiles;
+  public String commandLine = "";
 
   /**
    * Create a new Instance of the Command.
@@ -58,6 +59,8 @@ public class Add implements ICommand, ICommandGUI {
   @Override
   public boolean execute() {
     try {
+      //save the command line output for later
+      setCommandLine(getFilesToBeAdded());
 
       //perform add for all files that have been selected by the user
       for (GitFile fileToBeAdded : getFilesToBeAdded()) {
@@ -101,12 +104,19 @@ public class Add implements ICommand, ICommandGUI {
    */
   @Override
   public String getCommandLine() {
+    return commandLine;
+  }
+
+  /*
+  This is called by execute() to save the data necessary for the command line output for later
+   */
+  private void setCommandLine(List<GitFile> filesToBeAdded) {
     StringBuilder cl = new StringBuilder("git add ");
-    for (GitFile file : getFilesToBeAdded()) {
+    for (GitFile file : filesToBeAdded) {
       cl.append(file.getSystemDependentRelativePath());
       cl.append(" ");
     }
-    return cl.toString();
+    commandLine = cl.toString();
   }
 
   /**
