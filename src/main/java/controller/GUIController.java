@@ -50,6 +50,7 @@ public class GUIController extends DataObserver {
     private final Map<JDialog, IDialogView> dialogMap;
     private final ArrayDeque<JDialog> dialogStack;
     private MainWindow window;
+    private boolean alreadyLoggedNullButtons = false;
 
     protected GUIController() {
         /* This class is a singleton */
@@ -177,11 +178,13 @@ public class GUIController extends DataObserver {
         this.window.clearButtonPanel();
         for (ICommandGUI c : Settings.getInstance().getLevel().getCommands()) {
             if (c.getName() == null || c.getDescription() == null) {
-                Logger.getGlobal().warning(c.getClass().getCanonicalName() + " not loaded because it returned null values");
+                if (!this.alreadyLoggedNullButtons)
+                    Logger.getGlobal().warning(c.getClass().getCanonicalName() + " not loaded because it returned null values");
                 continue;
             }
             this.window.addButton(c.getName(), c.getDescription(), e -> c.onButtonClicked());
         }
+        this.alreadyLoggedNullButtons = true;
     }
 
     /**

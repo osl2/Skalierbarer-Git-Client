@@ -35,8 +35,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -202,5 +201,17 @@ class GitFacadeTest extends AbstractGitTest {
     assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, " nam e"));
     assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, ""));
     assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, "Nam?e"));
+
+    String branchName = RandomStringUtils.randomAlphanumeric(249);
+    assertTrue(facade.branchOperation(gitCommit, branchName));
+    List<Ref> gitBranchList = git.branchList().call();
+    List<String> branchNames = new ArrayList<>();
+    for (Ref branch : gitBranchList){
+      branchNames.add(branch.getName());
+    }
+    assertTrue(branchNames.contains("refs/heads/" + branchName));
+
+    String finalBranchName = RandomStringUtils.randomAlphanumeric(300);
+    assertThrows(GitException.class, () -> facade.branchOperation(gitCommit, finalBranchName));
   }
 }
