@@ -87,11 +87,6 @@ public class GitFacade {
      * @throws GitException if branching wasn't possible due to git internal problems
      */
     public boolean branchOperation(GitCommit commit, String name) throws GitException {
-       if (name.contains("?")){
-           throw new GitException("Das Symbol ? ist in Zweignamen nicht erlaubt.");
-       } else  if (name.contains(" ")){
-            throw new GitException("Der Name des neuen Branches darf keine Leerzeichen enthalten");
-        }
         try {
             Git git = GitData.getJGit();
             git.checkout().setCreateBranch(true).setName(name).setStartPoint(commit.getHash()).call();
