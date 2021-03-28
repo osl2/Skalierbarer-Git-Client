@@ -119,6 +119,13 @@ class GUIControllerTest {
 
     }
 
+    @Test
+    void changedSettingsUpdateTest() {
+        Settings.getInstance().addDataChangedListener(guiController);
+        Settings.getInstance().setLevel(Data.getInstance().getLevels().get(1));
+        verify(mockedMainWindow.constructed().get(0)).update();
+    }
+
 
     @Test
     void setCommandLineTest() {
