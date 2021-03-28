@@ -47,8 +47,8 @@ public class GUIController extends DataObserver {
     private static final int ERROR_MESSAGE_WIDTH = 600;
     private static final int ERROR_MESSAGE_HEIGHT = 800;
     private static GUIController INSTANCE;
-    private Map<JDialog, IDialogView> dialogMap;
-    private ArrayDeque<JDialog> dialogStack;
+    private final Map<JDialog, IDialogView> dialogMap;
+    private final ArrayDeque<JDialog> dialogStack;
     private MainWindow window;
 
     protected GUIController() {
@@ -213,7 +213,20 @@ public class GUIController extends DataObserver {
         dialog.setContentPane(dialogView.getPanel());
         dialog.revalidate();
         dialog.repaint();
-        dialog.setSize(dialogView.getDimension());
+        Dimension dialogSize = dialogView.getDimension();
+
+        if (!GraphicsEnvironment.isHeadless()) {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            if (dialogSize.getHeight() > screenSize.getHeight()) {
+                dialogSize.setSize(dialogSize.getWidth(), screenSize.getHeight());
+            }
+
+            if (dialogSize.getWidth() > screenSize.getWidth()) {
+                dialogSize.setSize(screenSize.getWidth(), dialogSize.getHeight());
+            }
+        }
+
+        dialog.setSize(dialogSize);
         dialog.setLocationRelativeTo(window);
         return dialog;
     }
