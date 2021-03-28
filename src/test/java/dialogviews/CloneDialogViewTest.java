@@ -100,4 +100,14 @@ public class CloneDialogViewTest extends CloneTest {
     assertNotNull(cDV.getTitle());
 
   }
+
+  @Test
+  void globalCloneTest() {
+    // Test not existing URL input.
+    remoteField.setText("aaa");
+    remoteField.setText(repo.getAbsolutePath());
+    cloneButton.getActionListeners()[0].actionPerformed(new ActionEvent(cloneButton, ActionEvent.ACTION_PERFORMED, null));
+    assertTrue(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+    testCloneButton();
+  }
 }
