@@ -121,4 +121,31 @@ class PushDialogViewTest extends AbstractRemoteTest {
         assertTrue(guiControllerTestable.closeDialogViewCalled);
         assertTrue(guiControllerTestable.setCommandLineCalled);
     }
+
+    /*
+    This is testcase 14 from the Pflichtenheft
+     */
+    @Test
+    void globalPushTest_T14() {
+        //testcase step 1: open PDV, cannot be tested here
+
+        //testcase step 2: choose remote repo
+        remoteComboBoxTest();
+        //select the first remote in the combobox
+        remoteComboBox.setSelectedIndex(0);
+        localBranchComboBoxTest();
+        //select the first local branch in the combobox
+        localBranchComboBox.setSelectedIndex(0);
+
+        //testcase step 3: press "refresh"
+        for (ActionListener listener : refreshButton.getActionListeners()) {
+            listener.actionPerformed(new ActionEvent(refreshButton, ActionEvent.ACTION_PERFORMED, "Refresh button clicked"));
+        }
+        //nothing to assert here
+
+        //testcase step 4: there is no "follow" button
+
+        //testcase step 5: press push
+        pushButtonTest();
+    }
 }

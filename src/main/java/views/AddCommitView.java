@@ -221,6 +221,7 @@ public class AddCommitView extends JPanel implements IView {
     modifiedChangedFilesCheckBox.setName("modifiedChangedFilesCheckBox");
     newFilesCheckBox.setName("newFilesCheckBox");
     deletedFilesCheckBox.setName("deletedFilesCheckBox");
+    diffTextPane.setName("diffTextPane");
   }
 
   /*
@@ -302,8 +303,11 @@ public class AddCommitView extends JPanel implements IView {
     headerTextField.setEditable(false);
     JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
     messageTextArea.setEditable(false);
-    JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
-
+    messageTextArea.setLineWrap(true);
+    JScrollPane messageScrollPane = new JScrollPane(messageTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    messageScrollPane.setPreferredSize(new Dimension(500, 100));
+    messageScrollPane.setMaximumSize(new Dimension(500, 200));
 
     StringBuilder message = new StringBuilder();
     for (GitFile gitFile : stagedFiles) {
@@ -312,9 +316,10 @@ public class AddCommitView extends JPanel implements IView {
     }
     JTextArea textArea = new JTextArea(message.toString());
     textArea.setEditable(false);
-    JScrollPane fileScrollPane = new JScrollPane(textArea);
+    JScrollPane fileScrollPane = new JScrollPane(textArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     textArea.setLineWrap(true);
-    fileScrollPane.setPreferredSize(new Dimension(500, 200));
+    fileScrollPane.setPreferredSize(new Dimension(500, 100));
     fileScrollPane.setMaximumSize(new Dimension(500, 200));
 
     panel.add(headerTextField, BorderLayout.NORTH);
@@ -473,15 +478,12 @@ public class AddCommitView extends JPanel implements IView {
       checkBox.setText(value.getGitFile().getPath().getName());
 
       //color staged files in green, unstaged files in red
-      try {
-        if (value.getGitFile().isStaged()) {
+        if (value.isSelected()) {
           checkBox.setForeground(Color.GREEN);
         } else {
           checkBox.setForeground(Color.RED);
         }
-      } catch (GitException e) {
-        GUIController.getInstance().errorHandler(e);
-      }
+
 
       //checkBox.setFocusPainted(cellHasFocus) does not work. This is a workaround to mark selected cell
       if (cellHasFocus) {

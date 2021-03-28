@@ -21,6 +21,8 @@ package views;
 
 import commands.AbstractCommandTest;
 import dialogviews.FindComponents;
+import git.GitFile;
+import git.exception.GitException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +54,7 @@ class AddCommitViewTest extends AbstractCommandTest {
     private JCheckBox newFilesCheckBox;
     private JCheckBox deletedFilesCheckBox;
     private MockedStatic<JOptionPane> mockedJOptionPane;
+    private JTextPane diffTextPane;
 
     @BeforeEach
     void prepare() {
@@ -78,6 +81,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         modifiedChangedFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "modifiedChangedFilesCheckBox");
         newFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "newFilesCheckBox");
         deletedFilesCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "deletedFilesCheckBox");
+        diffTextPane = (JTextPane) FindComponents.getChildByName(panel, "diffTextPane");
 
     }
 
@@ -159,7 +163,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         //newFilesList should now contain one element
         assertEquals(1, newFilesList.getModel().getSize());
 
-        mouseListenerTest(newFilesList);
+        mouseListenerTest(newFilesList, true);
     }
 
     @Test
@@ -174,7 +178,7 @@ class AddCommitViewTest extends AbstractCommandTest {
 
         assertEquals(1, modifiedChangedFilesList.getModel().getSize());
 
-        mouseListenerTest(modifiedChangedFilesList);
+        mouseListenerTest(modifiedChangedFilesList, true);
     }
 
 
@@ -195,8 +199,11 @@ class AddCommitViewTest extends AbstractCommandTest {
         assertTrue(guiControllerTestable.errorHandlerMSGCalled);
     }
 
+    /*
+    This is global testcase 6 from Pflichtenheft
+     */
     @Test
-    void commitButtonTest() throws IOException, GitAPIException {
+    void globalCommitTest_T6() throws IOException, GitAPIException {
         createNewFile();
         add();
         assertTrue(git.status().call().getAdded().contains(file.getName()));
@@ -298,7 +305,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         }
     }
 
-    private void mouseListenerTest(JList list) {
+    private void mouseListenerTest(JList list, boolean expectedState) {
         Point pointClicked = list.getLocation();
         MouseEvent mouseEvent = new MouseEvent(list, MouseEvent.MOUSE_CLICKED, 100, 0, pointClicked.x,
                 pointClicked.y, 1, false, MouseEvent.BUTTON1);
@@ -307,7 +314,7 @@ class AddCommitViewTest extends AbstractCommandTest {
         }
         AddCommitView.FileListItem item = (AddCommitView.FileListItem) list.getModel().getElementAt(0);
         //item should now be selected
-        assertTrue(item.isSelected());
+        assertEquals(expectedState, item.isSelected());
 
     }
 
@@ -337,5 +344,82 @@ class AddCommitViewTest extends AbstractCommandTest {
         FileWriter out = new FileWriter(file);
         out.write("Test");
         out.close();
+    }
+
+    /*
+    This is testcase 5 from the Pflichtenheft
+     */
+    @Test
+    void globalAddTest_T5() throws IOException, GitAPIException, GitException {
+        createNewFile();
+        add();
+        commit();
+        modifyFile();
+
+        //testcase step: open ACV, cannot be tested here
+        //reload view
+        loadComponents();
+        assertEquals(1, modifiedChangedFilesList.getModel().getSize());
+
+        //Testcase step 2: select an entry in one of the file lists
+        mouseListenerTest(modifiedChangedFilesList, true);
+        //diff text pane should not be empty
+        assertFalse(diffTextPane.getText().isEmpty());
+
+        //Testcase step 3: select file
+        modifiedChangedFilesList.setSelectedIndex(0);
+        AddCommitView.FileListItem firstItem = (AddCommitView.FileListItem) modifiedChangedFilesList.getSelectedValue();
+        assertTrue(firstItem.isSelected());
+        GitFile firstFile = firstItem.getGitFile();
+        //item should appear in green now, this cannot be tested here
+
+        //Testcase step 4 - 5: click cancel button
+        //reset mocked JOptionPane to select NO_OPTION
+        mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(),
+                anyInt(), anyInt()))
+                .thenReturn(JOptionPane.NO_OPTION);
+        cancelButtonTest();
+        //file should not have been staged
+        assertFalse(firstFile.isStaged());
+
+        //testcase step 6: reopen the view
+        //reload the view
+        loadComponents();
+        assertEquals(1, modifiedChangedFilesList.getModel().getSize());
+        firstItem = (AddCommitView.FileListItem) modifiedChangedFilesList.getModel().getElementAt(0);
+        assertFalse(firstItem.isSelected());
+
+        //testcase step 7-8: select the first item and press "cancel"
+        mouseListenerTest(modifiedChangedFilesList, true);
+        //reset JOptionPane
+        mockedJOptionPane.when(() -> JOptionPane.showConfirmDialog(any(), anyString(), anyString(),
+                anyInt(), anyInt()))
+                .thenReturn(JOptionPane.YES_OPTION);
+        cancelButtonTest();
+
+        //testcase step 9: file should have been staged
+        loadComponents();
+        assertEquals(1, modifiedChangedFilesList.getModel().getSize());
+        firstItem = (AddCommitView.FileListItem) modifiedChangedFilesList.getModel().getElementAt(0);
+        assertTrue(firstItem.isSelected());
+        assertTrue(firstFile.isStaged());
+
+        //testcase step 10: deselect item and cancel. File should have been unstaged
+        mouseListenerTest(modifiedChangedFilesList, false);
+        cancelButtonTest();
+        assertFalse(firstFile.isStaged());
+    }
+
+    /*
+    This is testcase 26 from the Pflichtenheft
+     */
+    @Test
+    void globalCommandLineTest_T26() throws IOException, GitAPIException {
+        //commit a file
+        globalCommitTest_T6();
+
+        //this cannot really be tested any further
+        assertTrue(guiControllerTestable.setCommandLineCalled);
+
     }
 }
