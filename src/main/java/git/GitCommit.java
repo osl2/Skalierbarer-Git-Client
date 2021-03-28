@@ -123,12 +123,19 @@ public class GitCommit {
     }
 
     /**
-     * The first line of the Commit message.
-     * @return the fist line of the Commit message.
+     * The summary line of the commit. Truncated to 200 characters.
+     *
+     * @return up to the first 200 characters of the Commit message.
      */
     public String getShortMessage() {
         initializeCommit();
-        return this.revCommit.getShortMessage();
+        String shortMessage = revCommit.getShortMessage();
+        int maxLength = 200;
+        if (shortMessage.length() < maxLength){
+            return shortMessage;
+        } else {
+            return shortMessage.substring(0, maxLength);
+        }
     }
 
     /**
