@@ -63,13 +63,12 @@ public class Revert implements ICommand, ICommandGUI {
                 for (GitFileConflict fileConflict : conflictList) {
                     if (!fileConflict.apply()) return false;
                 }
-
+                // Create commit
+                String message = new GitData().getMergeMessage();
+                if (message == null) message = "";
+                GUIController.getInstance().openView(new AddCommitView(message));
+                commandLine = " git revert " + chosenCommit.getHashAbbrev();
             }
-            // Create commit
-            String message = new GitData().getStoredCommitMessage();
-            if (message == null) message = "";
-            GUIController.getInstance().openView(new AddCommitView(message));
-            commandLine = " git revert " + chosenCommit.getHashAbbrev();
             return true;
 
         } catch (GitException | IOException e) {
