@@ -30,35 +30,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static util.UITestHelper.clickButton;
 
 class MergeConflictDialogViewTest extends AbstractCommandTest {
     GitFileConflict conflict;
     MergeConflictDialogView mcdv;
-    private JPanel contentPane;
-    private JTextPane leftTextPane;
-    private JTextPane centerTextArea;
-    private JTextPane rightTextPane;
-    private JLabel leftLabel;
-    private JLabel centerLabel;
-    private JLabel rightLabel;
-    private JScrollPane leftScrollbar;
     private JButton buttonLeftAccept;
     private JButton buttonLeftDecline;
     private JButton buttonRightAccept;
     private JButton buttonRightDecline;
     private JButton okButton;
-    private JScrollPane centerScrollbar;
-    private JScrollPane rightScrollbar;
-    private JPanel comparisonPane;
 
     @BeforeEach
     void setUp() {
@@ -165,33 +153,13 @@ class MergeConflictDialogViewTest extends AbstractCommandTest {
         assertNotNull(mcdv.getTitle());
     }
 
-
     private void obtainComponents() {
         JPanel panel = mcdv.getPanel();
-        contentPane = (JPanel) FindComponents.getChildByName(panel, "contentPane");
-        leftTextPane = (JTextPane) FindComponents.getChildByName(panel, "leftTextPane");
-        centerTextArea = (JTextPane) FindComponents.getChildByName(panel, "centerTextArea");
-        rightTextPane = (JTextPane) FindComponents.getChildByName(panel, "rightTextPane");
-        leftLabel = (JLabel) FindComponents.getChildByName(panel, "leftLabel");
-        centerLabel = (JLabel) FindComponents.getChildByName(panel, "centerLabel");
-        rightLabel = (JLabel) FindComponents.getChildByName(panel, "rightLabel");
-        leftScrollbar = (JScrollPane) FindComponents.getChildByName(panel, "leftScrollbar");
         buttonLeftAccept = (JButton) FindComponents.getChildByName(panel, "buttonLeftAccept");
         buttonLeftDecline = (JButton) FindComponents.getChildByName(panel, "buttonLeftDecline");
         buttonRightAccept = (JButton) FindComponents.getChildByName(panel, "buttonRightAccept");
         buttonRightDecline = (JButton) FindComponents.getChildByName(panel, "buttonRightDecline");
         okButton = (JButton) FindComponents.getChildByName(panel, "okButton");
-        centerScrollbar = (JScrollPane) FindComponents.getChildByName(panel, "centerScrollbar");
-        rightScrollbar = (JScrollPane) FindComponents.getChildByName(panel, "rightScrollbar");
-        comparisonPane = (JPanel) FindComponents.getChildByName(panel, "comparisonPane");
     }
-
-    private void clickButton(JButton button) {
-        ActionEvent clickEvent = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, null);
-        Arrays.stream(button.getActionListeners()).forEach(l -> {
-            l.actionPerformed(clickEvent);
-        });
-    }
-
 
 }
