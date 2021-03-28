@@ -84,8 +84,7 @@ class InitTest {
   }
 
   @Test
-  void globalTestCaseInit() {
-    // Dieser TestFall beschreibt den TestFall T3 Anlegen eines neuen Repository aus dem Pflichtenheft (Sollen wir das so machen)
+  void globalTestCaseInit_T3() {
     MockedConstruction<JFileChooser> jFileChooserMockedConstruction = mockConstruction(JFileChooser.class, (mock, context) -> {
       when(mock.showOpenDialog(any())).thenReturn(JFileChooser.APPROVE_OPTION);
       when(mock.getSelectedFile()).thenReturn(directory);

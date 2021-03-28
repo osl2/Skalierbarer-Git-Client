@@ -54,7 +54,7 @@ public class RevertDialogViewTest extends AbstractCommandTest {
   }
 
   @Test
-  void globalTestRevert() {
+  void globalTestRevert_T29() {
     Object rootNode = revertTree.getModel().getRoot();
     Object masterBranchNode = revertTree.getModel().getChild(rootNode, 0);
     assertNotNull(masterBranchNode);

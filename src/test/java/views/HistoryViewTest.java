@@ -60,7 +60,7 @@ public class HistoryViewTest extends AbstractCommandTest {
   }
 
   @Test
-  void globalTestCaseDiff() {
+  void globalTestCaseDiff_T7() {
     commitList.setSelectedIndex(2);
     fileList.setSelectedIndex(0);
     System.out.println(diffText.getText());

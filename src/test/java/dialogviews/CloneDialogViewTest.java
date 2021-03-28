@@ -102,7 +102,7 @@ public class CloneDialogViewTest extends CloneTest {
   }
 
   @Test
-  void globalCloneTest() {
+  void globalCloneTest_T4() {
     // Test not existing URL input.
     remoteField.setText("aaa");
     remoteField.setText(repo.getAbsolutePath());
