@@ -302,8 +302,11 @@ public class AddCommitView extends JPanel implements IView {
     headerTextField.setEditable(false);
     JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
     messageTextArea.setEditable(false);
-    JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
-
+    messageTextArea.setLineWrap(true);
+    JScrollPane messageScrollPane = new JScrollPane(messageTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    messageScrollPane.setPreferredSize(new Dimension(500, 100));
+    messageScrollPane.setMaximumSize(new Dimension(500, 200));
 
     StringBuilder message = new StringBuilder();
     for (GitFile gitFile : stagedFiles) {
@@ -312,9 +315,10 @@ public class AddCommitView extends JPanel implements IView {
     }
     JTextArea textArea = new JTextArea(message.toString());
     textArea.setEditable(false);
-    JScrollPane fileScrollPane = new JScrollPane(textArea);
+    JScrollPane fileScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     textArea.setLineWrap(true);
-    fileScrollPane.setPreferredSize(new Dimension(500, 200));
+    fileScrollPane.setPreferredSize(new Dimension(500, 100));
     fileScrollPane.setMaximumSize(new Dimension(500, 200));
 
     panel.add(headerTextField, BorderLayout.NORTH);
