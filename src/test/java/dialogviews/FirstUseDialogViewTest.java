@@ -124,14 +124,14 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
   @Test
   void firstUseTest2() {
     testEmptyMail();
-    mockedController.reset();
+    guiControllerTestable.resetTestStatus();
     assertFalse(guiControllerTestable.errorHandlerMSGCalled);
     testEmptyName();
+    guiControllerTestable.resetTestStatus();
     assertFalse(guiControllerTestable.errorHandlerMSGCalled);
-    mockedController.reset();
+    guiControllerTestable.resetTestStatus();
     assertFalse(guiControllerTestable.closeDialogViewCalled);
     assertFalse(guiControllerTestable.errorHandlerMSGCalled);
     testFinishButton();
-
   }
 }
