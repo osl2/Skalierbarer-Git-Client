@@ -72,7 +72,7 @@ public class PullDialogViewTest extends AbstractRemoteTest {
   }
 
   @Test
-  void testPullButton() throws GitException, IOException, GitAPIException {
+  void globalPullTest() throws GitException, IOException, GitAPIException {
     // Create a new Commit to pull.
     git = Git.open(repo);
     FileWriter fr = new FileWriter(textFile, true);

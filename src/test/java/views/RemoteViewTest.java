@@ -22,6 +22,7 @@ package views;
 import commands.AbstractRemoteTest;
 import commands.Remote;
 import dialogviews.FindComponents;
+import dialogviews.RemoteAddDialogView;
 import git.GitRemote;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -124,6 +125,41 @@ public class RemoteViewTest extends AbstractRemoteTest {
         urlField.setText(newDir.getAbsolutePath());
         safeButton.getActionListeners()[0].actionPerformed(new ActionEvent(safeButton, ActionEvent.ACTION_PERFORMED, null));
         assertEquals(newDir.getAbsolutePath(), remoteList.getSelectedValue().getUrl());
+        deleteDir(newDir);
+    }
+    @Test
+    void globalRemoteTest() throws GitAPIException {
+        File newDir = new File("src" + System.getProperty("file.separator") + "test" +
+                System.getProperty("file.separator") + "resources" + System.getProperty("file.separator") + "Test" +
+                System.getProperty("file.separator") + "testRemote");
+        Git.init().setDirectory(newDir).setBare(false).call();
+        int size = remoteList.getModel().getSize();
+        assertEquals( 1, size);
+        remoteList.setSelectedIndex(0);
+        assertNotNull(nameField.getText());
+        assertNotNull(urlField.getText());
+        assertNotNull(branchArea.getText());
+        addButton.getActionListeners()[0].actionPerformed(new ActionEvent(addButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.openDialogCalled);
+        RemoteAddDialogView addDialogView = new RemoteAddDialogView();
+        JPanel addDialogPanel = addDialogView.getPanel();
+        JTextField addNameField = (JTextField) FindComponents.getChildByName(addDialogPanel, "namefield");
+        assertNotNull(addNameField);
+        JTextField addUrlField = (JTextField) FindComponents.getChildByName(addDialogPanel, "urlField");
+        assertNotNull(addUrlField);
+        JButton addRemAddButton = (JButton) FindComponents.getChildByName(addDialogPanel, "addButton");
+        assertNotNull(addRemAddButton);
+        addNameField.setText("test");
+        addUrlField.setText(newDir.getAbsolutePath());
+        addRemAddButton.getActionListeners()[0].actionPerformed(new ActionEvent(addRemAddButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.closeDialogViewCalled);
+        prepare();
+        assertEquals(2, remoteList.getModel().getSize());
+        remoteList.setSelectedIndex(1);
+        assertEquals("test", nameField.getText());
+        assertEquals(newDir.getAbsolutePath(), urlField.getText());
+        removeButton.getActionListeners()[0].actionPerformed(new ActionEvent(removeButton, ActionEvent.ACTION_PERFORMED, null));
+        assertTrue(guiControllerTestable.restoreDefaultViewCalled);
         deleteDir(newDir);
     }
 }
