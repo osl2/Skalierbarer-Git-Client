@@ -23,12 +23,13 @@ import commands.AbstractCommandTest;
 import git.GitBranch;
 import git.GitData;
 import git.exception.GitException;
+import org.eclipse.jgit.api.errors.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,15 +56,63 @@ class BranchDialogViewTest extends AbstractCommandTest {
 
   @Test
   void testBranchDialogView() throws GitException {
-    textField.setText("NeuerBranch");
+    String branchName = "NeuerBranch";
+    textField.setText(branchName);
     branchComboBox.setSelectedIndex(0);
     commitComboBox.setSelectedIndex(0);
     branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
     GitData data = new GitData();
     List<GitBranch> b = data.getBranches();
     assertEquals(2, b.size());
+    ArrayList<String> branchNames = new ArrayList<>();
+    for (GitBranch branch : b){
+      branchNames.add(branch.getName());
+    }
+    assertTrue(branchNames.contains(branchName));
   }
 
+  @Test
+  void globalTestCase() throws GitAPIException {
+    //Checking state in the beginning
+    String branchSelected = (String) branchComboBox.getSelectedItem();
+    assertEquals("master", branchSelected);
+    String commitSelected = (String) commitComboBox.getSelectedItem();
+    assertTrue(git.log().call().iterator().next().name().substring(0, 6).contains(commitSelected.substring(0, 6)));
+
+    //Setting a name that allready exists opens Error handler
+    branchComboBox.setSelectedIndex(0);
+    commitComboBox.setSelectedIndex(0);
+    textField.setText("master");
+    branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
+    assertTrue(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+    assertFalse(guiControllerTestable.closeDialogViewCalled);
+
+    //Reset guiControllerTestable
+    guiControllerTestable.resetTestStatus();
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+
+    //Setting a name with a "?"
+    branchComboBox.setSelectedIndex(0);
+    commitComboBox.setSelectedIndex(0);
+    textField.setText("neuwrBranch?");
+    branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
+    assertTrue(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+    assertFalse(guiControllerTestable.closeDialogViewCalled);
+
+    //Reset guiControllerTestable
+    guiControllerTestable.resetTestStatus();
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+
+    //Entering a valid name and valid start branch
+    branchComboBox.setSelectedIndex(0);
+    commitComboBox.setSelectedIndex(0);
+    textField.setText("newBranch2");
+    branchButton.getActionListeners()[0].actionPerformed(new ActionEvent(branchButton, ActionEvent.ACTION_PERFORMED, null));
+    assertFalse(guiControllerTestable.errorHandlerMSGCalled || guiControllerTestable.errorHandlerECalled);
+    assertTrue(guiControllerTestable.closeDialogViewCalled);
+
+
+  }
 
   @Test
   void testBranchDialogViewNoMessage() {
