@@ -221,6 +221,7 @@ public class AddCommitView extends JPanel implements IView {
     modifiedChangedFilesCheckBox.setName("modifiedChangedFilesCheckBox");
     newFilesCheckBox.setName("newFilesCheckBox");
     deletedFilesCheckBox.setName("deletedFilesCheckBox");
+    diffTextPane.setName("diffTextPane");
   }
 
   /*
@@ -303,8 +304,8 @@ public class AddCommitView extends JPanel implements IView {
     JTextArea messageTextArea = new JTextArea("Commit-Nachricht: " + commitMessage);
     messageTextArea.setEditable(false);
     messageTextArea.setLineWrap(true);
-    JScrollPane messageScrollPane = new JScrollPane(messageTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane messageScrollPane = new JScrollPane(messageTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     messageScrollPane.setPreferredSize(new Dimension(500, 100));
     messageScrollPane.setMaximumSize(new Dimension(500, 200));
 
@@ -315,8 +316,8 @@ public class AddCommitView extends JPanel implements IView {
     }
     JTextArea textArea = new JTextArea(message.toString());
     textArea.setEditable(false);
-    JScrollPane fileScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane fileScrollPane = new JScrollPane(textArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     textArea.setLineWrap(true);
     fileScrollPane.setPreferredSize(new Dimension(500, 100));
     fileScrollPane.setMaximumSize(new Dimension(500, 200));
