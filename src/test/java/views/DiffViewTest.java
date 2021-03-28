@@ -23,10 +23,13 @@ import commands.AbstractCommandTest;
 import git.GitCommit;
 import git.GitFile;
 import git.exception.GitException;
+import org.eclipse.jgit.api.errors.*;
+import org.eclipse.jgit.revwalk.*;
 import org.junit.jupiter.api.Test;
+import shaded.org.apache.commons.lang3.*;
 
 import javax.swing.*;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +73,31 @@ public class DiffViewTest extends AbstractCommandTest {
         assertEquals("", pane.getText());
         diffView.setNotVisible();
         assertEquals("", pane.getText());
+      }
+    }
+  }
+
+  @Test
+  void messageLengthTest() throws IOException, GitException, GitAPIException {
+    //Make a commit with a long commit-message
+
+    String message = RandomStringUtils.randomAlphanumeric((100^100));
+    FileWriter fr = new FileWriter(textFile, true);
+    fr.write("data 2");
+    fr.close();
+    git.add().addFilepattern(textFile.getName()).call();
+    RevCommit test = git.commit().setMessage(message).call();
+    assertEquals(message, test.getFullMessage());
+    assertTrue(test.getFullMessage().contains(test.getShortMessage()));
+
+
+    Iterator<GitCommit> it = gitData.getCommits();
+    DiffView diffView = new DiffView();
+    while (it.hasNext()) {
+      GitCommit commit = it.next();
+      if (commit.getMessage().compareTo(message) == 0) {
+        List<GitFile> file = commit.getChangedFiles();
+        assertEquals(1, file.size());
       }
     }
   }

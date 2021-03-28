@@ -204,7 +204,7 @@ public class GitCommit {
             }
 
         } catch (GitAPIException e) {
-            throw new GitException("Beim Rückgängig machen des Commits ist ein Fehler aufgetreten" +
+            throw new GitException("Beim Rückgängig machen des Commits ist ein Fehler aufgetreten \n" +
                 "Fehlermeldung: " + e.getMessage());
         }
         return conflicts;

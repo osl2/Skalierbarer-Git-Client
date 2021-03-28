@@ -117,13 +117,13 @@ class CheckoutDialogViewTest extends AbstractCommandTest {
 
 
     @Test
-    void checkoutBranchTest() throws IOException {
+    void checkoutBranchTest_T10() throws IOException {
         checkoutBranch();
         assertEquals("testBranch", gitData.getSelectedBranch().getName());
     }
 
     @Test
-    void checkoutCommitTest() throws IOException, GitAPIException {
+    void checkoutCommitTest_T8() throws IOException, GitAPIException {
         checkoutCommit();
         assertEquals(targetRevCommit, git.log().call().iterator().next());
     }
@@ -211,5 +211,4 @@ class CheckoutDialogViewTest extends AbstractCommandTest {
                     .call();
         }
     }
-
 }

@@ -94,6 +94,9 @@ public class GitFacade {
         } catch (GitAPIException e) {
             throw new GitException("Fehler beim Erstellen des neuen Branches \n"
                     + ERROR_MESSAGE + e.getMessage());
+        } catch (JGitInternalException e) {
+            throw new GitException("Mit dem Programm ist etwas intern schief gelaufen \n" +
+                 ERROR_MESSAGE + e.getMessage());
         }
     }
 
