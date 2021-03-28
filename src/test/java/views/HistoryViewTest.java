@@ -29,7 +29,7 @@ import javax.swing.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class HistoryViewTest extends AbstractCommandTest {
+class HistoryViewTest extends AbstractCommandTest {
   JList commitList;
   JList fileList;
   JTextPane diffText;
@@ -38,16 +38,15 @@ public class HistoryViewTest extends AbstractCommandTest {
 
   @BeforeEach
   void findGuiComponents() {
-    FindComponents find = new FindComponents();
     history = new HistoryView();
     JPanel historyPanel = history.getView();
-    commitList = (JList) find.getChildByName(historyPanel, "commitList");
+    commitList = (JList) FindComponents.getChildByName(historyPanel, "commitList");
     assertNotNull(commitList);
-    fileList = (JList) find.getChildByName(historyPanel, "fileList");
+    fileList = (JList) FindComponents.getChildByName(historyPanel, "fileList");
     assertNotNull(fileList);
-    diffText = (JTextPane) find.getChildByName(historyPanel, "diffText");
+    diffText = (JTextPane) FindComponents.getChildByName(historyPanel, "diffText");
     assertNotNull(diffText);
-    commitMessage = (JTextArea) find.getChildByName(historyPanel, "commitMessage");
+    commitMessage = (JTextArea) FindComponents.getChildByName(historyPanel, "commitMessage");
     assertNotNull(commitMessage);
   }
 

@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
-public class FetchTest extends AbstractRemoteTest {
+class FetchTest extends AbstractRemoteTest {
 
   @Test
   void testFetchExecuteRemote() {

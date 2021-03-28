@@ -19,18 +19,18 @@
  */
 package git;
 
-import org.eclipse.jgit.api.errors.*;
-import org.eclipse.jgit.revwalk.*;
-import org.junit.jupiter.api.*;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class CommitIteratorTest extends AbstractGitTest{
+class CommitIteratorTest extends AbstractGitTest {
   CommitIterator iterator;
 
   @Test
-  void testWithNull(){
+  void testWithNull() {
     iterator = new CommitIterator(null);
     assertFalse(iterator.hasNext());
     assertThrows(UnsupportedOperationException.class, () -> iterator.next());

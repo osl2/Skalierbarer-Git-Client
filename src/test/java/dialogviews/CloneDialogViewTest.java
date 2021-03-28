@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
-public class CloneDialogViewTest extends CloneTest {
+class CloneDialogViewTest extends CloneTest {
   private CloneDialogView cDV;
   private JButton cancelButton;
   private JButton cloneButton;
@@ -45,16 +45,15 @@ public class CloneDialogViewTest extends CloneTest {
   void findComponents() {
     cDV = new CloneDialogView();
     JPanel panel = cDV.getPanel();
-    FindComponents find = new FindComponents();
-    cancelButton = (JButton) find.getChildByName(panel, "cancelButton");
+    cancelButton = (JButton) FindComponents.getChildByName(panel, "cancelButton");
     assertNotNull(cancelButton);
-    chooseButton = (JButton) find.getChildByName(panel, "chooseButton");
+    chooseButton = (JButton) FindComponents.getChildByName(panel, "chooseButton");
     assertNotNull(chooseButton);
-    cloneButton = (JButton) find.getChildByName(panel, "cloneButton");
+    cloneButton = (JButton) FindComponents.getChildByName(panel, "cloneButton");
     assertNotNull(cloneButton);
-    remoteField = (JTextField) find.getChildByName(panel, "remoteField");
+    remoteField = (JTextField) FindComponents.getChildByName(panel, "remoteField");
     assertNotNull(remoteField);
-    recursiveCheckBox = (JCheckBox) find.getChildByName(panel, "recursiveCheckBox");
+    recursiveCheckBox = (JCheckBox) FindComponents.getChildByName(panel, "recursiveCheckBox");
     assertNotNull(recursiveCheckBox);
   }
 
@@ -78,8 +77,7 @@ public class CloneDialogViewTest extends CloneTest {
     remoteField.setText(repo.getAbsolutePath());
     cDV = new CloneDialogView(repo.getAbsolutePath(), remoteDir, true);
     JPanel panel = cDV.getPanel();
-    FindComponents find = new FindComponents();
-    cloneButton = (JButton) find.getChildByName(panel, "cloneButton");
+    cloneButton = (JButton) FindComponents.getChildByName(panel, "cloneButton");
     assertNotNull(cloneButton);
     cloneButton.getActionListeners()[0].actionPerformed(new ActionEvent(cloneButton, ActionEvent.ACTION_PERFORMED, null));
     assertTrue(guiControllerTestable.closeDialogViewCalled);

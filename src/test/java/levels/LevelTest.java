@@ -36,13 +36,13 @@ import java.util.LinkedList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class LevelTest {
+class LevelTest {
     @TempDir
     static File tempDir;
-    private static LinkedList<ICommandGUI> aCommands = new LinkedList<>();
+    private static final LinkedList<ICommandGUI> aCommands = new LinkedList<>();
     /* Different Objects then aCommands */
-    private static LinkedList<ICommandGUI> bCommands = new LinkedList<>();
-    private static LinkedList<ICommandGUI> cCommands = new LinkedList<>();
+    private static final LinkedList<ICommandGUI> bCommands = new LinkedList<>();
+    private static final LinkedList<ICommandGUI> cCommands = new LinkedList<>();
     private static Level a;
     private static Level b;
     private static Level c;
@@ -61,23 +61,23 @@ public class LevelTest {
     }
 
     @Test
-    public void levelEqualsSelfTest() {
+    void levelEqualsSelfTest() {
         assertEquals(a, a);
     }
 
     @Test
-    public void levelNotEqualsLevelWithDifferentCommandsTest() {
+    void levelNotEqualsLevelWithDifferentCommandsTest() {
         assertNotEquals(a, c);
 
     }
 
     @Test
-    public void levelEqualsDifferentLevelWithSameData() {
+    void levelEqualsDifferentLevelWithSameData() {
         assertEquals(a, b);
     }
 
     @Test
-    public void levelSerializationNotAffectEquals() throws IOException {
+    void levelSerializationNotAffectEquals() throws IOException {
         File f = new File(tempDir, "serialisation");
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(f, a);

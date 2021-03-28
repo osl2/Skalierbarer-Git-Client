@@ -43,7 +43,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
-public class PullTest extends AbstractRemoteTest {
+class PullTest extends AbstractRemoteTest {
 
   @BeforeEach
   void configLevels() {

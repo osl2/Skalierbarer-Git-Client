@@ -19,8 +19,6 @@
  */
 package commands;
 
-import git.exception.GitException;
-
 /**
  * This interface represents an executable Command.
  * commands are to be prepared using their custom methods

@@ -29,17 +29,12 @@ import git.GitBranch;
  */
 public class Rebase implements ICommand, ICommandGUI {
 
-  private final GitBranch branchA;
-  private final GitBranch branchB;
-
   /**
    * Creates a new instance an sets the two branches to rebase.
    * @param branchA the {@link GitBranch} to rebase onto.
    * @param branchB the {@link GitBranch} which gets rebased.
    */
   public Rebase(GitBranch branchA, GitBranch branchB) {
-    this.branchA = branchA;
-    this.branchB = branchB;
   }
 
   /**
@@ -48,8 +43,6 @@ public class Rebase implements ICommand, ICommandGUI {
   @JsonCreator
   public Rebase() {
     /* Used by Jackson to create object for Level */
-    this.branchA = null;
-    this.branchB = null;
   }
 
   /**

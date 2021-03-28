@@ -23,13 +23,14 @@ import commands.AbstractCommandTest;
 import git.GitCommit;
 import git.GitFile;
 import git.exception.GitException;
-import org.eclipse.jgit.api.errors.*;
-import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
-import shaded.org.apache.commons.lang3.*;
+import shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DiffViewTest extends AbstractCommandTest {
+class DiffViewTest extends AbstractCommandTest {
 
   @Test
   void testFalseInputSetDiffFile() {

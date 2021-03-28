@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
-public class FetchDialogViewTest extends AbstractRemoteTest {
+class FetchDialogViewTest extends AbstractRemoteTest {
   JTree fetchTree;
   JButton fetchButton;
   FetchDialogView fDV;
