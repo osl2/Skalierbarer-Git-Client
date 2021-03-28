@@ -125,13 +125,17 @@ class FirstUseDialogViewTest extends AbstractCommandTest {
   void firstUseTest2() {
     testEmptyMail();
     guiControllerTestable.resetTestStatus();
+    emptyTextFields();
     assertFalse(guiControllerTestable.errorHandlerMSGCalled);
     testEmptyName();
     guiControllerTestable.resetTestStatus();
     assertFalse(guiControllerTestable.errorHandlerMSGCalled);
-    guiControllerTestable.resetTestStatus();
-    assertFalse(guiControllerTestable.closeDialogViewCalled);
-    assertFalse(guiControllerTestable.errorHandlerMSGCalled);
+    emptyTextFields();
     testFinishButton();
+  }
+
+  private void emptyTextFields (){
+    nameField.setText("");
+    emailField.setText("");
   }
 }
