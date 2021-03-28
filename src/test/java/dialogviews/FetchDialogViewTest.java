@@ -49,7 +49,7 @@ public class FetchDialogViewTest extends AbstractRemoteTest {
   }
 
   @Test
-  void testFetchButton() {
+  void globalFetchTest() {
     Object rootNode = fetchTree.getModel().getRoot();
     Object masterBranchNode = fetchTree.getModel().getChild(rootNode, 0);
     Object testCommitNode = fetchTree.getModel().getChild(masterBranchNode, 0);
