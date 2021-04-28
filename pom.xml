@@ -5,7 +5,6 @@
   <artifactId>Git-Client</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <ci.artifactPhase>none</ci.artifactPhase>
     <license.inceptionYear>2020</license.inceptionYear>
     <license.licenseName>apache_v2</license.licenseName>
     <license.organizationName>The Git-Client Project Authors</license.organizationName>
@@ -69,7 +68,7 @@
         <version>3.2.0</version>
         <executions>
           <execution>
-            <phase>${ci.artifactPhase}</phase>
+            <phase>package</phase>
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
@@ -87,7 +86,7 @@
         <executions>
           <execution>
             <id>make-assembly</id>
-            <phase>${ci.artifactPhase}</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
