@@ -16,7 +16,7 @@
     </repository>
     <repository>
       <id>jetbrains.3rdparty</id>
-      <url>https://dl.bintray.com/jetbrains/intellij-third-party-dependencies</url>
+      <url>https://cache-redirector.jetbrains.com/intellij-dependencies</url>
     </repository>
   </repositories>
   <build>
