@@ -1,6 +1,6 @@
 # Skalierbarer Git-Client
-![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.tobiasmanske.de%2Fjob%2FSkalierbarer%2520Git-Client%2F&style=flat-square)
-![Jenkins Coverage](https://img.shields.io/jenkins/coverage/jacoco?jobUrl=https%3A%2F%2Fjenkins.tobiasmanske.de%2Fjob%2FSkalierbarer%2520Git-Client%2F&style=flat-square)
+![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.tobiasmanske.de%2Fjob%2FSkalierbarer-Git-Client%2F&style=flat-square)
+![Jenkins Coverage](https://img.shields.io/jenkins/coverage/jacoco?jobUrl=https%3A%2F%2Fjenkins.tobiasmanske.de%2Fjob%2FSkalierbarer-Git-Client%2F&style=flat-square)
 [![GitHub license](https://img.shields.io/github/license/osl2/Skalierbarer-Git-Client?style=flat-square)](https://github.com/osl2/Skalierbarer-Git-Client/blob/master/LICENSE)
 
 
